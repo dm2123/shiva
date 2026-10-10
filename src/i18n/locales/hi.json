@@ -1,0 +1,52 @@
+{
+  "common": {
+    "appName": "द शिवा",
+    "loading": "लोड हो रहा है...",
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "submit": "जमा करें",
+    "back": "वापस",
+    "next": "अगला",
+    "previous": "पिछला",
+    "search": "खोजें",
+    "noResults": "कोई परिणाम नहीं मिला",
+    "error": "एक त्रुटि हुई",
+    "success": "सफल",
+    "confirm": "क्या आप सुनिश्चित हैं?"
+  },
+  "nav": {
+    "home": "होम",
+    "courses": "कोर्स",
+    "liveClasses": "लाइव क्लास",
+    "tests": "परीक्षा",
+    "leaderboard": "लीडरबोर्ड",
+    "forum": "फोरम",
+    "mentors": "मेंटर",
+    "wallet": "वॉलेट",
+    "scholarships": "छात्रवृत्ति",
+    "subscriptions": "सदस्यता",
+    "profile": "प्रोफाइल",
+    "settings": "सेटिंग्स",
+    "logout": "लॉगआउट"
+  },
+  "student": {
+    "dashboard": "डैशबोर्ड",
+    "myCourses": "मेरे कोर्स",
+    "assignments": "असाइनमेंट",
+    "performance": "प्रदर्शन",
+    "certificates": "प्रमाणपत्र",
+    "notes": "मेरे नोट्स",
+    "streak": "दैनिक स्ट्रीक"
+  },
+  "auth": {
+    "login": "लॉगिन",
+    "register": "रजिस्टर",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "forgotPassword": "पासवर्ड भूल गए?",
+    "noAccount": "खाता नहीं है?",
+    "hasAccount": "पहले से खाता है?"
+  }
+}
