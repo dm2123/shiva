@@ -103,7 +103,9 @@ export async function loginService(
     throw new Error('INVALID_CREDENTIALS: User not found.');
   }
 
-  const isPasswordValid = await verifyPassword(validated.password, user.passwordHash);
+  // DB column is `password`; accept either mapped `passwordHash` or raw `password`
+  const storedPasswordHash = (user as any).passwordHash || (user as any).password;
+  const isPasswordValid = await verifyPassword(validated.password, storedPasswordHash);
   if (!isPasswordValid) {
     throw new Error('INVALID_CREDENTIALS: Invalid email or password.');
   }

@@ -7,6 +7,7 @@ Next.js 14 + MySQL learning platform for competitive-examination preparation (SS
 - Next.js 14 (App Router, RSC + client components)
 - MySQL 8 via `mysql2` (authoritative store), Redis optional (caching/session store)
 - TypeScript, Zod validation, bcryptjs, Tailwind, GSAP/Three.js (student UI effects)
+- Capacitor Android shell (WebView app that loads the hosted web app)
 
 ## Setup
 
@@ -15,45 +16,50 @@ Next.js 14 + MySQL learning platform for competitive-examination preparation (SS
    ```bash
    mysql -u root -p < init_db_full.sql
    mysql -u root -p the_shiva < seed_db.sql
+   mysql -u root -p the_shiva < seed_features.sql
    ```
 
    > `seed_db.sql` deletes existing rows first, so re-running it resets the app to pristine demo data.
 
-2. **Environment** — copy `.env.example` to `.env` and set `MYSQL_DATABASE=the_shiva` (default user `root`).
+2. **Environment** — copy `.env.example` to `.env` and fill in the values (`MYSQL_DATABASE=the_shiva`, default user `root`). Set a strong `SESSION_SECRET`, and real values for Google OAuth, Gmail SMTP (OTP) and Razorpay if those features are used.
 
 3. **Run**
 
    ```bash
    npm install
    npm run dev   # http://localhost:3000
-   npm run build # production build (verified: 0 type errors)
+   npm run build # production build
    ```
 
 ## Demo Login Credentials
 
-Password verification is globally disabled (demo bypass), so **any password works** for every account.
+Password verification is **enabled** (bcrypt). All seeded accounts use the password:
 
-| Role    | Email                     | Name / Notes            |
-| ------- | ------------------------- | ----------------------- |
-| Admin   | `admin@shiva.com`         | Super admin             |
-| Teacher | `shivajay.sir@shiva.com`  | Shivajay Sir (Founder)  |
-| Teacher | `priyanka.mam@shiva.com`  | Priyanka Ma'am          |
-| Teacher | `ap.sir@shiva.com`        | A.P. Sir                |
-| Teacher | `vikas.sir@shiva.com`     | Vikas Sir               |
-| Teacher | `rajat.sir@shiva.com`     | Rajat Sir               |
-| Student | `rahul.gupta@example.com` | Enrolled in SSC CGL     |
-| Student | `neha.agarwal@example.com`| Enrolled in free course |
+> **Password: `Demo@1234`**
 
-Portals: `/admin` (admin), `/teacher` (teacher), `/app` (student). Registration keeps OTP flow intact (master OTP `000000` works).
+| Role    | Email                      | Name / Notes            |
+| ------- | -------------------------- | ----------------------- |
+| Admin   | `admin@shiva.com`          | Super admin             |
+| Teacher | `shivajay.sir@shiva.com`   | Shivajay Sir (Founder)  |
+| Teacher | `priyanka.mam@shiva.com`   | Priyanka Ma'am          |
+| Teacher | `ap.sir@shiva.com`         | A.P. Sir                |
+| Teacher | `vikas.sir@shiva.com`      | Vikas Sir               |
+| Teacher | `rajat.sir@shiva.com`      | Rajat Sir               |
+| Student | `rahul.gupta@example.com`  | Enrolled in SSC CGL     |
+| Student | `neha.agarwal@example.com` | Enrolled in free course |
 
-## Demo Bypasses (intentional, for the demo)
+> Change these passwords before any real deployment. Seeded hashes live in `seed_db.sql`.
 
-All are clearly commented in code and safe to re-enable for production:
+Portals: `/admin` (admin), `/teacher` (teacher), `/app` (student). Student/teacher registration supports both password and OTP flows.
 
-- `src/services/auth.service.ts` — password verification disabled so any password logs in.
-- `src/services/auth-extended.service.ts` — OTP rate limiting off; master OTP `000000` accepted.
-- Admin provisioning is env-driven and blocked in production.
-- Paid-course enrollment uses a **DEMO checkout** (`/api/student/enrollments`): order is marked `SUCCESS` immediately and no payment is collected.
+## Security Notes
+
+- Passwords are hashed with bcrypt and verified on every login.
+- OTP sessions are rate-limited and expire after 5 minutes; no master/backdoor OTP.
+- Login attempts are rate-limited (failed attempts lock the identifier temporarily).
+- Admin provisioning is environment-driven (`ADMIN_PROVISION_*`) and blocked in production.
+- Paid enrollment requires a verified Razorpay signature; there is no demo/free checkout in production paths.
+- Secrets are read from environment variables only — never hardcoded.
 
 ## Quick Tour
 
@@ -63,8 +69,23 @@ All are clearly commented in code and safe to re-enable for production:
 - **Admin**: `/admin` — operational dashboard (revenue, enrollments, orders), students directory, enrollments (batch/status), teacher provisioning + course assignment, course management.
 - **Health**: `GET /api/health` — DB connectivity, latency, uptime, and table counts.
 
+## Android App (Capacitor)
+
+The Android app is a WebView shell that loads the full web app from a server URL (the Next.js/MySQL backend cannot run inside the APK).
+
+```bash
+# point the app at your deployed backend, then sync + build
+$env:APP_SERVER_URL="https://your-domain.com"
+npx cap sync android
+cd android && ./gradlew assembleDebug
+# APK: android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+Edit `SERVER_URL` in `capacitor.config.ts` if you prefer it committed rather than passed via env.
+
 ## Key Data Notes
 
+- `Users.password` stores the bcrypt hash (read as `passwordHash` in service mappings).
 - `TeacherCourseAssignments.teacherId` stores the **Users.id** of the teacher (join on `TeacherProfiles.userId`).
 - Course URLs resolve by slug (`/courses/{slug}`) and by id.
 - `Notification.type` is limited to `INFO | WARNING | SUCCESS | ERROR`.
@@ -74,5 +95,7 @@ All are clearly commented in code and safe to re-enable for production:
 ```bash
 npm run typecheck   # tsc --noEmit
 npm run lint        # next lint
-npm test            # vitest
+npm test            # vitest (truncates and reseeds the DB)
 ```
+
+> `npm test` resets the database. Re-run `seed_db.sql` + `seed_features.sql` afterwards if you need demo data.

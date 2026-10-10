@@ -31,7 +31,7 @@ DELETE FROM Users;
 -- 1. ADMIN ACCOUNT
 -- =======================
 INSERT INTO Users (id, email, password, role, status, phone, phoneVerified, emailVerified) VALUES
-('admin-001', 'admin@shiva.com', '$2a$10$demoHashForAdminAccount12345678901234567890123456', 'ADMIN', 'ACTIVE', '9999999999', TRUE, TRUE);
+('admin-001', 'admin@shiva.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'ADMIN', 'ACTIVE', '9999999999', TRUE, TRUE);
 
 INSERT INTO AdminProfiles (id, userId, name, department) VALUES
 ('admin-profile-001', 'admin-001', 'Administrator', 'Platform Management');
@@ -40,11 +40,11 @@ INSERT INTO AdminProfiles (id, userId, name, department) VALUES
 -- 2. TEACHER ACCOUNTS
 -- =======================
 INSERT INTO Users (id, email, password, role, status, phone, phoneVerified, emailVerified) VALUES
-('teacher-001', 'shivajay.sir@shiva.com', '$2a$10$demoHashForTeacher1234567890123456789012345678901', 'TEACHER', 'ACTIVE', '9876543210', TRUE, TRUE),
-('teacher-002', 'priyanka.mam@shiva.com', '$2a$10$demoHashForTeacher2234567890123456789012345678901', 'TEACHER', 'ACTIVE', '9876543211', TRUE, TRUE),
-('teacher-003', 'ap.sir@shiva.com', '$2a$10$demoHashForTeacher3234567890123456789012345678901', 'TEACHER', 'ACTIVE', '9876543212', TRUE, TRUE),
-('teacher-004', 'vikas.sir@shiva.com', '$2a$10$demoHashForTeacher4234567890123456789012345678901', 'TEACHER', 'ACTIVE', '9876543213', TRUE, TRUE),
-('teacher-005', 'rajat.sir@shiva.com', '$2a$10$demoHashForTeacher5234567890123456789012345678901', 'TEACHER', 'ACTIVE', '9876543214', TRUE, TRUE);
+('teacher-001', 'shivajay.sir@shiva.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'TEACHER', 'ACTIVE', '9876543210', TRUE, TRUE),
+('teacher-002', 'priyanka.mam@shiva.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'TEACHER', 'ACTIVE', '9876543211', TRUE, TRUE),
+('teacher-003', 'ap.sir@shiva.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'TEACHER', 'ACTIVE', '9876543212', TRUE, TRUE),
+('teacher-004', 'vikas.sir@shiva.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'TEACHER', 'ACTIVE', '9876543213', TRUE, TRUE),
+('teacher-005', 'rajat.sir@shiva.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'TEACHER', 'ACTIVE', '9876543214', TRUE, TRUE);
 
 INSERT INTO TeacherProfiles (id, userId, name, email, phone, bio, qualification, experienceYears, slug, subjects) VALUES
 ('teacher-profile-001', 'teacher-001', 'Shivajay Sir (Founder)', 'shivajay.sir@shiva.com', '9876543210', 'Founder of THE SHIVA. 4 times IIT GATE qualified. Expert in Quantitative Aptitude and Reasoning with a proven track record in competitive exam coaching.', 'IIT GATE Qualified', 12, 'shivajay-sir', '["Quantitative Aptitude", "Reasoning"]'),
@@ -90,16 +90,16 @@ INSERT INTO Batches (id, courseId, teacherId, name, startDate, endDate, status) 
 -- 6. STUDENT ACCOUNTS
 -- =======================
 INSERT INTO Users (id, email, password, role, status, phone, phoneVerified, emailVerified) VALUES
-('student-001', 'rahul.gupta@example.com', '$2a$10$demoHashForStudent1234567890123456789012345678901', 'STUDENT', 'ACTIVE', '8888888801', TRUE, FALSE),
-('student-002', 'priya.patel@example.com', '$2a$10$demoHashForStudent2234567890123456789012345678901', 'STUDENT', 'ACTIVE', '8888888802', TRUE, FALSE),
-('student-003', 'arjun.mehta@example.com', '$2a$10$demoHashForStudent3234567890123456789012345678901', 'STUDENT', 'ACTIVE', '8888888803', TRUE, FALSE),
-('student-004', 'ananya.sharma@example.com', '$2a$10$demoHashForStudent4234567890123456789012345678901', 'STUDENT', 'ACTIVE', '8888888804', TRUE, FALSE),
-('student-005', 'rohan.singh@example.com', '$2a$10$demoHashForStudent5234567890123456789012345678901', 'STUDENT', 'ACTIVE', '8888888805', TRUE, FALSE),
-('student-006', 'kavya.reddy@example.com', '$2a$10$demoHashForStudent6234567890123456789012345678901', 'STUDENT', 'ACTIVE', '8888888806', TRUE, FALSE),
-('student-007', 'aditya.kumar@example.com', '$2a$10$demoHashForStudent7234567890123456789012345678901', 'STUDENT', 'ACTIVE', '8888888807', TRUE, FALSE),
-('student-008', 'ishita.joshi@example.com', '$2a$10$demoHashForStudent8234567890123456789012345678901', 'STUDENT', 'ACTIVE', '8888888808', TRUE, FALSE),
-('student-009', 'karthik.rao@example.com', '$2a$10$demoHashForStudent9234567890123456789012345678901', 'STUDENT', 'ACTIVE', '8888888809', TRUE, FALSE),
-('student-010', 'neha.agarwal@example.com', '$2a$10$demoHashForStudent0234567890123456789012345678901', 'STUDENT', 'ACTIVE', '8888888810', TRUE, FALSE);
+('student-001', 'rahul.gupta@example.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'STUDENT', 'ACTIVE', '8888888801', TRUE, FALSE),
+('student-002', 'priya.patel@example.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'STUDENT', 'ACTIVE', '8888888802', TRUE, FALSE),
+('student-003', 'arjun.mehta@example.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'STUDENT', 'ACTIVE', '8888888803', TRUE, FALSE),
+('student-004', 'ananya.sharma@example.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'STUDENT', 'ACTIVE', '8888888804', TRUE, FALSE),
+('student-005', 'rohan.singh@example.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'STUDENT', 'ACTIVE', '8888888805', TRUE, FALSE),
+('student-006', 'kavya.reddy@example.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'STUDENT', 'ACTIVE', '8888888806', TRUE, FALSE),
+('student-007', 'aditya.kumar@example.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'STUDENT', 'ACTIVE', '8888888807', TRUE, FALSE),
+('student-008', 'ishita.joshi@example.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'STUDENT', 'ACTIVE', '8888888808', TRUE, FALSE),
+('student-009', 'karthik.rao@example.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'STUDENT', 'ACTIVE', '8888888809', TRUE, FALSE),
+('student-010', 'neha.agarwal@example.com', '$2b$10$58pBFWkduks/8kcoTxCTgO/9fcCAnUEoGaBD.67XcyHhh1DeVnNVK', 'STUDENT', 'ACTIVE', '8888888810', TRUE, FALSE);
 
 INSERT INTO StudentProfiles (id, userId, name, phone, targetExam) VALUES
 ('student-profile-001', 'student-001', 'Rahul Gupta', '8888888801', 'SSC CGL'),
