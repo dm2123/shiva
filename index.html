@@ -133,6 +133,22 @@
   .demo-box code{background:#ede9fe;padding:2px 8px;border-radius:6px;font-weight:700}
   /* FLOAT */
   .wa-float{position:fixed;bottom:22px;right:22px;width:58px;height:58px;border-radius:50%;background:#25d366;color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.25);z-index:60}
+  .cb-float{position:fixed;bottom:94px;right:22px;height:58px;border-radius:30px;background:var(--brand-dark);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;padding:0 20px;box-shadow:0 10px 26px rgba(0,0,0,.25);z-index:60;cursor:pointer;border:none}
+  .cb-float:hover{background:var(--brand)}
+  /* FAQ */
+  .faq{max-width:760px;margin:0 auto}
+  .faq-item{background:var(--card);border:2px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
+  .faq-q{padding:18px 22px;font-weight:700;font-size:16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+  .faq-q::after{content:"+";font-size:24px;color:var(--brand);font-weight:800}
+  .faq-item.open .faq-q::after{content:"−"}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:14.5px;color:var(--muted)}
+  .faq-a div{padding:0 22px 18px}
+  /* STUDY MATERIAL */
+  .mat-card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:26px 20px;text-align:center;transition:.2s}
+  .mat-card:hover{border-color:var(--brand);transform:translateY(-4px);box-shadow:0 14px 30px rgba(109,40,217,.12)}
+  .mat-card .ico{font-size:42px;margin-bottom:10px}
+  .mat-card b{display:block;font-size:16px;margin-bottom:6px}
+  .mat-card p{font-size:13.5px;color:var(--muted);margin-bottom:14px}
   /* ===== GRAPHICS & ANIMATIONS ===== */
   @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
   @keyframes floaty2{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
@@ -332,6 +348,22 @@
   </div>
 </section>
 
+<section id="material" style="background:#fff">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">100% Free</span>
+      <h2>Free Study Material</h2>
+      <p>Bina ek rupaya kharch kiye padhai shuru karo — notes, papers aur quizzes free me.</p>
+    </div>
+    <div class="grid4">
+      <div class="mat-card"><div class="ico">📄</div><b>Previous Year Papers</b><p>SSC, Railway, Banking ke pichhle 10 saal ke papers with solutions.</p><button class="btn btn-ghost" onclick="alert('Free PDFs jald available honge!')">Download Free</button></div>
+      <div class="mat-card"><div class="ico">📓</div><b>Handwritten Notes</b><p>Toppers ke notes — Maths, Reasoning, GK sab subjects.</p><button class="btn btn-ghost" onclick="alert('Free PDFs jald available honge!')">Download Free</button></div>
+      <div class="mat-card"><div class="ico">📰</div><b>Daily Current Affairs</b><p>Roz subah 7 baje — exam-oriented current affairs quiz.</p><button class="btn btn-ghost" onclick="alert('Free PDFs jald available honge!')">Read Free</button></div>
+      <div class="mat-card"><div class="ico">🧪</div><b>Free Mock Tests</b><p>Har exam ka 1 free full mock test with All-India rank.</p><button class="btn btn-ghost" onclick="openLogin()">Attempt Free</button></div>
+    </div>
+  </div>
+</section>
+
 <section id="faculty" style="background:#fff">
   <div class="wrap">
     <div class="sec-head">
@@ -385,6 +417,23 @@
       <div class="testi"><div class="stars">★★★★★</div><p>"Live class me doubt turant clear ho jata hai. Test series ka analysis itna detailed hai ki weak topics khud dikh jaate hain."</p><b>Rohit Singh</b><br><span>SSC GD Selected 2025</span></div>
       <div class="testi"><div class="stars">★★★★★</div><p>"Fees itni kam ki vishwas nahi hua, par teachers top class hain. DPP roz karne se maths strong ho gayi."</p><b>Pooja Kumari</b><br><span>Bank Clerk 2025</span></div>
       <div class="testi"><div class="stars">★★★★★</div><p>"Streak system ne mujhe roz padhne ki aadat daal di. 120 din ka streak — selection pakka!"</p><b>Sandeep Yadav</b><br><span>RRB Aspirant</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="background:#fff">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">FAQ</span>
+      <h2>Aksar Poochhe Jaane Wale Sawaal</h2>
+    </div>
+    <div class="faq">
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">THE SHIVA par kaun-kaun se exams ki taiyaari hoti hai?</div><div class="faq-a"><div>SSC (CGL/CHSL/MTS/GD), Railway (RRB NTPC/Group D), Banking (IBPS/SBI), Defence (Agniveer/NDA/CDS) aur Teaching (CTET/UPTET/STET) — sabhi major government exams.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Fees kitni hai? Kya EMI available hai?</div><div class="faq-a"><div>Batches ₹3,999 se shuru hote hain — market se kai guna kam. EMI available hai, aur scholarship test me 100% tak chhoot mil sakti hai.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Kya free demo class milti hai?</div><div class="faq-a"><div>Haan! Upar form bharo — hamari team call karke free demo book karegi. Pehli class bilkul free.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Live class miss ho jaye to kya hoga?</div><div class="faq-a"><div>Koi tension nahi — har live class ki recording turant app me mil jati hai, download karke offline bhi dekh sakte ho.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Doubt kaise poochhen?</div><div class="faq-a"><div>App me question ki photo kheecho — expert 24x7 me answer dete hain. Live class me turant poochh sakte ho.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Kya mobile app hai?</div><div class="faq-a"><div>Haan! Android app jald aa raha hai — live classes, DPP, test series aur streaks sab app me. Website par bane raho.</div></div></div>
     </div>
   </div>
 </section>
@@ -451,6 +500,20 @@
 </footer>
 
 <a class="wa-float" href="#" onclick="alert('WhatsApp support jald aa raha hai!');return false;">💬</a>
+<button class="cb-float" onclick="openCb()">📞 Request a Call Back</button>
+
+<div class="modal" id="cbModal">
+  <div class="modal-box">
+    <span class="x" onclick="closeCb()">×</span>
+    <h3>📞 Request a Call Back</h3>
+    <p>Apna number do — hamara counselor 30 minute me call karega.</p>
+    <form onsubmit="cbSubmit(event)">
+      <input type="text" id="cname" placeholder="Your Name" required style="width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:10px;font-size:15px;margin-bottom:12px">
+      <input type="tel" id="cphone" placeholder="Mobile Number (10-digit)" pattern="[0-9]{10}" required style="width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:10px;font-size:15px;margin-bottom:12px">
+      <button class="btn btn-primary" style="width:100%" type="submit">Call Me Back →</button>
+    </form>
+  </div>
+</div>
 
 <div class="modal" id="loginModal">
   <div class="modal-box">
@@ -479,7 +542,7 @@
 })();
 /* Scroll reveal */
 (function(){
-  var els=document.querySelectorAll('.sec-head, .exam-card, .batch, .feat, .teacher, .topper, .testi, .scholar, .appcta');
+  var els=document.querySelectorAll('.sec-head, .exam-card, .batch, .feat, .teacher, .topper, .testi, .scholar, .appcta, .mat-card, .faq-item');
   els.forEach(function(el,i){el.classList.add('reveal');el.classList.add('d'+(i%5));});
   var io=new IntersectionObserver(function(entries){
     entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});
@@ -521,6 +584,21 @@
 function toggleMenu(){document.getElementById('mmenu').classList.toggle('open');}
 function openLogin(){document.getElementById('loginModal').classList.add('open');}
 function closeLogin(){document.getElementById('loginModal').classList.remove('open');}
+function openCb(){document.getElementById('cbModal').classList.add('open');}
+function closeCb(){document.getElementById('cbModal').classList.remove('open');}
+document.getElementById('cbModal').addEventListener('click',function(e){if(e.target===this)closeCb();});
+function cbSubmit(e){
+  e.preventDefault();
+  var n=document.getElementById('cname').value, p=document.getElementById('cphone').value;
+  alert('Dhanyavaad '+n+'! 📞\nHamara counselor 30 minute me '+p+' par call karega.');
+  e.target.reset();closeCb();
+}
+function toggleFaq(el){
+  var item=el.parentElement, ans=item.querySelector('.faq-a');
+  var open=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(function(i){i.classList.remove('open');i.querySelector('.faq-a').style.maxHeight=null;});
+  if(!open){item.classList.add('open');ans.style.maxHeight=ans.scrollHeight+'px';}
+}
 document.getElementById('loginModal').addEventListener('click',function(e){if(e.target===this)closeLogin();});
 function demoSubmit(e){
   e.preventDefault();
