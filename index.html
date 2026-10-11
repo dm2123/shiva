@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE SHIVA — SSC, Railway, Banking, Defence & Teaching Exam Preparation</title>
+<meta name="description" content="THE SHIVA — India's affordable learning platform for SSC, Railway, Banking, Defence and Teaching exams. Live classes, test series, DPPs and doubt solving.">
+<style>
+  :root{
+    --brand:#6d28d9; --brand-dark:#4c1d95; --accent:#f59e0b; --accent2:#10b981;
+    --ink:#1e1b2e; --muted:#6b7280; --bg:#faf9ff; --card:#ffffff; --line:#ede9fe;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+  a{text-decoration:none;color:inherit}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 20px}
+  /* NAV */
+  header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;color:var(--brand-dark)}
+  .logo .mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900}
+  .nav-links{display:flex;gap:26px;font-weight:600;font-size:15px;color:#374151}
+  .nav-links a:hover{color:var(--brand)}
+  .nav-cta{display:flex;gap:10px}
+  .btn{display:inline-block;padding:11px 22px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:.2s}
+  .btn-primary{background:var(--brand);color:#fff}
+  .btn-primary:hover{background:var(--brand-dark);transform:translateY(-1px)}
+  .btn-ghost{background:#fff;color:var(--brand);border:2px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--brand)}
+  .btn-accent{background:var(--accent);color:#1e1b2e}
+  .btn-accent:hover{background:#d97706;color:#fff}
+  .hamburger{display:none;background:none;border:none;font-size:26px;cursor:pointer;color:var(--brand-dark)}
+  /* HERO */
+  .hero{background:linear-gradient(120deg,#2e1065 0%,#6d28d9 60%,#8b5cf6 100%);color:#fff;padding:70px 0 80px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;background:rgba(255,255,255,.08)}
+  .hero::before{content:"";position:absolute;left:-80px;bottom:-160px;width:320px;height:320px;border-radius:50%;background:rgba(245,158,11,.18)}
+  .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+  .hero h1{font-size:44px;line-height:1.15;font-weight:900;margin-bottom:16px}
+  .hero h1 .hl{color:var(--accent)}
+  .hero p{font-size:18px;opacity:.92;margin-bottom:28px;max-width:520px}
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+  .trust{display:flex;gap:28px;margin-top:34px;flex-wrap:wrap}
+  .trust div b{font-size:26px;display:block}
+  .trust div span{font-size:14px;opacity:.85}
+  .hero-card{background:#fff;color:var(--ink);border-radius:20px;padding:28px;box-shadow:0 24px 60px rgba(0,0,0,.25)}
+  .hero-card h3{font-size:20px;margin-bottom:6px;color:var(--brand-dark)}
+  .hero-card p{font-size:14px;color:var(--muted);margin-bottom:16px}
+  .hero-card input,.hero-card select{width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:10px;font-size:15px;margin-bottom:12px}
+  .hero-card input:focus,.hero-card select:focus{outline:none;border-color:var(--brand)}
+  /* SECTIONS */
+  section{padding:64px 0}
+  .sec-head{text-align:center;margin-bottom:40px}
+  .sec-head .kicker{display:inline-block;background:#ede9fe;color:var(--brand-dark);font-weight:700;font-size:13px;padding:6px 16px;border-radius:20px;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+  .sec-head h2{font-size:34px;font-weight:800;color:var(--brand-dark)}
+  .sec-head p{color:var(--muted);max-width:640px;margin:10px auto 0}
+  /* EXAM CARDS */
+  .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+  .exam-card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:26px 16px;text-align:center;transition:.2s;cursor:pointer}
+  .exam-card:hover{border-color:var(--brand);transform:translateY(-4px);box-shadow:0 14px 30px rgba(109,40,217,.12)}
+  .exam-card .ico{font-size:38px;margin-bottom:10px}
+  .exam-card b{font-size:16px}
+  .exam-card span{display:block;font-size:13px;color:var(--muted);margin-top:4px}
+  /* BATCHES */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .batch{background:var(--card);border:2px solid var(--line);border-radius:20px;overflow:hidden;transition:.2s;display:flex;flex-direction:column}
+  .batch:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(109,40,217,.14)}
+  .batch .banner{padding:22px;color:#fff;font-weight:800;font-size:18px}
+  .batch .body{padding:22px;flex:1;display:flex;flex-direction:column}
+  .batch ul{list-style:none;margin:14px 0;flex:1}
+  .batch ul li{padding:7px 0;font-size:14.5px;color:#374151;border-bottom:1px dashed #f0edff}
+  .batch ul li::before{content:"✓ ";color:var(--accent2);font-weight:800}
+  .price{display:flex;align-items:baseline;gap:10px;margin:6px 0 16px}
+  .price b{font-size:30px;color:var(--brand-dark)}
+  .price s{color:var(--muted)}
+  .price .off{background:#dcfce7;color:#166534;font-size:12px;font-weight:800;padding:3px 10px;border-radius:12px}
+  /* FEATURES */
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .feat{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:26px 20px}
+  .feat .ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:14px}
+  .feat b{font-size:16.5px;display:block;margin-bottom:6px}
+  .feat p{font-size:14px;color:var(--muted)}
+  /* FACULTY */
+  .grid5f{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
+  .teacher{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:24px 14px;text-align:center}
+  .teacher .av{width:84px;height:84px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,var(--brand),#a78bfa);color:#fff;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .teacher b{display:block;font-size:15.5px}
+  .teacher span{font-size:13px;color:var(--brand);font-weight:600}
+  .teacher p{font-size:12.5px;color:var(--muted);margin-top:6px}
+  /* TOPPERS */
+  .toppers{background:linear-gradient(120deg,#1e1b2e,#4c1d95);color:#fff;border-radius:24px;padding:44px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .topper{background:rgba(255,255,255,.08);border-radius:16px;padding:22px;text-align:center}
+  .topper .medal{font-size:34px}
+  .topper b{display:block;margin:8px 0 2px;font-size:17px}
+  .topper span{font-size:14px;opacity:.85}
+  /* SCHOLARSHIP */
+  .scholar{background:linear-gradient(120deg,#f59e0b,#f97316);border-radius:24px;padding:44px;color:#1e1b2e;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  .scholar h2{font-size:30px;font-weight:900;margin-bottom:8px}
+  .scholar p{font-weight:600}
+  /* TESTIMONIALS */
+  .testi{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:26px}
+  .testi p{font-size:15px;font-style:italic;color:#374151;margin-bottom:14px}
+  .testi b{font-size:14.5px}
+  .testi span{font-size:13px;color:var(--muted)}
+  .stars{color:var(--accent);margin-bottom:10px;letter-spacing:2px}
+  /* APP CTA */
+  .appcta{background:var(--brand-dark);color:#fff;border-radius:24px;padding:48px;display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
+  .appcta h2{font-size:30px;margin-bottom:10px}
+  .appcta p{opacity:.9;margin-bottom:20px}
+  .app-points{list-style:none}
+  .app-points li{padding:8px 0;font-size:15px}
+  .app-points li::before{content:"📱 "}
+  .phone-mock{background:#fff;border-radius:28px;padding:14px;max-width:260px;margin:0 auto;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+  .phone-mock .scr{background:linear-gradient(160deg,#6d28d9,#2e1065);border-radius:18px;padding:26px 18px;color:#fff;text-align:center;min-height:340px}
+  .phone-mock .scr .mark{width:56px;height:56px;border-radius:16px;background:#fff;color:var(--brand-dark);font-weight:900;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+  /* FOOTER */
+  footer{background:#1e1b2e;color:#d1d5db;padding:50px 0 24px;margin-top:40px}
+  .fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px;margin-bottom:32px}
+  .fgrid h4{color:#fff;margin-bottom:14px;font-size:16px}
+  .fgrid a{display:block;padding:5px 0;font-size:14px;color:#9ca3af}
+  .fgrid a:hover{color:#fff}
+  .fbot{border-top:1px solid #374151;padding-top:18px;font-size:13px;color:#9ca3af;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  /* MODAL */
+  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;align-items:center;justify-content:center;padding:20px}
+  .modal.open{display:flex}
+  .modal-box{background:#fff;border-radius:20px;padding:32px;max-width:440px;width:100%;position:relative}
+  .modal-box .x{position:absolute;right:16px;top:12px;font-size:24px;cursor:pointer;color:var(--muted)}
+  .modal-box h3{color:var(--brand-dark);margin-bottom:6px}
+  .modal-box p{font-size:14px;color:var(--muted);margin-bottom:16px}
+  .portal{display:block;border:2px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;font-weight:700}
+  .portal:hover{border-color:var(--brand);background:#faf9ff}
+  .portal small{display:block;font-weight:400;color:var(--muted)}
+  .demo-box{background:#f5f3ff;border-radius:12px;padding:14px;font-size:13.5px;margin-top:14px}
+  .demo-box code{background:#ede9fe;padding:2px 8px;border-radius:6px;font-weight:700}
+  /* FLOAT */
+  .wa-float{position:fixed;bottom:22px;right:22px;width:58px;height:58px;border-radius:50%;background:#25d366;color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.25);z-index:60}
+  /* ===== GRAPHICS & ANIMATIONS ===== */
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+  @keyframes floaty2{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(4deg)}}
+  @keyframes gradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  @keyframes popIn{0%{opacity:0;transform:scale(.85)}100%{opacity:1;transform:scale(1)}}
+  @keyframes shine{0%{left:-60%}100%{left:130%}}
+  .hero{background:linear-gradient(120deg,#2e1065,#6d28d9,#8b5cf6,#2e1065);background-size:300% 300%;animation:gradShift 12s ease infinite}
+  .float-a{position:absolute;border-radius:50%;filter:blur(2px);opacity:.5;animation:floaty 6s ease-in-out infinite;z-index:1}
+  .float-b{position:absolute;opacity:.6;animation:floaty2 7s ease-in-out infinite;z-index:1}
+  .reveal{opacity:0;transform:translateY(36px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.visible{opacity:1;transform:none}
+  .reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}.reveal.d3{transition-delay:.3s}.reveal.d4{transition-delay:.4s}
+  .marquee-strip{background:var(--brand-dark);color:#fff;overflow:hidden;white-space:nowrap;padding:14px 0}
+  .marquee-inner{display:inline-block;animation:marquee 22s linear infinite;font-weight:700;font-size:16px;letter-spacing:1px}
+  .marquee-inner span{margin:0 28px}
+  .marquee-inner .dot{color:var(--accent)}
+  .btn{position:relative;overflow:hidden}
+  .btn-primary::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg)}
+  .btn-primary:hover::after{animation:shine .7s ease}
+  .exam-card,.batch,.feat,.teacher,.testi{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+  .topper{transition:transform .25s ease}
+  .topper:hover{transform:scale(1.04)}
+  .pop{animation:popIn .5s ease both}
+  @media(max-width:900px){
+    .hero-grid,.appcta{grid-template-columns:1fr}
+    .grid5,.grid5f{grid-template-columns:repeat(2,1fr)}
+    .grid3,.grid4{grid-template-columns:1fr}
+    .toppers{grid-template-columns:1fr}
+    .fgrid{grid-template-columns:1fr 1fr}
+    .nav-links{display:none}
+    .hamburger{display:block}
+    .hero h1{font-size:32px}
+    .nav-cta .btn-ghost{display:none}
+  }
+  .mobile-menu{display:none;position:fixed;top:66px;left:0;right:0;background:#fff;border-bottom:2px solid var(--line);z-index:49;padding:10px 20px 20px}
+  .mobile-menu.open{display:block}
+  .mobile-menu a{display:block;padding:12px 0;font-weight:600;border-bottom:1px solid #f3f4f6}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#"><span class="mark">S</span> THE SHIVA</a>
+    <nav class="nav-links">
+      <a href="#courses">Courses</a>
+      <a href="#batches">Batches</a>
+      <a href="#faculty">Faculty</a>
+      <a href="#results">Results</a>
+      <a href="#scholarship">Scholarship</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="btn btn-ghost" onclick="openLogin()">Login</button>
+      <a class="btn btn-primary" href="#app">Download App</a>
+    </div>
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
+  </div>
+</header>
+<div class="mobile-menu" id="mmenu">
+  <a href="#courses">Courses</a><a href="#batches">Batches</a><a href="#faculty">Faculty</a>
+  <a href="#results">Results</a><a href="#scholarship">Scholarship</a>
+  <a href="#" onclick="openLogin()">Login</a>
+</div>
+
+<div class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>SSC, Railway, Banking <span class="hl">mein Selection</span> Pakka!</h1>
+      <p>Live classes, daily practice, All-India test series aur 1-on-1 doubt solving — sab kuch ek hi platform par, sabse affordable fees me.</p>
+      <div class="hero-ctas">
+        <a href="#batches" class="btn btn-accent">Explore Batches</a>
+        <button class="btn" style="border:2px solid #fff;color:#fff;background:rgba(255,255,255,.12)" onclick="openLogin()">Book Free Demo</button>
+      </div>
+      <div class="trust">
+        <div><b data-count="2" data-suffix="L+">0</b><span>Students</span></div>
+        <div><b data-count="15000" data-suffix="+" data-comma="1">0</b><span>Selections</span></div>
+        <div><b data-count="4.8" data-suffix="★" data-decimals="1">0</b><span>App Rating</span></div>
+      </div>
+    </div>
+    <div class="hero-card pop">
+      <h3>🎯 Book Your FREE Demo Class</h3>
+      <p>Apna exam chuno — hamari team call karke free demo book karegi.</p>
+      <form onsubmit="demoSubmit(event)">
+        <input type="text" id="dname" placeholder="Your Name" required>
+        <input type="tel" id="dphone" placeholder="Mobile Number (10-digit)" pattern="[0-9]{10}" required>
+        <select id="dexam" required>
+          <option value="">Select Your Exam</option>
+          <option>SSC CGL / CHSL / MTS</option>
+          <option>Railway (RRB NTPC / Group D)</option>
+          <option>Banking (IBPS / SBI PO-Clerk)</option>
+          <option>Defence (Agniveer / CDS / NDA)</option>
+          <option>Teaching (CTET / UPTET / STET)</option>
+        </select>
+        <button class="btn btn-primary" style="width:100%" type="submit">Book Free Demo →</button>
+      </form>
+    </div>
+  </div>
+  <div class="float-a" style="width:90px;height:90px;background:rgba(245,158,11,.35);top:18%;right:8%"></div>
+  <div class="float-a" style="width:54px;height:54px;background:rgba(255,255,255,.25);bottom:22%;right:38%;animation-delay:1.2s"></div>
+  <div class="float-b" style="font-size:44px;top:14%;left:4%">📚</div>
+  <div class="float-b" style="font-size:38px;bottom:16%;left:44%;animation-delay:2s">🎯</div>
+  <div class="float-b" style="font-size:40px;top:48%;right:4%;animation-delay:.6s">🏆</div>
+</div>
+
+<div class="marquee-strip">
+  <div class="marquee-inner" id="marquee"></div>
+</div>
+
+<section id="courses">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Exam Categories</span>
+      <h2>Apna Exam Chuno, Taiyaari Shuru Karo</h2>
+      <p>Har exam ke liye dedicated batches, expert faculty aur complete study material.</p>
+    </div>
+    <div class="grid5">
+      <div class="exam-card" onclick="location.href='#batches'"><div class="ico">🏛️</div><b>SSC</b><span>CGL • CHSL • MTS • GD</span></div>
+      <div class="exam-card" onclick="location.href='#batches'"><div class="ico">🚂</div><b>Railway</b><span>RRB NTPC • Group D • ALP</span></div>
+      <div class="exam-card" onclick="location.href='#batches'"><div class="ico">🏦</div><b>Banking</b><span>IBPS • SBI PO • Clerk</span></div>
+      <div class="exam-card" onclick="location.href='#batches'"><div class="ico">🪖</div><b>Defence</b><span>Agniveer • NDA • CDS</span></div>
+      <div class="exam-card" onclick="location.href='#batches'"><div class="ico">📚</div><b>Teaching</b><span>CTET • UPTET • STET</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="batches" style="background:#fff">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Popular Batches</span>
+      <h2>Sabse Affordable Batches</h2>
+      <p>Poora saal ki taiyaari, ek hi batch me. EMI available.</p>
+    </div>
+    <div class="grid3">
+      <div class="batch">
+        <div class="banner" style="background:linear-gradient(120deg,#6d28d9,#8b5cf6)">SSC CGL 2026 — Ranker Batch</div>
+        <div class="body">
+          <ul>
+            <li>400+ Live Classes (Maths, Reasoning, English, GK)</li>
+            <li>200+ Mock Tests with All-India Rank</li>
+            <li>Daily Practice Problems (DPP)</li>
+            <li>Doubt Solving — 24x7</li>
+            <li>PDF Notes + Previous Year Papers</li>
+          </ul>
+          <div class="price"><b>₹4,999</b><s>₹9,999</s><span class="off">50% OFF</span></div>
+          <button class="btn btn-primary" style="width:100%" onclick="openLogin()">Enroll Now</button>
+        </div>
+      </div>
+      <div class="batch">
+        <div class="banner" style="background:linear-gradient(120deg,#059669,#10b981)">Railway RRB 2026 — Express Batch</div>
+        <div class="body">
+          <ul>
+            <li>350+ Live Classes</li>
+            <li>150+ Mock Tests with All-India Rank</li>
+            <li>Daily Current Affairs Quiz</li>
+            <li>Doubt Solving — 24x7</li>
+            <li>PDF Notes + PYQs</li>
+          </ul>
+          <div class="price"><b>₹3,999</b><s>₹7,999</s><span class="off">50% OFF</span></div>
+          <button class="btn btn-primary" style="width:100%" onclick="openLogin()">Enroll Now</button>
+        </div>
+      </div>
+      <div class="batch">
+        <div class="banner" style="background:linear-gradient(120deg,#d97706,#f59e0b)">Banking 2026 — Achiever Batch</div>
+        <div class="body">
+          <ul>
+            <li>380+ Live Classes (Quant, Reasoning, English)</li>
+            <li>180+ Mock Tests with All-India Rank</li>
+            <li>Speed Maths Special Sessions</li>
+            <li>Interview Preparation</li>
+            <li>PDF Notes + PYQs</li>
+          </ul>
+          <div class="price"><b>₹4,499</b><s>₹8,999</s><span class="off">50% OFF</span></div>
+          <button class="btn btn-primary" style="width:100%" onclick="openLogin()">Enroll Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Why THE SHIVA</span>
+      <h2>Selection Ka Poora System</h2>
+    </div>
+    <div class="grid4">
+      <div class="feat"><div class="ico" style="background:#ede9fe">📡</div><b>Live Interactive Classes</b><p>Real-time me padho, beech me quiz, turant doubt poochho.</p></div>
+      <div class="feat"><div class="ico" style="background:#dcfce7">📝</div><b>Daily Practice (DPP)</b><p>Roz ke practice problems se concept pakka.</p></div>
+      <div class="feat"><div class="ico" style="background:#fef3c7">🏆</div><b>All-India Test Series</b><p>Mock test ke baad rank, accuracy aur time analysis.</p></div>
+      <div class="feat"><div class="ico" style="background:#e0e7ff">❓</div><b>24x7 Doubt Solving</b><p>Photo kheecho, expert se answer pao.</p></div>
+      <div class="feat"><div class="ico" style="background:#fce7f3">📊</div><b>Smart Study Planner</b><p>AI-powered plan — kya padhna hai, kab padhna hai.</p></div>
+      <div class="feat"><div class="ico" style="background:#ede9fe">🔥</div><b>Streaks & Leaderboard</b><p>Roz padho, XP kamao, doston se aage niklo.</p></div>
+      <div class="feat"><div class="ico" style="background:#dcfce7">📥</div><b>Offline Download</b><p>Class download karo, bina internet ke padho.</p></div>
+      <div class="feat"><div class="ico" style="background:#fef3c7">💰</div><b>Affordable Fees</b><p>Best teachers, sabse kam fees. EMI available.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="faculty" style="background:#fff">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Our Educators</span>
+      <h2>India Ke Best Teachers</h2>
+    </div>
+    <div class="grid5f">
+      <div class="teacher"><div class="av">SJ</div><b>Shivajay Sir</b><span>Founder • Maths</span><p>15+ yrs exp • 50,000+ selections mentored</p></div>
+      <div class="teacher"><div class="av">PM</div><b>Priyanka Ma'am</b><span>English</span><p>12+ yrs exp • Grammar queen</p></div>
+      <div class="teacher"><div class="av">AP</div><b>A.P. Sir</b><span>Reasoning</span><p>10+ yrs exp • Short-trick specialist</p></div>
+      <div class="teacher"><div class="av">VS</div><b>Vikas Sir</b><span>GK / GS</span><p>Current affairs expert</p></div>
+      <div class="teacher"><div class="av">RJ</div><b>Rajat Sir</b><span>Quant</span><p>Speed maths master</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Results</span>
+      <h2>Hamare Toppers</h2>
+      <p>2025 me 15,000+ selections — ye sirf shuruaat hai.</p>
+    </div>
+    <div class="toppers">
+      <div class="topper"><div class="medal">🥇</div><b>Rahul Sharma</b><span>AIR 47 — SSC CGL 2025</span></div>
+      <div class="topper"><div class="medal">🥈</div><b>Neha Verma</b><span>AIR 112 — IBPS PO 2025</span></div>
+      <div class="topper"><div class="medal">🥉</div><b>Amit Kumar</b><span>RRB NTPC 2025 — Selected</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="scholarship" style="padding-top:0">
+  <div class="wrap">
+    <div class="scholar">
+      <div>
+        <h2>🎓 SHIVA Scholarship Test — 100% Tak Chhoot!</h2>
+        <p>Har mahine scholarship test. Top rankers ko poori fees me chhoot.</p>
+      </div>
+      <button class="btn" style="background:#1e1b2e;color:#fff" onclick="openLogin()">Register Free →</button>
+    </div>
+  </div>
+</section>
+
+<section style="background:#fff">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Testimonials</span>
+      <h2>Students Kya Kehte Hain</h2>
+    </div>
+    <div class="grid3">
+      <div class="testi"><div class="stars">★★★★★</div><p>"Live class me doubt turant clear ho jata hai. Test series ka analysis itna detailed hai ki weak topics khud dikh jaate hain."</p><b>Rohit Singh</b><br><span>SSC GD Selected 2025</span></div>
+      <div class="testi"><div class="stars">★★★★★</div><p>"Fees itni kam ki vishwas nahi hua, par teachers top class hain. DPP roz karne se maths strong ho gayi."</p><b>Pooja Kumari</b><br><span>Bank Clerk 2025</span></div>
+      <div class="testi"><div class="stars">★★★★★</div><p>"Streak system ne mujhe roz padhne ki aadat daal di. 120 din ka streak — selection pakka!"</p><b>Sandeep Yadav</b><br><span>RRB Aspirant</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="app" style="padding-top:20px">
+  <div class="wrap">
+    <div class="appcta">
+      <div>
+        <h2>📱 THE SHIVA App — Padhai Ab Pocket Me</h2>
+        <p>Website par sirf batches dekho — asli padhai app me hoti hai:</p>
+        <ul class="app-points">
+          <li>Live classes with polls & quizzes</li>
+          <li>Doubt photo upload — instant answer</li>
+          <li>Offline download for travel</li>
+          <li>Daily streaks & leaderboard</li>
+          <li>Push notifications for classes</li>
+        </ul>
+        <br>
+        <button class="btn btn-accent" onclick="alert('Android app jald aa raha hai! Website par bane raho.')">⬇ Download for Android</button>
+      </div>
+      <div>
+        <div class="phone-mock">
+          <div class="scr">
+            <div class="mark">S</div>
+            <b style="font-size:20px">THE SHIVA</b>
+            <p style="font-size:13px;opacity:.9;margin:10px 0 20px">SSC • Railway • Banking<br>Defence • Teaching</p>
+            <div style="background:rgba(255,255,255,.15);border-radius:12px;padding:14px;font-size:13px;text-align:left">
+              🔴 LIVE now: Maths — SSC CGL<br><br>
+              📝 Today's DPP: 20 questions<br><br>
+              🏆 Your AIR: #1,247
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <h4>THE SHIVA</h4>
+        <p style="font-size:14px;color:#9ca3af">India ka affordable learning platform — SSC, Railway, Banking, Defence aur Teaching exams ke liye.</p>
+      </div>
+      <div>
+        <h4>Exams</h4>
+        <a href="#courses">SSC</a><a href="#courses">Railway</a><a href="#courses">Banking</a><a href="#courses">Defence</a><a href="#courses">Teaching</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#faculty">Our Faculty</a><a href="#results">Results</a><a href="#scholarship">Scholarship</a><a href="#app">Download App</a>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <a href="#">Help Center</a><a href="#">Terms of Use</a><a href="#">Privacy Policy</a><a href="#">Contact Us</a>
+      </div>
+    </div>
+    <div class="fbot">
+      <span>© 2026 THE SHIVA. All rights reserved.</span>
+      <span>Made with ❤️ in India</span>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="#" onclick="alert('WhatsApp support jald aa raha hai!');return false;">💬</a>
+
+<div class="modal" id="loginModal">
+  <div class="modal-box">
+    <span class="x" onclick="closeLogin()">×</span>
+    <h3>Welcome to THE SHIVA 🎓</h3>
+    <p>Apna portal chuno:</p>
+    <a class="portal" href="#" onclick="alert('Student portal jald live hoga!');return false;">🎒 Student Portal<small>Courses, live classes, tests, DPP</small></a>
+    <a class="portal" href="#" onclick="alert('Teacher portal jald live hoga!');return false;">👨‍🏫 Teacher Portal<small>Batches, students, live studio</small></a>
+    <a class="portal" href="#" onclick="alert('Admin portal jald live hoga!');return false;">⚙️ Admin Portal<small>Full platform management</small></a>
+    <div class="demo-box">
+      <b>Demo accounts</b> (password: <code>Demo@1234</code>)<br>
+      Admin: <code>admin@shiva.com</code><br>
+      Teacher: <code>shivajay.sir@shiva.com</code><br>
+      Student: <code>rahul.gupta@example.com</code>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Marquee ticker */
+(function(){
+  var items=["SSC CGL 2026","RRB NTPC","IBPS PO","Agniveer","CTET","SSC CHSL","SBI Clerk","NDA","UPTET","SSC MTS"];
+  var html="";
+  for(var r=0;r<2;r++){items.forEach(function(t){html+='<span>'+t+'</span><span class="dot">✦</span>';});}
+  document.getElementById('marquee').innerHTML=html;
+})();
+/* Scroll reveal */
+(function(){
+  var els=document.querySelectorAll('.sec-head, .exam-card, .batch, .feat, .teacher, .topper, .testi, .scholar, .appcta');
+  els.forEach(function(el,i){el.classList.add('reveal');el.classList.add('d'+(i%5));});
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);}});
+  },{threshold:.12});
+  els.forEach(function(el){io.observe(el);});
+})();
+/* Animated counters */
+(function(){
+  function fmt(v,el){
+    var d=parseInt(el.getAttribute('data-decimals')||'0');
+    var s=v.toFixed(d);
+    if(el.getAttribute('data-comma')){s=Number(v.toFixed(d)).toLocaleString('en-IN');}
+    return s+(el.getAttribute('data-suffix')||'');
+  }
+  var done=false;
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting&&!done){
+        done=true;
+        document.querySelectorAll('[data-count]').forEach(function(el){
+          var target=parseFloat(el.getAttribute('data-count'));
+          var t0=null,dur=1600;
+          function step(t){
+            if(!t0)t0=t;
+            var p=Math.min((t-t0)/dur,1);
+            var eased=1-Math.pow(1-p,3);
+            el.textContent=fmt(target*eased,el);
+            if(p<1)requestAnimationFrame(step);else el.textContent=fmt(target,el);
+          }
+          requestAnimationFrame(step);
+        });
+        io.disconnect();
+      }
+    });
+  },{threshold:.4});
+  var trig=document.querySelector('.trust');
+  if(trig)io.observe(trig);
+})();
+function toggleMenu(){document.getElementById('mmenu').classList.toggle('open');}
+function openLogin(){document.getElementById('loginModal').classList.add('open');}
+function closeLogin(){document.getElementById('loginModal').classList.remove('open');}
+document.getElementById('loginModal').addEventListener('click',function(e){if(e.target===this)closeLogin();});
+function demoSubmit(e){
+  e.preventDefault();
+  var n=document.getElementById('dname').value, p=document.getElementById('dphone').value, ex=document.getElementById('dexam').value;
+  alert('Dhanyavaad '+n+'! 🎉\n'+ex+' ke liye free demo book ho gaya.\nHamari team '+p+' par call karegi.');
+  e.target.reset();
+}
+</script>
+</body>
+</html>
