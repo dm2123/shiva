@@ -242,7 +242,7 @@
       <p>Live classes, daily practice, All-India test series aur 1-on-1 doubt solving — sab kuch ek hi platform par, sabse affordable fees me.</p>
       <div class="hero-ctas">
         <a href="#batches" class="btn btn-accent">Explore Batches</a>
-        <button class="btn" style="border:2px solid #fff;color:#fff;background:rgba(255,255,255,.12)" onclick="openLogin()">Book Free Demo</button>
+        <a href="#demoCard" class="btn" style="border:2px solid #fff;color:#fff;background:rgba(255,255,255,.12);text-decoration:none">Book Free Demo</a>
       </div>
       <div class="trust">
         <div><b data-count="2" data-suffix="L+">0</b><span>Students</span></div>
@@ -489,7 +489,13 @@
           <li>Push notifications for classes</li>
         </ul>
         <br>
-        <button class="btn btn-accent" onclick="alert('Android app jald aa raha hai! Website par bane raho.')">⬇ Download for Android</button>
+        <div id="appNotifyOk" style="display:none;background:#dcfce7;border:1px solid #86efac;border-radius:12px;padding:14px;font-size:14.5px;color:#166534;margin-top:6px"></div>
+        <form onsubmit="notifySubmit(event)" id="appNotifyForm" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+          <input type="text" id="aname" placeholder="Your Name" required style="flex:1;min-width:130px;padding:12px 14px;border:2px solid var(--line);border-radius:10px;font-size:15px">
+          <input type="tel" id="aphone" placeholder="Mobile (10-digit)" pattern="[0-9]{10}" required style="flex:1;min-width:130px;padding:12px 14px;border:2px solid var(--line);border-radius:10px;font-size:15px">
+          <button class="btn btn-accent" type="submit">🔔 Notify Me</button>
+        </form>
+        <p style="font-size:13px;opacity:.85;margin-top:8px">📱 Android app jald aa raha hai — launch par sabse pehle khabar pao.</p>
       </div>
       <div>
         <div class="phone-mock">
@@ -652,6 +658,14 @@ function demoSubmit(e){
   ok.innerHTML='✅ Dhanyavaad <b>'+n+'</b>!<br>'+ex+' ki FREE demo book ho gayi.<br>Hamari team <b>'+p+'</b> par jald call karegi.';
   ok.style.display='block';
   e.target.style.display='none';
+}
+function notifySubmit(e){
+  e.preventDefault();
+  var n=document.getElementById('aname').value, p=document.getElementById('aphone').value;
+  var ok=document.getElementById('appNotifyOk');
+  ok.innerHTML='✅ Noted, <b>'+n+'</b>!<br>Android app launch hote hi <b>'+p+'</b> par inform karenge.';
+  ok.style.display='block';
+  document.getElementById('appNotifyForm').style.display='none';
 }
 </script>
 </body>
