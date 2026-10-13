@@ -48,9 +48,8 @@
   .hero h1 .hl{color:var(--accent)}
   .hero p{font-size:18px;opacity:.92;margin-bottom:28px;max-width:520px}
   .hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
-  .trust{display:flex;gap:28px;margin-top:34px;flex-wrap:wrap}
-  .trust div b{font-size:26px;display:block}
-  .trust div span{font-size:14px;opacity:.85}
+  .trust-chips{display:flex;gap:10px;margin-top:30px;flex-wrap:wrap}
+  .trust-chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);color:#fff;padding:8px 14px;border-radius:999px;font-size:13.5px;font-weight:600}
   .hero-card{background:#fff;color:var(--ink);border-radius:20px;padding:28px;box-shadow:0 24px 60px rgba(0,0,0,.25)}
   .hero-card h3{font-size:20px;margin-bottom:6px;color:var(--brand-dark)}
   .hero-card p{font-size:14px;color:var(--muted);margin-bottom:16px}
@@ -244,10 +243,8 @@
         <a href="#batches" class="btn btn-accent">Explore Batches</a>
         <a href="#demoCard" class="btn" style="border:2px solid #fff;color:#fff;background:rgba(255,255,255,.12);text-decoration:none">Book Free Demo</a>
       </div>
-      <div class="trust">
-        <div><b data-count="2" data-suffix="L+">0</b><span>Students</span></div>
-        <div><b data-count="15000" data-suffix="+" data-comma="1">0</b><span>Selections</span></div>
-        <div><b data-count="4.8" data-suffix="★" data-decimals="1">0</b><span>App Rating</span></div>
+      <div class="trust-chips">
+        <span>📡 Live Interactive Classes</span><span>📝 Daily Practice + Tests</span><span>❓ 1-on-1 Doubt Solving</span><span>💰 Sabse Affordable Fees</span>
       </div>
     </div>
     <div class="hero-card pop" id="demoCard">
@@ -315,7 +312,7 @@
             <li>Doubt Solving — 24x7</li>
             <li>PDF Notes + Previous Year Papers</li>
           </ul>
-          <div class="price"><b>₹4,999</b><s>₹9,999</s><span class="off">50% OFF</span></div>
+          <div class="price"><b style="font-size:19px">Fees jald ghoshit hogi</b></div>
           <button class="btn btn-primary" style="width:100%" onclick="openLogin()">Enroll Now</button>
         </div>
       </div>
@@ -329,7 +326,7 @@
             <li>Doubt Solving — 24x7</li>
             <li>PDF Notes + PYQs</li>
           </ul>
-          <div class="price"><b>₹3,999</b><s>₹7,999</s><span class="off">50% OFF</span></div>
+          <div class="price"><b style="font-size:19px">Fees jald ghoshit hogi</b></div>
           <button class="btn btn-primary" style="width:100%" onclick="openLogin()">Enroll Now</button>
         </div>
       </div>
@@ -343,7 +340,7 @@
             <li>Interview Preparation</li>
             <li>PDF Notes + PYQs</li>
           </ul>
-          <div class="price"><b>₹4,499</b><s>₹8,999</s><span class="off">50% OFF</span></div>
+          <div class="price"><b style="font-size:19px">Fees jald ghoshit hogi</b></div>
           <button class="btn btn-primary" style="width:100%" onclick="openLogin()">Enroll Now</button>
         </div>
       </div>
@@ -378,9 +375,9 @@
       <p>Bina ek rupaya kharch kiye padhai shuru karo — notes, papers aur quizzes free me.</p>
     </div>
     <div class="grid4">
-      <div class="mat-card"><div class="ico">📄</div><b>Previous Year Papers</b><p>SSC, Railway, Banking ke pichhle 10 saal ke papers with solutions.</p><button class="btn btn-ghost" onclick="alert('Free PDFs jald available honge!')">Download Free</button></div>
-      <div class="mat-card"><div class="ico">📓</div><b>Handwritten Notes</b><p>Toppers ke notes — Maths, Reasoning, GK sab subjects.</p><button class="btn btn-ghost" onclick="alert('Free PDFs jald available honge!')">Download Free</button></div>
-      <div class="mat-card"><div class="ico">📰</div><b>Daily Current Affairs</b><p>Roz subah 7 baje — exam-oriented current affairs quiz.</p><button class="btn btn-ghost" onclick="alert('Free PDFs jald available honge!')">Read Free</button></div>
+      <div class="mat-card"><div class="ico">📄</div><b>Previous Year Papers</b><p>SSC, Railway, Banking ke pichhle 10 saal ke papers with solutions.</p><button class="btn btn-ghost" onclick="soonNote(this)">Download Free</button><span class="mat-note" style="display:none;font-size:13px;color:var(--brand);font-weight:700">📥 Free PDFs jald aa rahe hain!</span></div>
+      <div class="mat-card"><div class="ico">📓</div><b>Handwritten Notes</b><p>Expert faculty ke notes — Maths, Reasoning, GK sab subjects.</p><button class="btn btn-ghost" onclick="soonNote(this)">Download Free</button><span class="mat-note" style="display:none;font-size:13px;color:var(--brand);font-weight:700">📥 Free PDFs jald aa rahe hain!</span></div>
+      <div class="mat-card"><div class="ico">📰</div><b>Daily Current Affairs</b><p>Roz subah 7 baje — exam-oriented current affairs quiz.</p><button class="btn btn-ghost" onclick="soonNote(this)">Read Free</button><span class="mat-note" style="display:none;font-size:13px;color:var(--brand);font-weight:700">📥 Jald aa raha hai!</span></div>
       <div class="mat-card"><div class="ico">🧪</div><b>Free Mock Tests</b><p>Har exam ka 1 free full mock test with All-India rank.</p><button class="btn btn-ghost" onclick="openLogin()">Attempt Free</button></div>
     </div>
   </div>
@@ -390,14 +387,14 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="kicker">Our Educators</span>
-      <h2>India Ke Best Teachers</h2>
+      <h2>Expert Faculty Team</h2>
     </div>
     <div class="grid5f">
-      <div class="teacher"><div class="av">SJ</div><b>Shivajay Sir</b><span>Founder • Maths</span><p>15+ yrs exp • 50,000+ selections mentored</p></div>
-      <div class="teacher"><div class="av">PM</div><b>Priyanka Ma'am</b><span>English</span><p>12+ yrs exp • Grammar queen</p></div>
-      <div class="teacher"><div class="av">AP</div><b>A.P. Sir</b><span>Reasoning</span><p>10+ yrs exp • Short-trick specialist</p></div>
-      <div class="teacher"><div class="av">VS</div><b>Vikas Sir</b><span>GK / GS</span><p>Current affairs expert</p></div>
-      <div class="teacher"><div class="av">RJ</div><b>Rajat Sir</b><span>Quant</span><p>Speed maths master</p></div>
+      <div class="teacher"><div class="av">∑</div><b>Maths Faculty</b><span>SSC • Banking • Railway</span><p>Concept + short-trick based teaching</p></div>
+      <div class="teacher"><div class="av">Aa</div><b>English Faculty</b><span>Grammar • Comprehension</span><p>Basic se advanced tak, exam-oriented</p></div>
+      <div class="teacher"><div class="av">🧩</div><b>Reasoning Faculty</b><span>Logical • Analytical</span><p>Speed ke saath accuracy</p></div>
+      <div class="teacher"><div class="av">🌍</div><b>GK / GS Faculty</b><span>Current Affairs</span><p>Roz ke updates, exam pattern par</p></div>
+      <div class="teacher"><div class="av">⚡</div><b>Quant Faculty</b><span>Speed Maths</span><p>Calculation tricks + daily practice</p></div>
     </div>
   </div>
 </section>
@@ -406,13 +403,13 @@
   <div class="wrap">
     <div class="sec-head">
       <span class="kicker">Results</span>
-      <h2>Hamare Toppers</h2>
-      <p>2025 me 15,000+ selections — ye sirf shuruaat hai.</p>
+      <h2>Selection — Hamara Ek Hi Lakshya</h2>
+      <p>Hamara pehla batch jald launch ho raha hai — yahan hamare students ki asli success stories aayengi.</p>
     </div>
     <div class="toppers">
-      <div class="topper"><div class="medal">🥇</div><b>Rahul Sharma</b><span>AIR 47 — SSC CGL 2025</span></div>
-      <div class="topper"><div class="medal">🥈</div><b>Neha Verma</b><span>AIR 112 — IBPS PO 2025</span></div>
-      <div class="topper"><div class="medal">🥉</div><b>Amit Kumar</b><span>RRB NTPC 2025 — Selected</span></div>
+      <div class="topper"><div class="medal">🎯</div><b>Agla Naam Aapka Ho Sakta Hai</b><span>Free demo class lo — taiyaari aaj se shuru karo</span></div>
+      <div class="topper"><div class="medal">📚</div><b>Poora System, Ek Hi Platform</b><span>Live classes • Test series • Doubt solving</span></div>
+      <div class="topper"><div class="medal">🏆</div><b>Scholarship Test Se Shuruaat</b><span>100% tak chhoot ka mauka — <a href="#scholarship" style="color:#fff">details dekho</a></span></div>
     </div>
   </div>
 </section>
@@ -451,9 +448,7 @@
       <h2>Students Kya Kehte Hain</h2>
     </div>
     <div class="grid3">
-      <div class="testi"><div class="stars">★★★★★</div><p>"Live class me doubt turant clear ho jata hai. Test series ka analysis itna detailed hai ki weak topics khud dikh jaate hain."</p><b>Rohit Singh</b><br><span>SSC GD Selected 2025</span></div>
-      <div class="testi"><div class="stars">★★★★★</div><p>"Fees itni kam ki vishwas nahi hua, par teachers top class hain. DPP roz karne se maths strong ho gayi."</p><b>Pooja Kumari</b><br><span>Bank Clerk 2025</span></div>
-      <div class="testi"><div class="stars">★★★★★</div><p>"Streak system ne mujhe roz padhne ki aadat daal di. 120 din ka streak — selection pakka!"</p><b>Sandeep Yadav</b><br><span>RRB Aspirant</span></div>
+      <div class="testi" style="grid-column:1/-1;text-align:center;max-width:640px;margin:0 auto"><div class="stars" style="font-size:34px">🏆</div><p style="font-style:normal;font-size:16.5px">"Hamara pehla batch jald launch ho raha hai — yahan hamare students ki asli reviews aayengi. Tab tak free demo class lo aur khud faisla karo."</p><a class="btn btn-primary" href="#demoCard" style="text-decoration:none;display:inline-block;margin-top:8px">Book Free Demo →</a></div>
     </div>
   </div>
 </section>
@@ -466,7 +461,7 @@
     </div>
     <div class="faq">
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">THE SHIVA par kaun-kaun se exams ki taiyaari hoti hai?</div><div class="faq-a"><div>SSC (CGL/CHSL/MTS/GD), Railway (RRB NTPC/Group D), Banking (IBPS/SBI), Defence (Agniveer/NDA/CDS) aur Teaching (CTET/UPTET/STET) — sabhi major government exams.</div></div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Fees kitni hai? Kya EMI available hai?</div><div class="faq-a"><div>Batches ₹3,999 se shuru hote hain — market se kai guna kam. EMI available hai, aur scholarship test me 100% tak chhoot mil sakti hai.</div></div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Fees kitni hai? Kya EMI available hai?</div><div class="faq-a"><div>Batches ki fees launch par ghoshit hogi — affordable rakhne ka wada hai. EMI available hogi, aur scholarship test me 100% tak chhoot mil sakti hai.</div></div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Kya free demo class milti hai?</div><div class="faq-a"><div>Haan! Upar form bharo — hamari team call karke free demo book karegi. Pehli class bilkul free.</div></div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Live class miss ho jaye to kya hoga?</div><div class="faq-a"><div>Koi tension nahi — har live class ki recording turant app me mil jati hai, download karke offline bhi dekh sakte ho.</div></div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Doubt kaise poochhen?</div><div class="faq-a"><div>App me question ki photo kheecho — expert 24x7 me answer dete hain. Live class me turant poochh sakte ho.</div></div></div>
@@ -601,38 +596,7 @@
   },{threshold:.12});
   els.forEach(function(el){io.observe(el);});
 })();
-/* Animated counters */
-(function(){
-  function fmt(v,el){
-    var d=parseInt(el.getAttribute('data-decimals')||'0');
-    var s=v.toFixed(d);
-    if(el.getAttribute('data-comma')){s=Number(v.toFixed(d)).toLocaleString('en-IN');}
-    return s+(el.getAttribute('data-suffix')||'');
-  }
-  var done=false;
-  var io=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting&&!done){
-        done=true;
-        document.querySelectorAll('[data-count]').forEach(function(el){
-          var target=parseFloat(el.getAttribute('data-count'));
-          var t0=null,dur=1600;
-          function step(t){
-            if(!t0)t0=t;
-            var p=Math.min((t-t0)/dur,1);
-            var eased=1-Math.pow(1-p,3);
-            el.textContent=fmt(target*eased,el);
-            if(p<1)requestAnimationFrame(step);else el.textContent=fmt(target,el);
-          }
-          requestAnimationFrame(step);
-        });
-        io.disconnect();
-      }
-    });
-  },{threshold:.4});
-  var trig=document.querySelector('.trust');
-  if(trig)io.observe(trig);
-})();
+function soonNote(btn){var n=btn.parentElement.querySelector(".mat-note");if(n)n.style.display="block";btn.style.display="none";}
 function toggleMenu(){document.getElementById('mmenu').classList.toggle('open');}
 function openLogin(){document.getElementById('loginModal').classList.add('open');}
 function closeLogin(){document.getElementById('loginModal').classList.remove('open');}
