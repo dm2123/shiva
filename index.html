@@ -137,10 +137,12 @@
   .portal{display:block;border:2px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px;font-weight:700}
   .portal:hover{border-color:var(--brand);background:#faf9ff}
   .portal small{display:block;font-weight:400;color:var(--muted)}
+  .portal-note{display:block;margin-top:8px;font-size:13.5px;font-weight:400;color:var(--brand)}
   .demo-box{background:#f5f3ff;border-radius:12px;padding:14px;font-size:13.5px;margin-top:14px}
   .demo-box code{background:#ede9fe;padding:2px 8px;border-radius:6px;font-weight:700}
   /* FLOAT */
-  .wa-float{position:fixed;bottom:22px;right:22px;width:58px;height:58px;border-radius:50%;background:#25d366;color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.25);z-index:60}
+  .wa-float{position:fixed;bottom:22px;right:22px;width:58px;height:58px;border-radius:50%;background:var(--brand-dark);color:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.25);z-index:60;cursor:pointer;border:none}
+  .wa-float:hover{background:var(--brand)}
   .cb-float{position:fixed;bottom:94px;right:22px;height:58px;border-radius:30px;background:var(--brand-dark);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;padding:0 20px;box-shadow:0 10px 26px rgba(0,0,0,.25);z-index:60;cursor:pointer;border:none}
   .cb-float:hover{background:var(--brand)}
   /* FAQ */
@@ -545,7 +547,7 @@
   <a class="btn btn-primary" href="#demoCard">🎯 Book Free Demo</a>
 </div>
 
-<a class="wa-float" href="#" onclick="alert('WhatsApp support jald aa raha hai!');return false;">💬</a>
+<button class="wa-float" onclick="openCb()" title="Counsellor se baat karo" aria-label="Counsellor se baat karo">📞</button>
 <button class="cb-float" onclick="openCb()">📞 Request a Call Back</button>
 
 <div class="modal" id="cbModal">
@@ -567,9 +569,9 @@
     <span class="x" onclick="closeLogin()">×</span>
     <h3>Welcome to THE SHIVA 🎓</h3>
     <p>Apna portal chuno:</p>
-    <a class="portal" href="#" onclick="alert('Student portal jald live hoga!');return false;">🎒 Student Portal<small>Courses, live classes, tests, DPP</small></a>
-    <a class="portal" href="#" onclick="alert('Teacher portal jald live hoga!');return false;">👨‍🏫 Teacher Portal<small>Batches, students, live studio</small></a>
-    <a class="portal" href="#" onclick="alert('Admin portal jald live hoga!');return false;">⚙️ Admin Portal<small>Full platform management</small></a>
+    <a class="portal" href="#" onclick="portalSoon(this);return false;">🎒 Student Portal<small>Courses, live classes, tests, DPP</small><span class="portal-note" style="display:none">🔧 Jald live hoga — tab tak free demo book karo!</span></a>
+    <a class="portal" href="#" onclick="portalSoon(this);return false;">👨‍🏫 Teacher Portal<small>Batches, students, live studio</small><span class="portal-note" style="display:none">🔧 Jald live hoga — tab tak free demo book karo!</span></a>
+    <a class="portal" href="#" onclick="portalSoon(this);return false;">⚙️ Admin Portal<small>Full platform management</small><span class="portal-note" style="display:none">🔧 Jald live hoga — tab tak free demo book karo!</span></a>
     <div class="demo-box">
       <b>Demo accounts</b> (password: <code>Demo@1234</code>)<br>
       Admin: <code>admin@shiva.com</code><br>
@@ -597,6 +599,7 @@
   els.forEach(function(el){io.observe(el);});
 })();
 function soonNote(btn){var n=btn.parentElement.querySelector(".mat-note");if(n)n.style.display="block";btn.style.display="none";}
+function portalSoon(el){var n=el.querySelector(".portal-note");if(n)n.style.display="block";}
 function toggleMenu(){document.getElementById('mmenu').classList.toggle('open');}
 function openLogin(){document.getElementById('loginModal').classList.add('open');}
 function closeLogin(){document.getElementById('loginModal').classList.remove('open');}
