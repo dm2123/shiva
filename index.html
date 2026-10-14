@@ -55,6 +55,9 @@
   .hero-card p{font-size:14px;color:var(--muted);margin-bottom:16px}
   .hero-card input,.hero-card select{width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:10px;font-size:15px;margin-bottom:12px}
   .hero-card input:focus,.hero-card select:focus{outline:none;border-color:var(--brand)}
+  /* Keyboard focus: hamesha visible (a11y) */
+  :focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+  .hero-card input:focus-visible,.hero-card select:focus-visible{outline:3px solid var(--brand);outline-offset:1px;border-color:var(--brand)}
   /* SECTIONS */
   section{padding:64px 0}
   .sec-head{text-align:center;margin-bottom:40px}
@@ -183,6 +186,12 @@
   .topper{transition:transform .25s ease}
   .topper:hover{transform:scale(1.04)}
   .pop{animation:popIn .5s ease both}
+  /* Reduced motion: animations band, content turant dikhe */
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+    .reveal{opacity:1 !important;transform:none !important}
+    .marquee-inner{animation:none !important}
+  }
   /* STICKY MOBILE CTA — proven mobile conversion pattern (demo funnel always one tap away) */
   .sticky-cta{display:none}
   /* Mid-page counselling strip */
@@ -550,7 +559,7 @@
 <button class="wa-float" onclick="openCb()" title="Counsellor se baat karo" aria-label="Counsellor se baat karo">📞</button>
 <button class="cb-float" onclick="openCb()">📞 Request a Call Back</button>
 
-<div class="modal" id="cbModal">
+<div class="modal" id="cbModal" role="dialog" aria-modal="true" aria-label="Request a Call Back">
   <div class="modal-box">
     <span class="x" onclick="closeCb()">×</span>
     <h3>📞 Request a Call Back</h3>
@@ -564,7 +573,7 @@
   </div>
 </div>
 
-<div class="modal" id="loginModal">
+<div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-label="Login">
   <div class="modal-box">
     <span class="x" onclick="closeLogin()">×</span>
     <h3>Welcome to THE SHIVA 🎓</h3>
@@ -601,10 +610,11 @@
 function soonNote(btn){var n=btn.parentElement.querySelector(".mat-note");if(n)n.style.display="block";btn.style.display="none";}
 function portalSoon(el){var n=el.querySelector(".portal-note");if(n)n.style.display="block";}
 function toggleMenu(){document.getElementById('mmenu').classList.toggle('open');}
-function openLogin(){document.getElementById('loginModal').classList.add('open');}
+function openLogin(){document.getElementById('loginModal').classList.add('open');var f=document.querySelector('#loginModal .portal');if(f)f.focus();}
 function closeLogin(){document.getElementById('loginModal').classList.remove('open');}
-function openCb(){document.getElementById('cbModal').classList.add('open');}
+function openCb(){document.getElementById('cbModal').classList.add('open');var f=document.getElementById('cname');if(f)f.focus();}
 function closeCb(){document.getElementById('cbModal').classList.remove('open');}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(document.getElementById('cbModal').classList.contains('open'))closeCb();if(document.getElementById('loginModal').classList.contains('open'))closeLogin();}});
 document.getElementById('cbModal').addEventListener('click',function(e){if(e.target===this)closeCb();});
 function cbSubmit(e){
   e.preventDefault();
