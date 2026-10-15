@@ -119,7 +119,7 @@ export default function DashboardClient({ userEmail, enrollments, upcomingLiveCl
                 Browse Curriculum
                 <IconArrowRight size={14} />
               </Link>
-              <Link href="/app/performance" className="btn-secondary hidden sm:inline-flex">
+              <Link href="/app/analytics" className="btn-secondary hidden sm:inline-flex">
                 View Progress
               </Link>
             </div>
@@ -267,7 +267,7 @@ export default function DashboardClient({ userEmail, enrollments, upcomingLiveCl
             { name: 'Tests',       href: '/app/tests',       icon: IconTarget,     color: 'violet' },
             { name: 'Live Classes',href: '/app/live',        icon: IconRadio,      color: 'red' },
             { name: 'Doubts',      href: '/app/doubts',      icon: IconHelpCircle, color: 'amber' },
-            { name: 'Performance', href: '/app/performance', icon: IconTrendingUp, color: 'emerald' },
+            { name: 'Analytics', href: '/app/analytics', icon: IconTrendingUp, color: 'emerald' },
           ].map((action) => {
             const ActionIcon = action.icon;
             return (

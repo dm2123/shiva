@@ -1,6 +1,8 @@
 import mysql from 'mysql2/promise';
 
 // Database connection using environment variables
+// Set MYSQL_SSL=true when connecting to a managed cloud database (e.g. TiDB Cloud)
+// which requires TLS. Local development stays non-TLS by default.
 const pool = mysql.createPool({
   host: process.env.MYSQL_HOST || '127.0.0.1',
   port: parseInt(process.env.MYSQL_PORT || '3306'),
@@ -9,7 +11,10 @@ const pool = mysql.createPool({
   database: process.env.MYSQL_DATABASE || 'the_shiva',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  ...(process.env.MYSQL_SSL === 'true'
+    ? { ssl: { minVersion: 'TLSv1.2', rejectUnauthorized: true } }
+    : {}),
 });
 
 export const mysqlPool = pool;

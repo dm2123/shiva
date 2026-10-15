@@ -41,14 +41,12 @@ const navGroups = [
     title: 'STUDENTS',
     items: [
       { name: 'My Students', href: '/teacher/students', icon: IconUsers },
-      { name: 'Student Search', href: '/teacher/student-search', icon: IconUsers },
       { name: 'Doubts', href: '/teacher/doubts', icon: IconMessageCircle },
     ]
   },
   {
     title: 'ANALYTICS',
     items: [
-      { name: 'Performance', href: '/teacher/performance', icon: IconBarChart },
       { name: 'Platform Analytics', href: '/teacher/analytics', icon: IconBarChart },
     ]
   }

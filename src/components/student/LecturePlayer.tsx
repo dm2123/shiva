@@ -20,6 +20,29 @@ interface LecturePlayerProps {
   nextLectureId?: string | null;
 }
 
+/** Extracts a YouTube video ID from watch / youtu.be / embed / shorts URLs. */
+function getYouTubeId(url: string): string | null {
+  const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+/** Renders a YouTube embed iframe for YouTube URLs, plain <video> otherwise. */
+function YouTubeOrVideoPlayer({ videoUrl, title }: { videoUrl: string; title: string }) {
+  const ytId = getYouTubeId(videoUrl);
+  if (ytId) {
+    return (
+      <iframe
+        className="w-full aspect-video rounded-xl bg-black"
+        src={`https://www.youtube.com/embed/${ytId}?rel=0`}
+        title={title}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    );
+  }
+  return <video controls className="w-full aspect-video rounded-xl bg-black" src={videoUrl} />;
+}
+
 export default function LecturePlayer({ courseId, lecture, prevLectureId, nextLectureId }: LecturePlayerProps) {
   const goTo = (lectureId: string) => {
     if (!lectureId) return;
@@ -62,7 +85,7 @@ export default function LecturePlayer({ courseId, lecture, prevLectureId, nextLe
       </div>
 
       {lecture.videoUrl ? (
-        <video controls className="w-full aspect-video rounded-xl bg-black" src={lecture.videoUrl} />
+        <YouTubeOrVideoPlayer videoUrl={lecture.videoUrl} title={lecture.title} />
       ) : (
         <div className="w-full aspect-video rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex flex-col items-center justify-center gap-3">
           <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-700 shadow-lg flex items-center justify-center">

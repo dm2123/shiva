@@ -35,7 +35,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         { name: 'Live Classes', href: '/admin/live-classes' },
         { name: 'Recordings', href: '/admin/recordings' },
         { name: 'Live Monitoring', href: '/admin/live-monitoring' },
-        { name: 'Live Analytics', href: '/admin/live-analytics' },
       ],
     },
     {
