@@ -1,39 +1,22 @@
 import Reveal from './Reveal';
 import { listPublicCourses } from '@/services/academic.service';
+import type { Course } from '@/types/models';
 
-const PLACEHOLDERS = [
+const COMING_SOON = [
   {
-    title: 'SSC CGL 2026 — Ranker Batch',
-    gradient: 'linear-gradient(120deg,#6d28d9,#8b5cf6)',
-    points: [
-      '400+ Live Classes (Maths, Reasoning, English, GK)',
-      '200+ Mock Tests with All-India Rank',
-      'Daily Practice Problems (DPP)',
-      'Doubt Solving — 24x7',
-      'PDF Notes + Previous Year Papers',
-    ],
+    title: 'SSC CGL Foundation Batch',
+    emoji: '📚',
+    gradient: 'linear-gradient(135deg,#6d28d9,#8b5cf6)',
   },
   {
-    title: 'Railway RRB 2026 — Express Batch',
-    gradient: 'linear-gradient(120deg,#059669,#10b981)',
-    points: [
-      '350+ Live Classes',
-      '150+ Mock Tests with All-India Rank',
-      'Daily Current Affairs Quiz',
-      'Doubt Solving — 24x7',
-      'PDF Notes + PYQs',
-    ],
+    title: 'Railway NTPC Complete Batch',
+    emoji: '🚂',
+    gradient: 'linear-gradient(135deg,#059669,#10b981)',
   },
   {
-    title: 'Banking 2026 — Achiever Batch',
-    gradient: 'linear-gradient(120deg,#d97706,#f59e0b)',
-    points: [
-      '380+ Live Classes (Quant, Reasoning, English)',
-      '180+ Mock Tests with All-India Rank',
-      'Speed Maths Special Sessions',
-      'Interview Preparation',
-      'PDF Notes + PYQs',
-    ],
+    title: 'Banking PO/Clerk Batch',
+    emoji: '🏦',
+    gradient: 'linear-gradient(135deg,#d97706,#f59e0b)',
   },
 ];
 
@@ -42,10 +25,9 @@ function formatINR(n: number) {
 }
 
 export default async function ShivaBatches() {
-  let courses: { id: string; title: string; description: string; price: number }[] = [];
+  let courses: Course[] = [];
   try {
-    const all = await listPublicCourses();
-    courses = all.slice(0, 3).map((c) => ({ id: c.id, title: c.title, description: c.description, price: c.price }));
+    courses = (await listPublicCourses()).slice(0, 3);
   } catch {
     courses = [];
   }
@@ -54,49 +36,66 @@ export default async function ShivaBatches() {
     <section id="batches" style={{ background: '#fff' }}>
       <div className="wrap">
         <Reveal className="sec-head">
-          <span className="kicker">Popular Batches</span>
-          <h2>Sabse Affordable Batches</h2>
-          <p>Poora saal ki taiyaari, ek hi batch me. EMI available.</p>
+          <span className="kicker">Featured Courses</span>
+          <h2>
+            Learn from the Best. <span className="hl">Build Your Future.</span>
+          </h2>
+          <p>Free aur upcoming courses — apni taiyaari yahin se shuru karo.</p>
         </Reveal>
         <div className="grid3">
           {courses.length > 0
-            ? courses.map((c, i) => (
-                <Reveal key={c.id} delay={i % 3}>
-                  <div className="batch">
-                    <div className="banner" style={{ background: PLACEHOLDERS[i % 3].gradient }}>
-                      {c.title}
-                    </div>
-                    <div className="body">
-                      <p style={{ fontSize: 14, color: '#6b7280', flex: 1 }}>
-                        {c.description?.slice(0, 140) || 'Complete exam preparation batch.'}
-                      </p>
-                      <div className="price">
-                        <b>{c.price > 0 ? formatINR(c.price) : 'Fees jald ghoshit hogi'}</b>
+            ? courses.map((c, i) => {
+                const free = c.price <= 0;
+                const href = c.slug ? `/courses/${c.slug}` : `/courses/${c.id}`;
+                return (
+                  <Reveal key={c.id} delay={i % 3}>
+                    <div className="batch">
+                      <div
+                        className="banner"
+                        style={{ background: COMING_SOON[i % 3].gradient }}
+                      >
+                        {COMING_SOON[i % 3].emoji} {c.title}
+                        {free && <span className="free-tag">100% FREE</span>}
                       </div>
-                      <a className="btn btn-primary" style={{ width: '100%', textAlign: 'center' }} href={`/courses/${c.id}`}>
-                        View Details
-                      </a>
+                      <div className="body">
+                        <p style={{ fontSize: 14, color: '#6b7280', flex: 1 }}>
+                          {c.description?.slice(0, 140) || 'Complete exam preparation course.'}
+                        </p>
+                        <div className="price">
+                          <b>{free ? 'FREE' : formatINR(c.price)}</b>
+                        </div>
+                        <a
+                          className="btn btn-primary"
+                          style={{ width: '100%', textAlign: 'center' }}
+                          href={href}
+                        >
+                          {free ? 'Enroll Now →' : 'View Details'}
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                </Reveal>
-              ))
-            : PLACEHOLDERS.map((b, i) => (
+                  </Reveal>
+                );
+              })
+            : COMING_SOON.map((b, i) => (
                 <Reveal key={b.title} delay={i % 3}>
                   <div className="batch">
                     <div className="banner" style={{ background: b.gradient }}>
-                      {b.title}
+                      {b.emoji} {b.title}
                     </div>
                     <div className="body">
-                      <ul>
-                        {b.points.map((p) => (
-                          <li key={p}>{p}</li>
-                        ))}
-                      </ul>
+                      <p style={{ fontSize: 14, color: '#6b7280', flex: 1 }}>
+                        Live classes, mock tests, doubt solving aur study material — poora system ek hi
+                        batch me.
+                      </p>
                       <div className="price">
-                        <b>Fees jald ghoshit hogi</b>
+                        <b style={{ color: '#6b7280', fontSize: 16 }}>Coming Soon</b>
                       </div>
-                      <a className="btn btn-primary" style={{ width: '100%', textAlign: 'center' }} href="/login">
-                        Enroll Now
+                      <a
+                        className="btn btn-ghost"
+                        style={{ width: '100%', textAlign: 'center', border: '2px solid #7c3aed', color: '#7c3aed' }}
+                        href="/courses"
+                      >
+                        Notify Me
                       </a>
                     </div>
                   </div>

@@ -1,3 +1,4 @@
+import ShivaPromoCarousel from '@/components/public/ShivaPromoCarousel';
 import ShivaHero from '@/components/public/ShivaHero';
 import ShivaMarquee from '@/components/public/ShivaMarquee';
 import ShivaExamCategories from '@/components/public/ShivaExamCategories';
@@ -24,6 +25,7 @@ export const metadata = {
 export default async function HomePage() {
   return (
     <HomePageClient>
+      <ShivaPromoCarousel />
       <ShivaHero />
       <ShivaMarquee />
       <ShivaExamCategories />

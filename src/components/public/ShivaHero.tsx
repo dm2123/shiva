@@ -10,6 +10,12 @@ const EXAMS = [
   'Teaching (CTET / UPTET / STET)',
 ];
 
+const STATS = [
+  { ico: '🎯', b: '100% Free', s: 'Starter Courses' },
+  { ico: '📚', b: '5 Exams', s: 'Categories Covered' },
+  { ico: '🌐', b: 'Hindi + English', s: 'Bilingual Content' },
+];
+
 export default function ShivaHero() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -49,30 +55,37 @@ export default function ShivaHero() {
     <div className="hero">
       <div className="wrap hero-grid">
         <div>
+          <span className="hero-pill">🛡️ Bharat ka Affordable Learning Platform</span>
           <h1>
-            SSC, Railway, Banking <span className="hl">mein Selection</span> Pakka!
+            Your Dream Exams.
+            <br />
+            Our <span className="grad">Mission.</span>
           </h1>
           <p>
-            Live classes, daily practice, All-India test series aur 1-on-1 doubt solving — sab kuch ek hi
-            platform par, sabse affordable fees me.
+            Prepare for SSC, Railway, Banking, Defence & Teaching exams with expert guidance, live
+            classes, quality study material and real exam practice.
           </p>
+          <div className="hero-stats">
+            {STATS.map((s) => (
+              <div className="hstat" key={s.b}>
+                <div className="ic">{s.ico}</div>
+                <div>
+                  <b>{s.b}</b>
+                  <span>{s.s}</span>
+                </div>
+              </div>
+            ))}
+          </div>
           <div className="hero-ctas">
-            <a href="/batches" className="btn btn-accent">
-              Explore Batches
+            <a href="/courses" className="btn btn-primary">
+              Explore Courses
             </a>
             <a
               href="#demoCard"
-              className="btn"
-              style={{ border: '2px solid #fff', color: '#fff', background: 'rgba(255,255,255,.12)' }}
+              className="btn btn-accent"
             >
               Book Free Demo
             </a>
-          </div>
-          <div className="trust-chips">
-            <span>📡 Live Interactive Classes</span>
-            <span>📝 Daily Practice + Tests</span>
-            <span>❓ 1-on-1 Doubt Solving</span>
-            <span>💰 Sabse Affordable Fees</span>
           </div>
         </div>
         <div className="hero-card pop" id="demoCard">
@@ -116,8 +129,8 @@ export default function ShivaHero() {
           )}
         </div>
       </div>
-      <div className="float-a" style={{ width: 90, height: 90, background: 'rgba(245,158,11,.35)', top: '18%', right: '8%' }} />
-      <div className="float-a" style={{ width: 54, height: 54, background: 'rgba(255,255,255,.25)', bottom: '22%', right: '38%', animationDelay: '1.2s' }} />
+      <div className="float-a" style={{ width: 90, height: 90, background: 'rgba(245,158,11,.3)', top: '18%', right: '8%' }} />
+      <div className="float-a" style={{ width: 54, height: 54, background: 'rgba(124,58,237,.4)', bottom: '22%', right: '38%', animationDelay: '1.2s' }} />
       <div className="float-b" style={{ fontSize: 44, top: '14%', left: '4%' }}>📚</div>
       <div className="float-b" style={{ fontSize: 38, bottom: '16%', left: '44%', animationDelay: '2s' }}>🎯</div>
       <div className="float-b" style={{ fontSize: 40, top: '48%', right: '4%', animationDelay: '.6s' }}>🏆</div>

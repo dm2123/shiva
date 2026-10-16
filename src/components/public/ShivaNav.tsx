@@ -31,8 +31,8 @@ export default function ShivaNav() {
             <a className="btn btn-ghost" href="/login">
               Login
             </a>
-            <a className="btn btn-primary" href="/#app">
-              Download App
+            <a className="btn btn-primary" href="/courses">
+              Get Started
             </a>
           </div>
           <button className="hamburger" onClick={() => setOpen(!open)} aria-label="Menu">

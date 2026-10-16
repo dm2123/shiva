@@ -1,106 +1,167 @@
-/* THE SHIVA landing — adapted from marketing homepage (original SHIVA branding) */
+/* THE SHIVA landing — dark navy theme (matches marketing site design) */
 .shiva-landing{
-  --brand:#6d28d9; --brand-dark:#4c1d95; --accent:#f59e0b; --accent2:#10b981;
-  --ink:#1e1b2e; --muted:#6b7280; --bg:#faf9ff; --card:#ffffff; --line:#ede9fe;
+  --navy:#0d0b1e; --navy2:#1a1440; --brand:#7c3aed; --brand-dark:#6d28d9; --accent:#f59e0b;
+  --ink:#1e1b2e; --muted:#6b7280; --bg:#fafbff; --card:#ffffff; --line:#ede9fe;
+  --lav:#c4b5fd; --lav-dim:#a5a0d0;
   color:var(--ink);background:var(--bg);line-height:1.6;
   font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
 }
 .shiva-landing a{text-decoration:none;color:inherit}
-.shiva-landing .wrap{max-width:1140px;margin:0 auto;padding:0 20px}
-/* NAV */
-.shiva-landing header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.shiva-landing .nav{display:flex;align-items:center;justify-content:space-between;height:66px}
-.shiva-landing .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;color:var(--brand-dark)}
-.shiva-landing .logo .mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900}
-.shiva-landing .nav-links{display:flex;gap:26px;font-weight:600;font-size:15px;color:#374151}
-.shiva-landing .nav-links a:hover{color:var(--brand)}
+.shiva-landing .wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+
+/* NAV — dark navy */
+.shiva-landing header{position:sticky;top:0;z-index:50;background:var(--navy);border-bottom:1px solid #232044}
+.shiva-landing .nav{display:flex;align-items:center;justify-content:space-between;height:66px;gap:14px}
+.shiva-landing .logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px;color:#fff}
+.shiva-landing .logo .mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--brand),#a78bfa);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900}
+.shiva-landing .nav-links{display:flex;gap:24px;font-weight:600;font-size:15px;color:#c4c0e8}
+.shiva-landing .nav-links a:hover{color:#fff}
 .shiva-landing .nav-cta{display:flex;gap:10px}
-.shiva-landing .btn{display:inline-block;padding:11px 22px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:.2s}
+.shiva-landing .btn{display:inline-block;padding:11px 22px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;border:none;transition:.2s;white-space:nowrap}
 .shiva-landing .btn-primary{background:var(--brand);color:#fff}
-.shiva-landing .btn-primary:hover{background:var(--brand-dark);transform:translateY(-1px)}
-.shiva-landing .btn-ghost{background:#fff;color:var(--brand);border:2px solid var(--line)}
-.shiva-landing .btn-ghost:hover{border-color:var(--brand)}
+.shiva-landing .btn-primary:hover{background:#5b21b6;transform:translateY(-1px)}
+.shiva-landing .btn-ghost{background:transparent;color:#fff;border:1.5px solid #4a4570}
+.shiva-landing .btn-ghost:hover{border-color:#fff}
 .shiva-landing .btn-accent{background:var(--accent);color:#1e1b2e}
 .shiva-landing .btn-accent:hover{background:#d97706;color:#fff}
-.shiva-landing .hamburger{display:none;background:none;border:none;font-size:26px;cursor:pointer;color:var(--brand-dark)}
-/* HERO */
-.shiva-landing .hero{color:#fff;padding:70px 0 80px;position:relative;overflow:hidden;
-  background:linear-gradient(120deg,#2e1065,#6d28d9,#8b5cf6,#2e1065);background-size:300% 300%;animation:shivaGradShift 12s ease infinite}
-.shiva-landing .hero::after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;background:rgba(255,255,255,.08)}
-.shiva-landing .hero::before{content:"";position:absolute;left:-80px;bottom:-160px;width:320px;height:320px;border-radius:50%;background:rgba(245,158,11,.18)}
-.shiva-landing .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
-.shiva-landing .hero h1{font-size:44px;line-height:1.15;font-weight:900;margin-bottom:16px;color:#fff}
-.shiva-landing .hero h1 .hl{color:var(--accent)}
-.shiva-landing .hero p{font-size:18px;opacity:.92;margin-bottom:28px;max-width:520px}
+.shiva-landing .hamburger{display:none;background:none;border:none;font-size:26px;cursor:pointer;color:#fff}
+
+/* PROMO CAROUSEL */
+.shiva-landing .promo-carousel{position:relative;overflow:hidden;background:var(--navy)}
+.shiva-landing .promo-track{display:flex;transition:transform .5s ease}
+.shiva-landing .promo-slide{min-width:100%;color:#fff}
+.shiva-landing .promo-slide-inner{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;padding:36px 0;max-width:1200px;margin:0 auto;padding-left:20px;padding-right:20px}
+.shiva-landing .promo-tag{display:inline-block;font-size:12px;font-weight:800;padding:6px 14px;border-radius:99px;margin-bottom:14px;letter-spacing:.5px}
+.shiva-landing .promo-slide h2{font-size:34px;font-weight:900;line-height:1.2;margin-bottom:12px}
+.shiva-landing .promo-slide h2 .hl{color:var(--accent)}
+.shiva-landing .promo-slide p{font-size:15px;color:#b8b3d9;margin-bottom:20px;max-width:440px}
+.shiva-landing .promo-pimg{display:flex;justify-content:center;align-items:center}
+.shiva-landing .promo-pimg .emoji{font-size:100px}
+.shiva-landing .promo-dots{display:flex;justify-content:center;gap:8px;padding:0 0 16px;background:var(--navy)}
+.shiva-landing .promo-dots button{width:10px;height:10px;border-radius:50%;border:none;background:#4a4570;cursor:pointer;padding:0;transition:.2s}
+.shiva-landing .promo-dots button.active{background:var(--accent);width:28px;border-radius:99px}
+.shiva-landing .promo-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);color:#fff;border:none;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;z-index:5}
+.shiva-landing .promo-arrow:hover{background:rgba(255,255,255,.25)}
+.shiva-landing .promo-arrow.prev{left:12px}
+.shiva-landing .promo-arrow.next{right:12px}
+
+/* HERO — dark navy */
+.shiva-landing .hero{color:#fff;padding:56px 0 90px;position:relative;overflow:hidden;
+  background:linear-gradient(120deg,#0d0b1e 0%,#1a1440 50%,#2d1b69 100%)}
+.shiva-landing .hero::before{content:"";position:absolute;right:0;top:0;bottom:0;width:45%;
+  background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(245,158,11,.1));
+  clip-path:polygon(20% 0,100% 0,100% 100%,0 100%)}
+.shiva-landing .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.shiva-landing .hero-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(124,58,237,.25);
+  border:1px solid rgba(124,58,237,.5);color:var(--lav);font-size:13px;font-weight:600;
+  padding:8px 18px;border-radius:999px;margin-bottom:20px}
+.shiva-landing .hero h1{font-size:50px;line-height:1.12;font-weight:900;margin-bottom:18px;color:#fff}
+.shiva-landing .hero h1 .grad{background:linear-gradient(90deg,#a78bfa,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.shiva-landing .hero p{font-size:16px;color:#b8b3d9;margin-bottom:26px;max-width:480px}
+.shiva-landing .hero-stats{display:flex;gap:28px;margin-bottom:26px;flex-wrap:wrap}
+.shiva-landing .hstat{display:flex;align-items:center;gap:10px}
+.shiva-landing .hstat .ic{width:44px;height:44px;border-radius:12px;background:rgba(124,58,237,.2);display:flex;align-items:center;justify-content:center;font-size:22px}
+.shiva-landing .hstat b{font-size:19px;display:block;color:#fff}
+.shiva-landing .hstat span{font-size:12px;color:var(--lav-dim)}
 .shiva-landing .hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
-.shiva-landing .trust-chips{display:flex;gap:10px;margin-top:30px;flex-wrap:wrap}
-.shiva-landing .trust-chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);color:#fff;padding:8px 14px;border-radius:999px;font-size:13.5px;font-weight:600}
-.shiva-landing .hero-card{background:#fff;color:var(--ink);border-radius:20px;padding:28px;box-shadow:0 24px 60px rgba(0,0,0,.25)}
-.shiva-landing .hero-card h3{font-size:20px;margin-bottom:6px;color:var(--brand-dark)}
+.shiva-landing .hero-card{background:#fff;color:var(--ink);border-radius:20px;padding:28px;box-shadow:0 24px 60px rgba(0,0,0,.35);position:relative;z-index:3}
+.shiva-landing .hero-card h3{font-size:20px;margin-bottom:6px;color:#4c1d95}
 .shiva-landing .hero-card p{font-size:14px;color:var(--muted);margin-bottom:16px}
-.shiva-landing .hero-card input,.shiva-landing .hero-card select{width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:10px;font-size:15px;margin-bottom:12px;color:var(--ink)}
+.shiva-landing .hero-card input,.shiva-landing .hero-card select{width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:10px;font-size:15px;margin-bottom:12px;color:var(--ink);background:#fff}
 .shiva-landing .hero-card input:focus,.shiva-landing .hero-card select:focus{outline:none;border-color:var(--brand)}
 .shiva-landing .form-ok{display:none;background:#dcfce7;border:1px solid #86efac;border-radius:12px;padding:16px;font-size:14.5px;color:#166534;margin-bottom:12px}
 .shiva-landing .form-ok.show{display:block}
 .shiva-landing .form-err{display:none;background:#fee2e2;border:1px solid #fca5a5;border-radius:12px;padding:12px;font-size:14px;color:#991b1b;margin-bottom:12px}
 .shiva-landing .form-err.show{display:block}
+
 /* SECTIONS */
-.shiva-landing section{padding:64px 0}
-.shiva-landing .sec-head{text-align:center;margin-bottom:40px}
-.shiva-landing .sec-head .kicker{display:inline-block;background:#ede9fe;color:var(--brand-dark);font-weight:700;font-size:13px;padding:6px 16px;border-radius:20px;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
-.shiva-landing .sec-head h2{font-size:34px;font-weight:800;color:var(--brand-dark)}
-.shiva-landing .sec-head p{color:var(--muted);max-width:640px;margin:10px auto 0}
-/* EXAM CARDS */
+.shiva-landing section{padding:60px 0}
+.shiva-landing .sec-head{text-align:center;margin-bottom:36px}
+.shiva-landing .sec-head .kicker,.shiva-landing .sec-badge{display:inline-block;background:#ede9fe;color:#6d28d9;font-weight:700;font-size:13px;padding:7px 16px;border-radius:999px;margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+.shiva-landing .sec-head h2,.shiva-landing .sec-title{font-size:34px;font-weight:800;color:var(--ink)}
+.shiva-landing .sec-head h2 .hl,.shiva-landing .sec-title .hl{color:#6d28d9}
+.shiva-landing .sec-head p,.shiva-landing .sec-sub{color:var(--muted);max-width:640px;margin:10px auto 0;font-size:16px}
+
+/* EXAM CATEGORIES — overlapping white strip */
+.shiva-landing .cats-strip{background:#fff;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,.1);
+  margin:-56px auto 0;position:relative;z-index:5;max-width:1160px;display:grid;grid-template-columns:repeat(5,1fr);overflow:hidden}
+.shiva-landing .cat{padding:26px 14px;text-align:center;border-right:1px solid #f0edff;cursor:pointer;transition:background .2s;display:block}
+.shiva-landing .cat:last-child{border-right:none}
+.shiva-landing .cat:hover{background:#faf9ff}
+.shiva-landing .cat .icon{width:52px;height:52px;border-radius:14px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.shiva-landing .cat h3{font-size:16px;margin-bottom:4px;color:var(--ink)}
+.shiva-landing .cat p{font-size:12px;color:var(--muted)}
+.shiva-landing .cat .arrow{display:inline-block;margin-top:10px;width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;font-size:14px;line-height:28px}
+/* legacy grid5 kept for compat */
 .shiva-landing .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
 .shiva-landing .exam-card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:26px 16px;text-align:center;transition:.2s;cursor:pointer;display:block}
-.shiva-landing .exam-card:hover{border-color:var(--brand);transform:translateY(-4px);box-shadow:0 14px 30px rgba(109,40,217,.12)}
+.shiva-landing .exam-card:hover{border-color:var(--brand);transform:translateY(-4px);box-shadow:0 14px 30px rgba(124,58,237,.14)}
 .shiva-landing .exam-card .ico{font-size:38px;margin-bottom:10px}
 .shiva-landing .exam-card b{font-size:16px;color:var(--ink)}
 .shiva-landing .exam-card span{display:block;font-size:13px;color:var(--muted);margin-top:4px}
-/* BATCHES */
+
+/* BATCHES / COURSES */
 .shiva-landing .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .shiva-landing .batch{background:var(--card);border:2px solid var(--line);border-radius:20px;overflow:hidden;transition:.2s;display:flex;flex-direction:column}
-.shiva-landing .batch:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(109,40,217,.14)}
-.shiva-landing .batch .banner{padding:22px;color:#fff;font-weight:800;font-size:18px}
+.shiva-landing .batch:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(124,58,237,.14)}
+.shiva-landing .batch .banner{padding:22px;color:#fff;font-weight:800;font-size:18px;position:relative}
+.shiva-landing .batch .free-tag{position:absolute;top:12px;right:12px;background:var(--accent);color:#1e1b2e;font-size:11px;font-weight:800;padding:4px 10px;border-radius:99px}
 .shiva-landing .batch .body{padding:22px;flex:1;display:flex;flex-direction:column}
 .shiva-landing .batch ul{list-style:none;margin:14px 0;flex:1;padding:0}
 .shiva-landing .batch ul li{padding:7px 0;font-size:14.5px;color:#374151;border-bottom:1px dashed #f0edff;list-style:none}
-.shiva-landing .batch ul li::before{content:"✓ ";color:var(--accent2);font-weight:800}
+.shiva-landing .batch ul li::before{content:"✓ ";color:#10b981;font-weight:800}
 .shiva-landing .price{display:flex;align-items:baseline;gap:10px;margin:6px 0 16px}
-.shiva-landing .price b{font-size:19px;color:var(--brand-dark)}
-/* FEATURES */
-.shiva-landing .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.shiva-landing .feat{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:26px 20px}
-.shiva-landing .feat .ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:14px}
+.shiva-landing .price b{font-size:19px;color:#4c1d95}
+
+/* FEATURES — why shiva */
+.shiva-landing .grid4{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.shiva-landing .feat{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:26px 20px;display:flex;gap:14px;align-items:flex-start}
+.shiva-landing .feat .ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
 .shiva-landing .feat b{font-size:16.5px;display:block;margin-bottom:6px;color:var(--ink)}
 .shiva-landing .feat p{font-size:14px;color:var(--muted)}
+
 /* FACULTY */
 .shiva-landing .grid5f{display:grid;grid-template-columns:repeat(5,1fr);gap:18px}
 .shiva-landing .teacher{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:24px 14px;text-align:center}
-.shiva-landing .teacher .av{width:84px;height:84px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,var(--brand),#a78bfa);color:#fff;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center}
-.shiva-landing .teacher b{display:block;font-size:15.5px;color:var(--ink)}
+.shiva-landing .teacher .av{width:84px;height:84px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);color:#4c1d95;font-size:34px;display:flex;align-items:center;justify-content:center}
+.shiva-landing .teacher b{display:block;font-size:15px;color:var(--ink)}
 .shiva-landing .teacher span{font-size:13px;color:var(--brand);font-weight:600}
 .shiva-landing .teacher p{font-size:12.5px;color:var(--muted);margin-top:6px}
-/* TOPPERS */
-.shiva-landing .toppers{background:linear-gradient(120deg,#1e1b2e,#4c1d95);color:#fff;border-radius:24px;padding:44px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+
+/* RESULTS / TOPPERS — dark band */
+.shiva-landing .toppers{background:linear-gradient(120deg,#0d0b1e,#2d1b69);color:#fff;border-radius:24px;padding:44px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .shiva-landing .topper{background:rgba(255,255,255,.08);border-radius:16px;padding:22px;text-align:center;transition:transform .25s ease}
-.shiva-landing .topper:hover{transform:scale(1.04)}
+.shiva-landing .topper:hover{transform:scale(1.03)}
 .shiva-landing .topper .medal{font-size:34px}
-.shiva-landing .topper b{display:block;margin:8px 0 2px;font-size:17px}
-.shiva-landing .topper span{font-size:14px;opacity:.85}
+.shiva-landing .topper b{display:block;margin:8px 0 2px;font-size:17px;color:#fff}
+.shiva-landing .topper span{font-size:14px;opacity:.85;color:#c4c0e8}
 .shiva-landing .topper a{color:#fbbf24;font-weight:700}
+
+/* COMMITMENT BAND */
+.shiva-landing .commit-band{background:var(--navy);border-radius:20px;padding:40px;display:grid;grid-template-columns:200px 1fr 1fr;gap:32px;align-items:center;color:#fff}
+.shiva-landing .commit-band h2{font-size:30px;font-weight:800;line-height:1.2;color:#fff}
+.shiva-landing .commit-band h2 .hl{color:#a78bfa}
+.shiva-landing .commit-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
+.shiva-landing .commit-num .ic{width:44px;height:44px;border-radius:12px;background:rgba(124,58,237,.2);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 8px}
+.shiva-landing .commit-num b{font-size:20px;display:block;color:#fff}
+.shiva-landing .commit-num span{font-size:12px;color:var(--lav-dim)}
+.shiva-landing .commit-quote{background:rgba(255,255,255,.05);border-radius:16px;padding:24px;font-size:14px;color:#c4c0e8;font-style:italic}
+
 /* SCHOLARSHIP */
-.shiva-landing .scholar{background:linear-gradient(120deg,#f59e0b,#f97316);border-radius:24px;padding:44px;color:#1e1b2e;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
-.shiva-landing .scholar h2{font-size:30px;font-weight:900;margin-bottom:8px}
-.shiva-landing .scholar p{font-weight:600}
+.shiva-landing .scholar{background:linear-gradient(120deg,#0d0b1e,#312e81);border-radius:20px;padding:40px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.shiva-landing .scholar h2{font-size:26px;font-weight:900;margin-bottom:8px;color:#fff}
+.shiva-landing .scholar h2 .hl{color:var(--accent)}
+.shiva-landing .scholar p{opacity:.8;font-size:15px;max-width:520px;color:#c4c0e8}
+
 /* TESTIMONIALS */
 .shiva-landing .testi{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:26px}
 .shiva-landing .testi p{font-size:15px;font-style:italic;color:#374151;margin-bottom:14px}
 .shiva-landing .testi b{font-size:14.5px;color:var(--ink)}
 .shiva-landing .testi span{font-size:13px;color:var(--muted)}
 .shiva-landing .stars{color:var(--accent);margin-bottom:10px;letter-spacing:2px}
+
 /* APP CTA */
-.shiva-landing .appcta{background:var(--brand-dark);color:#fff;border-radius:24px;padding:48px;display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
+.shiva-landing .appcta{background:linear-gradient(135deg,#4338ca,#7c3aed);color:#fff;border-radius:24px;padding:48px;display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center}
 .shiva-landing .appcta h2{font-size:30px;margin-bottom:10px;color:#fff}
 .shiva-landing .appcta p{opacity:.9;margin-bottom:20px}
 .shiva-landing .app-points{list-style:none;padding:0}
@@ -108,27 +169,31 @@
 .shiva-landing .app-points li::before{content:"📱 "}
 .shiva-landing .phone-mock{background:#fff;border-radius:28px;padding:14px;max-width:260px;margin:0 auto;box-shadow:0 20px 50px rgba(0,0,0,.3)}
 .shiva-landing .phone-mock .scr{background:linear-gradient(160deg,#6d28d9,#2e1065);border-radius:18px;padding:26px 18px;color:#fff;text-align:center;min-height:340px}
-.shiva-landing .phone-mock .scr .mark{width:56px;height:56px;border-radius:16px;background:#fff;color:var(--brand-dark);font-weight:900;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.shiva-landing .phone-mock .scr .mark{width:56px;height:56px;border-radius:16px;background:#fff;color:#4c1d95;font-weight:900;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
 .shiva-landing .notify-form{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
 .shiva-landing .notify-form input{flex:1;min-width:130px;padding:12px 14px;border:2px solid var(--line);border-radius:10px;font-size:15px;color:var(--ink)}
-/* FOOTER */
-.shiva-landing footer{background:#1e1b2e;color:#d1d5db;padding:50px 0 24px;margin-top:40px}
+
+/* FOOTER — dark navy */
+.shiva-landing footer{background:var(--navy);color:#d1d5db;padding:50px 0 24px;margin-top:40px}
 .shiva-landing .fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px;margin-bottom:32px}
-.shiva-landing .fgrid h4{color:#fff;margin-bottom:14px;font-size:16px}
-.shiva-landing .fgrid a,.shiva-landing .fgrid button.flink{display:block;padding:5px 0;font-size:14px;color:#9ca3af;background:none;border:none;cursor:pointer;text-align:left;font-family:inherit}
+.shiva-landing .fgrid h4{color:#c4b5fd;margin-bottom:14px;font-size:15px}
+.shiva-landing .fgrid a,.shiva-landing .fgrid button.flink{display:block;padding:5px 0;font-size:14px;color:#8b87b0;background:none;border:none;cursor:pointer;text-align:left;font-family:inherit}
 .shiva-landing .fgrid a:hover,.shiva-landing .fgrid button.flink:hover{color:#fff}
-.shiva-landing .fbot{border-top:1px solid #374151;padding-top:18px;font-size:13px;color:#9ca3af;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.shiva-landing .fbot{border-top:1px solid #232044;padding-top:18px;font-size:13px;color:#6b6690;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
 /* MODAL */
 .shiva-landing .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;align-items:center;justify-content:center;padding:20px}
 .shiva-landing .modal.open{display:flex}
 .shiva-landing .modal-box{background:#fff;border-radius:20px;padding:32px;max-width:440px;width:100%;position:relative;color:var(--ink)}
 .shiva-landing .modal-box .x{position:absolute;right:16px;top:12px;font-size:24px;cursor:pointer;color:var(--muted);background:none;border:none}
-.shiva-landing .modal-box h3{color:var(--brand-dark);margin-bottom:6px}
+.shiva-landing .modal-box h3{color:#4c1d95;margin-bottom:6px}
 .shiva-landing .modal-box p{font-size:14px;color:var(--muted);margin-bottom:16px}
 .shiva-landing .modal-box input{width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:10px;font-size:15px;margin-bottom:12px;color:var(--ink)}
+
 /* FLOATS */
-.shiva-landing .cb-float{position:fixed;bottom:94px;right:22px;height:58px;border-radius:30px;background:var(--brand-dark);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;padding:0 20px;box-shadow:0 10px 26px rgba(0,0,0,.25);z-index:60;cursor:pointer;border:none;font-family:inherit}
+.shiva-landing .cb-float{position:fixed;bottom:94px;right:22px;height:58px;border-radius:30px;background:#4c1d95;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;padding:0 20px;box-shadow:0 10px 26px rgba(0,0,0,.25);z-index:60;cursor:pointer;border:none;font-family:inherit}
 .shiva-landing .cb-float:hover{background:var(--brand)}
+
 /* FAQ */
 .shiva-landing .faq{max-width:760px;margin:0 auto}
 .shiva-landing .faq-item{background:var(--card);border:2px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
@@ -137,14 +202,16 @@
 .shiva-landing .faq-item.open .faq-q::after{content:"−"}
 .shiva-landing .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:14.5px;color:var(--muted)}
 .shiva-landing .faq-a div{padding:0 22px 18px}
+
 /* STUDY MATERIAL */
 .shiva-landing .mat-card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:26px 20px;text-align:center;transition:.2s}
-.shiva-landing .mat-card:hover{border-color:var(--brand);transform:translateY(-4px);box-shadow:0 14px 30px rgba(109,40,217,.12)}
+.shiva-landing .mat-card:hover{border-color:var(--brand);transform:translateY(-4px);box-shadow:0 14px 30px rgba(124,58,237,.12)}
 .shiva-landing .mat-card .ico{font-size:42px;margin-bottom:10px}
 .shiva-landing .mat-card b{display:block;font-size:16px;margin-bottom:6px;color:var(--ink)}
 .shiva-landing .mat-card p{font-size:13.5px;color:var(--muted);margin-bottom:14px}
 .shiva-landing .mat-note{display:none;font-size:13px;color:var(--brand);font-weight:700}
 .shiva-landing .mat-note.show{display:block}
+
 /* ANIMATIONS */
 @keyframes shivaGradShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @keyframes shivaFloaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
@@ -158,7 +225,7 @@
 .shiva-landing .reveal.visible{opacity:1;transform:none}
 .shiva-landing .reveal.d1{transition-delay:.1s}.shiva-landing .reveal.d2{transition-delay:.2s}
 .shiva-landing .reveal.d3{transition-delay:.3s}.shiva-landing .reveal.d4{transition-delay:.4s}
-.shiva-landing .marquee-strip{background:var(--brand-dark);color:#fff;overflow:hidden;white-space:nowrap;padding:14px 0}
+.shiva-landing .marquee-strip{background:#4c1d95;color:#fff;overflow:hidden;white-space:nowrap;padding:14px 0}
 .shiva-landing .marquee-inner{display:inline-block;animation:shivaMarquee 22s linear infinite;font-weight:700;font-size:16px;letter-spacing:1px}
 .shiva-landing .marquee-inner span{margin:0 28px}
 .shiva-landing .marquee-inner .dot{color:var(--accent)}
@@ -167,28 +234,40 @@
 .shiva-landing .btn-primary:hover::after{animation:shivaShine .7s ease}
 .shiva-landing .exam-card,.shiva-landing .batch,.shiva-landing .feat,.shiva-landing .teacher,.shiva-landing .testi,.shiva-landing .mat-card{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
 .shiva-landing .pop{animation:shivaPopIn .5s ease both}
+
 /* STICKY MOBILE CTA */
 .shiva-landing .sticky-cta{display:none}
 .shiva-landing .counsel-strip{background:#fff;border:2px solid var(--line);border-radius:24px;padding:36px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
-.shiva-landing .counsel-strip h2{font-size:26px;color:var(--brand-dark);margin-bottom:8px}
+.shiva-landing .counsel-strip h2{font-size:26px;color:#4c1d95;margin-bottom:8px}
 .shiva-landing .counsel-strip p{color:var(--muted)}
 .shiva-landing html,.shiva-landing{scroll-behavior:smooth}
 .shiva-landing [id]{scroll-margin-top:78px}
+
 @media(max-width:900px){
   .shiva-landing .hero-grid,.shiva-landing .appcta{grid-template-columns:1fr}
+  .shiva-landing .promo-slide-inner{grid-template-columns:1fr;text-align:center;padding:28px 0}
+  .shiva-landing .promo-slide h2{font-size:26px}
+  .shiva-landing .promo-arrow{display:none}
+  .shiva-landing .promo-pimg .emoji{font-size:64px}
+  .shiva-landing .cats-strip{grid-template-columns:repeat(2,1fr);margin:-56px 16px 0}
+  .shiva-landing .cat{border-bottom:1px solid #f0edff}
   .shiva-landing .grid5,.shiva-landing .grid5f{grid-template-columns:repeat(2,1fr)}
   .shiva-landing .grid3,.shiva-landing .grid4{grid-template-columns:1fr}
   .shiva-landing .toppers{grid-template-columns:1fr}
+  .shiva-landing .commit-band{grid-template-columns:1fr;text-align:center}
+  .shiva-landing .commit-nums{grid-template-columns:repeat(2,1fr)}
   .shiva-landing .fgrid{grid-template-columns:1fr 1fr}
   .shiva-landing .nav-links{display:none}
   .shiva-landing .hamburger{display:block}
-  .shiva-landing .hero h1{font-size:32px}
+  .shiva-landing .hero{padding:40px 0 80px}
+  .shiva-landing .hero h1{font-size:34px}
+  .shiva-landing .hero-stats{gap:18px}
   .shiva-landing .nav-cta .btn-ghost{display:none}
   .shiva-landing .sticky-cta{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:70;background:#fff;border-top:2px solid var(--line);padding:10px 12px calc(10px + env(safe-area-inset-bottom));gap:10px;box-shadow:0 -8px 24px rgba(0,0,0,.12)}
   .shiva-landing .sticky-cta .btn{flex:1;text-align:center;padding:13px 8px;font-size:15px}
   .shiva-landing{padding-bottom:86px}
   .shiva-landing .cb-float{display:none}
 }
-.shiva-landing .mobile-menu{display:none;position:fixed;top:66px;left:0;right:0;background:#fff;border-bottom:2px solid var(--line);z-index:49;padding:10px 20px 20px}
+.shiva-landing .mobile-menu{display:none;position:fixed;top:66px;left:0;right:0;background:var(--navy);border-bottom:2px solid #232044;z-index:49;padding:10px 20px 20px}
 .shiva-landing .mobile-menu.open{display:block}
-.shiva-landing .mobile-menu a{display:block;padding:12px 0;font-weight:600;border-bottom:1px solid #f3f4f6;color:var(--ink)}
+.shiva-landing .mobile-menu a{display:block;padding:12px 0;font-weight:600;border-bottom:1px solid #232044;color:#c4c0e8}
