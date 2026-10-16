@@ -309,38 +309,8 @@ export default function StudentRegisterPage() {
               </>
             )}
 
-            {/* Method toggle: Email / Phone */}
-            <div style={{ display: 'flex', gap: 8, marginBottom: 20, background: '#f5f3ff', borderRadius: 12, padding: 4 }}>
-              <button
-                type="button"
-                onClick={() => { setMethod('email'); setError(null); setStep(1); }}
-                style={{
-                  flex: 1, padding: '10px', borderRadius: 8, border: 'none', fontWeight: 700, fontSize: 14,
-                  background: method === 'email' ? '#fff' : 'transparent',
-                  color: method === 'email' ? 'var(--brand-dark)' : 'var(--muted)',
-                  boxShadow: method === 'email' ? '0 2px 8px rgba(0,0,0,.08)' : 'none',
-                  cursor: 'pointer',
-                }}
-              >
-                📧 Email
-              </button>
-              <button
-                type="button"
-                onClick={() => { setMethod('phone'); setError(null); setStep(1); }}
-                style={{
-                  flex: 1, padding: '10px', borderRadius: 8, border: 'none', fontWeight: 700, fontSize: 14,
-                  background: method === 'phone' ? '#fff' : 'transparent',
-                  color: method === 'phone' ? 'var(--brand-dark)' : 'var(--muted)',
-                  boxShadow: method === 'phone' ? '0 2px 8px rgba(0,0,0,.08)' : 'none',
-                  cursor: 'pointer',
-                }}
-              >
-                📱 Phone (OTP)
-              </button>
-            </div>
-
-            {method === 'email' ? (
-              <form onSubmit={handleEmailRegister}>
+            {/* Email registration only — OTP removed (broken in prod) */}
+            <form onSubmit={handleEmailRegister}>
                 <div style={{ marginBottom: 16 }}>
                   <label style={labelStyle}>Full Name</label>
                   <input
@@ -400,113 +370,6 @@ export default function StudentRegisterPage() {
                   {loading ? '⏳ Register ho raha hai...' : 'Register →'}
                 </button>
               </form>
-            ) : step === 1 ? (
-              <form onSubmit={handleSendOtp}>
-                <div style={{ marginBottom: 16 }}>
-                  <label style={labelStyle}>Mobile Number</label>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <span
-                      style={{
-                        padding: '13px 14px',
-                        border: '2px solid var(--line)',
-                        borderRadius: 12,
-                        fontSize: 15,
-                        fontWeight: 700,
-                        color: 'var(--brand-dark)',
-                        background: '#faf9ff',
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      +91
-                    </span>
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                      required
-                      placeholder="9876543210"
-                      pattern="[0-9]{10}"
-                      style={{ ...inputStyle, flex: 1 }}
-                      onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
-                      onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
-                    />
-                  </div>
-                  <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6 }}>
-                    📲 6-digit OTP bheja jayega verification ke liye
-                  </p>
-                </div>
-                <button
-                  type="submit"
-                  disabled={loading || phone.length !== 10}
-                  className="btn btn-primary"
-                  style={{ width: '100%', padding: '14px', fontSize: 16, opacity: loading || phone.length !== 10 ? 0.5 : 1 }}
-                >
-                  {loading ? '⏳ OTP bheja ja raha hai...' : 'Send OTP →'}
-                </button>
-              </form>
-            ) : (
-              <form onSubmit={handleCompleteRegister}>
-                <div style={{ marginBottom: 16 }}>
-                  <label style={labelStyle}>OTP Code</label>
-                  <input
-                    type="text"
-                    maxLength={6}
-                    value={otpCode}
-                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                    required
-                    placeholder="••••••"
-                    style={{
-                      ...inputStyle,
-                      textAlign: 'center',
-                      letterSpacing: '0.4em',
-                      fontSize: 20,
-                      fontWeight: 800,
-                      fontFamily: 'monospace',
-                    }}
-                    onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
-                    onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
-                  />
-                </div>
-                <div style={{ marginBottom: 20 }}>
-                  <label style={labelStyle}>Full Name</label>
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                    placeholder="Tumhara poora naam"
-                    maxLength={60}
-                    style={inputStyle}
-                    onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
-                    onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
-                  />
-                </div>
-                <div style={{ display: 'flex', gap: 10 }}>
-                  <button
-                    type="button"
-                    onClick={() => { setStep(1); setError(null); }}
-                    className="btn btn-ghost"
-                    style={{ flex: '0 0 100px' }}
-                  >
-                    ← Back
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={loading || otpCode.length !== 6 || !fullName.trim()}
-                    className="btn btn-primary"
-                    style={{
-                      flex: 1,
-                      padding: '14px',
-                      fontSize: 16,
-                      opacity: loading || otpCode.length !== 6 || !fullName.trim() ? 0.5 : 1,
-                    }}
-                  >
-                    {loading ? '⏳ Register ho raha hai...' : 'Register →'}
-                  </button>
-                </div>
-              </form>
-            )}
 
             <div style={{ marginTop: 24, paddingTop: 20, borderTop: '2px solid var(--line)', textAlign: 'center' }}>
               <p style={{ fontSize: 14, color: 'var(--muted)' }}>
