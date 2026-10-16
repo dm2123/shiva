@@ -243,35 +243,6 @@ export default function StudentRegisterPage() {
               Free student registration — 2 minute me shuru karo
             </p>
 
-            {/* Step indicator */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 20 }}>
-              <div
-                style={{
-                  padding: '6px 14px',
-                  borderRadius: 999,
-                  fontSize: 12,
-                  fontWeight: 700,
-                  background: step === 1 ? 'var(--brand)' : '#ede9fe',
-                  color: step === 1 ? '#fff' : 'var(--brand-dark)',
-                }}
-              >
-                1. Mobile
-              </div>
-              <div style={{ width: 24, height: 2, background: 'var(--line)' }} />
-              <div
-                style={{
-                  padding: '6px 14px',
-                  borderRadius: 999,
-                  fontSize: 12,
-                  fontWeight: 700,
-                  background: step === 2 ? 'var(--brand)' : '#ede9fe',
-                  color: step === 2 ? '#fff' : 'var(--brand-dark)',
-                }}
-              >
-                2. Verify
-              </div>
-            </div>
-
             {error && <div className="form-err show">{error}</div>}
             {infoMsg && (
               <div
