@@ -231,6 +231,31 @@ body{padding-bottom:66px}
 .res-note{font-size:13px;color:var(--purple2);font-weight:600;margin-top:10px;display:none;line-height:1.6}
 .res-note.show{display:block}
 .res-note a{color:var(--purple2);text-decoration:underline}
+
+/* PROMO BANNER CAROUSEL - PW style */
+.promo-carousel{position:relative;overflow:hidden;background:var(--navy)}
+.promo-track{display:flex;transition:transform .5s ease}
+.promo-slide{min-width:100%;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:24px;padding:36px 0;color:#fff}
+.promo-slide .pcontent{padding-left:8px}
+.promo-tag{display:inline-block;font-size:12px;font-weight:800;padding:6px 14px;border-radius:99px;margin-bottom:14px;letter-spacing:.5px}
+.promo-slide h2{font-size:34px;font-weight:900;line-height:1.2;margin-bottom:12px}
+.promo-slide h2 .hl{color:var(--accent)}
+.promo-slide p{font-size:15px;color:#b8b3d9;margin-bottom:20px;max-width:440px}
+.promo-slide .pimg{display:flex;justify-content:center}
+.promo-slide .pimg img{max-width:100%;height:220px;object-fit:cover;border-radius:16px;box-shadow:0 16px 48px rgba(0,0,0,.4)}
+.promo-dots{display:flex;justify-content:center;gap:8px;padding:14px 0;background:var(--navy)}
+.promo-dots button{width:10px;height:10px;border-radius:50%;border:none;background:#4a4570;cursor:pointer;padding:0}
+.promo-dots button.active{background:var(--accent);width:28px;border-radius:99px}
+.promo-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.12);color:#fff;border:none;width:44px;height:44px;border-radius:50%;font-size:20px;cursor:pointer;z-index:5;backdrop-filter:blur(4px)}
+.promo-arrow:hover{background:rgba(255,255,255,.25)}
+.promo-arrow.prev{left:12px}
+.promo-arrow.next{right:12px}
+@media(max-width:768px){
+.promo-slide{grid-template-columns:1fr;text-align:center;padding:28px 0}
+.promo-slide h2{font-size:26px}
+.promo-slide .pimg img{height:160px}
+.promo-arrow{display:none}
+}
 </style>
 </head>
 <body>
@@ -267,6 +292,63 @@ body{padding-bottom:66px}
 <a href="faculty.html">About Us</a>
 <a href="https://the-shiva-3e7od98rh-dm2123.vercel.app/login">Login / Register</a>
 </div>
+
+
+<!-- PROMO BANNER CAROUSEL -->
+<div class="promo-carousel" id="promoCarousel">
+<div class="promo-track" id="promoTrack">
+<!-- Slide 1: Aptitude Free -->
+<div class="promo-slide" style="background:linear-gradient(120deg,#0d3b2e,#059669)">
+<div class="wrap" style="display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;width:100%">
+<div class="pcontent">
+<span class="promo-tag" style="background:var(--accent);color:#1e1b2e">🎯 100% FREE COURSE</span>
+<h2>Aptitude Foundation<br><span class="hl">Free me Shuru Karo!</span></h2>
+<p>Number System, Percentage, Time-Speed-Distance, Time-Work — SSC, Railway, Banking ke liye complete free course.</p>
+<a href="https://the-shiva-3e7od98rh-dm2123.vercel.app/courses/aptitude-foundation-free" class="btn btn-accent">Enroll Now →</a>
+</div>
+<div class="pimg"><img src="images/hero-student.png" alt="Free Aptitude Course"></div>
+</div>
+</div>
+<!-- Slide 2: Batches Coming Soon -->
+<div class="promo-slide" style="background:linear-gradient(120deg,#2e1065,#6d28d9)">
+<div class="wrap" style="display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;width:100%">
+<div class="pcontent">
+<span class="promo-tag" style="background:rgba(255,255,255,.2);color:#fff">🚀 COMING SOON</span>
+<h2>SSC • Railway • Banking<br><span class="hl">Batches Jald Aa Rahe!</span></h2>
+<p>Live classes, mock tests, doubt solving — sab kuch ek hi batch me. Notify pane ke liye register karo.</p>
+<a href="courses.html" class="btn btn-accent">Notify Me →</a>
+</div>
+<div class="pimg"><div style="font-size:100px">📚</div></div>
+</div>
+</div>
+<!-- Slide 3: Scholarship -->
+<div class="promo-slide" style="background:linear-gradient(120deg,#7c2d12,#d97706)">
+<div class="wrap" style="display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;width:100%">
+<div class="pcontent">
+<span class="promo-tag" style="background:#fff;color:#7c2d12">🎁 SCHOLARSHIP TEST</span>
+<h2>Apni Talent Par<br><span class="hl">Fee Discount Pao!</span></h2>
+<p>Scholarship test do aur selected courses par fee discount pao. Tumhari mehnat, hamara saath.</p>
+<a href="scholarship.html" class="btn" style="background:#fff;color:#7c2d12">Register Now →</a>
+</div>
+<div class="pimg"><div style="font-size:100px">🎓</div></div>
+</div>
+</div>
+</div>
+<button class="promo-arrow prev" onclick="promoMove(-1)">‹</button>
+<button class="promo-arrow next" onclick="promoMove(1)">›</button>
+</div>
+<div class="promo-dots" id="promoDots">
+<button class="active" onclick="promoGo(0)"></button>
+<button onclick="promoGo(1)"></button>
+<button onclick="promoGo(2)"></button>
+</div>
+<script>
+var promoIdx=0,promoTotal=3,promoTimer;
+function promoGo(i){promoIdx=(i+promoTotal)%promoTotal;document.getElementById('promoTrack').style.transform='translateX(-'+(promoIdx*100)+'%)';var d=document.getElementById('promoDots').children;for(var j=0;j<d.length;j++)d[j].className=j===promoIdx?'active':'';promoReset();}
+function promoMove(d){promoGo(promoIdx+d);}
+function promoReset(){clearInterval(promoTimer);promoTimer=setInterval(function(){promoGo(promoIdx+1);},5000);}
+promoReset();
+</script>
 
 <!-- HERO -->
 <div class="hero">
