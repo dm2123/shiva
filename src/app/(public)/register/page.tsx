@@ -19,7 +19,11 @@ declare global {
 
 export default function StudentRegisterPage() {
   const [step, setStep] = useState<1 | 2>(1);
+  const [method, setMethod] = useState<'email' | 'phone'>('email');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [otpSessionId, setOtpSessionId] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [fullName, setFullName] = useState('');
@@ -58,8 +62,10 @@ export default function StudentRegisterPage() {
     document.head.appendChild(script);
 
     return () => {
-      document.head.removeChild(script);
+      const s = document.head.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+      if (s) document.head.removeChild(s);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleGoogleResponse = async (response: any) => {
@@ -86,6 +92,26 @@ export default function StudentRegisterPage() {
     }
   };
 
+  const handleEmailRegister = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await fetch('/api/public/auth/register/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName, email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error?.message || 'Registration failed.');
+      window.location.href = '/app';
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSendOtp = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -97,9 +123,9 @@ export default function StudentRegisterPage() {
         body: JSON.stringify({ phone }),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) throw new Error(data.error?.message || 'Failed to send OTP.');
+      if (!res.ok || !data.success) throw new Error(data.error?.message || 'OTP bhejne me dikkat hui.');
       setOtpSessionId(data.data.sessionId);
-      setInfoMsg('OTP sent to your phone.');
+      setInfoMsg(`OTP bhej diya gaya hai ${phone} par.`);
       setStep(2);
     } catch (err: any) {
       setError(err.message);
@@ -128,129 +154,368 @@ export default function StudentRegisterPage() {
     }
   };
 
-  const inputClass = "w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:border-[#c8a96e]/50 focus:ring-1 focus:ring-[#c8a96e]/30 transition";
-  const labelClass = "block text-[10px] font-bold text-[#c8a96e] uppercase tracking-widest mb-1.5";
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    padding: '13px 16px',
+    border: '2px solid var(--line)',
+    borderRadius: 12,
+    fontSize: 15,
+    transition: '.2s',
+  };
+  const labelStyle: React.CSSProperties = {
+    display: 'block',
+    fontSize: 13,
+    fontWeight: 700,
+    color: 'var(--brand-dark)',
+    marginBottom: 6,
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f] px-4 py-8">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#c8a96e]/10 rounded-full blur-3xl" />
-      </div>
+    <div className="shiva-landing">
+      <div
+        style={{
+          minHeight: 'calc(100vh - 66px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '40px 20px',
+          background: 'linear-gradient(135deg,#faf9ff 0%,#f5f3ff 50%,#ede9fe 100%)',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            top: -80,
+            left: -80,
+            width: 320,
+            height: 320,
+            borderRadius: '50%',
+            background: 'rgba(109,40,217,.08)',
+            filter: 'blur(40px)',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: -100,
+            right: -60,
+            width: 280,
+            height: 280,
+            borderRadius: '50%',
+            background: 'rgba(245,158,11,.1)',
+            filter: 'blur(40px)',
+          }}
+        />
 
-      <div className="relative w-full max-w-sm">
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
-          {/* Logo */}
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 rounded-full border-2 border-[#c8a96e]/40 overflow-hidden bg-black/30 flex items-center justify-center shadow-lg shadow-[#c8a96e]/20">
-              <Image src="/assets/logo.jpeg" alt="THE SHIVA" width={60} height={60} className="object-contain w-full h-full rounded-full" priority />
+        <div style={{ position: 'relative', width: '100%', maxWidth: 440 }}>
+          <div
+            className="pop"
+            style={{
+              background: '#fff',
+              border: '2px solid var(--line)',
+              borderRadius: 24,
+              padding: '36px 32px',
+              boxShadow: '0 24px 60px rgba(109,40,217,.12)',
+            }}
+          >
+            {/* Logo */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+              <div
+                style={{
+                  width: 72,
+                  height: 72,
+                  borderRadius: 20,
+                  overflow: 'hidden',
+                  boxShadow: '0 8px 24px rgba(109,40,217,.2)',
+                  border: '3px solid var(--line)',
+                }}
+              >
+                <Image src="/assets/logo.jpeg" alt="THE SHIVA" width={72} height={72} className="object-cover w-full h-full" priority />
+              </div>
             </div>
-          </div>
 
-          <h2 className="text-2xl font-black mb-1 text-center text-white">Join THE SHIVA</h2>
-          <p className="text-xs text-center text-slate-400 mb-6">Free Student Registration</p>
+            <h2 style={{ fontSize: 26, fontWeight: 900, textAlign: 'center', color: 'var(--brand-dark)', marginBottom: 6 }}>
+              Join THE SHIVA 🎓
+            </h2>
+            <p style={{ fontSize: 14, textAlign: 'center', color: 'var(--muted)', marginBottom: 20 }}>
+              Free student registration — 2 minute me shuru karo
+            </p>
 
-          {/* Step indicator */}
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <div className={`w-2 h-2 rounded-full transition ${step === 1 ? 'bg-[#c8a96e]' : 'bg-[#c8a96e]/40'}`} />
-            <div className="w-8 h-px bg-white/10" />
-            <div className={`w-2 h-2 rounded-full transition ${step === 2 ? 'bg-[#c8a96e]' : 'bg-white/20'}`} />
-          </div>
-
-          {error && (
-            <div className="mb-4 p-3.5 bg-red-500/10 text-red-400 text-xs rounded-xl border border-red-500/20 font-medium">{error}</div>
-          )}
-          {infoMsg && (
-            <div className="mb-4 p-3.5 bg-[#c8a96e]/10 text-[#c8a96e] text-xs rounded-xl border border-[#c8a96e]/20 font-medium">{infoMsg}</div>
-          )}
-
-          {/* Google Sign-Up */}
-          {step === 1 && (
-            <>
-              <div className="mb-6">
-                <div ref={googleBtnRef} className="w-full flex justify-center [&>div]:w-full [&>div>div]:w-full"></div>
-                {googleLoading && (
-                  <div className="mt-2 text-center text-xs text-slate-400 animate-pulse">Creating account with Google...</div>
-                )}
+            {/* Step indicator */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 20 }}>
+              <div
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 999,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  background: step === 1 ? 'var(--brand)' : '#ede9fe',
+                  color: step === 1 ? '#fff' : 'var(--brand-dark)',
+                }}
+              >
+                1. Mobile
               </div>
-
-              <div className="flex items-center gap-4 mb-6">
-                <div className="flex-1 h-px bg-white/10"></div>
-                <span className="text-xs text-slate-500 font-medium">OR</span>
-                <div className="flex-1 h-px bg-white/10"></div>
+              <div style={{ width: 24, height: 2, background: 'var(--line)' }} />
+              <div
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 999,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  background: step === 2 ? 'var(--brand)' : '#ede9fe',
+                  color: step === 2 ? '#fff' : 'var(--brand-dark)',
+                }}
+              >
+                2. Verify
               </div>
-            </>
-          )}
+            </div>
 
-          {step === 1 ? (
-            <form onSubmit={handleSendOtp} className="space-y-4">
-              <div>
-                <label className={labelClass}>Mobile Number</label>
-                <div className="flex gap-2">
-                  <span className="px-3 py-3 bg-white/5 border border-white/10 rounded-xl text-xs font-bold text-[#c8a96e] flex items-center">+91</span>
+            {error && <div className="form-err show">{error}</div>}
+            {infoMsg && (
+              <div
+                style={{
+                  background: '#dcfce7',
+                  border: '1px solid #86efac',
+                  borderRadius: 12,
+                  padding: 12,
+                  fontSize: 14,
+                  color: '#166534',
+                  marginBottom: 12,
+                }}
+              >
+                ✅ {infoMsg}
+              </div>
+            )}
+
+            {/* Google Sign-Up */}
+            {step === 1 && (
+              <>
+                <div style={{ marginBottom: 20 }}>
+                  <div ref={googleBtnRef} style={{ width: '100%', display: 'flex', justifyContent: 'center' }} />
+                  {googleLoading && (
+                    <div style={{ marginTop: 8, textAlign: 'center', fontSize: 13, color: 'var(--muted)' }} className="animate-pulse">
+                      Google se account ban raha hai...
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+                  <div style={{ flex: 1, height: 1, background: 'var(--line)' }} />
+                  <span style={{ fontSize: 12, color: 'var(--muted)', fontWeight: 600 }}>YA</span>
+                  <div style={{ flex: 1, height: 1, background: 'var(--line)' }} />
+                </div>
+              </>
+            )}
+
+            {/* Method toggle: Email / Phone */}
+            <div style={{ display: 'flex', gap: 8, marginBottom: 20, background: '#f5f3ff', borderRadius: 12, padding: 4 }}>
+              <button
+                type="button"
+                onClick={() => { setMethod('email'); setError(null); setStep(1); }}
+                style={{
+                  flex: 1, padding: '10px', borderRadius: 8, border: 'none', fontWeight: 700, fontSize: 14,
+                  background: method === 'email' ? '#fff' : 'transparent',
+                  color: method === 'email' ? 'var(--brand-dark)' : 'var(--muted)',
+                  boxShadow: method === 'email' ? '0 2px 8px rgba(0,0,0,.08)' : 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                📧 Email
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMethod('phone'); setError(null); setStep(1); }}
+                style={{
+                  flex: 1, padding: '10px', borderRadius: 8, border: 'none', fontWeight: 700, fontSize: 14,
+                  background: method === 'phone' ? '#fff' : 'transparent',
+                  color: method === 'phone' ? 'var(--brand-dark)' : 'var(--muted)',
+                  boxShadow: method === 'phone' ? '0 2px 8px rgba(0,0,0,.08)' : 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                📱 Phone (OTP)
+              </button>
+            </div>
+
+            {method === 'email' ? (
+              <form onSubmit={handleEmailRegister}>
+                <div style={{ marginBottom: 16 }}>
+                  <label style={labelStyle}>Full Name</label>
                   <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
                     required
-                    placeholder="9876543210"
-                    className={inputClass}
+                    placeholder="Tumhara poora naam"
+                    maxLength={60}
+                    style={inputStyle}
+                    onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
+                    onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
                   />
                 </div>
-                <p className="text-[10px] text-slate-500 mt-1.5">A 6-digit OTP will be sent for verification.</p>
-              </div>
-              <button
-                type="submit"
-                disabled={loading || !phone}
-                className="w-full py-3 bg-[#c8a96e] hover:bg-[#e8d5a3] text-black rounded-xl font-black text-sm shadow-lg shadow-[#c8a96e]/20 transition disabled:opacity-50"
-              >
-                {loading ? 'Sending OTP...' : 'Send OTP'}
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={handleCompleteRegister} className="space-y-4">
-              <div>
-                <label className={labelClass}>OTP Code</label>
-                <input
-                  type="text"
-                  maxLength={6}
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                  required
-                  placeholder="------"
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-lg text-white placeholder-slate-700 text-center tracking-[0.5em] font-mono font-bold focus:outline-none focus:border-[#c8a96e]/50 focus:ring-1 focus:ring-[#c8a96e]/30 transition"
-                />
-              </div>
-              <div>
-                <label className={labelClass}>Full Name</label>
-                <input
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  required
-                  placeholder="Your full name"
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex gap-3 pt-1">
-                <button type="button" onClick={() => setStep(1)} className="w-1/3 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 rounded-xl font-bold text-xs transition">
-                  Back
-                </button>
+                <div style={{ marginBottom: 16 }}>
+                  <label style={labelStyle}>Email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="you@example.com"
+                    style={inputStyle}
+                    onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
+                    onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
+                  />
+                </div>
+                <div style={{ marginBottom: 20 }}>
+                  <label style={labelStyle}>Password</label>
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      minLength={6}
+                      placeholder="Kam se kam 6 characters"
+                      style={{ ...inputStyle, paddingRight: 48 }}
+                      onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
+                      onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', fontSize: 18, cursor: 'pointer' }}
+                    >
+                      {showPassword ? '🙈' : '👁️'}
+                    </button>
+                  </div>
+                </div>
                 <button
                   type="submit"
-                  disabled={loading || otpCode.length !== 6 || !fullName}
-                  className="w-2/3 py-3 bg-[#c8a96e] hover:bg-[#e8d5a3] text-black rounded-xl font-black text-sm shadow-lg shadow-[#c8a96e]/20 transition disabled:opacity-50"
+                  disabled={loading || !fullName.trim() || !email.includes('@') || password.length < 6}
+                  className="btn btn-primary"
+                  style={{ width: '100%', padding: '14px', fontSize: 16, opacity: loading || !fullName.trim() || !email.includes('@') || password.length < 6 ? 0.5 : 1 }}
                 >
-                  {loading ? 'Registering...' : 'Register'}
+                  {loading ? '⏳ Register ho raha hai...' : 'Register →'}
                 </button>
-              </div>
-            </form>
-          )}
+              </form>
+            ) : step === 1 ? (
+              <form onSubmit={handleSendOtp}>
+                <div style={{ marginBottom: 16 }}>
+                  <label style={labelStyle}>Mobile Number</label>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <span
+                      style={{
+                        padding: '13px 14px',
+                        border: '2px solid var(--line)',
+                        borderRadius: 12,
+                        fontSize: 15,
+                        fontWeight: 700,
+                        color: 'var(--brand-dark)',
+                        background: '#faf9ff',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      +91
+                    </span>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                      required
+                      placeholder="9876543210"
+                      pattern="[0-9]{10}"
+                      style={{ ...inputStyle, flex: 1 }}
+                      onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
+                      onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
+                    />
+                  </div>
+                  <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6 }}>
+                    📲 6-digit OTP bheja jayega verification ke liye
+                  </p>
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading || phone.length !== 10}
+                  className="btn btn-primary"
+                  style={{ width: '100%', padding: '14px', fontSize: 16, opacity: loading || phone.length !== 10 ? 0.5 : 1 }}
+                >
+                  {loading ? '⏳ OTP bheja ja raha hai...' : 'Send OTP →'}
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleCompleteRegister}>
+                <div style={{ marginBottom: 16 }}>
+                  <label style={labelStyle}>OTP Code</label>
+                  <input
+                    type="text"
+                    maxLength={6}
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                    required
+                    placeholder="••••••"
+                    style={{
+                      ...inputStyle,
+                      textAlign: 'center',
+                      letterSpacing: '0.4em',
+                      fontSize: 20,
+                      fontWeight: 800,
+                      fontFamily: 'monospace',
+                    }}
+                    onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
+                    onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
+                  />
+                </div>
+                <div style={{ marginBottom: 20 }}>
+                  <label style={labelStyle}>Full Name</label>
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    required
+                    placeholder="Tumhara poora naam"
+                    maxLength={60}
+                    style={inputStyle}
+                    onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
+                    onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
+                  />
+                </div>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <button
+                    type="button"
+                    onClick={() => { setStep(1); setError(null); }}
+                    className="btn btn-ghost"
+                    style={{ flex: '0 0 100px' }}
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading || otpCode.length !== 6 || !fullName.trim()}
+                    className="btn btn-primary"
+                    style={{
+                      flex: 1,
+                      padding: '14px',
+                      fontSize: 16,
+                      opacity: loading || otpCode.length !== 6 || !fullName.trim() ? 0.5 : 1,
+                    }}
+                  >
+                    {loading ? '⏳ Register ho raha hai...' : 'Register →'}
+                  </button>
+                </div>
+              </form>
+            )}
 
-          <div className="mt-6 pt-5 border-t border-white/10 text-center">
-            <p className="text-xs text-slate-500">
-              Already have an account?{' '}
-              <Link href="/login" className="font-bold text-[#c8a96e] hover:text-[#e8d5a3] transition">Sign In</Link>
-            </p>
+            <div style={{ marginTop: 24, paddingTop: 20, borderTop: '2px solid var(--line)', textAlign: 'center' }}>
+              <p style={{ fontSize: 14, color: 'var(--muted)' }}>
+                Pehle se account hai?{' '}
+                <Link href="/login" style={{ fontWeight: 800, color: 'var(--brand)' }}>
+                  Login karo
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>
