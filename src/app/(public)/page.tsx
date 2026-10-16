@@ -1,14 +1,12 @@
-import ShivaPromoCarousel from '@/components/public/ShivaPromoCarousel';
-import ShivaHero from '@/components/public/ShivaHero';
-import ShivaMarquee from '@/components/public/ShivaMarquee';
-import ShivaExamCategories from '@/components/public/ShivaExamCategories';
+import PWStyleHero from '@/components/public/PWStyleHero';
+import PWStyleTrust from '@/components/public/PWStyleTrust';
+import PWStyleCategories from '@/components/public/PWStyleCategories';
 import ShivaBatches from '@/components/public/ShivaBatches';
 import ShivaFeatures from '@/components/public/ShivaFeatures';
 import ShivaFreeMaterial from '@/components/public/ShivaFreeMaterial';
 import ShivaFaculty from '@/components/public/ShivaFaculty';
 import ShivaResults from '@/components/public/ShivaResults';
 import ShivaScholarship from '@/components/public/ShivaScholarship';
-import ShivaCounselStrip from '@/components/public/ShivaCounselStrip';
 import ShivaTestimonials from '@/components/public/ShivaTestimonials';
 import ShivaFaq from '@/components/public/ShivaFaq';
 import ShivaAppDownload from '@/components/public/ShivaAppDownload';
@@ -25,17 +23,15 @@ export const metadata = {
 export default async function HomePage() {
   return (
     <HomePageClient>
-      <ShivaPromoCarousel />
-      <ShivaHero />
-      <ShivaMarquee />
-      <ShivaExamCategories />
+      <PWStyleHero />
+      <PWStyleTrust />
+      <PWStyleCategories />
       <ShivaBatches />
       <ShivaFeatures />
       <ShivaFreeMaterial />
       <ShivaFaculty />
       <ShivaResults />
       <ShivaScholarship />
-      <ShivaCounselStrip />
       <ShivaTestimonials />
       <ShivaFaq />
       <ShivaAppDownload />
