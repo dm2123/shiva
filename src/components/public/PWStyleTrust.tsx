@@ -16,7 +16,7 @@ export default function PWStyleTrust() {
           href="/register"
           className="inline-block bg-purple-700 hover:bg-purple-800 text-white font-bold text-base px-8 py-4 rounded-xl w-full md:w-auto transition"
         >
-          Get Started — It's Free
+          Get Started — It&apos;s Free
         </Link>
 
         {/* Stats */}
