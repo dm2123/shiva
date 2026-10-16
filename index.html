@@ -269,6 +269,49 @@ body{padding-bottom:66px}
 .counsellor-popup input{width:100%;padding:12px 14px;border:2px solid #ede9fe;border-radius:10px;font-size:14px;margin-bottom:12px;outline:none}
 .counsellor-popup input:focus{border-color:var(--purple)}
 .counsellor-popup .cp-close{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.2);color:#fff;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px}
+
+/* SELECT YOUR GOAL */
+.goal-section{text-align:center;padding:56px 0 32px}
+.goal-section h2{font-size:32px;font-weight:800;margin-bottom:8px}
+.goal-section h2 .hl{color:var(--accent)}
+.goal-grid{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:28px}
+.goal-card{width:130px;padding:24px 12px;background:#fff;border-radius:18px;box-shadow:0 4px 16px rgba(0,0,0,.06);cursor:pointer;transition:all .25s;border:2px solid transparent;text-align:center}
+.goal-card:hover{transform:translateY(-4px)}
+.goal-card.active{border-color:var(--accent);box-shadow:0 8px 28px rgba(245,158,11,.25)}
+.goal-card .gicon{font-size:42px;margin-bottom:10px}
+.goal-card h4{font-size:15px;font-weight:700}
+.goal-card p{font-size:11px;color:var(--muted)}
+
+/* LIVE BATCHES CAROUSEL */
+.batches-section{padding:32px 0 56px}
+.batches-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.batches-head h2{font-size:28px;font-weight:800}
+.batches-head p{color:var(--muted);font-size:14px}
+.batch-carousel{display:flex;gap:20px;overflow-x:auto;padding:8px 4px 20px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.batch-carousel::-webkit-scrollbar{height:8px}
+.batch-carousel::-webkit-scrollbar-track{background:#f0edff;border-radius:99px}
+.batch-carousel::-webkit-scrollbar-thumb{background:var(--purple);border-radius:99px}
+.batch-card{min-width:300px;max-width:300px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.1);scroll-snap-align:start}
+.batch-top{padding:24px 20px;color:#fff;position:relative}
+.batch-top .btag{display:inline-block;font-size:11px;font-weight:800;padding:5px 12px;border-radius:99px;background:rgba(255,255,255,.25);margin-bottom:10px}
+.batch-top h3{font-size:20px;font-weight:800;line-height:1.3}
+.batch-top p{font-size:13px;opacity:.85}
+.batch-body{padding:20px}
+.batch-features{list-style:none;margin-bottom:16px}
+.batch-features li{font-size:13.5px;color:#4b5563;padding:6px 0;display:flex;align-items:center;gap:8px}
+.batch-features li::before{content:"✓";color:#059669;font-weight:800}
+.batch-price{font-size:24px;font-weight:800;color:#059669;margin-bottom:14px}
+.batch-nav{display:flex;gap:10px}
+.batch-nav button{width:44px;height:44px;border-radius:50%;border:2px solid #e0e7ff;background:#fff;color:var(--purple);font-size:20px;cursor:pointer}
+.batch-nav button:hover{background:var(--purple);color:#fff}
+
+/* SHIV-SAT BANNER */
+.shivsat{background:linear-gradient(120deg,#1e1b2e,#4c1d95);border-radius:20px;padding:32px;color:#fff;display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin:0 0 40px}
+.shivsat .sat-badge{width:80px;height:80px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#1e1b2e;flex-shrink:0}
+.shivsat h3{font-size:22px;margin-bottom:6px}
+.shivsat h3 .hl{color:var(--accent)}
+.shivsat p{font-size:14px;opacity:.8;max-width:480px}
+@media(max-width:768px){.goal-card{width:calc(33% - 12px)}.batch-card{min-width:270px;max-width:270px}}
 </style>
 </head>
 <body>
@@ -410,6 +453,83 @@ promoReset();
 <a href="courses.html" class="cat"><div class="icon" style="background:#dcfce7">🛡️</div><h3>Defence</h3><p>NDA | CDS | AFCAT</p><span class="arrow">→</span></a>
 <a href="courses.html" class="cat"><div class="icon" style="background:#ede9fe">👩‍🏫</div><h3>Teaching</h3><p>TET | CTET | Others</p><span class="arrow">→</span></a>
 </div></div>
+
+
+<!-- SELECT YOUR GOAL -->
+<div class="goal-section">
+<div class="wrap">
+<h2>Select Your <span class="hl">Goal</span></h2>
+<p style="color:var(--muted)">Apna exam chuno aur sahi batch pao</p>
+<div class="goal-grid">
+<div class="goal-card active" onclick="selectGoal(this,'SSC')"><div class="gicon">🏛️</div><h4>SSC</h4><p>CGL • CHSL • MTS</p></div>
+<div class="goal-card" onclick="selectGoal(this,'Railway')"><div class="gicon">🚂</div><h4>Railway</h4><p>NTPC • Group D</p></div>
+<div class="goal-card" onclick="selectGoal(this,'Banking')"><div class="gicon">🏦</div><h4>Banking</h4><p>PO • Clerk</p></div>
+<div class="goal-card" onclick="selectGoal(this,'Defence')"><div class="gicon">🛡️</div><h4>Defence</h4><p>NDA • CDS • AFCAT</p></div>
+<div class="goal-card" onclick="selectGoal(this,'Teaching')"><div class="gicon">👩‍🏫</div><h4>Teaching</h4><p>CTET • TET</p></div>
+</div>
+</div>
+</div>
+
+<!-- LIVE & UPCOMING BATCHES -->
+<div class="batches-section">
+<div class="wrap">
+<div class="batches-head">
+<div><h2>Live & Upcoming Batches</h2><p>Interactive live batches — apne goal ke hisaab se chuno</p></div>
+<div class="batch-nav"><button onclick="scrollBatches(-1)">‹</button><button onclick="scrollBatches(1)">›</button></div>
+</div>
+<div class="batch-carousel" id="batchCarousel">
+<div class="batch-card">
+<div class="batch-top" style="background:linear-gradient(135deg,#059669,#10b981)"><span class="btag">🎯 100% FREE</span><h3>Aptitude Foundation</h3><p>Complete Free Course</p></div>
+<div class="batch-body">
+<ul class="batch-features"><li>Video Lectures</li><li>Practice Questions</li><li>Doubt Support</li><li>Certificate</li></ul>
+<div class="batch-price">FREE</div>
+<a href="https://the-shiva-3e7od98rh-dm2123.vercel.app/courses/aptitude-foundation-free" class="btn btn-accent" style="width:100%">Enroll Now</a>
+</div>
+</div>
+<div class="batch-card">
+<div class="batch-top" style="background:linear-gradient(135deg,#6d28d9,#8b5cf6)"><span class="btag">🚀 COMING SOON</span><h3>SSC CGL Ranker Batch</h3><p>Complete Preparation</p></div>
+<div class="batch-body">
+<ul class="batch-features"><li>Live Interactive Classes</li><li>Mock Tests</li><li>Study Material</li><li>Doubt Solving</li></ul>
+<div class="batch-price" style="color:var(--muted);font-size:16px">Launching Soon</div>
+<a href="courses.html" class="btn btn-outline" style="width:100%;border:2px solid var(--purple);color:var(--purple)">Notify Me</a>
+</div>
+</div>
+<div class="batch-card">
+<div class="batch-top" style="background:linear-gradient(135deg,#d97706,#f59e0b)"><span class="btag">🚀 COMING SOON</span><h3>Railway Express Batch</h3><p>NTPC + Group D</p></div>
+<div class="batch-body">
+<ul class="batch-features"><li>Live Interactive Classes</li><li>Mock Tests</li><li>Study Material</li><li>Doubt Solving</li></ul>
+<div class="batch-price" style="color:var(--muted);font-size:16px">Launching Soon</div>
+<a href="courses.html" class="btn btn-outline" style="width:100%;border:2px solid var(--purple);color:var(--purple)">Notify Me</a>
+</div>
+</div>
+<div class="batch-card">
+<div class="batch-top" style="background:linear-gradient(135deg,#0891b2,#06b6d4)"><span class="btag">🚀 COMING SOON</span><h3>Banking Achiever Batch</h3><p>PO + Clerk</p></div>
+<div class="batch-body">
+<ul class="batch-features"><li>Live Interactive Classes</li><li>Mock Tests</li><li>Study Material</li><li>Doubt Solving</li></ul>
+<div class="batch-price" style="color:var(--muted);font-size:16px">Launching Soon</div>
+<a href="courses.html" class="btn btn-outline" style="width:100%;border:2px solid var(--purple);color:var(--purple)">Notify Me</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SHIV-SAT BANNER -->
+<div class="wrap">
+<div class="shivsat">
+<div class="sat-badge">SAT</div>
+<div style="flex:1;min-width:200px">
+<h3>SHIV-SAT <span class="hl">(Scholarship cum Admission Test)</span></h3>
+<p>Apni taiyaari test karo aur scholarship pao — deserving students ke liye fee discount!</p>
+</div>
+<a href="scholarship.html" class="btn btn-accent">Register Now →</a>
+</div>
+</div>
+
+<script>
+function selectGoal(el,goal){document.querySelectorAll('.goal-card').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
+function scrollBatches(dir){document.getElementById('batchCarousel').scrollBy({left:dir*320,behavior:'smooth'});}
+</script>
 
 <!-- WHY SHIVA -->
 <div class="section">
