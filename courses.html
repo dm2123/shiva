@@ -228,22 +228,21 @@
   .mobile-menu.open{display:block}
   .mobile-menu a{display:block;padding:12px 0;font-weight:600;border-bottom:1px solid #f3f4f6}
 </style>
-<header>
-  <div class="wrap nav">
-    <div class="nav-left">
-      <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">☰</button>
-      <a class="logo" href="index.html"><img src="logo.jpeg" alt="THE SHIVA logo"> THE SHIVA</a>
-    </div>
-    <nav class="nav-links">
-      <a href="courses.html">Courses</a>
-      <a href="batches.html">Batches</a>
-      <a href="faculty.html">Faculty</a>
-      <a href="results.html">Results</a>
-      <a href="scholarship.html">Scholarship</a>
-    </nav>
-    <a class="btn-login" href="https://the-shiva-3e7od98rh-dm2123.vercel.app/login">Login / Register</a>
-  </div>
-</header>
+<header style="background:#fff;position:sticky;top:0;z-index:100;border-bottom:1px solid #f0f0f0;box-shadow:0 2px 8px rgba(0,0,0,.05)">
+<div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:12px 20px">
+<div style="display:flex;align-items:center;gap:12px">
+<a href="index.html" style="font-size:24px;text-decoration:none">☰</a>
+<a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#1e1b2e;font-weight:900;font-size:18px">
+<span style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#4c1d95);display:flex;align-items:center;justify-content:center;font-size:20px">🔱</span>THE SHIVA</a>
+</div>
+<nav style="display:flex;gap:20px;font-size:14px;font-weight:600">
+<a href="index.html" style="color:#4b5563;text-decoration:none">Home</a>
+<a href="courses.html" style="color:#4b5563;text-decoration:none">Courses</a>
+<a href="batches.html" style="color:#4b5563;text-decoration:none">Batches</a>
+<a href="scholarship.html" style="color:#4b5563;text-decoration:none">Scholarship</a>
+</nav>
+<a href="https://the-shiva-3e7od98rh-dm2123.vercel.app/login" style="background:#1e1b2e;color:#fff;padding:10px 24px;border-radius:10px;font-weight:700;font-size:14px;text-decoration:none">Login</a>
+</div></header>
 
 <div class="mobile-menu" id="mmenu">
   <a href="courses.html">Courses</a>
@@ -288,26 +287,20 @@
   </div>
 </div>
 
-<footer style="background:#1e1b2e;color:#fff;padding:40px 20px;margin-top:40px">
-  <div class="wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:1140px;margin:0 auto">
-    <div>
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-        <img src="logo.jpeg" alt="THE SHIVA" style="width:36px;height:36px;border-radius:8px">
-        <b style="font-size:18px">THE SHIVA</b>
-      </div>
-      <p style="font-size:14px;opacity:.7">Bharat ka affordable learning platform — SSC, Railway, Banking, Defence aur Teaching exams ki taiyaari.</p>
-    </div>
-    <div>
-      <b style="font-size:15px">Quick Links</b>
-      <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;font-size:14px;opacity:.8">
-        <a href="courses.html">Courses</a>
-        <a href="batches.html">Batches</a>
-        <a href="faculty.html">Faculty</a>
-        <a href="scholarship.html">Scholarship</a>
-      </div>
-    </div>
-  </div>
-  <p style="text-align:center;font-size:13px;opacity:.5;margin-top:24px">© 2026 THE SHIVA. Made with ❤️ in India.</p>
-</footer>
+<footer style="background:#1e1b2e;color:#8b87b0;padding:40px 20px;text-align:center;margin-top:48px">
+<div style="max-width:1200px;margin:0 auto">
+<div style="font-size:28px;margin-bottom:8px">🔱</div>
+<div style="color:#fff;font-weight:900;font-size:18px;margin-bottom:4px">THE SHIVA</div>
+<p style="font-size:14px;margin-bottom:16px">Dream • Prepare • Achieve</p>
+<div style="display:flex;justify-content:center;gap:20px;font-size:14px;margin-bottom:16px;flex-wrap:wrap">
+<a href="index.html" style="color:#8b87b0;text-decoration:none">Home</a>
+<a href="courses.html" style="color:#8b87b0;text-decoration:none">Courses</a>
+<a href="batches.html" style="color:#8b87b0;text-decoration:none">Batches</a>
+<a href="faculty.html" style="color:#8b87b0;text-decoration:none">Faculty</a>
+<a href="results.html" style="color:#8b87b0;text-decoration:none">Results</a>
+<a href="scholarship.html" style="color:#8b87b0;text-decoration:none">Scholarship</a>
+</div>
+<p style="font-size:13px">© 2026 THE SHIVA. All rights reserved.</p>
+</div></footer>
 </body>
 </html>
