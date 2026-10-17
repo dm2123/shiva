@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { safeFetch } from '@/lib/api-client';
+import { safeFetch } from '../../../../lib/api-client';
 
 interface Payment {
   id: string;

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, FormEvent } from 'react';
-import { safeFetch } from '@/lib/api-client';
+import { safeFetch } from '../../../../lib/api-client';
 
 export default function AdminBatchesPage() {
   const [courseId, setCourseId] = useState('');

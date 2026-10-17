@@ -2,7 +2,7 @@
 
 import { useState, useEffect, FormEvent } from 'react';
 import { Course } from '@/types/models';
-import { safeFetch } from '@/lib/api-client';
+import { safeFetch } from '../../../../lib/api-client';
 
 export default function AdminCoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);

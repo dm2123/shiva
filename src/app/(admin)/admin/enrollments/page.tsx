@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { safeFetch } from '@/lib/api-client';
+import { safeFetch } from '../../../../lib/api-client';
 
 export default function AdminEnrollmentsPage() {
   const [enrollments, setEnrollments] = useState<any[]>([]);
