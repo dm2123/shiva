@@ -14,7 +14,8 @@
 <meta name="twitter:description" content="Free courses se shuru karo — SSC, Railway, Banking exam preparation.">
 <meta name="twitter:image" content="https://dm2123.github.io/shiva/images/hero-student.png">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔱</text></svg>">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff;color:#1e1b2e;overflow-x:hidden}
@@ -101,6 +102,16 @@ section,div{scroll-behavior:smooth}
 .pills span{background:#f9fafb}
 /* Section dividers */
 .cats,.pstats{border-top:1px solid #f3f4f6}
+/* MOBILE STICKY CTA BAR (<=900px) — proven funnel pattern: demo/free-course one tap away on mobile */
+.sticky-cta{display:none}
+@media(max-width:900px){
+.sticky-cta{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:150;background:#fff;border-top:1px solid #f0f0f0;box-shadow:0 -4px 20px rgba(0,0,0,.08);padding:10px 12px;gap:10px}
+.sticky-cta a,.sticky-cta button{flex:1;text-align:center;padding:13px 8px;border-radius:10px;font-weight:800;font-size:14px;text-decoration:none;border:none;cursor:pointer;font-family:inherit}
+.sticky-cta .sc-free{background:#f97316;color:#fff}
+.sticky-cta .sc-cb{background:#ede9fe;color:#6d28d9}
+.fab{bottom:84px}
+}
+.stores div{cursor:pointer}
 </style>
 </head>
 <body>
@@ -185,6 +196,10 @@ section,div{scroll-behavior:smooth}
 <div><h3>Defence</h3><div class="pills"><span>NDA</span><span>CDS</span><span>AFCAT</span></div><a href="courses.html" class="explore" style="text-decoration:none">Explore Category</a></div>
 <div class="cat-ill">🛡️</div>
 </div>
+<div class="cat-card" style="border-left:4px solid #ec4899;background:linear-gradient(135deg,#fff,#fdf2f8)">
+<div><h3>Teaching</h3><div class="pills"><span>CTET</span><span>STET</span><span>UPTET</span></div><a href="courses.html" class="explore" style="text-decoration:none">Explore Category</a></div>
+<div class="cat-ill">🎓</div>
+</div>
 </div>
 
 
@@ -204,7 +219,7 @@ section,div{scroll-behavior:smooth}
 <div style="font-size:12px;color:#4b5563;margin-bottom:10px">✓ Video Lectures &nbsp; ✓ Practice Questions &nbsp; ✓ Certificate</div>
 <div style="display:flex;align-items:center;justify-content:space-between">
 <span style="font-size:24px;font-weight:900;color:#059669">FREE</span>
-<button style="background:#f97316;color:#fff;font-weight:800;padding:10px 28px;border-radius:10px;border:none;font-size:14px">Enroll Now</button>
+<a href="https://the-shiva.vercel.app/courses/aptitude-foundation-free" style="background:#f97316;color:#fff;font-weight:800;padding:10px 28px;border-radius:10px;font-size:14px;text-decoration:none;display:inline-block">Enroll Now</a>
 </div>
 </div>
 </div>
@@ -242,7 +257,7 @@ section,div{scroll-behavior:smooth}
 <div class="app-cta">
 <h2>Download THE SHIVA App!</h2>
 <ul><li>Video lectures at your ease</li><li>Track your progress</li><li>Practice questions</li></ul>
-<div class="stores"><div>▶ Google Play</div><div>🍎 App Store</div></div>
+<div class="stores"><div onclick="appSoon(this)">▶ Google Play</div><div onclick="appSoon(this)">🍎 App Store</div></div>
 <img src="images/app-phone.png" style="width:160px;margin:16px auto 0;display:block;border-radius:20px;box-shadow:0 8px 24px rgba(0,0,0,.15)" alt="THE SHIVA App">
 <p style="font-size:13px;color:#6b7280">Coming Soon!</p>
 </div>
@@ -340,6 +355,10 @@ section,div{scroll-behavior:smooth}
 </div>
 </div>
 
+<div class="sticky-cta">
+<a class="sc-free" href="https://the-shiva.vercel.app/courses/aptitude-foundation-free">🚀 Free Course</a>
+<button class="sc-cb" onclick="document.getElementById('cpopup').style.display='block'">🎧 Counsellor</button>
+</div>
 <button class="fab" onclick="document.getElementById('cpopup').style.display='block'">🎧</button>
 <div id="cpopup" style="display:none;position:fixed;bottom:90px;right:16px;width:300px;background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.2);z-index:200;overflow:hidden">
 <div style="background:linear-gradient(135deg,#4c1d95,#7c3aed);color:#fff;padding:16px;position:relative">
@@ -358,6 +377,7 @@ section,div{scroll-behavior:smooth}
 <script>
 function notifyBatch(el){if(el.dataset.done)return;el.dataset.done="1";var d=document.createElement("div");d.style.cssText="font-size:12px;color:#7c3aed;margin-top:8px;font-weight:600";d.innerHTML="⏳ Batch jald launch ho raha hai — tab tak <a href=\"https://the-shiva.vercel.app/courses/aptitude-foundation-free\" style=\"color:#7c3aed;font-weight:700\">free Aptitude course</a> se taiyaari shuru karo!";el.parentNode.appendChild(d);}
 function resSoon(el){if(el.dataset.done)return;el.dataset.done="1";var d=document.createElement("div");d.style.cssText="font-size:12px;color:#1e1b2e;margin-top:10px;font-weight:600";d.textContent="📚 Free material jald aa raha hai — tab tak free Aptitude course try karo!";el.parentNode.appendChild(d);}
+function appSoon(el){var box=el.parentNode;if(box.dataset.done)return;box.dataset.done="1";var d=document.createElement("div");d.style.cssText="font-size:12px;color:#6d28d9;margin:10px 0 0;font-weight:600";d.innerHTML="📱 App jald launch ho raha hai — tab tak <a href=\"https://the-shiva.vercel.app/courses/aptitude-foundation-free\" style=\"color:#6d28d9;font-weight:700\">free Aptitude course</a> se padho!";box.parentNode.insertBefore(d,box.nextSibling);}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){var m=document.getElementById("mmenu"),c=document.getElementById("cpopup");if(m)m.style.display="none";if(c)c.style.display="none";}});
 </script>
 </body>

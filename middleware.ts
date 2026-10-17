@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { parseSessionCookie, validateServerSession } from '@/lib/auth';
+// Edge-safe: '@/lib/auth' pulls in mysql2/next-headers (Node-only) and breaks the build.
+// Use the edge-safe subset instead.
+import { parseSessionCookie, validateServerSession } from '@/lib/auth-edge';
 import { UserRole } from '@/types/auth';
 
 export async function middleware(req: NextRequest) {
