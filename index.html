@@ -325,12 +325,13 @@ section,div{scroll-behavior:smooth}
 <b style="color:#fff;font-size:18px">THE SHIVA</b>
 </div>
 <p style="font-size:13px;margin-bottom:12px">Dream • Prepare • Achieve<br>Bharat ka affordable learning platform</p>
-<div style="display:flex;gap:10px">
-<span style="width:36px;height:36px;border-radius:50%;background:#2d2a4a;display:flex;align-items:center;justify-content:center;font-size:16px">📘</span>
-<span style="width:36px;height:36px;border-radius:50%;background:#2d2a4a;display:flex;align-items:center;justify-content:center;font-size:16px">📸</span>
-<span style="width:36px;height:36px;border-radius:50%;background:#2d2a4a;display:flex;align-items:center;justify-content:center;font-size:16px">🐦</span>
-<span style="width:36px;height:36px;border-radius:50%;background:#2d2a4a;display:flex;align-items:center;justify-content:center;font-size:16px">📺</span>
+<div id="socRow" style="display:flex;gap:10px">
+<span onclick="socSoon(this)" title="Facebook" style="width:36px;height:36px;border-radius:50%;background:#2d2a4a;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer">📘</span>
+<span onclick="socSoon(this)" title="Instagram" style="width:36px;height:36px;border-radius:50%;background:#2d2a4a;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer">📸</span>
+<span onclick="socSoon(this)" title="X" style="width:36px;height:36px;border-radius:50%;background:#2d2a4a;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer">🐦</span>
+<span onclick="socSoon(this)" title="YouTube" style="width:36px;height:36px;border-radius:50%;background:#2d2a4a;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer">📺</span>
 </div>
+<span onclick="document.getElementById('cpopup').style.display='block'" style="display:inline-block;color:#a5b4fc;font-size:13px;font-weight:600;margin-top:12px;cursor:pointer">🎧 Talk to a Counsellor</span>
 </div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
 <div>
@@ -377,6 +378,7 @@ section,div{scroll-behavior:smooth}
 <script>
 function notifyBatch(el){if(el.dataset.done)return;el.dataset.done="1";var d=document.createElement("div");d.style.cssText="font-size:12px;color:#7c3aed;margin-top:8px;font-weight:600";d.innerHTML="⏳ Batch jald launch ho raha hai — tab tak <a href=\"https://the-shiva.vercel.app/courses/aptitude-foundation-free\" style=\"color:#7c3aed;font-weight:700\">free Aptitude course</a> se taiyaari shuru karo!";el.parentNode.appendChild(d);}
 function resSoon(el){if(el.dataset.done)return;el.dataset.done="1";var d=document.createElement("div");d.style.cssText="font-size:12px;color:#1e1b2e;margin-top:10px;font-weight:600";d.textContent="📚 Free material jald aa raha hai — tab tak free Aptitude course try karo!";el.parentNode.appendChild(d);}
+function socSoon(el){var box=document.getElementById('socRow');if(box.dataset.done)return;box.dataset.done="1";var d=document.createElement("div");d.style.cssText="font-size:12px;color:#8b87b0;margin-top:8px;font-weight:600";d.innerHTML="📲 Social pages jald launch honge — tab tak <a href=\"https://the-shiva.vercel.app/courses/aptitude-foundation-free\" style=\"color:#a5b4fc;font-weight:700\">free Aptitude course</a> se jud jao!";box.parentNode.appendChild(d);}
 function appSoon(el){var box=el.parentNode;if(box.dataset.done)return;box.dataset.done="1";var d=document.createElement("div");d.style.cssText="font-size:12px;color:#6d28d9;margin:10px 0 0;font-weight:600";d.innerHTML="📱 App jald launch ho raha hai — tab tak <a href=\"https://the-shiva.vercel.app/courses/aptitude-foundation-free\" style=\"color:#6d28d9;font-weight:700\">free Aptitude course</a> se padho!";box.parentNode.insertBefore(d,box.nextSibling);}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){var m=document.getElementById("mmenu"),c=document.getElementById("cpopup");if(m)m.style.display="none";if(c)c.style.display="none";}});
 </script>
