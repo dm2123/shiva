@@ -38,6 +38,8 @@
   "exclude": [
     "node_modules",
     "app",
-    "teacher-app"
+    "teacher-app",
+    "vitest.config.ts",
+    "tests"
   ]
 }
