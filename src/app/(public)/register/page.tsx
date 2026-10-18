@@ -18,6 +18,10 @@ declare global {
 }
 
 export default function StudentRegisterPage() {
+  // Must match server Zod policy in src/services/auth.service.ts (studentRegisterSchema)
+  const isPasswordValid = (pw: string) =>
+    pw.length >= 8 && /[A-Z]/.test(pw) && /[a-z]/.test(pw) && /[0-9]/.test(pw);
+
   const [step, setStep] = useState<1 | 2>(1);
   const [method, setMethod] = useState<'email' | 'phone'>('email');
   const [phone, setPhone] = useState('');
@@ -210,6 +214,22 @@ export default function StudentRegisterPage() {
         />
 
         <div style={{ position: 'relative', width: '100%', maxWidth: 440 }}>
+          {/* Back to marketing site */}
+          <a
+            href="https://dm2123.github.io/shiva/"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              marginBottom: 16,
+              fontSize: 14,
+              fontWeight: 600,
+              color: 'var(--brand)',
+              textDecoration: 'none',
+            }}
+          >
+            ← Back
+          </a>
           <div
             className="pop"
             style={{
@@ -317,8 +337,8 @@ export default function StudentRegisterPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      minLength={6}
-                      placeholder="Kam se kam 6 characters"
+                      minLength={8}
+                      placeholder="8+ characters, A-Z, a-z, 0-9"
                       style={{ ...inputStyle, paddingRight: 48 }}
                       onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
                       onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
@@ -331,12 +351,15 @@ export default function StudentRegisterPage() {
                       {showPassword ? '🙈' : '👁️'}
                     </button>
                   </div>
+                  <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6 }}>
+                    Kam se kam 8 characters, ek bada akshar (A-Z), ek chhota akshar (a-z) aur ek number (0-9)
+                  </p>
                 </div>
                 <button
                   type="submit"
-                  disabled={loading || !fullName.trim() || !email.includes('@') || password.length < 6}
+                  disabled={loading || !fullName.trim() || !email.includes('@') || !isPasswordValid(password)}
                   className="btn btn-primary"
-                  style={{ width: '100%', padding: '14px', fontSize: 16, opacity: loading || !fullName.trim() || !email.includes('@') || password.length < 6 ? 0.5 : 1 }}
+                  style={{ width: '100%', padding: '14px', fontSize: 16, opacity: loading || !fullName.trim() || !email.includes('@') || !isPasswordValid(password) ? 0.5 : 1 }}
                 >
                   {loading ? '⏳ Register ho raha hai...' : 'Register →'}
                 </button>
