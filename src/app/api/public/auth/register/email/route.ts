@@ -36,10 +36,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Zod validation errors
+    // Zod validation errors — return the actual validation message
+    if (error.name === 'ZodError' || msg.includes('Invalid email') || msg.includes('Password must') || msg.includes('Full name must')) {
+      const zodMsg = error.issues?.[0]?.message || msg;
+      return NextResponse.json(
+        { success: false, error: { code: 'VALIDATION_ERROR', message: zodMsg } },
+        { status: 400 }
+      );
+    }
+
+    // Server/database errors — don't mask as validation
     return NextResponse.json(
-      { success: false, error: { code: 'VALIDATION_ERROR', message: 'Sahi details bharo. Password kam se kam 6 characters ka ho.' } },
-      { status: 400 }
+      { success: false, error: { code: 'SERVER_ERROR', message: 'Registration me dikkat hui. Thodi der baad try karo.' } },
+      { status: 500 }
     );
   }
 }
