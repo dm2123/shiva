@@ -283,20 +283,52 @@ export default function DppPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--student-text)]">Daily Practice Problems</h1>
-        <p className="text-sm text-[var(--student-text-muted)] mt-1">Sharpen your skills with curated practice sets.</p>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-extrabold text-[var(--student-text)] tracking-tight">Daily Practice Problems</h1>
+          <p className="text-sm text-[var(--student-text-muted)] mt-1">
+            Thodi-thodi roz practice — yahi toppers ka secret hai.
+          </p>
+        </div>
+        <div className="flex-shrink-0 w-11 h-11 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/25">
+          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+        </div>
       </div>
 
       {loading ? (
-        <div className="student-card p-12 text-center">
-          <div className="w-8 h-8 border-2 border-[var(--student-primary)] border-t-transparent rounded-full animate-spin mx-auto" />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="student-card p-6 animate-pulse">
+              <div className="w-10 h-10 rounded-xl bg-[var(--student-surface)]" />
+              <div className="h-4 w-3/4 rounded bg-[var(--student-surface)] mt-4" />
+              <div className="h-3 w-1/2 rounded bg-[var(--student-surface)] mt-2" />
+            </div>
+          ))}
         </div>
       ) : dppSets.length === 0 ? (
-        <div className="student-card p-12 text-center space-y-2">
-          <span className="text-4xl">📋</span>
-          <p className="text-[var(--student-text-muted)]">No DPP sets available for your enrolled courses yet.</p>
+        <div className="student-card p-10 text-center">
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/30 dark:to-purple-900/30 flex items-center justify-center">
+            <svg className="w-8 h-8 text-violet-500" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+          <p className="text-sm font-bold text-[var(--student-text)] mt-4">No practice sets yet</p>
+          <p className="text-xs text-[var(--student-text-muted)] mt-1 max-w-xs mx-auto">
+            Practice sets for your enrolled courses will appear here. Enroll in a course to get started.
+          </p>
+          <a
+            href="/app/courses"
+            className="inline-flex items-center gap-1.5 mt-5 px-5 py-2.5 rounded-xl bg-[var(--student-primary)] text-white text-sm font-semibold hover:opacity-90"
+          >
+            Browse Courses
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -316,8 +348,19 @@ export default function DppPage() {
                 <p className="text-[11px] text-[var(--student-text-faint)] mt-1 uppercase tracking-wider">{dpp.courseTitle}</p>
               </div>
               <div className="flex items-center gap-4 text-[11px] text-[var(--student-text-muted)] border-t border-[var(--student-border-light)] pt-4">
-                <span>{dpp.questionCount} Questions</span>
-                <span>{dpp.attemptsTaken} attempt{dpp.attemptsTaken !== 1 ? 's' : ''}</span>
+                <span className="inline-flex items-center gap-1">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {dpp.questionCount} Questions
+                </span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                  dpp.attemptsTaken > 0
+                    ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300'
+                    : 'bg-violet-50 text-violet-700 dark:bg-violet-900/20 dark:text-violet-300'
+                }`}>
+                  {dpp.attemptsTaken > 0 ? `${dpp.attemptsTaken} attempt${dpp.attemptsTaken !== 1 ? 's' : ''} done` : 'New'}
+                </span>
               </div>
               <div className="flex items-center justify-between text-xs font-bold text-[var(--student-primary)]">
                 Start Practice

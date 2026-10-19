@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { IconAptitude, IconTarget } from './ShivaIcons';
 
 export interface PWBatch {
   id: string;
@@ -14,9 +15,20 @@ export interface PWBatch {
   price: number;            // 0 = Free
   mrp?: number;             // struck-through price
   bannerGradient: string;   // CSS gradient for banner
-  bannerEmoji: string;      // emoji art for banner
+  bannerEmoji: string;      // emoji art for banner (legacy fallback)
+  bannerIcon?: 'aptitude' | 'target';  // custom SHIVA icon key
   kitIncluded?: string;     // e.g. "MISSION KIT INCLUDED"
   ctaText: string;          // "Enroll Now" / "Buy Now"
+}
+
+function BannerArt({ batch }: { batch: PWBatch }) {
+  if (batch.bannerIcon === 'aptitude') {
+    return <IconAptitude size={88} className="text-gray-900/80" />;
+  }
+  if (batch.bannerIcon === 'target') {
+    return <IconTarget size={88} className="text-gray-900/80" />;
+  }
+  return <span className="text-7xl opacity-90">{batch.bannerEmoji}</span>;
 }
 
 function formatINR(n: number): string {
@@ -44,7 +56,9 @@ export default function PWBatchCard({ batch }: { batch: PWBatch }) {
             </span>
           )}
         </div>
-        <span className="absolute right-4 text-7xl opacity-90">{batch.bannerEmoji}</span>
+        <span className="absolute right-4 flex items-center">
+          <BannerArt batch={batch} />
+        </span>
       </div>
 
       {/* Body */}
@@ -100,13 +114,13 @@ export default function PWBatchCard({ batch }: { batch: PWBatch }) {
           </div>
           <div className="flex items-center gap-2">
             <Link
-              href={`/courses/${batch.slug}`}
+              href={`/app/courses/${batch.slug}`}
               className="bg-[#1a1a2e] text-white text-[14px] font-semibold rounded-xl px-6 py-3 hover:bg-black transition"
             >
               {batch.ctaText}
             </Link>
             <Link
-              href={`/courses/${batch.slug}`}
+              href={`/app/courses/${batch.slug}`}
               aria-label="View details"
               className="w-12 h-12 border border-gray-300 rounded-xl flex items-center justify-center hover:bg-gray-50 transition"
             >

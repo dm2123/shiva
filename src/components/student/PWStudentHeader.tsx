@@ -3,14 +3,16 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import PWStudentMenu from './PWStudentMenu';
+import { IconHome, IconSearch, IconBell } from './ShivaIcons';
 
 interface PWStudentHeaderProps {
   userName: string;
   userEmail: string;
   goal?: string;
+  pageTitle?: string;
 }
 
-export default function PWStudentHeader({ userName, userEmail, goal = 'SSC CGL' }: PWStudentHeaderProps) {
+export default function PWStudentHeader({ userName, userEmail, goal = 'SSC CGL', pageTitle = 'Batches' }: PWStudentHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
@@ -24,7 +26,7 @@ export default function PWStudentHeader({ userName, userEmail, goal = 'SSC CGL' 
           <button
             onClick={() => setMenuOpen(true)}
             aria-label="Open menu"
-            className="p-1 -ml-1 hover:bg-white/10 rounded-lg transition"
+            className="min-w-[44px] min-h-[44px] -ml-2 flex items-center justify-center hover:bg-white/10 rounded-lg transition"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="3" y1="6" x2="21" y2="6" />
@@ -49,14 +51,23 @@ export default function PWStudentHeader({ userName, userEmail, goal = 'SSC CGL' 
 
           <div className="flex-1" />
 
+          {/* Home */}
+          <Link
+            href="/app"
+            aria-label="Home"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/10 rounded-full transition"
+          >
+            <IconHome size={20} />
+          </Link>
+
           {/* Profile */}
           <div className="relative">
             <button
               onClick={() => setProfileOpen(!profileOpen)}
-              className="flex items-center gap-1 hover:bg-white/10 rounded-full p-0.5 transition"
+              className="flex items-center gap-1 hover:bg-white/10 rounded-full min-w-[44px] min-h-[44px] justify-center transition"
               aria-label="Profile menu"
             >
-              <span className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center font-bold text-sm">
+              <span className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center font-bold text-sm">
                 {initial}
               </span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="hidden sm:block">
@@ -89,19 +100,16 @@ export default function PWStudentHeader({ userName, userEmail, goal = 'SSC CGL' 
           </div>
         </div>
 
-        {/* Sub-header: Batches + search + wallet */}
+        {/* Sub-header: page title + search */}
         <div className="bg-white text-gray-900 border-b border-gray-100">
           <div className="flex items-center gap-3 px-4 py-2.5 max-w-[1200px] mx-auto">
-            <h1 className="text-[15px] font-semibold">Batches</h1>
+            <h1 className="text-[15px] font-semibold">{pageTitle}</h1>
             <div className="flex-1" />
-            <Link href="/app/search" aria-label="Search" className="p-1.5 hover:bg-gray-100 rounded-full transition">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
+            <Link href="/app/search" aria-label="Search" className="min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-gray-100 rounded-full transition">
+              <IconSearch size={20} />
             </Link>
-            <Link href="/app/wallet" className="flex items-center gap-1.5 border border-amber-300 bg-amber-50 rounded-full px-3 py-1.5 text-sm font-semibold">
-              <span className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-xs">₹</span>
-              <span>0</span>
+            <Link href="/app/notifications" aria-label="Notifications" className="min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-gray-100 rounded-full transition">
+              <IconBell size={20} />
             </Link>
           </div>
         </div>

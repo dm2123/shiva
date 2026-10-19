@@ -24,7 +24,7 @@ const MENU_SECTIONS: MenuSection[] = [
   {
     title: 'LEARN ONLINE',
     items: [
-      { icon: '📝', label: 'Study', href: '/app/learn' },
+      { icon: '📝', label: 'Study', href: '/app/my-courses' },
       { icon: '📚', label: 'Library', href: '/app/ebooks' },
     ],
   },
@@ -33,9 +33,9 @@ const MENU_SECTIONS: MenuSection[] = [
     items: [
       { icon: '🖥️', label: 'Batches', href: '/app/batches' },
       { icon: '⚡', label: 'Power Batch', href: '/app/batches' },
-      { icon: '📋', label: 'Test Series', href: '/app/test-series' },
-      { icon: '✅', label: 'My Test', href: '/app/my-tests' },
-      { icon: '🎓', label: 'Scholarship', href: '/scholarship' },
+      { icon: '📋', label: 'Test Series', href: '/app/tests' },
+      { icon: '✅', label: 'My Test', href: '/app/tests' },
+      { icon: '🎓', label: 'Scholarship', href: '/app/scholarships' },
     ],
   },
   {
@@ -49,8 +49,7 @@ const MENU_SECTIONS: MenuSection[] = [
   {
     title: 'MORE',
     items: [
-      { icon: '🔗', label: 'Refer & Earn', href: '/app/refer' },
-      { icon: '🎧', label: 'Help & Support', href: '/app/support' },
+      { icon: '🎧', label: 'Help & Support', href: '/app/counsellor' },
     ],
   },
 ];

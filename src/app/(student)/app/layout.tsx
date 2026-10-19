@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import PWStudentHeader from '@/components/student/PWStudentHeader';
+import StudentHeaderWrapper from '@/components/student/StudentHeaderWrapper';
 
 export const metadata = {
   title: 'Student Portal — THE SHIVA',
@@ -16,10 +18,13 @@ export default async function StudentLayout({ children }: { children: ReactNode 
     redirect('/login');
   }
 
-  // PW-style: pages render their own header (see PWDashboard)
+  const userName = (session as any).name || session.email.split('@')[0];
+
+  // Consistent PW-style header on every student page (dashboard renders its own content below)
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-gray-50">
+        <StudentHeaderWrapper userName={userName} userEmail={session.email} goal="SSC CGL" />
         {children}
       </div>
     </ThemeProvider>

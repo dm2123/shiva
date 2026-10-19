@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface PyqExam {
   id: string;
@@ -293,54 +294,122 @@ export default function PyqPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--student-text)]">PYQ Question Bank</h1>
-        <p className="text-sm text-[var(--student-text-muted)] mt-1">Practice previous year questions to ace your exams.</p>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-[var(--student-text)] tracking-tight">
+            Previous Year Questions
+          </h1>
+          <p className="text-sm text-[var(--student-text-muted)] mt-1.5 max-w-xl leading-relaxed">
+            Asli exam papers solve karo, timer ke saath. PYQ = exam pattern samajhne ka sabse tez tarika.
+          </p>
+        </div>
+        {exams.length > 0 && (
+          <div className="flex items-center gap-2 text-xs font-semibold text-[var(--student-text-muted)] bg-[var(--student-surface)] border border-[var(--student-border-light)] rounded-xl px-4 py-2.5">
+            <svg className="w-4 h-4 text-[var(--student-primary)]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            {filteredExams.length} papers available
+          </div>
+        )}
       </div>
 
-      <div className="student-card p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <select
-            value={examFilter}
-            onChange={(e) => setExamFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-[var(--student-border)] bg-white/5 text-[var(--student-text)] text-sm focus:outline-none focus:border-[var(--student-primary)]"
-          >
-            <option value="">All Exams</option>
-            {uniqueExams.map((name) => (
-              <option key={name} value={name!}>{name}</option>
-            ))}
-          </select>
-          <select
-            value={yearFilter}
-            onChange={(e) => setYearFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-[var(--student-border)] bg-white/5 text-[var(--student-text)] text-sm focus:outline-none focus:border-[var(--student-primary)]"
-          >
-            <option value="">All Years</option>
-            {uniqueYears.map((y) => (
-              <option key={y} value={y}>{y}</option>
-            ))}
-          </select>
-          <select
-            value={subjectFilter}
-            onChange={(e) => setSubjectFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-[var(--student-border)] bg-white/5 text-[var(--student-text)] text-sm focus:outline-none focus:border-[var(--student-primary)]"
-          >
-            <option value="">All Subjects</option>
-            {uniqueSubjects.map((s) => (
-              <option key={s} value={s!}>{s}</option>
-            ))}
-          </select>
+      {exams.length > 0 && (
+        <div className="student-card p-4 md:p-5">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--student-text-faint)] mb-3">Filter papers</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <select
+              value={examFilter}
+              onChange={(e) => setExamFilter(e.target.value)}
+              className="px-3 py-2.5 rounded-xl border border-[var(--student-border)] bg-[var(--student-surface)] text-[var(--student-text)] text-sm focus:outline-none focus:border-[var(--student-primary)]"
+            >
+              <option value="">All Exams</option>
+              {uniqueExams.map((name) => (
+                <option key={name} value={name!}>{name}</option>
+              ))}
+            </select>
+            <select
+              value={yearFilter}
+              onChange={(e) => setYearFilter(e.target.value)}
+              className="px-3 py-2.5 rounded-xl border border-[var(--student-border)] bg-[var(--student-surface)] text-[var(--student-text)] text-sm focus:outline-none focus:border-[var(--student-primary)]"
+            >
+              <option value="">All Years</option>
+              {uniqueYears.map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+            <select
+              value={subjectFilter}
+              onChange={(e) => setSubjectFilter(e.target.value)}
+              className="px-3 py-2.5 rounded-xl border border-[var(--student-border)] bg-[var(--student-surface)] text-[var(--student-text)] text-sm focus:outline-none focus:border-[var(--student-primary)]"
+            >
+              <option value="">All Subjects</option>
+              {uniqueSubjects.map((s) => (
+                <option key={s} value={s!}>{s}</option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
+      )}
 
       {loading ? (
-        <div className="student-card p-12 text-center">
-          <div className="w-8 h-8 border-2 border-[var(--student-primary)] border-t-transparent rounded-full animate-spin mx-auto" />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="student-card p-6 space-y-3">
+              <div className="skeleton h-4 w-2/3" />
+              <div className="skeleton h-3 w-full" />
+              <div className="skeleton h-3 w-4/5" />
+            </div>
+          ))}
+        </div>
+      ) : exams.length === 0 ? (
+        <div className="space-y-6">
+          <div className="relative flex flex-col items-center justify-center p-12 md:p-16 text-center rounded-3xl border border-dashed border-[var(--student-border)] bg-gradient-to-b from-[var(--student-surface)] to-transparent overflow-hidden">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-bold text-[var(--student-text)] tracking-tight mb-2">PYQ papers jald aa rahe hain</h3>
+            <p className="text-sm text-[var(--student-text-muted)] max-w-sm mx-auto leading-relaxed">
+              Hum previous year ke asli exam papers jod rahe hain — year-wise aur subject-wise.
+              Tab tak Practice Zone me apni taiyaari tez rakho.
+            </p>
+          </div>
+          <div className="student-card p-6 md:p-8">
+            <div className="flex flex-col md:flex-row md:items-center gap-5">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-[var(--student-text)]">PYQ kyun zaroori hai?</h3>
+                <p className="text-sm text-[var(--student-text-muted)] mt-1 leading-relaxed">
+                  Toppers ka sabse bada secret: PYQ se exam ka pattern, repeating topics aur
+                  difficulty level — teeno ek saath samajh aate hain.
+                </p>
+              </div>
+              <Link
+                href="/app/practice"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--student-primary)] text-white text-sm font-bold hover:opacity-90 transition-opacity flex-shrink-0"
+              >
+                Practice Zone
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5-5 5M6 12h12" />
+                </svg>
+              </Link>
+            </div>
+          </div>
         </div>
       ) : filteredExams.length === 0 ? (
-        <div className="student-card p-12 text-center space-y-2">
-          <span className="text-4xl">📄</span>
-          <p className="text-[var(--student-text-muted)]">No PYQ exams found matching your filters.</p>
+        <div className="student-card p-12 text-center">
+          <p className="text-[var(--student-text-muted)]">Koi PYQ paper is filter se match nahi hua. Filter badal kar dekho.</p>
+          <button
+            onClick={() => { setExamFilter(''); setYearFilter(''); setSubjectFilter(''); }}
+            className="mt-4 px-5 py-2 rounded-xl border border-[var(--student-border)] text-sm font-semibold text-[var(--student-text)] hover:bg-[var(--student-surface-hover)]"
+          >
+            Clear Filters
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -348,27 +417,55 @@ export default function PyqPage() {
             <button
               key={exam.id}
               onClick={() => startExam(exam)}
-              className="student-card p-6 flex flex-col gap-4 text-left hover:border-blue-400 hover:shadow-indigo transition-all duration-300"
+              className="student-card overflow-hidden flex flex-col text-left hover:border-blue-400 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group"
             >
-              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center">
-                <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-[var(--student-text)] leading-snug">{exam.title}</h3>
-                <div className="flex items-center gap-2 mt-1 text-xs text-[var(--student-text-muted)]">
-                  {exam.examName && <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">{exam.examName}</span>}
-                  {exam.year && <span>{exam.year}</span>}
-                  {exam.subject && <span>| {exam.subject}</span>}
+              <div className="h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500" />
+              <div className="p-5 md:p-6 flex flex-col gap-4 flex-1">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-500/20">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  {exam.year && (
+                    <span className="text-[11px] font-black px-3 py-1.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 tracking-wide">
+                      {exam.year}
+                    </span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-[var(--student-text)] leading-snug group-hover:text-blue-600 transition-colors">{exam.title}</h3>
+                  <div className="flex items-center gap-2 mt-2 flex-wrap">
+                    {exam.examName && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 uppercase tracking-wider">
+                        {exam.examName}
+                      </span>
+                    )}
+                    {exam.subject && <span className="text-xs text-[var(--student-text-muted)]">{exam.subject}</span>}
+                  </div>
+                  <p className="text-[11px] text-[var(--student-text-faint)] mt-1">{exam.courseTitle}</p>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="rounded-xl bg-[var(--student-surface)] border border-[var(--student-border-light)] py-2 px-1">
+                    <p className="text-xs font-bold text-[var(--student-text)]">{exam.totalQuestions}</p>
+                    <p className="text-[10px] text-[var(--student-text-faint)]">Questions</p>
+                  </div>
+                  <div className="rounded-xl bg-[var(--student-surface)] border border-[var(--student-border-light)] py-2 px-1">
+                    <p className="text-xs font-bold text-[var(--student-text)]">{exam.totalMarks}</p>
+                    <p className="text-[10px] text-[var(--student-text-faint)]">Marks</p>
+                  </div>
+                  <div className="rounded-xl bg-[var(--student-surface)] border border-[var(--student-border-light)] py-2 px-1">
+                    <p className="text-xs font-bold text-[var(--student-text)]">{exam.timeLimitMinutes}m</p>
+                    <p className="text-[10px] text-[var(--student-text-faint)]">Time</p>
+                  </div>
+                </div>
+                <div className="inline-flex items-center gap-1.5 text-sm font-bold text-blue-600">
+                  Start Paper
+                  <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5-5 5M6 12h12" />
+                  </svg>
                 </div>
               </div>
-              <div className="flex items-center gap-4 text-[11px] text-[var(--student-text-muted)] border-t border-[var(--student-border-light)] pt-4">
-                <span>{exam.totalQuestions} Qs</span>
-                <span>{exam.totalMarks} marks</span>
-                <span>{exam.timeLimitMinutes} min</span>
-              </div>
-              <div className="text-xs font-bold text-blue-600">Start Exam</div>
             </button>
           ))}
         </div>
