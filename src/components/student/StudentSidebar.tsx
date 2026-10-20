@@ -98,17 +98,14 @@ export default function StudentSidebar() {
       aria-label="Student sidebar navigation"
     >
       {/* Logo */}
-      <div className="flex items-center gap-3 px-6 h-[var(--header-height)] border-b border-[var(--student-border-light)] flex-shrink-0">
+      <div className="flex items-center px-6 h-[var(--header-height)] border-b border-[var(--student-border-light)] flex-shrink-0">
         <Image
           src="/assets/logo.jpeg"
           alt="THE SHIVA"
-          width={28}
-          height={28}
-          className="rounded-lg shadow-sm"
+          width={40}
+          height={40}
+          className="rounded-xl shadow-sm"
         />
-        <span className="font-extrabold text-[13px] tracking-tight text-[var(--student-text)]">
-          THE SHIVA
-        </span>
       </div>
 
       {/* Primary Navigation */}

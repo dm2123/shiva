@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 const LINKS = [
   { href: '/#courses', label: 'Courses' },
@@ -17,8 +18,8 @@ export default function ShivaNav() {
     <>
       <header>
         <div className="wrap nav">
-          <a className="logo" href="/">
-            <span className="mark">S</span> THE SHIVA
+          <a className="logo" href="/" aria-label="THE SHIVA — Home" style={{ display: 'flex', alignItems: 'center' }}>
+            <Image src="/assets/logo.jpeg" alt="THE SHIVA" width={46} height={46} style={{ borderRadius: 12 }} priority />
           </a>
           <nav className="nav-links">
             {LINKS.map((l) => (
