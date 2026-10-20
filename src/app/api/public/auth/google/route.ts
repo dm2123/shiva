@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { mysqlPool } from '@/lib/db';
 import { createServerSession } from '@/lib/auth';
 import { serializeSessionCookie } from '@/lib/auth';
-import { randomUUID } from 'crypto';
+import { verifyGoogleIdToken } from '@/lib/google-auth';
 import { v4 as uuid } from 'uuid';
 
 export async function POST(req: NextRequest) {
@@ -13,22 +13,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: { message: 'Google credential required' } }, { status: 400 });
     }
 
-    // Decode the Google JWT (header.payload.signature)
-    const parts = credential.split('.');
-    if (parts.length !== 3) {
-      return NextResponse.json({ success: false, error: { message: 'Invalid Google token format' } }, { status: 400 });
+    // Verify the Google ID token properly: RS256 signature (Google JWKS),
+    // issuer, audience (our GOOGLE_CLIENT_ID) and expiry — see @/lib/google-auth.
+    let payload;
+    try {
+      payload = await verifyGoogleIdToken(credential);
+    } catch (verifyError: any) {
+      return NextResponse.json(
+        { success: false, error: { message: verifyError.message || 'Google token verification failed' } },
+        { status: 401 }
+      );
     }
-
-    const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf-8'));
 
     const googleId = payload.sub;
     const email = payload.email;
     const name = payload.name || '';
     const picture = payload.picture || '';
-
-    if (!email) {
-      return NextResponse.json({ success: false, error: { message: 'Email not provided by Google' } }, { status: 400 });
-    }
 
     // Check if user exists
     const [existingUsers]: any = await mysqlPool.query(
