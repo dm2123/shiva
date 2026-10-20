@@ -1,7 +1,7 @@
 {
-  "latestVersion": 4,
-  "url": "https://the-shiva.onrender.com/ota/android/4/index.android.bundle",
-  "sha256": "cde365370da4fbbdbb88a6d502baf6c8b86de9cf646d3210b33ce0a2feae9137",
+  "latestVersion": 5,
+  "url": "https://the-shiva.onrender.com/ota/android/5/index.android.bundle",
+  "sha256": "900920d1a731aab0f4407b8109ca003945835354d37cc6b9218640bf5cdbd477",
   "mandatory": false,
-  "notes": "Poora premium redesign: Home, Courses, Tests, Profile sab naya look!"
+  "notes": "Premium visual design — banners, dark theme, glossy cards! Streak flame, XP levels, badges aur asli SHIVA logo bhi aa gaya!"
 }
