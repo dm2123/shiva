@@ -1,1 +1,7 @@
-{"latestVersion":2,"mandatory":false,"notes":"Naya: App Update screen aa gaya!","sha256":"9362fd3c28d991eb3b6b83442cf4d239a735a8891ca99406304f5e2f71ba7a19","url":"https://the-shiva.onrender.com/ota/android/2/index.android.bundle"}
+{
+  "latestVersion": 3,
+  "url": "https://the-shiva.onrender.com/ota/android/3/index.android.bundle",
+  "sha256": "977d814b20c3734d3cbb06ffc125f36380f9a0be40c1adb29068db7dc41333bd",
+  "mandatory": false,
+  "notes": "Naya: Library, Doubt Guru aur Exam Goal aa gaya!"
+}
