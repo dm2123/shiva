@@ -3,7 +3,7 @@ import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import {
   mysqlPool, findAssessmentAttemptDb, findTestByIdDb, listSubjectsByCourseDb,
-  listChaptersBySubjectDb, listQuestionsByChapterDb,
+  listChaptersBySubjectDb, listQuestionsByChapterDb, createAssessmentAttemptDb,
 } from '@/lib/db';
 import { createApiResponse, createApiError } from '@/lib/utils';
 import { randomUUID } from 'crypto';
@@ -25,27 +25,50 @@ export async function POST(
 ) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
-    const attempt = await findAssessmentAttemptDb(params.attemptId);
-    if (!attempt) {
-      return NextResponse.json(createApiError('NOT_FOUND', 'Attempt not found'), { status: 404 });
-    }
-    if (attempt.studentId !== session.userId) {
-      return NextResponse.json(createApiError('FORBIDDEN_OBJECT_ACCESS', 'You do not own this attempt'), { status: 403 });
-    }
-    if (attempt.status !== 'STARTED') {
-      return NextResponse.json(createApiError('BAD_REQUEST', 'This attempt has already been submitted'), { status: 400 });
+    const body = await req.json().catch(() => ({}));
+    let attempt: any = await findAssessmentAttemptDb(params.attemptId);
+    let test: any = null;
+    // Mobile app flow: the URL param is a TEST id and the body is
+    // { answers: [{ questionId, selected: <option index> }] }.
+    let appAnswers: { questionId: string; selected?: number | null }[] | null = null;
+
+    if (attempt) {
+      if (attempt.studentId !== session.userId) {
+        return NextResponse.json(createApiError('FORBIDDEN_OBJECT_ACCESS', 'You do not own this attempt'), { status: 403 });
+      }
+      if (attempt.status !== 'STARTED') {
+        return NextResponse.json(createApiError('BAD_REQUEST', 'This attempt has already been submitted'), { status: 400 });
+      }
+      test = await findTestByIdDb(attempt.assessmentId);
+      if (!test) {
+        return NextResponse.json(createApiError('NOT_FOUND', 'Test not found'), { status: 404 });
+      }
+    } else {
+      test = await findTestByIdDb(params.attemptId);
+      if (!test) {
+        return NextResponse.json(createApiError('NOT_FOUND', 'Attempt not found'), { status: 404 });
+      }
+      if (Array.isArray(body?.answers)) appAnswers = body.answers;
+      // Reuse an already-open attempt for this student+test when one
+      // exists (e.g. a retried submit after a lost response).
+      const [openRows]: any = await mysqlPool.query(
+        `SELECT * FROM AssessmentAttempts WHERE assessmentId = ? AND studentId = ? AND status = 'STARTED' ORDER BY createdAt DESC LIMIT 1`,
+        [test.id, session.userId]
+      );
+      attempt =
+        openRows?.[0] ||
+        (await createAssessmentAttemptDb({
+          id: randomUUID(),
+          assessmentId: test.id,
+          studentId: session.userId,
+          score: 0,
+          status: 'STARTED',
+          startedAt: new Date().toISOString(),
+        }));
     }
 
-    const test = await findTestByIdDb(attempt.assessmentId);
-    if (!test) {
-      return NextResponse.json(createApiError('NOT_FOUND', 'Test not found'), { status: 404 });
-    }
-
-    const body = await req.json();
     const responses: { questionId: string; selectedOptionId?: string; answerText?: string }[] =
       Array.isArray(body?.responses) ? body.responses : [];
-
-    const submitted = new Map(responses.map((r) => [r.questionId, r]));
 
     const subjects = await listSubjectsByCourseDb(test.courseId);
     const questions = (
@@ -56,6 +79,24 @@ export async function POST(
         })
       )
     ).flat();
+
+    // Build the submission map: website sends `responses` with option
+    // ids; the app sends `answers` with option INDEXES — resolve those
+    // against each question's option list (same order the detail route
+    // served them in).
+    const submitted = new Map<string, any>(responses.map((r) => [r.questionId, r]));
+    if (appAnswers) {
+      const questionById = new Map((questions as any[]).map((q) => [q.id, q]));
+      for (const a of appAnswers) {
+        if (a == null || a.selected == null) continue;
+        const q = questionById.get(a.questionId);
+        if (!q) continue;
+        const opt = normalizeOptions(q.options)[a.selected];
+        if (opt == null) continue;
+        const selectedOptionId = typeof opt === 'object' ? (opt.id ?? null) : String(opt);
+        if (selectedOptionId) submitted.set(a.questionId, { questionId: a.questionId, selectedOptionId });
+      }
+    }
 
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
     let score = 0;
@@ -116,6 +157,11 @@ export async function POST(
         answeredCount,
         totalQuestions: questions.length,
         passed: test.passingMarks != null ? Math.max(0, score) >= Number(test.passingMarks) : undefined,
+        // Mobile app aliases (SubmitResult shape)
+        total: questions.length,
+        correct: correctCount,
+        wrong: Math.max(0, answeredCount - correctCount),
+        attempted: answeredCount,
       }),
       { status: 200 }
     );
