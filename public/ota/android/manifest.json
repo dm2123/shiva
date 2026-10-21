@@ -1,1 +1,7 @@
-{"latestVersion":12,"mandatory":false,"notes":"v8.4 — Video player fix: lecture ke asal YouTube videos ab chalenge (pehle har video par galat 'jald aa raha hai' dikhta tha). Learn page naya: player ke neeche lecture ki poori jankari, Doubt tab se isi lecture ka doubt seedha teachers ko, Notes tab, aur Agle Lectures ki list. Library ke Free Lectures se bhi sahi lecture khulega.","sha256":"b96dc23a00d88086d3b256fabb50421230f74544d41933cfaafc0be824b4d041","url":"https://the-shiva.onrender.com/ota/android/12/index.android.bundle"}
+{
+  "latestVersion": 13,
+  "mandatory": false,
+  "notes": "v8.5 — Ecosystem structure: subjects/chapters counts + progress, Practice tab",
+  "sha256": "ef6cc85207b32a95cd639e6dc1d37ce6d82a23bab01537a6e079b37507ffc5b9",
+  "url": "https://the-shiva.onrender.com/ota/android/13/index.android.bundle"
+}
