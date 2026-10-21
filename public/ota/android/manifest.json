@@ -1,7 +1,1 @@
-{
-  "latestVersion": 6,
-  "url": "https://the-shiva.onrender.com/ota/android/6/index.android.bundle",
-  "sha256": "4f60956f30176fc98fabfbecbc1c94d8c6ae7b3574e17e342dd12c8a01b6ca40",
-  "mandatory": false,
-  "notes": "Naya Boards Design: Deep Purple + Gold! Trishul branding, My Courses, nayi onboarding, FAQs aur Refer & Earn bhi aa gaya!"
-}
+{"latestVersion":7,"mandatory":false,"notes":"Fix: Courses list me saare courses dikhenge, Tests chalenge, aur slow server par bhi app connect hoga (auto-retry).","sha256":"ab1317abaf0ff35b544e36b7c7bac169ab4c759f9a72feaceb87fc31f5b82191","url":"https://the-shiva.onrender.com/ota/android/7/index.android.bundle"}
