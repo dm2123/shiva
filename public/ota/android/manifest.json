@@ -1,1 +1,7 @@
-{"latestVersion":7,"mandatory":false,"notes":"Fix: Courses list me saare courses dikhenge, Tests chalenge, aur slow server par bhi app connect hoga (auto-retry).","sha256":"ab1317abaf0ff35b544e36b7c7bac169ab4c759f9a72feaceb87fc31f5b82191","url":"https://the-shiva.onrender.com/ota/android/7/index.android.bundle"}
+{
+  "latestVersion": 8,
+  "url": "https://the-shiva.onrender.com/ota/android/8/index.android.bundle",
+  "sha256": "d862660ed3e957d9b84802e0bf3d94b19d90e41fd6d2709b54cd88201f495429",
+  "mandatory": false,
+  "notes": "My Courses ab bottom bar me! Nayi graphics, App Icon picker, saare menu pages live, notification permission."
+}
