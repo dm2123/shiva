@@ -1,7 +1,1 @@
-{
-  "latestVersion": 8,
-  "url": "https://the-shiva.onrender.com/ota/android/8/index.android.bundle",
-  "sha256": "d862660ed3e957d9b84802e0bf3d94b19d90e41fd6d2709b54cd88201f495429",
-  "mandatory": false,
-  "notes": "My Courses ab bottom bar me! Nayi graphics, App Icon picker, saare menu pages live, notification permission."
-}
+{"latestVersion":9,"mandatory":false,"notes":"v8.1 — Side menu se galat add hua 'App Icon Badlo' option hata diya gaya hai. App ka icon phone ki home screen wala hi hai, wahi rahega. Baaki sab v8 jaisa hi hai.","sha256":"312383d063d162ac330c1a3d0fdd490f91e3ebad2a54bf9ddd52a371c5da43da","url":"https://the-shiva.onrender.com/ota/android/9/index.android.bundle"}
