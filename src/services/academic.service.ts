@@ -35,6 +35,7 @@ import {
   mysqlPool,
 } from '@/lib/db';
 import { ensureSeed } from '@/db/ensure-seed';
+import { ensureAptitudePetLectures } from '@/lib/ensure-aptitude-content';
 
 // -------------------------------------------------------------
 // ZOD SCHEMAS
@@ -461,6 +462,8 @@ export interface CourseSyllabusTree extends Course {
 }
 
 export async function getCourseSyllabusTree(courseIdOrSlug: string): Promise<CourseSyllabusTree> {
+  // Self-heal seeded lectures (Aptitude Foundation — UPSSSC PET videos).
+  await ensureAptitudePetLectures();
   let course = await findCourseByIdDb(courseIdOrSlug);
   if (!course) {
     if (mysqlPool) {

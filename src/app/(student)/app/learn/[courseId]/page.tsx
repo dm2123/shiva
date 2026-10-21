@@ -3,6 +3,7 @@ import {
   listLecturesByChapterDb, getLectureProgressDb, isStudentEnrolledInCourseDb,
 } from '@/lib/db';
 import { notFound } from 'next/navigation';
+import { ensureAptitudePetLectures } from '@/lib/ensure-aptitude-content';
 import Link from 'next/link';
 import { headers } from 'next/headers';
 import { getSessionFromHeaders } from '@/lib/rbac-server';
@@ -93,6 +94,9 @@ export default async function ClassroomPage({
       </div>
     );
   }
+
+  // Self-heal seeded lectures (Aptitude Foundation — UPSSSC PET videos).
+  await ensureAptitudePetLectures();
 
   const subjects = await listSubjectsByCourseDb(course.id);
 
