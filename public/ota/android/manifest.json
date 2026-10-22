@@ -1,7 +1,1 @@
-{
-  "latestVersion": 16,
-  "url": "https://the-shiva.onrender.com/ota/android/16/index.android.bundle",
-  "sha256": "2cc65679c99d0be66c379c5f35a63e6970d58feda607f341ee26935503239cef",
-  "mandatory": false,
-  "notes": "v8.8 — My Courses fix: enroll kiye courses ab dikhenge + Google login crash fix"
-}
+{"latestVersion":17,"mandatory":false,"notes":"v8.9 — Goal personalization: tumhare exam goal ke hisaab se Home par courses/tests ki sifarish + sections ka order","sha256":"d23b3579e92777eddf24e83c989918b537882f305f2d2b7fedf7285214832ab7","url":"https://the-shiva.onrender.com/ota/android/17/index.android.bundle"}
