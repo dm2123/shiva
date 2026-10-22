@@ -26,7 +26,7 @@ export async function createTest(input: any): Promise<Test> {
     delete data.category;
   }
   return db.createTestDb({
-    id: `test-${randomUUID()}`,
+    id: randomUUID(),
     ...data,
   });
 }
@@ -84,7 +84,7 @@ export const questionSchema = z.object({
 export async function createQuestion(input: any): Promise<Question> {
   const v = questionSchema.parse(input);
   return db.createQuestionDb({
-    id: `q-${randomUUID()}`,
+    id: randomUUID(),
     ...v,
   });
 }
