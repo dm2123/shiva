@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ success: true, data: rows });
   } catch (error) {
+    if ((error as any).name === 'AuthError') return NextResponse.json({ error: (error as any).message }, { status: (error as any).statusCode || 401 });
     return NextResponse.json({ success: true, data: [] });
   }
 }

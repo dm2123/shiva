@@ -35,6 +35,7 @@ export async function GET(req: NextRequest) {
     }
     return NextResponse.json({ success: true, data: { questions } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error, 'Failed to load questions');
   }
 }
@@ -74,6 +75,7 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ success: true, data: { question } }, { status: 201 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error, 'Failed to create question');
   }
 }

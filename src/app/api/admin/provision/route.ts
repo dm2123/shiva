@@ -29,6 +29,7 @@ export async function GET(req: NextRequest) {
     await provisionAdminAccount(email, password, name, department);
     return NextResponse.json({ success: true, message: `Admin account provisioned for ${email}` });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     if (String(error.message).includes('Duplicate entry') || String(error.message).includes('ER_DUP_ENTRY')) {
       return NextResponse.json({ success: true, message: 'Admin account already exists.' });
     }

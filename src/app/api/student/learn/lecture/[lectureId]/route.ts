@@ -29,6 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: { lectureId: s
 
     return NextResponse.json(createApiResponse({ lecture }), { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return NextResponse.json(createApiError('INTERNAL_SERVER_ERROR', 'Failed to fetch lecture.'), { status: 500 });
   }
 }

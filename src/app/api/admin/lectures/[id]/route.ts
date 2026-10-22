@@ -25,6 +25,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
     return NextResponse.json({ success: true, data: { lecture } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error);
   }
 }
@@ -39,6 +40,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const lecture = await updateLecture(params.id, updates);
     return NextResponse.json({ success: true, data: { lecture } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error);
   }
 }
@@ -49,6 +51,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     await deleteLecture(params.id);
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error);
   }
 }

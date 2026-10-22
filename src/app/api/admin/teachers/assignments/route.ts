@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     if (error.message.includes('DUPLICATE_ASSIGNMENT')) {
       return NextResponse.json(
         { success: false, error: { message: error.message } },

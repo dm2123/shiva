@@ -54,6 +54,7 @@ export async function POST(request: NextRequest) {
       totalDays: daysToCreate
     });
   } catch (error) {
+    if ((error as any).name === 'AuthError') return NextResponse.json({ error: (error as any).message }, { status: (error as any).statusCode || 401 });
     console.error('Study Plan POST error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
@@ -70,6 +71,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ plans });
   } catch (error) {
+    if ((error as any).name === 'AuthError') return NextResponse.json({ error: (error as any).message }, { status: (error as any).statusCode || 401 });
     console.error('Study Plan GET error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

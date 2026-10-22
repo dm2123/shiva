@@ -20,6 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const test = await getTestById(params.id);
     return NextResponse.json({ success: true, data: { test } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error, 'Failed to load test');
   }
 }
@@ -38,6 +39,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const test = await updateTest(params.id, updates);
     return NextResponse.json({ success: true, data: { test } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error, 'Failed to update test');
   }
 }
@@ -48,6 +50,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     await deleteTest(params.id);
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error, 'Failed to delete test');
   }
 }

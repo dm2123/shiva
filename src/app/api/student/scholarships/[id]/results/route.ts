@@ -42,6 +42,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       }
     });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return NextResponse.json({ success: false, error: { message: error.message } }, { status: 500 });
   }
 }

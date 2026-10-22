@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
     const classes = await listStudentLiveClasses(session.userId);
     return NextResponse.json({ data: classes });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     if (error.message === 'Unauthorized' || error.message === 'Forbidden') {
       return NextResponse.json({ error: error.message }, { status: error.message === 'Unauthorized' ? 401 : 403 });
     }

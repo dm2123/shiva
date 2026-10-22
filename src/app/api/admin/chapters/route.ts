@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
     const chapters = await listChaptersBySubject(subjectId);
     return NextResponse.json({ success: true, data: { chapters } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     console.error('Admin GET /api/admin/chapters Error:', error);
     return NextResponse.json({ success: false, error: { message: error.message || 'Internal server error' } }, { status: 500 });
   }
@@ -35,6 +36,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, data: { chapter } }, { status: 201 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     console.error('Admin POST /api/admin/chapters Error:', error);
     return NextResponse.json({ success: false, error: { message: error.message || 'Internal server error' } }, { status: 400 });
   }

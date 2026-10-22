@@ -21,6 +21,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const question = await getQuestionById(params.id);
     return NextResponse.json({ success: true, data: { question } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error, 'Failed to load question');
   }
 }
@@ -54,6 +55,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const question = await updateQuestion(params.id, updates);
     return NextResponse.json({ success: true, data: { question } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error, 'Failed to update question');
   }
 }
@@ -64,6 +66,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     await deleteQuestion(params.id);
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error, 'Failed to delete question');
   }
 }

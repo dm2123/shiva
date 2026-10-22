@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
     );
     return NextResponse.json({ predictions: rows });
   } catch (error) {
+    if ((error as any).name === 'AuthError') return NextResponse.json({ error: (error as any).message }, { status: (error as any).statusCode || 401 });
     console.error('Error fetching rank predictions:', error);
     return NextResponse.json({ error: 'Failed to fetch predictions' }, { status: 500 });
   }
@@ -64,6 +65,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
+    if ((error as any).name === 'AuthError') return NextResponse.json({ error: (error as any).message }, { status: (error as any).statusCode || 401 });
     console.error('Error predicting rank:', error);
     return NextResponse.json({ error: 'Failed to predict rank' }, { status: 500 });
   }

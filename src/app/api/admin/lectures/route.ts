@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
     const lectures = await listLecturesByChapter(chapterId);
     return NextResponse.json({ success: true, data: { lectures } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     console.error('Admin GET /api/admin/lectures Error:', error);
     return NextResponse.json({ success: false, error: { message: error.message || 'Internal server error' } }, { status: 500 });
   }
@@ -36,6 +37,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, data: { lecture } }, { status: 201 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     console.error('Admin POST /api/admin/lectures Error:', error);
     return NextResponse.json({ success: false, error: { message: error.message || 'Internal server error' } }, { status: 400 });
   }

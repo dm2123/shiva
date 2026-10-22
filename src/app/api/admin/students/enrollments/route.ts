@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, data: { enrollment } }, { status: 201 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     console.error('Admin POST /api/admin/students/enrollments Error:', error);
     
     if (error.message && error.message.includes('DUPLICATE')) {

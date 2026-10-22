@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     console.error('[Change Password Error]:', error);
 
     if (error.code === 'INVALID_PASSWORD') {

@@ -83,6 +83,7 @@ export async function GET(request: NextRequest) {
       }
     });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

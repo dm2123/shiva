@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
     );
     return NextResponse.json({ success: true, message: 'Subscribed to push notifications' });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -38,6 +39,7 @@ export async function DELETE(request: NextRequest) {
     }
     return NextResponse.json({ success: true, message: 'Unsubscribed' });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

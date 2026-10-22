@@ -30,6 +30,7 @@ export async function GET(
       tasks
     });
   } catch (error) {
+    if ((error as any).name === 'AuthError') return NextResponse.json({ error: (error as any).message }, { status: (error as any).statusCode || 401 });
     console.error('Study Plan Detail GET error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
@@ -55,6 +56,7 @@ export async function PATCH(
 
     return NextResponse.json({ message: 'Task updated successfully' });
   } catch (error) {
+    if ((error as any).name === 'AuthError') return NextResponse.json({ error: (error as any).message }, { status: (error as any).statusCode || 401 });
     console.error('Study Plan PATCH error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

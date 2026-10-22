@@ -20,6 +20,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const chapter = await getChapterById(params.id);
     return NextResponse.json({ success: true, data: { chapter } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error);
   }
 }
@@ -33,6 +34,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const chapter = await updateChapter(params.id, updates);
     return NextResponse.json({ success: true, data: { chapter } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error);
   }
 }
@@ -43,6 +45,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     await deleteChapter(params.id);
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error);
   }
 }

@@ -36,6 +36,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
+    if ((error as any).name === 'AuthError') return NextResponse.json({ error: (error as any).message }, { status: (error as any).statusCode || 401 });
     console.error("Session recordings GET error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }

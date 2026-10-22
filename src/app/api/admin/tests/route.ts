@@ -23,6 +23,7 @@ export async function GET(req: NextRequest) {
     if (type) tests = tests.filter((t) => t.type === type);
     return NextResponse.json({ success: true, data: { tests } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error, 'Failed to load tests');
   }
 }
@@ -45,6 +46,7 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ success: true, data: { test } }, { status: 201 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return fail(error, 'Failed to create test');
   }
 }

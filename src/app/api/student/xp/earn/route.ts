@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, data: { id, points, source } }, { status: 201 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return NextResponse.json({ success: false, error: { message: error.message } }, { status: 500 });
   }
 }

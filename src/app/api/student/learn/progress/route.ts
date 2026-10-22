@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
     await saveLectureProgressDb(session.userId, lectureId, isCompleted, positionSeconds);
     return NextResponse.json(createApiResponse({ success: true }), { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return NextResponse.json(createApiError('INTERNAL_SERVER_ERROR', 'Failed to save progress.'), { status: 500 });
   }
 }
