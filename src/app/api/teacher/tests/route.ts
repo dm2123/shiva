@@ -26,6 +26,8 @@ export async function POST(req: NextRequest) {
       totalMarks: Number(body.totalMarks) || 100,
       passingMarks: body.passingMarks != null ? Number(body.passingMarks) : undefined,
       status: 'PUBLISHED',
+      type: body.type || undefined,
+      category: body.category || undefined,
     });
 
     return NextResponse.json({ success: true, data: { test } }, { status: 201 });

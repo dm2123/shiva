@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool, listTestsDb } from '@/lib/db';
+import { hasTestTypeColumns } from '@/lib/ensure-test-schema';
 import { createApiResponse, createApiError } from '@/lib/utils';
 
 /**
@@ -15,6 +16,10 @@ import { createApiResponse, createApiError } from '@/lib/utils';
 export async function GET(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+
+    // Self-heal Tests.type/category (never throws) so the passthrough
+    // below starts carrying real values on the first list call.
+    await hasTestTypeColumns();
 
     const allTests: any[] = await listTestsDb();
     const tests = allTests.filter((t) => t.status === 'PUBLISHED');

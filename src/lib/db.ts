@@ -512,11 +512,33 @@ export async function listOrdersDb() {
 
 // --- TEST / QUESTION / ASSESSMENT FUNCTIONS ---
 export async function createTestDb(test: any) {
+  // type/category columns are added by ensure-test-schema; callers pass
+  // them only when those columns exist, so include them dynamically.
+  const cols = ['id', 'title', 'description', 'courseId', 'durationMinutes', 'totalMarks', 'passingMarks', 'status'];
+  const vals: any[] = [test.id, test.title, test.description || null, test.courseId, test.durationMinutes || 60, test.totalMarks || 100, test.passingMarks || null, test.status || 'DRAFT'];
+  if (test.type !== undefined) { cols.push('`type`'); vals.push(test.type || null); }
+  if (test.category !== undefined) { cols.push('`category`'); vals.push(test.category || null); }
   await mysqlPool.query(
-    'INSERT INTO Tests (id, title, description, courseId, durationMinutes, totalMarks, passingMarks, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-    [test.id, test.title, test.description || null, test.courseId, test.durationMinutes || 60, test.totalMarks || 100, test.passingMarks || null, test.status || 'DRAFT']
+    `INSERT INTO Tests (${cols.join(', ')}) VALUES (${cols.map(() => '?').join(', ')})`,
+    vals
   );
   return test;
+}
+export async function updateTestDb(id: string, updates: any) {
+  const allowed = ['title', 'description', 'courseId', 'durationMinutes', 'totalMarks', 'passingMarks', 'status', 'type', 'category'];
+  const sets: string[] = [];
+  const vals: any[] = [];
+  for (const k of allowed) {
+    if (updates[k] !== undefined) { sets.push(`\`${k}\` = ?`); vals.push(updates[k]); }
+  }
+  if (sets.length === 0) return findTestByIdDb(id);
+  vals.push(id);
+  await mysqlPool.query(`UPDATE Tests SET ${sets.join(', ')} WHERE id = ?`, vals);
+  return findTestByIdDb(id);
+}
+export async function deleteTestDb(id: string) {
+  const [res]: any = await mysqlPool.query('DELETE FROM Tests WHERE id = ?', [id]);
+  return (res?.affectedRows || 0) > 0;
 }
 export async function listTestsDb() {
   const [rows]: any = await mysqlPool.query('SELECT * FROM Tests ORDER BY createdAt DESC');
@@ -545,6 +567,26 @@ export async function listQuestionsByChapterDb(chapterId: string) {
 export async function findQuestionByIdDb(id: string) {
   const [rows]: any = await mysqlPool.query('SELECT * FROM Questions WHERE id = ?', [id]);
   return rows[0] || null;
+}
+export async function updateQuestionDb(id: string, updates: any) {
+  const allowed = ['chapterId', 'subjectId', 'title', 'type', 'correctAnswer', 'explanation', 'difficulty', 'marks', 'negativeMarks'];
+  const sets: string[] = [];
+  const vals: any[] = [];
+  for (const k of allowed) {
+    if (updates[k] !== undefined) { sets.push(`\`${k}\` = ?`); vals.push(updates[k]); }
+  }
+  if (updates.options !== undefined) {
+    sets.push('`options` = ?');
+    vals.push(updates.options ? JSON.stringify(updates.options) : null);
+  }
+  if (sets.length === 0) return findQuestionByIdDb(id);
+  vals.push(id);
+  await mysqlPool.query(`UPDATE Questions SET ${sets.join(', ')} WHERE id = ?`, vals);
+  return findQuestionByIdDb(id);
+}
+export async function deleteQuestionDb(id: string) {
+  const [res]: any = await mysqlPool.query('DELETE FROM Questions WHERE id = ?', [id]);
+  return (res?.affectedRows || 0) > 0;
 }
 
 export async function createAssessmentDb(a: any) {
