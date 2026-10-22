@@ -66,6 +66,11 @@ export async function GET(req: NextRequest) {
         id: t.id,
         title: t.title,
         description: t.description || undefined,
+        // Category/type passthrough — sirf tab jab row me asal me ho
+        // (app Mock/PYQ/Practice grouping isi se karti hai).
+        ...((t.type ?? t.category)
+          ? { type: t.type ?? undefined, category: t.category ?? t.type }
+          : {}),
         courseId: t.courseId,
         durationMinutes: t.durationMinutes ?? 60,
         duration: t.durationMinutes ?? 60,

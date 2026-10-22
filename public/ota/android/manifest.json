@@ -1,7 +1,7 @@
 {
-  "latestVersion": 13,
+  "latestVersion": 14,
+  "url": "https://the-shiva.onrender.com/ota/android/14/index.android.bundle",
+  "sha256": "936036a0c13e3ad175ee31342212619d6fcc967c3fea41923e1b70618a1d66c2",
   "mandatory": false,
-  "notes": "v8.5 — Ecosystem structure: subjects/chapters counts + progress, Practice tab",
-  "sha256": "ef6cc85207b32a95cd639e6dc1d37ce6d82a23bab01537a6e079b37507ffc5b9",
-  "url": "https://the-shiva.onrender.com/ota/android/13/index.android.bundle"
+  "notes": "v8.6 — Test analysis: accuracy, galat sawalon ki review, attempt history"
 }

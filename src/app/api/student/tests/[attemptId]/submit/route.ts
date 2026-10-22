@@ -6,6 +6,7 @@ import {
   listChaptersBySubjectDb, listQuestionsByChapterDb, createAssessmentAttemptDb,
 } from '@/lib/db';
 import { createApiResponse, createApiError } from '@/lib/utils';
+import { hasAttemptTimeColumn } from '@/lib/ensure-attempt-schema';
 import { randomUUID } from 'crypto';
 
 function normalizeOptions(raw: any): { id: string; text: string }[] {
@@ -144,13 +145,35 @@ export async function POST(
     }
 
     const maxScore = questions.reduce((s: number, q: any) => s + Number(q.marks || 0), 0);
-    await mysqlPool.query(
-      `UPDATE AssessmentAttempts SET score = ?, status = 'EVALUATED', completedAt = ? WHERE id = ?`,
-      [Math.max(0, score), now, attempt.id]
-    );
+
+    // Real time-taken: the app measures elapsed seconds on-device and
+    // sends `timeTakenSec`. Persist it when the column exists so the
+    // analysis screen can show total time / time-per-question later.
+    // (Website attempts leave it null; analysis falls back to
+    // startedAt->completedAt there.) Bogus values are dropped.
+    let timeTakenSec: number | null = null;
+    const rawTime = Number(body?.timeTakenSec);
+    if (Number.isFinite(rawTime) && rawTime > 0 && rawTime <= 6 * 3600) {
+      timeTakenSec = Math.round(rawTime);
+    }
+    const canStoreTime = timeTakenSec != null && (await hasAttemptTimeColumn());
+    if (canStoreTime) {
+      await mysqlPool.query(
+        `UPDATE AssessmentAttempts SET score = ?, status = 'EVALUATED', completedAt = ?, timeTakenSec = ? WHERE id = ?`,
+        [Math.max(0, score), now, timeTakenSec, attempt.id]
+      );
+    } else {
+      await mysqlPool.query(
+        `UPDATE AssessmentAttempts SET score = ?, status = 'EVALUATED', completedAt = ? WHERE id = ?`,
+        [Math.max(0, score), now, attempt.id]
+      );
+    }
 
     return NextResponse.json(
       createApiResponse({
+        // The app uses attemptId to open the full analysis screen.
+        attemptId: attempt.id,
+        ...(canStoreTime ? { timeTakenSec } : {}),
         score: Math.max(0, score),
         maxScore,
         correctCount,
