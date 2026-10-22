@@ -1,1 +1,7 @@
-{"latestVersion":15,"mandatory":false,"notes":"v8.7 — Video player fix (Error 153) aur title saaf","sha256":"8406d7cf6f246175a2991120d1eafb97f7f3a48ada9d65bcbea648d2cf904b24","url":"https://the-shiva.onrender.com/ota/android/15/index.android.bundle"}
+{
+  "latestVersion": 16,
+  "url": "https://the-shiva.onrender.com/ota/android/16/index.android.bundle",
+  "sha256": "2cc65679c99d0be66c379c5f35a63e6970d58feda607f341ee26935503239cef",
+  "mandatory": false,
+  "notes": "v8.8 — My Courses fix: enroll kiye courses ab dikhenge + Google login crash fix"
+}
