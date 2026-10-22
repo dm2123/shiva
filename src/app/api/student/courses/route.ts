@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { getStudentEnrolledCourses, listPublicCourses } from '@/services/academic.service';
+import { ensureMojibakeRepair, sanitizeTextDeep } from '@/lib/fix-mojibake';
 import { createApiResponse, createApiError } from '@/lib/utils';
 
 /**
@@ -28,7 +29,9 @@ export async function GET(req: NextRequest) {
     for (const c of enrolledCourses as any[]) {
       if (!byId.has(c.id)) byId.set(c.id, { ...c, enrolled: true });
     }
-    return NextResponse.json(createApiResponse({ courses: [...byId.values()] }), { status: 200 });
+    await ensureMojibakeRepair();
+    const courses = sanitizeTextDeep([...byId.values()]);
+    return NextResponse.json(createApiResponse({ courses }), { status: 200 });
   } catch (error: any) {
     if (error.name === 'AuthError') {
       return NextResponse.json(createApiError(error.errorCode, error.message), {

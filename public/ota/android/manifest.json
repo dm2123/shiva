@@ -1,7 +1,1 @@
-{
-  "latestVersion": 14,
-  "url": "https://the-shiva.onrender.com/ota/android/14/index.android.bundle",
-  "sha256": "936036a0c13e3ad175ee31342212619d6fcc967c3fea41923e1b70618a1d66c2",
-  "mandatory": false,
-  "notes": "v8.6 — Test analysis: accuracy, galat sawalon ki review, attempt history"
-}
+{"latestVersion":15,"mandatory":false,"notes":"v8.7 — Video player fix (Error 153) aur title saaf","sha256":"8406d7cf6f246175a2991120d1eafb97f7f3a48ada9d65bcbea648d2cf904b24","url":"https://the-shiva.onrender.com/ota/android/15/index.android.bundle"}

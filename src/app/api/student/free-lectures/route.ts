@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { listPublicCourses, getCourseSyllabusTree } from '@/services/academic.service';
+import { sanitizeTextDeep } from '@/lib/fix-mojibake';
 import { createApiResponse, createApiError } from '@/lib/utils';
 
 function formatDuration(totalSeconds: number): string | undefined {
@@ -64,6 +65,7 @@ export async function GET(req: NextRequest) {
     for (const c of freeCourses.slice(0, 6)) await collect(c, false);
     for (const c of paidCourses.slice(0, 6)) await collect(c, true);
 
+    sanitizeTextDeep(lectures);
     return NextResponse.json(
       createApiResponse({ lectures, total: lectures.length }),
       { status: 200 },

@@ -7,6 +7,7 @@ import {
   isStudentEnrolledInCourseDb,
 } from '@/lib/db';
 import { ensureAptitudePetLectures } from '@/lib/ensure-aptitude-content';
+import { ensureMojibakeRepair, sanitizeTextDeep } from '@/lib/fix-mojibake';
 import { createApiResponse, createApiError } from '@/lib/utils';
 
 /**
@@ -35,6 +36,8 @@ export async function GET(req: NextRequest) {
 
     // Self-heal seeded content (idempotent, never throws).
     await ensureAptitudePetLectures();
+    // Purani rows ke double-encoded akshar DB me hi theek karo (ek baar).
+    await ensureMojibakeRepair();
 
     const enrolled = await isStudentEnrolledInCourseDb(session.userId, course.id);
 
@@ -63,6 +66,7 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    sanitizeTextDeep(lectures);
     return NextResponse.json(createApiResponse({ lectures }), { status: 200 });
   } catch (error: any) {
     if (error.name === 'AuthError') {

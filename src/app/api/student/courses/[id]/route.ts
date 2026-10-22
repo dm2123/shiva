@@ -3,6 +3,7 @@ import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { findCourseByIdDb, findCourseBySlugDb, isStudentEnrolledInCourseDb, getLectureProgressDb } from '@/lib/db';
 import { getCourseSyllabusTree } from '@/services/academic.service';
+import { ensureMojibakeRepair, sanitizeTextDeep } from '@/lib/fix-mojibake';
 import { createApiResponse, createApiError } from '@/lib/utils';
 
 function formatDuration(totalSeconds: number): string | undefined {
@@ -36,6 +37,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
 
     const tree: any = await getCourseSyllabusTree(course.id);
+    await ensureMojibakeRepair();
+    sanitizeTextDeep(tree);
     const enrolled = await isStudentEnrolledInCourseDb(session.userId, course.id);
 
     const curriculum: any[] = [];
