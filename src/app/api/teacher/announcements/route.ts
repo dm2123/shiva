@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
     );
     return NextResponse.json({ success: true, data: announcements });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -39,6 +40,7 @@ export async function POST(request: NextRequest) {
     );
     return NextResponse.json({ success: true, id });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -52,6 +54,7 @@ export async function DELETE(request: NextRequest) {
     await mysqlPool.query('DELETE FROM TeacherAnnouncements WHERE id = ? AND teacherId = ?', [id, session.userId]);
     return NextResponse.json({ success: true });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

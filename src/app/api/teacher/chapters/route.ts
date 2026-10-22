@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
     const chapter = await createChapter(body);
     return NextResponse.json({ success: true, data: { chapter } }, { status: 201 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     if (error.message.includes('FORBIDDEN_OBJECT_ACCESS')) {
       return NextResponse.json({ success: false, error: { message: error.message } }, { status: 403 });
     }
@@ -38,6 +39,7 @@ export async function GET(req: NextRequest) {
     const chapters = await listChaptersBySubject(subjectId);
     return NextResponse.json({ success: true, data: { chapters } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     if (error.message.includes('FORBIDDEN_OBJECT_ACCESS')) {
       return NextResponse.json({ success: false, error: { message: error.message } }, { status: 403 });
     }

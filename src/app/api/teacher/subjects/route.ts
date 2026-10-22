@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
     const subject = await createSubject(body);
     return NextResponse.json({ success: true, data: { subject } }, { status: 201 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     if (error.message.includes('FORBIDDEN_OBJECT_ACCESS')) {
       return NextResponse.json({ success: false, error: { message: error.message } }, { status: 403 });
     }
@@ -37,6 +38,7 @@ export async function GET(req: NextRequest) {
     const subjects = await listSubjectsByCourse(courseId);
     return NextResponse.json({ success: true, data: { subjects } }, { status: 200 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     if (error.message.includes('FORBIDDEN_OBJECT_ACCESS')) {
       return NextResponse.json({ success: false, error: { message: error.message } }, { status: 403 });
     }

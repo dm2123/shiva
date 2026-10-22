@@ -18,6 +18,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const updated = await startLiveClass(id);
     return NextResponse.json({ data: updated, message: 'Live class started' });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     if (error.message === 'Unauthorized' || error.message === 'Forbidden') {
       return NextResponse.json({ error: error.message }, { status: error.message === 'Unauthorized' ? 401 : 403 });
     }

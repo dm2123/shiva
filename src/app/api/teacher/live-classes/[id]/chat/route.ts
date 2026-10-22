@@ -23,6 +23,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     const [rows]: any = await mysqlPool.query(query, queryParams);
     return NextResponse.json({ success: true, data: { messages: rows } });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return NextResponse.json({ success: false, error: { message: error.message } }, { status: 500 });
   }
 }
@@ -45,6 +46,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     return NextResponse.json({ success: true, data: { id, message } }, { status: 201 });
   } catch (error: any) {
+    if (error.name === 'AuthError') return NextResponse.json({ error: error.message }, { status: error.statusCode || 401 });
     return NextResponse.json({ success: false, error: { message: error.message } }, { status: 500 });
   }
 }
