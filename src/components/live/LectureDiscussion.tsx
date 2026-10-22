@@ -29,33 +29,33 @@ function Comment({ d, lectureId, onReply }: { d: Discussion; lectureId: string; 
   const [upvoted, setUpvoted] = useState(false);
 
   return (
-    <div className="border-l-2 border-gray-700 pl-3 py-2">
+    <div className="border-l-2 border-[#6d28d9]/30 pl-3 py-2">
       <div className="flex items-center gap-2 mb-1">
-        <span className="text-white text-sm font-medium">{d.authorName}</span>
+        <span className="text-[var(--student-text)] text-sm font-semibold">{d.authorName}</span>
         {d.timestampSeconds !== null && (
-          <span className="text-purple-400 text-xs bg-purple-900/30 px-1.5 py-0.5 rounded cursor-pointer hover:bg-purple-800/50">
+          <span className="text-[#6d28d9] text-xs bg-[#6d28d9]/10 px-1.5 py-0.5 rounded cursor-pointer hover:bg-[#6d28d9]/20">
             {formatTimestamp(d.timestampSeconds)}
           </span>
         )}
-        <span className="text-gray-500 text-xs">{new Date(d.createdAt).toLocaleDateString()}</span>
+        <span className="text-[var(--student-text-faint)] text-xs">{new Date(d.createdAt).toLocaleDateString()}</span>
       </div>
 
-      <p className="text-gray-300 text-sm mb-2">{d.content}</p>
+      <p className="text-[var(--student-text-secondary)] text-sm mb-2">{d.content}</p>
 
       <div className="flex items-center gap-3">
         <button
           onClick={() => setUpvoted(!upvoted)}
           className={`flex items-center gap-1 text-xs transition ${
-            upvoted ? 'text-green-400' : 'text-gray-500 hover:text-gray-300'
+            upvoted ? 'text-emerald-500' : 'text-[var(--student-text-faint)] hover:text-[var(--student-text-muted)]'
           }`}
         >
-          <span className={`text-lg ${upvoted ? 'text-green-400' : ''}`}>↑</span>
+          <span className={`text-lg ${upvoted ? 'text-emerald-500' : ''}`}>↑</span>
           {d.upvotes + (upvoted ? 1 : 0)}
         </button>
         {!d.parentId && (
           <button
             onClick={() => onReply(d.id)}
-            className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-300"
+            className="flex items-center gap-1 text-xs text-[var(--student-text-faint)] hover:text-[var(--student-text-muted)]"
           >
             💬
             Reply
@@ -114,15 +114,15 @@ export default function LectureDiscussion({ lectureId }: Props) {
   };
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 space-y-4">
-      <h3 className="text-white font-semibold">Discussion</h3>
+    <div className="rounded-xl border border-[var(--student-border)] bg-[var(--student-surface)] p-4 space-y-4">
+      <h3 className="text-[var(--student-text)] font-bold">Discussion</h3>
 
       {loading ? (
-        <p className="text-gray-500 text-sm">Loading...</p>
+        <p className="text-[var(--student-text-faint)] text-sm">Loading...</p>
       ) : (
         <div className="space-y-3 max-h-[400px] overflow-y-auto">
           {discussions.length === 0 && (
-            <p className="text-gray-500 text-sm">No comments yet. Start the discussion!</p>
+            <p className="text-[var(--student-text-faint)] text-sm">Abhi koi comment nahi hai. Pehla sawal ya tip tum likho!</p>
           )}
           {discussions.map((d) => (
             <Comment key={d.id} d={d} lectureId={lectureId} onReply={setReplyTo} />
@@ -131,9 +131,9 @@ export default function LectureDiscussion({ lectureId }: Props) {
       )}
 
       {replyTo && (
-        <div className="flex items-center gap-2 text-sm text-purple-400">
+        <div className="flex items-center gap-2 text-sm text-[#6d28d9]">
           Replying to comment #{replyTo}
-          <button onClick={() => setReplyTo(null)} className="text-gray-500 hover:text-white">
+          <button onClick={() => setReplyTo(null)} className="text-[var(--student-text-faint)] hover:text-[var(--student-text)]">
             Cancel
           </button>
         </div>
@@ -145,13 +145,13 @@ export default function LectureDiscussion({ lectureId }: Props) {
           onChange={(e) => setNewComment(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
           placeholder={replyTo ? 'Write a reply...' : 'Add a comment...'}
-          className="flex-1 bg-gray-900 border border-gray-600 rounded-md px-3 py-2 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-purple-500"
+          className="flex-1 bg-[var(--student-surface)] border border-[var(--student-border)] rounded-md px-3 py-2 text-[var(--student-text)] text-sm placeholder:text-[var(--student-text-faint)] focus:outline-none focus:border-[#6d28d9]"
           disabled={submitting}
         />
         <button
           onClick={handleSubmit}
           disabled={!newComment.trim() || submitting}
-          className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white p-2 rounded-md transition"
+          className="bg-[#6d28d9] hover:bg-[#2a1650] disabled:opacity-40 text-white p-2 rounded-md transition"
         >
           ➤
         </button>

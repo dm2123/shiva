@@ -86,12 +86,12 @@ export default function LiveChat({ liveClassId, userRole }: LiveChatProps) {
 
       <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0">
         {messages.length === 0 ? (
-          <p className="text-center text-sm text-slate-400 py-8">No messages yet. Start the conversation!</p>
+          <p className="text-center text-sm text-slate-400 py-8">Abhi koi message nahi hai. Pehla sawal ya greeting tum likho!</p>
         ) : (
           messages.map(msg => (
             <div key={msg.id} className="flex flex-col">
               <div className="flex items-baseline gap-2">
-                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                <span className="text-xs font-bold text-[#6d28d9] dark:text-violet-300">
                   {msg.email.split('@')[0]}
                 </span>
                 <span className="text-[10px] text-slate-400">
@@ -113,12 +113,12 @@ export default function LiveChat({ liveClassId, userRole }: LiveChatProps) {
             onChange={e => setNewMessage(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && sendMessage()}
             placeholder="Type a message..."
-            className="flex-1 px-3 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="flex-1 px-3 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#6d28d9]"
           />
           <button
             onClick={sendMessage}
             disabled={!newMessage.trim() || sending}
-            className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+            className="px-4 py-2 bg-[#6d28d9] text-white text-sm font-medium rounded-lg hover:bg-[#2a1650] disabled:opacity-50"
           >
             Send
           </button>

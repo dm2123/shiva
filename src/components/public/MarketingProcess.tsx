@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import Link from 'next/link';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -42,11 +43,19 @@ export default function MarketingProcess() {
         <div data-gsap="process-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {steps.map((step) => (
             <div key={step.n} data-gsap="process-step" className="shiva-feature-card p-7 space-y-3">
-              <p className="text-sm font-black text-[#c8a96e]">{step.n}</p>
+              <p className="text-sm font-black text-[#f5b942]">{step.n}</p>
               <h3 className="text-base font-bold text-white">{step.title}</h3>
               <p className="text-sm text-slate-400 leading-relaxed">{step.desc}</p>
             </div>
           ))}
+        </div>
+        <div className="mt-10 text-center">
+          <Link
+            href="/courses"
+            className="inline-block rounded-full bg-[#6d28d9] px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-violet-900/40 transition hover:bg-[#2a1650]"
+          >
+            Step 1 Se Shuru Karo — Courses Dekho →
+          </Link>
         </div>
       </div>
     </section>

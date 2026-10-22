@@ -2,6 +2,14 @@
 
 import { useState, type FormEvent } from 'react';
 
+/**
+ * ShivaHero — orphan landing hero (wiring parent ka faisla hai).
+ * Round 2 Stream E: map ke hero pattern par aligned — bahut bada extra-bold H1
+ * (CSS .hero h1 = 52px, 'Mission.' gradient .grad me), grey-toned subtext,
+ * solid purple 'Get Started' pill (.btn-primary .btn-pill), 4 stat cards,
+ * daaye FREE demo form card (#demoCard — nav/footer anchors isi par aate hain).
+ */
+
 const EXAMS = [
   'SSC CGL / CHSL / MTS',
   'Railway (RRB NTPC / Group D)',
@@ -10,9 +18,12 @@ const EXAMS = [
   'Teaching (CTET / UPTET / STET)',
 ];
 
+/* Map pattern: hero ke neeche 4 stat cards (flat icon + bold number/label + grey subtext).
+   Saare asal platform facts hi — koi invented count nahi. */
 const STATS = [
   { ico: '🎯', b: '100% Free', s: 'Starter Courses' },
   { ico: '📚', b: '5 Exams', s: 'Categories Covered' },
+  { ico: '🔴', b: 'Live Classes', s: '+ Recordings' },
   { ico: '🌐', b: 'Hindi + English', s: 'Bilingual Content' },
 ];
 
@@ -77,15 +88,45 @@ export default function ShivaHero() {
             ))}
           </div>
           <div className="hero-ctas">
-            <a href="/courses" className="btn btn-primary">
+            {/* Map pattern: bada solid 'Get Started' pill = primary CTA */}
+            <a href="/register" className="btn btn-primary btn-pill hero-cta-main">
+              Get Started →
+            </a>
+            <a href="/courses" className="btn btn-ghost btn-pill">
               Explore Courses
             </a>
-            <a
-              href="#demoCard"
-              className="btn btn-accent"
-            >
-              Book Free Demo
-            </a>
+          </div>
+          {/* Exam-goal chips — chip chunne par demo form ka exam pre-select hota hai */}
+          <div style={{ marginTop: 22 }}>
+            <p style={{ fontSize: 13, fontWeight: 700, color: '#c4b5fd', marginBottom: 10 }}>
+              Apna exam goal chuno:
+            </p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }} role="group" aria-label="Exam goals">
+              {EXAMS.map((x) => (
+                <button
+                  key={x}
+                  type="button"
+                  onClick={() => {
+                    setExam(x);
+                    document.getElementById('demoCard')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }}
+                  aria-pressed={exam === x}
+                  style={{
+                    padding: '8px 14px',
+                    borderRadius: 999,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    color: exam === x ? '#1e1b2e' : '#e9e4ff',
+                    background: exam === x ? '#f5b942' : 'rgba(124,58,237,.25)',
+                    border: `1.5px solid ${exam === x ? '#f5b942' : 'rgba(167,139,250,.55)'}`,
+                    transition: 'background .2s, color .2s',
+                  }}
+                >
+                  {x}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
         <div className="hero-card pop" id="demoCard">
@@ -103,6 +144,8 @@ export default function ShivaHero() {
               <input
                 type="text"
                 placeholder="Your Name"
+                aria-label="Your name"
+                autoComplete="name"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -111,12 +154,15 @@ export default function ShivaHero() {
               <input
                 type="tel"
                 placeholder="Mobile Number (10-digit)"
+                aria-label="Mobile number, 10 digits"
+                autoComplete="tel"
+                inputMode="numeric"
                 required
                 pattern="[0-9]{10}"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
               />
-              <select required value={exam} onChange={(e) => setExam(e.target.value)}>
+              <select required value={exam} onChange={(e) => setExam(e.target.value)} aria-label="Select your exam">
                 <option value="">Select Your Exam</option>
                 {EXAMS.map((x) => (
                   <option key={x}>{x}</option>

@@ -69,7 +69,7 @@ function Connectors() {
   return (
     <group ref={ref}>
       <lineSegments geometry={geometry}>
-        <lineBasicMaterial color="#c8a96e" transparent opacity={0.25} />
+        <lineBasicMaterial color="#f5b942" transparent opacity={0.25} />
       </lineSegments>
     </group>
   );
@@ -91,7 +91,7 @@ function CentralMark() {
       {/* Core distort sphere */}
       <Sphere args={[0.8, 64, 64]}>
         <MeshDistortMaterial
-          color="#c8a96e"
+          color="#f5b942"
           distort={0.25}
           speed={2}
           roughness={0.05}
@@ -107,7 +107,7 @@ function CentralMark() {
 
       {/* Second tilted ring */}
       <Torus args={[1.4, 0.025, 16, 100]} rotation={[Math.PI / 3, Math.PI / 6, 0]}>
-        <meshStandardMaterial color="#3b82f6" roughness={0.1} metalness={0.8} transparent opacity={0.4} />
+        <meshStandardMaterial color="#a78bfa" roughness={0.1} metalness={0.8} transparent opacity={0.4} />
       </Torus>
     </group>
   );
@@ -138,7 +138,7 @@ function ParticleField() {
 
   return (
     <points ref={ref} geometry={geo}>
-      <pointsMaterial color="#c8a96e" size={0.04} transparent opacity={0.5} sizeAttenuation />
+      <pointsMaterial color="#f5b942" size={0.04} transparent opacity={0.5} sizeAttenuation />
     </points>
   );
 }
@@ -147,18 +147,18 @@ function ParticleField() {
 function HeroScene() {
   const nodeData = [
     { position: [-2.8, 1.8, -1] as [number,number,number], color: '#8b5cf6', label: 'Courses', delay: 0 },
-    { position: [2.8, 1.4, -1] as [number,number,number],  color: '#3b82f6', label: 'Lectures', delay: 0.2 },
-    { position: [-3, -0.8, -0.5] as [number,number,number],color: '#14b8a6', label: 'Practice', delay: 0.4 },
-    { position: [3, -1, -0.5] as [number,number,number],   color: '#f59e0b', label: 'Tests', delay: 0.6 },
-    { position: [0, -2.6, -1] as [number,number,number],   color: '#f43f5e', label: 'Live', delay: 0.8 },
+    { position: [2.8, 1.4, -1] as [number,number,number],  color: '#a78bfa', label: 'Lectures', delay: 0.2 },
+    { position: [-3, -0.8, -0.5] as [number,number,number],color: '#f5b942', label: 'Practice', delay: 0.4 },
+    { position: [3, -1, -0.5] as [number,number,number],   color: '#f5b942', label: 'Tests', delay: 0.6 },
+    { position: [0, -2.6, -1] as [number,number,number],   color: '#6d28d9', label: 'Live', delay: 0.8 },
   ];
 
   return (
     <>
       <ambientLight intensity={0.4} />
-      <pointLight position={[5, 5, 5]} intensity={1.5} color="#c8a96e" />
+      <pointLight position={[5, 5, 5]} intensity={1.5} color="#f5b942" />
       <pointLight position={[-5, -3, 3]} intensity={1} color="#8b5cf6" />
-      <pointLight position={[0, -5, 2]} intensity={0.6} color="#3b82f6" />
+      <pointLight position={[0, -5, 2]} intensity={0.6} color="#a78bfa" />
 
       <CentralMark />
       <Connectors />

@@ -9,7 +9,9 @@ export default function HomePageClient({ children }: { children: React.ReactNode
   useEffect(() => {
     // Check if user has seen intro in this session
     const hasSeenIntro = sessionStorage.getItem('shiva-intro-seen');
-    if (hasSeenIntro) {
+    // Reduced-motion pasand karne walon ko intro animation nahi dikhana
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (hasSeenIntro || prefersReduced) {
       setShowIntro(false);
     }
   }, []);

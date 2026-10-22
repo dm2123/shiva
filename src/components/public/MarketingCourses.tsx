@@ -1,16 +1,20 @@
 import Link from 'next/link';
 import { listPublicCourses } from '@/services/academic.service';
 
+// MARKETING-A design pass: sirf theme parivar (deep purple / violet / gold) —
+// teal/blue/rose ke off-theme gradients hata diye gaye.
 const gradients = [
   'from-violet-900/60 to-violet-600/30',
-  'from-teal-900/60 to-teal-600/30',
-  'from-blue-900/60 to-blue-600/30',
-  'from-amber-900/60 to-amber-600/30',
-  'from-rose-900/60 to-rose-600/30',
+  'from-[#2a1650]/70 to-[#6d28d9]/30',
   'from-purple-900/60 to-purple-600/30',
+  'from-[#3b2a10]/60 to-[#f5b942]/25',
+  'from-violet-950/70 to-violet-500/25',
+  'from-[#2a1650]/60 to-[#f5b942]/20',
 ];
 
-const tags = ['SSC', 'Railway', 'Banking', 'Teaching', 'CSAT', 'Foundation'];
+// NOTE (audit): pehle yahan tags[i % length] se har course par cyclic nakli
+// exam tag (SSC/Railway/...) lagta tha jo asal course se match nahi karta tha —
+// fake data hone ke kaaran hata diya; ab badge sirf asal price se banta hai.
 
 export default async function MarketingCourses() {
   const courses = await listPublicCourses();
@@ -24,12 +28,12 @@ export default async function MarketingCourses() {
           <div className="section-header text-left">
             <span className="section-eyebrow section-eyebrow-violet">Curriculum</span>
             <h2 className="section-title text-white">
-              Courses built for top results.
+              Structured courses for your exam goal.
             </h2>
           </div>
           <Link
             href="/courses"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#c8a96e] hover:text-[#e8d5a3] transition-colors group self-start md:self-end"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[#b45309] hover:text-[#92400e] transition-colors group self-start md:self-end"
           >
             View all courses
             <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -49,16 +53,6 @@ export default async function MarketingCourses() {
             {courses.map((course, i) => (
               <div key={course.id} className="curriculum-card group cursor-pointer">
                 <div className={`curriculum-card-header bg-gradient-to-br ${gradients[i % gradients.length]}`}>
-                  <span
-                    className="exam-capsule-badge self-start"
-                    style={{
-                      background: '#c8a96e20',
-                      color: '#c8a96e',
-                      borderColor: '#c8a96e50',
-                    }}
-                  >
-                    {tags[i % tags.length]}
-                  </span>
                   <p className="text-xs text-white/70 font-semibold uppercase tracking-wide">
                     {course.price > 0 ? `₹${Number(course.price).toLocaleString('en-IN')}` : 'Free'}
                   </p>

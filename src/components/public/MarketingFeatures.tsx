@@ -27,7 +27,7 @@ const features = [
     ),
     title: 'Video Lectures',
     desc: 'High-quality lecture content authored by assigned educators. Watch, rewatch, and master at your pace.',
-    color: '#3b82f6',
+    color: '#a78bfa',
     tag: 'Self-Paced',
   },
   {
@@ -37,9 +37,9 @@ const features = [
       </svg>
     ),
     title: 'Practice & Tests',
-    desc: 'Chapter-wise tests, full-length mock exams, and adaptive practice sessions to sharpen your accuracy.',
+    desc: 'Chapter-wise tests, full-length mock exams, and exam-pattern practice sessions to sharpen your accuracy.',
     color: '#f59e0b',
-    tag: 'Adaptive',
+    tag: 'Exam Pattern',
   },
   {
     icon: (
@@ -49,7 +49,7 @@ const features = [
     ),
     title: 'Live Classes',
     desc: 'Attend real-time sessions with your faculty. Ask questions, participate, and learn alongside peers.',
-    color: '#f43f5e',
+    color: '#6d28d9',
     tag: 'Real-Time',
   },
   {
@@ -60,7 +60,7 @@ const features = [
     ),
     title: 'Doubt Resolution',
     desc: 'Raise questions on any lecture or topic and get authoritative answers directly from your teacher.',
-    color: '#14b8a6',
+    color: '#f5b942',
     tag: 'Direct Support',
   },
   {

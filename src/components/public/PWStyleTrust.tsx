@@ -45,7 +45,7 @@ function IconRocket({ className = '' }: { className?: string }) {
  */
 export default function PWStyleTrust() {
   const stats = [
-    { icon: <IconSpark className="h-7 w-7" />, title: '100% Free', sub: 'Starter course', tint: 'bg-emerald-100 text-emerald-700' },
+    { icon: <IconSpark className="h-7 w-7" />, title: '100% Free', sub: 'Aptitude Foundation course', tint: 'bg-emerald-100 text-emerald-700' },
     { icon: <IconGrid className="h-7 w-7" />, title: '5 Exams', sub: 'Categories covered', tint: 'bg-violet-100 text-violet-700' },
     { icon: <IconLang className="h-7 w-7" />, title: 'Hindi + English', sub: 'Bilingual content', tint: 'bg-amber-100 text-amber-700' },
     { icon: <IconRocket className="h-7 w-7" />, title: 'Growing', sub: 'New batches soon', tint: 'bg-sky-100 text-sky-700' },

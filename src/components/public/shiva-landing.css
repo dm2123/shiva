@@ -271,3 +271,208 @@
 .shiva-landing .mobile-menu{display:none;position:fixed;top:66px;left:0;right:0;background:var(--navy);border-bottom:2px solid #232044;z-index:49;padding:10px 20px 20px}
 .shiva-landing .mobile-menu.open{display:block}
 .shiva-landing .mobile-menu a{display:block;padding:12px 0;font-weight:600;border-bottom:1px solid #232044;color:#c4c0e8}
+
+/* ============================================================
+   WS10 — GLOBAL PUBLIC SHELL POLISH (2026-10-22, additive only)
+   Purani classes ke naam/maayne barkarar — sirf naye classes
+   aur shell-level refinements neeche add hue hain.
+   Theme tokens: deep purple #2a1650 / #6d28d9, gold #f5b942.
+   ============================================================ */
+.shiva-landing{
+  --deep:#2a1650; --deep-2:#1e0f3d; --violet:#6d28d9; --gold:#f5b942; --gold-hover:#e5a91f;
+  overflow-x:clip; /* horizontal overflow guard — 'clip' sticky header ko nahi todta */
+}
+.shiva-landing img,.shiva-landing video,.shiva-landing svg{max-width:100%}
+.shiva-landing :focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
+.shiva-landing .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* Skip link (layout.tsx) */
+.shiva-landing .shell-skip{position:fixed;top:-60px;left:16px;z-index:200;background:var(--gold);color:#1e1b2e;font-weight:800;font-size:14px;padding:12px 18px;border-radius:0 0 12px 12px;transition:top .2s}
+.shiva-landing .shell-skip:focus{top:0}
+
+/* Header depth + scrolled state (JS .is-scrolled on <header>) */
+.shiva-landing header{background:linear-gradient(180deg,#150e33,var(--navy));box-shadow:0 1px 0 #232044}
+.shiva-landing header.is-scrolled{box-shadow:0 10px 30px rgba(13,11,30,.45)}
+
+/* Announcement strip (header ke andar, sticky ke saath rehta hai) */
+.shiva-landing .announce{position:relative;background:linear-gradient(90deg,var(--deep),var(--violet),var(--deep));color:#ede9fe;text-align:center;font-size:13px;font-weight:600;padding:8px 48px 8px 16px;line-height:1.45}
+.shiva-landing .announce a{color:var(--gold);font-weight:800;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.shiva-landing .announce a:hover{color:#ffd97a}
+.shiva-landing .announce-close{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:none;border-radius:50%;background:transparent;color:#ede9fe;font-size:20px;line-height:1;cursor:pointer}
+.shiva-landing .announce-close:hover{background:rgba(255,255,255,.14);color:#fff}
+
+/* Logo wordmark (image logo ki pehchan same — text sirf saath add hai) */
+.shiva-landing .logo-text{display:flex;flex-direction:column;line-height:1.05;margin-left:10px}
+.shiva-landing .logo-name{font-size:19px;font-weight:900;letter-spacing:.4px;color:#fff;white-space:nowrap}
+.shiva-landing .logo-name-gold{color:var(--gold)}
+.shiva-landing .logo-tag{font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#a5a0d0;white-space:nowrap}
+
+/* Nav links — active state + bade tap targets */
+.shiva-landing .nav-links a{position:relative;padding:10px 2px;border-radius:8px}
+.shiva-landing .nav-links a::after{content:"";position:absolute;left:0;right:100%;bottom:4px;height:3px;border-radius:99px;background:var(--gold);transition:right .25s ease}
+.shiva-landing .nav-links a:hover::after,.shiva-landing .nav-links a.active::after{right:0}
+.shiva-landing .nav-links a.active{color:#fff}
+.shiva-landing .nav-cta{align-items:center}
+.shiva-landing .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px}
+.shiva-landing .nav-cta .btn{padding:10px 20px}
+
+/* Gold CTA — Join/Register + Dashboard (naya, .btn-primary untouched) */
+.shiva-landing .btn-gold{background:linear-gradient(180deg,#ffc95e,var(--gold));color:#2a1650;box-shadow:0 6px 18px rgba(245,185,66,.35)}
+.shiva-landing .btn-gold:hover{background:var(--gold-hover);color:#1e0f3d;transform:translateY(-1px)}
+
+/* Hamburger — animated 3-line icon, 44px target */
+.shiva-landing .hamburger{width:44px;height:44px;align-items:center;justify-content:center;border-radius:10px}
+.shiva-landing .hamburger:hover{background:rgba(255,255,255,.08)}
+.shiva-landing .burger-lines{display:flex;flex-direction:column;gap:5px;width:22px}
+.shiva-landing .burger-lines span{display:block;height:2.5px;border-radius:99px;background:#fff;transition:transform .25s ease,opacity .2s ease}
+.shiva-landing .burger-lines.open span:nth-child(1){transform:translateY(7.5px) rotate(45deg)}
+.shiva-landing .burger-lines.open span:nth-child(2){opacity:0}
+.shiva-landing .burger-lines.open span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg)}
+
+/* Mobile drawer — .mobile-menu contract same (.open = visible),
+   presentation upgraded: right-side full-height drawer + overlay */
+.shiva-landing .drawer-overlay{display:none}
+.shiva-landing .mobile-menu{box-shadow:-18px 0 44px rgba(0,0,0,.4)}
+.shiva-landing .mobile-menu a{min-height:48px;display:flex;align-items:center}
+.shiva-landing .mobile-menu a.active{color:var(--gold)}
+.shiva-landing .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:4px 0 12px;border-bottom:1px solid #232044;margin-bottom:6px}
+.shiva-landing .drawer-title{font-weight:900;letter-spacing:.6px;color:var(--gold);font-size:16px}
+.shiva-landing .drawer-close{width:44px;height:44px;border:none;border-radius:10px;background:rgba(255,255,255,.08);color:#fff;font-size:24px;line-height:1;cursor:pointer}
+.shiva-landing .drawer-cta{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+.shiva-landing .drawer-cta .btn{width:100%;min-height:50px;font-size:16px}
+
+/* Footer — brand row + saaf bottom bar */
+.shiva-landing .fbrand{display:flex;justify-content:space-between;align-items:flex-start;gap:28px;flex-wrap:wrap;padding-bottom:26px;margin-bottom:28px;border-bottom:1px solid #232044}
+.shiva-landing .fbrand h4{color:#fff;font-size:20px;letter-spacing:.4px;margin-bottom:10px}
+.shiva-landing .fbrand-desc{font-size:14px;color:#9ca3af;max-width:420px}
+.shiva-landing .fbrand-help{font-size:14px;color:#9ca3af}
+.shiva-landing .fbrand button.flink{background:none;border:none;cursor:pointer;font-family:inherit;font-size:14px;padding:0;text-align:left}
+.shiva-landing .fbrand-help strong{color:#e5e7eb}
+.shiva-landing .fgrid a,.shiva-landing .fgrid button.flink{min-height:32px;display:flex;align-items:center}
+.shiva-landing .fbot{align-items:center}
+.shiva-landing .fbot-links{display:inline-flex;align-items:center;gap:8px}
+.shiva-landing .fbot-links a{color:#8b87b0;padding:6px 2px}
+.shiva-landing .fbot-links a:hover{color:var(--gold)}
+
+/* Floats / modal — mobile-safe polish */
+.shiva-landing .cb-float{max-width:calc(100vw - 32px)}
+.shiva-landing .modal-box{max-height:calc(100dvh - 40px);overflow-y:auto}
+.shiva-landing .modal-box .x{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.shiva-landing .modal-box .x:hover{background:#f3f4f6}
+.shiva-landing .modal-box input{min-height:48px;font-size:16px /* iOS focus-zoom rokta hai */}
+
+/* Sticky offsets — header (66px) + announcement strip (~37px) */
+.shiva-landing [id]{scroll-margin-top:116px}
+
+/* ---- Shell responsive pass ---- */
+@media(max-width:900px){
+  .shiva-landing .hamburger{display:flex}
+  .shiva-landing .drawer-overlay{display:block;position:fixed;inset:0;background:rgba(10,6,24,.6);backdrop-filter:blur(2px);z-index:48;opacity:0;pointer-events:none;transition:opacity .25s ease}
+  .shiva-landing .drawer-overlay.open{opacity:1;pointer-events:auto}
+  .shiva-landing .mobile-menu{flex-direction:column;top:0;left:auto;right:0;bottom:0;width:min(86vw,340px);padding:16px 22px calc(22px + env(safe-area-inset-bottom));border-bottom:none;border-left:2px solid #232044;transform:translateX(105%);transition:transform .3s ease;overflow-y:auto;z-index:90}
+  .shiva-landing .mobile-menu.open{display:flex;transform:translateX(0)}
+  .shiva-landing .fbrand{flex-direction:column;gap:14px}
+}
+@media(max-width:640px){
+  .shiva-landing .nav{height:60px}
+  .shiva-landing .logo-tag{display:none}
+  .shiva-landing .logo-name{font-size:17px}
+  .shiva-landing .nav-cta .btn{padding:9px 14px;font-size:14px;min-height:40px}
+  .shiva-landing .announce{font-size:12px;padding:7px 44px 7px 10px}
+  .shiva-landing [id]{scroll-margin-top:108px}
+}
+@media(max-width:480px){
+  .shiva-landing .fgrid{grid-template-columns:1fr}
+  .shiva-landing .fbot{flex-direction:column;align-items:flex-start}
+  .shiva-landing .sticky-cta .btn{min-height:48px}
+}
+@media(prefers-reduced-motion:reduce){
+  .shiva-landing .reveal{opacity:1;transform:none;transition:none}
+  .shiva-landing .mobile-menu,.shiva-landing .drawer-overlay,.shiva-landing .burger-lines span,.shiva-landing .nav-links a::after{transition:none}
+  .shiva-landing{scroll-behavior:auto}
+}
+
+/* ============================================================
+   ROUND 2 · STREAM E — PUBLIC SHELL + HEADINGS SCALE (2026-10-22)
+   pw.live design map ke pattern par (structure/scale sirf — koi
+   copy/text borrow nahi). ADDITIVE hi hai: purane class contracts
+   (.btn, .btn-primary, .btn-ghost, .btn-gold, .sec-head, .hero,
+   .fgrid, .mobile-menu …) ke naam/maayne barkarar; neeche sirf
+   naye classes + shell-level scale refinements hain.
+   NAYE CLASSES: .btn-dark, .btn-pill, .hero-cta-main,
+   .mega-wrap/.mega-trigger/.mega-caret/.mega-panel/.mega-head/
+   .mega-cats/.mega-cat(-name/-desc)/.mega-right/.mega-tiles/
+   .mega-tile(-ico)/.mega-foot, .drawer-group,
+   .h-display/.h-section/.h-sub (heading utilities).
+   ============================================================ */
+.shiva-landing{--black:#12101f; --black-hover:#262040}
+
+/* KAALA solid pill — aakhri action buttons (Login/Register, map pattern) */
+.shiva-landing .btn-dark{background:var(--black);color:#fff;box-shadow:0 6px 18px rgba(10,6,24,.4)}
+.shiva-landing .btn-dark:hover{background:var(--black-hover);transform:translateY(-1px)}
+/* Khoob gol button utility (pill) — purani .btn radius contract untouched */
+.shiva-landing .btn-pill{border-radius:999px;padding-left:26px;padding-right:26px}
+/* Hero ka main 'Get Started' pill — thoda bada */
+.shiva-landing .hero-cta-main{padding:14px 32px;font-size:16px}
+
+/* ---- Headings scale (map: hero 48px+, section ~32px extra-bold + grey subtitle) ---- */
+.shiva-landing .hero h1{font-size:52px;line-height:1.08;letter-spacing:-.01em}
+.shiva-landing .sec-head h2,.shiva-landing .sec-title{font-size:32px;font-weight:800;line-height:1.22;letter-spacing:-.01em}
+.shiva-landing .sec-head p,.shiva-landing .sec-sub{line-height:1.65}
+/* Naye heading utilities — naye sections ke liye, purane pages par asar nahi */
+.shiva-landing .h-display{font-size:clamp(40px,5.2vw,54px);font-weight:900;line-height:1.08;letter-spacing:-.015em;color:var(--ink)}
+.shiva-landing .h-display .grad{background:linear-gradient(90deg,#a78bfa,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.shiva-landing .h-section{font-size:32px;font-weight:800;line-height:1.22;letter-spacing:-.01em;color:var(--ink)}
+.shiva-landing .h-section .hl{color:#6d28d9}
+.shiva-landing .h-sub{color:var(--muted);font-size:16px;line-height:1.65;max-width:640px}
+.shiva-landing .h-sub.center{margin-left:auto;margin-right:auto;text-align:center}
+
+/* ---- All Courses mega-dropdown ---- */
+.shiva-landing .mega-wrap{position:relative;flex-shrink:0}
+.shiva-landing .mega-trigger{gap:8px}
+.shiva-landing .mega-caret{display:inline-block;font-size:12px;transition:transform .2s ease}
+.shiva-landing .mega-trigger.open .mega-caret{transform:rotate(180deg)}
+.shiva-landing .mega-trigger.open{border-color:#fff;color:#fff}
+.shiva-landing .mega-panel{position:absolute;top:calc(100% + 16px);left:50%;transform:translateX(-50%);width:min(780px,94vw);background:#fff;color:var(--ink);border-radius:20px;box-shadow:0 30px 70px rgba(13,11,30,.35);border:1px solid var(--line);padding:22px;display:grid;grid-template-columns:250px 1fr;gap:26px;z-index:80;text-align:left}
+.shiva-landing .mega-head{font-size:11.5px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#9ca3af;margin-bottom:12px}
+.shiva-landing .mega-cats{border-right:1px solid #f0edff;padding-right:22px}
+.shiva-landing .mega-cat{display:block;padding:10px 12px;border-radius:12px;transition:background .15s ease}
+.shiva-landing .mega-cat:hover{background:#f5f2ff}
+.shiva-landing .mega-cat-name{display:block;font-weight:800;font-size:15px;color:var(--ink)}
+.shiva-landing .mega-cat:hover .mega-cat-name{color:#6d28d9}
+.shiva-landing .mega-cat-desc{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.shiva-landing .mega-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.shiva-landing .mega-tile{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1.5px solid var(--line);border-radius:14px;font-weight:700;font-size:13.5px;color:var(--ink);transition:border-color .15s ease,transform .15s ease}
+.shiva-landing .mega-tile:hover{border-color:var(--brand);transform:translateY(-2px)}
+.shiva-landing .mega-tile-ico{width:34px;height:34px;flex-shrink:0;border-radius:10px;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:17px}
+.shiva-landing .mega-foot{display:flex;gap:20px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid #f0edff}
+.shiva-landing .mega-foot a{font-size:13.5px;font-weight:800;color:#6d28d9}
+.shiva-landing .mega-foot a:hover{color:#4c1d95;text-decoration:underline;text-underline-offset:3px}
+
+/* Footer — 5 link columns (brand row .fbrand alag se upar hai) */
+.shiva-landing .fgrid{grid-template-columns:repeat(5,1fr)}
+
+/* Drawer group heading (Exam Categories) */
+.shiva-landing .drawer-group{font-size:11.5px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#8b87b0;margin:16px 0 2px;padding-top:14px;border-top:1px solid #232044}
+
+/* ---- R2 responsive ---- */
+@media(max-width:1120px){
+  .shiva-landing .nav-links{gap:16px;font-size:14.5px}
+  .shiva-landing .mega-panel{left:auto;right:-120px;transform:none}
+}
+@media(max-width:900px){
+  .shiva-landing .mega-wrap{display:none} /* categories drawer me milte hain */
+  .shiva-landing .hero h1{font-size:36px}
+  .shiva-landing .fgrid{grid-template-columns:1fr 1fr}
+  .shiva-landing .h-section,.shiva-landing .sec-head h2,.shiva-landing .sec-title{font-size:27px}
+}
+@media(max-width:640px){
+  /* Chhoti screen par header me sirf Join Free pill + hamburger — Login drawer me hai */
+  .shiva-landing .nav-cta .btn-dark{display:none}
+}
+@media(max-width:480px){
+  .shiva-landing .fgrid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  .shiva-landing .mega-caret,.shiva-landing .mega-tile,.shiva-landing .btn-dark{transition:none}
+}

@@ -125,6 +125,20 @@ export default function ShivaLogoIntro({ onComplete }: LogoIntroProps) {
     return () => { tl.kill(); };
   }, [onComplete]);
 
+  const skipIntro = () => {
+    setIsComplete(true);
+    onComplete?.();
+  };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') skipIntro();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (isComplete) return null;
 
   // Particle positions (orbital)
@@ -199,6 +213,15 @@ export default function ShivaLogoIntro({ onComplete }: LogoIntroProps) {
           />
         </div>
       </div>
+
+      {/* Skip — lambi intro har visitor ko rokna nahi chahiye */}
+      <button
+        type="button"
+        onClick={skipIntro}
+        className="absolute bottom-8 right-8 z-10 rounded-full border border-white/25 px-5 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10 hover:text-white"
+      >
+        Skip Intro →
+      </button>
 
       {/* Text below logo */}
       <div className="absolute top-[calc(50%+140px)] flex flex-col items-center gap-3">

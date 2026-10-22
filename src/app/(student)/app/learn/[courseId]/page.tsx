@@ -58,7 +58,7 @@ export default async function ClassroomPage({
   if (!isEnrolled) {
     return (
       <div className="max-w-[1200px] mx-auto px-4 py-8 pb-24">
-        <div className="relative overflow-hidden rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 p-8 lg:p-12 text-center text-white shadow-xl">
+        <div className="relative overflow-hidden rounded-3xl border border-[#2a1650]/20 bg-gradient-to-br from-[#2a1650] via-[#4c1d95] to-[#6d28d9] p-8 lg:p-12 text-center text-white shadow-xl">
           <div
             className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white/10 blur-2xl"
             aria-hidden="true"
@@ -71,20 +71,20 @@ export default async function ClassroomPage({
             <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/15 backdrop-blur">
               <IconShield size={28} className="text-white" />
             </div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-indigo-100">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-100">
               Classroom locked
             </p>
             <h2 className="mt-2 text-2xl font-black tracking-tight lg:text-3xl">
               Enroll to start learning
             </h2>
-            <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-indigo-100">
+            <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-violet-100">
               <b className="text-white">{course.title}</b> ki saari lectures, notes aur
               practice material unlock karne ke liye enroll karo.
               {Number(course.price || 0) === 0 ? ' Ye course bilkul FREE hai.' : ''}
             </p>
             <Link
               href={`/app/courses/${course.id}`}
-              className="mt-7 inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-sm font-black text-indigo-700 shadow-lg transition-transform hover:scale-[1.03] active:scale-95"
+              className="mt-7 inline-flex items-center gap-2 rounded-2xl bg-[#f5b942] px-8 py-3.5 text-sm font-black text-[#2a1650] shadow-lg transition-transform hover:scale-[1.03] active:scale-95"
             >
               <IconBookOpen size={16} />
               {Number(course.price || 0) === 0 ? 'Enroll FREE Now' : 'View Course & Enroll'}
@@ -113,22 +113,27 @@ export default async function ClassroomPage({
     return { ...subject, chapters: chaptersWithLectures };
   }));
 
-  // Flat lecture list with global numbering + chapter context
+  // Flat lecture list with global numbering + chapter context.
+  // Chapter start numbers are keyed by chapter id (not subject name) so two
+  // subjects with the same name can never merge into one group.
   let counter = 0;
   const allLectures: any[] = [];
-  const chaptersMeta = hierarchy.flatMap((s: any) =>
-    s.chapters.map((c: any) => {
-      const start = counter + 1;
-      counter += c.lectures.length;
+  const chapterStart = new Map<string, number>();
+  hierarchy.forEach((s: any) => {
+    s.chapters.forEach((c: any) => {
+      chapterStart.set(c.id, counter + 1);
       c.lectures.forEach((l: any) => {
         allLectures.push({ ...l, chapterTitle: c.title, subjectName: s.name, number: allLectures.length + 1 });
       });
-      return { ...c, subjectName: s.name, start, end: counter };
-    })
-  );
+      counter += c.lectures.length;
+    });
+  });
 
   const totalLectures = allLectures.length;
   const completedLectures = allLectures.filter((l: any) => l.progress?.isCompleted).length;
+  const inProgressLectures = allLectures.filter(
+    (l: any) => !l.progress?.isCompleted && Number(l.progress?.positionSeconds || 0) > 0
+  ).length;
   const progressPct = totalLectures === 0 ? 0 : Math.round((completedLectures / totalLectures) * 100);
   const totalSeconds = allLectures.reduce((sum: number, l: any) => sum + Number(l.durationSeconds || 0), 0);
 
@@ -138,7 +143,7 @@ export default async function ClassroomPage({
       <div className="max-w-[1200px] mx-auto px-4 py-8 pb-24">
         <Link
           href={`/app/courses/${course.id}`}
-          className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-indigo-600 hover:text-indigo-800 transition-colors"
+          className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#6d28d9] hover:text-[#2a1650] transition-colors"
         >
           <IconArrowLeft size={13} />
           Back to course
@@ -179,7 +184,7 @@ export default async function ClassroomPage({
       `}</style>
 
       {/* ── Sticky classroom top bar ─────────────────────────── */}
-      <div className="sticky top-0 z-30 border-b border-indigo-100/70 bg-white/95 backdrop-blur">
+      <div className="sticky top-0 z-30 border-b border-violet-100/70 bg-white/95 backdrop-blur">
         <div className="mx-auto max-w-[1280px] px-4 py-3">
           <div className="flex items-center gap-3">
             <Link
@@ -195,14 +200,29 @@ export default async function ClassroomPage({
                 {completedLectures}/{totalLectures} lectures · {progressPct}% complete
               </p>
             </div>
-            <div className="hidden sm:flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1.5">
-              <IconAward size={14} className="text-indigo-600" />
-              <span className="text-[11px] font-bold text-indigo-700">{progressPct}%</span>
+            {Number(effectiveLecture.progress?.positionSeconds || 0) > 30 &&
+              !effectiveLecture.progress?.isCompleted && (
+                <span className="hidden md:inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#f5b942]/15 px-3 py-1.5 text-[11px] font-bold text-[#92600a]">
+                  <IconClock size={12} />
+                  Resume · {formatDuration(Number(effectiveLecture.progress.positionSeconds))}
+                  {' '}par ruke the
+                </span>
+              )}
+            <div className="hidden sm:flex items-center gap-2 rounded-full bg-[#6d28d9]/10 px-3 py-1.5">
+              <IconAward size={14} className="text-[#6d28d9]" />
+              <span className="text-[11px] font-bold text-[#2a1650]">{progressPct}%</span>
             </div>
           </div>
-          <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-gray-100">
+          <div
+            className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-gray-100"
+            role="progressbar"
+            aria-valuenow={progressPct}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Course progress"
+          >
             <div
-              className="h-full rounded-full bg-gradient-to-r from-indigo-600 to-violet-500 transition-all"
+              className="h-full rounded-full bg-gradient-to-r from-[#6d28d9] to-[#f5b942] transition-all"
               style={{ width: `${progressPct}%` }}
             />
           </div>
@@ -231,28 +251,43 @@ export default async function ClassroomPage({
               />
             </div>
 
-            {/* Lecture context card */}
-            <div className="mt-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-bold text-indigo-700">
-                  Lecture {effectiveLecture.number}
+            {/* Lecture context strip — description Overview tab me hai,
+                yahan sirf position/status meta rakha hai (duplication nahi) */}
+            <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
+              <span className="rounded-full bg-[#6d28d9]/10 px-3 py-1 text-[11px] font-bold text-[#2a1650]">
+                Lecture {effectiveLecture.number} of {totalLectures}
+              </span>
+              {effectiveLecture.subjectName && (
+                <span className="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-semibold text-gray-600">
+                  {effectiveLecture.subjectName}
                 </span>
-                {effectiveLecture.chapterTitle && (
-                  <span className="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-semibold text-gray-600">
-                    {effectiveLecture.chapterTitle}
-                  </span>
-                )}
-                <span className="inline-flex items-center gap-1 text-[11px] font-medium text-gray-500">
-                  <IconClock size={12} />
-                  {formatDuration(effectiveLecture.durationSeconds)}
+              )}
+              {effectiveLecture.chapterTitle && (
+                <span className="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-semibold text-gray-600">
+                  {effectiveLecture.chapterTitle}
                 </span>
-              </div>
-              {effectiveLecture.description ? (
-                <p className="mt-3 text-sm leading-relaxed text-gray-600">{effectiveLecture.description}</p>
+              )}
+              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-gray-500">
+                <IconClock size={12} />
+                {formatDuration(effectiveLecture.durationSeconds)}
+              </span>
+              {effectiveLecture.progress?.isCompleted ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700">
+                  <IconCheckCircle size={12} /> Completed
+                </span>
+              ) : Number(effectiveLecture.progress?.positionSeconds || 0) > 0 ? (
+                <span className="rounded-full bg-[#f5b942]/15 px-3 py-1 text-[11px] font-bold text-[#92600a]">
+                  In progress
+                </span>
               ) : (
-                <p className="mt-3 text-sm text-gray-400">
-                  Is lecture ka description jald add hoga.
-                </p>
+                <span className="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-bold text-gray-500">
+                  Not started
+                </span>
+              )}
+              {inProgressLectures > 0 && (
+                <span className="ml-auto text-[11px] font-medium text-gray-400">
+                  {inProgressLectures} lecture{inProgressLectures > 1 ? 's' : ''} beech me chhoda hua
+                </span>
               )}
             </div>
 
@@ -260,21 +295,21 @@ export default async function ClassroomPage({
             {nextLecture && (
               <Link
                 href={lectureHref(nextLecture.id)}
-                className="group mt-4 flex items-center gap-4 rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50 to-violet-50 p-4 transition-shadow hover:shadow-md"
+                className="group mt-4 flex items-center gap-4 rounded-2xl border border-[#6d28d9]/15 bg-gradient-to-r from-[#6d28d9]/5 to-[#f5b942]/10 p-4 transition-shadow hover:shadow-md"
               >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#2a1650] to-[#6d28d9] text-white shadow">
                   <IconPlay size={18} className="ml-0.5" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-500">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#6d28d9]">
                     Up next · Lecture {nextLecture.number}
                   </p>
-                  <p className="truncate text-sm font-bold text-gray-900 group-hover:text-indigo-700">
+                  <p className="truncate text-sm font-bold text-gray-900 group-hover:text-[#6d28d9]">
                     {nextLecture.title}
                   </p>
                   <p className="text-[11px] text-gray-500">{formatDuration(nextLecture.durationSeconds)}</p>
                 </div>
-                <IconArrowLeft size={16} className="rotate-180 text-indigo-400 transition-transform group-hover:translate-x-1" />
+                <IconArrowLeft size={16} className="rotate-180 text-[#6d28d9] transition-transform group-hover:translate-x-1" />
               </Link>
             )}
           </main>
@@ -282,17 +317,17 @@ export default async function ClassroomPage({
           {/* ── Curriculum sidebar ─────────────────────────── */}
           <aside className="min-w-0 lg:sticky lg:top-32">
             <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-              <div className="border-b border-gray-100 bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-4 text-white">
+              <div className="border-b border-gray-100 bg-gradient-to-r from-[#2a1650] to-[#6d28d9] px-5 py-4 text-white">
                 <div className="flex items-center gap-2">
                   <IconList size={16} />
                   <h2 className="text-sm font-black tracking-tight">Course Content</h2>
                 </div>
-                <p className="mt-1 text-[11px] font-medium text-indigo-100">
+                <p className="mt-1 text-[11px] font-medium text-violet-100">
                   {totalLectures} lectures · {formatTotal(totalSeconds)} · {completedLectures} done
                 </p>
                 <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-white/25">
                   <div
-                    className="h-full rounded-full bg-white transition-all"
+                    className="h-full rounded-full bg-[#f5b942] transition-all"
                     style={{ width: `${progressPct}%` }}
                   />
                 </div>
@@ -305,16 +340,15 @@ export default async function ClassroomPage({
                       {subject.name}
                     </p>
                     <div className="space-y-2">
-                      {chaptersMeta
-                        .filter((c: any) => c.subjectName === subject.name)
-                        .map((chapter: any) => {
+                      {subject.chapters.map((chapter: any) => {
                           const done = chapter.lectures.filter((l: any) => l.progress?.isCompleted).length;
+                          const chapterPct = chapter.lectures.length === 0 ? 0 : Math.round((done / chapter.lectures.length) * 100);
                           const isOpen = chapter.lectures.some((l: any) => l.id === effectiveLecture.id);
                           return (
                             <details key={chapter.id} open={isOpen} className="learn-acc group rounded-xl border border-gray-100 bg-gray-50/60">
                               <summary className="flex items-center gap-2 px-3 py-2.5">
-                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-[11px] font-black text-indigo-700 shadow-sm">
-                                  {chapter.start}
+                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-[11px] font-black text-[#6d28d9] shadow-sm">
+                                  {chapterStart.get(chapter.id) ?? ''}
                                 </span>
                                 <span className="min-w-0 flex-1">
                                   <span className="block truncate text-[12.5px] font-bold text-gray-800">
@@ -322,6 +356,12 @@ export default async function ClassroomPage({
                                   </span>
                                   <span className="block text-[10.5px] font-medium text-gray-400">
                                     {done}/{chapter.lectures.length} completed
+                                  </span>
+                                  <span className="mt-1 block h-1 overflow-hidden rounded-full bg-gray-200">
+                                    <span
+                                      className="block h-full rounded-full bg-[#6d28d9] transition-all"
+                                      style={{ width: `${chapterPct}%` }}
+                                    />
                                   </span>
                                 </span>
                                 <IconChevronDown size={15} className="learn-chev shrink-0 text-gray-400" />
@@ -331,13 +371,21 @@ export default async function ClassroomPage({
                                   const lec = allLectures.find((l: any) => l.id === lecture.id) ?? lecture;
                                   const isActive = lec.id === effectiveLecture.id;
                                   const isDone = !!lec.progress?.isCompleted;
+                                  const posSec = Number(lec.progress?.positionSeconds || 0);
+                                  const durSec = Number(lec.durationSeconds || 0);
+                                  const watchedPct =
+                                    !isDone && posSec > 0 && durSec > 0
+                                      ? Math.min(99, Math.round((posSec / durSec) * 100))
+                                      : 0;
+                                  const inProgress = watchedPct > 0;
                                   return (
                                     <Link
                                       key={lec.id}
                                       href={lectureHref(lec.id)}
+                                      aria-current={isActive ? 'page' : undefined}
                                       className={`flex items-center gap-2.5 rounded-lg px-2 py-2 transition-colors ${
                                         isActive
-                                          ? 'bg-indigo-600 text-white shadow'
+                                          ? 'bg-[#6d28d9] text-white shadow'
                                           : 'text-gray-700 hover:bg-white'
                                       }`}
                                     >
@@ -347,10 +395,10 @@ export default async function ClassroomPage({
                                             ? 'bg-white/20 text-white'
                                             : isDone
                                               ? 'bg-emerald-100 text-emerald-700'
-                                              : 'bg-indigo-50 text-indigo-600'
+                                              : 'bg-[#6d28d9]/10 text-[#6d28d9]'
                                         }`}
                                       >
-                                        {isDone && !isActive ? (
+                                        {isDone ? (
                                           <IconCheckCircle size={15} />
                                         ) : (
                                           <IconPlay size={13} className="ml-px" />
@@ -358,15 +406,23 @@ export default async function ClassroomPage({
                                       </span>
                                       <span className="min-w-0 flex-1">
                                         <span className={`block truncate text-[12px] font-semibold ${isActive ? 'text-white' : ''}`}>
-                                          <span className={`mr-1.5 font-black ${isActive ? 'text-indigo-200' : 'text-gray-300'}`}>
+                                          <span className={`mr-1.5 font-black ${isActive ? 'text-violet-200' : 'text-gray-300'}`}>
                                             {lec.number}.
                                           </span>
                                           {lec.title}
                                         </span>
-                                        <span className={`block text-[10.5px] ${isActive ? 'text-indigo-100' : 'text-gray-400'}`}>
+                                        <span className={`block text-[10.5px] ${isActive ? 'text-violet-100' : 'text-gray-400'}`}>
                                           {formatDuration(lec.durationSeconds)}
-                                          {isDone && !isActive ? ' · Done' : ''}
+                                          {isDone ? ' · Watched ✓' : inProgress ? ` · Resume ${formatDuration(posSec)} · ${watchedPct}% watched` : ''}
                                         </span>
+                                        {inProgress && (
+                                          <span className={`mt-1 block h-1 overflow-hidden rounded-full ${isActive ? 'bg-white/25' : 'bg-gray-200'}`}>
+                                            <span
+                                              className={`block h-full rounded-full ${isActive ? 'bg-[#f5b942]' : 'bg-[#f5b942]'}`}
+                                              style={{ width: `${watchedPct}%` }}
+                                            />
+                                          </span>
+                                        )}
                                       </span>
                                     </Link>
                                   );

@@ -10,9 +10,9 @@ gsap.registerPlugin(ScrollTrigger);
 
 const categories = [
   { label: 'SSC', exams: ['CGL', 'CHSL', 'GD', 'MTS'], color: '#8b5cf6' },
-  { label: 'Railway', exams: ['NTPC', 'Group D'], color: '#14b8a6' },
-  { label: 'Banking', exams: ['IBPS', 'SBI', 'PO'], color: '#3b82f6' },
-  { label: 'Defence', exams: ['Army', 'Air Force', 'CRPF'], color: '#f43f5e' },
+  { label: 'Railway', exams: ['NTPC', 'Group D'], color: '#f5b942' },
+  { label: 'Banking', exams: ['IBPS', 'SBI', 'PO'], color: '#a78bfa' },
+  { label: 'Defence', exams: ['Army', 'Air Force', 'CRPF'], color: '#6d28d9' },
   { label: 'Police', exams: ['UP Police', 'दरोगा', 'PET'], color: '#f59e0b' },
   { label: 'Teaching', exams: ['CTET', 'Super TET', 'B.Ed.'], color: '#c8a96e' },
   { label: 'State', exams: ['UPSSSC', 'Lekhpal', 'PSU'], color: '#22d3ee' },
@@ -80,6 +80,13 @@ export default function MarketingExamCategories() {
             </Link>
           ))}
         </div>
+
+        <p className="mt-8 text-center text-sm text-slate-400">
+          Apna exam nahi mila?{' '}
+          <Link href="/courses" className="font-bold text-[#f5b942] hover:underline">
+            Saare courses dekho →
+          </Link>
+        </p>
       </div>
     </section>
   );

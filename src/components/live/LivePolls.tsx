@@ -123,7 +123,7 @@ export default function LivePolls({ liveClassId, userRole }: LivePollsProps) {
             <button
               onClick={createPoll}
               disabled={creating}
-              className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+              className="px-4 py-2 bg-[#6d28d9] text-white text-sm font-medium rounded-lg hover:bg-[#2a1650] disabled:opacity-50"
             >
               {creating ? 'Creating...' : 'Create Poll'}
             </button>
@@ -148,20 +148,20 @@ export default function LivePolls({ liveClassId, userRole }: LivePollsProps) {
                 disabled={poll.userVote !== null || voting}
                 className={`w-full text-left p-3 rounded-lg border transition-all ${
                   isSelected
-                    ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30'
+                    ? 'border-[#6d28d9] bg-violet-50 dark:bg-violet-900/30'
                     : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
                 } ${poll.userVote !== null ? 'cursor-default' : 'cursor-pointer'}`}
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-slate-700 dark:text-slate-300">{opt}</span>
                   {poll.userVote !== null && (
-                    <span className="text-xs font-bold text-indigo-600">{Math.round(pct)}%</span>
+                    <span className="text-xs font-bold text-[#6d28d9]">{Math.round(pct)}%</span>
                   )}
                 </div>
                 {poll.userVote !== null && (
                   <div className="mt-2 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-indigo-500 rounded-full transition-all"
+                      className="h-full bg-[#6d28d9] rounded-full transition-all"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
@@ -175,7 +175,7 @@ export default function LivePolls({ liveClassId, userRole }: LivePollsProps) {
       )}
 
       {!poll && userRole === 'STUDENT' && (
-        <p className="text-sm text-slate-500 text-center py-4">No active poll. Waiting for teacher to start one...</p>
+        <p className="text-sm text-slate-500 text-center py-4">Abhi koi poll active nahi hai. Teacher poll shuru karenge to yahan dikhega.</p>
       )}
     </div>
   );

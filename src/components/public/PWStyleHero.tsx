@@ -59,7 +59,7 @@ export default function PWStyleHero() {
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               href="/register"
-              className="inline-flex items-center justify-center bg-violet-700 hover:bg-violet-800 text-white font-extrabold text-base px-8 py-3.5 rounded-xl transition shadow-lg shadow-violet-200"
+              className="inline-flex items-center justify-center bg-[#6d28d9] hover:bg-[#2a1650] text-white font-extrabold text-base px-8 py-3.5 rounded-xl transition shadow-lg shadow-violet-200"
             >
               Start Learning Free →
             </Link>
@@ -69,6 +69,24 @@ export default function PWStyleHero() {
             >
               Explore Courses
             </Link>
+          </div>
+
+          {/* Exam-goal chips — apna goal chuno, courses wahi se shuru hote hain */}
+          <div className="mt-7">
+            <p className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-2.5">
+              Mera exam goal hai:
+            </p>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Exam goals">
+              {['SSC', 'Railway', 'Banking', 'Defence', 'Teaching'].map((goal) => (
+                <Link
+                  key={goal}
+                  href="/courses"
+                  className="rounded-full border border-violet-200 bg-white px-4 py-2 text-sm font-semibold text-violet-800 transition hover:border-[#f5b942] hover:bg-amber-50"
+                >
+                  {goal}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -93,7 +111,7 @@ export default function PWStyleHero() {
               <span className="text-violet-100 text-xs">Enroll anytime</span>
             </div>
             <Link
-              href="/courses"
+              href="/courses/aptitude-foundation-free"
               className="inline-block bg-white text-violet-800 font-extrabold text-sm px-6 py-3 rounded-xl hover:bg-violet-50 transition"
             >
               View Course →

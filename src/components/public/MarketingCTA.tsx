@@ -50,7 +50,7 @@ export default function MarketingCTA() {
               <span className="text-shiva-gold">exam journey?</span>
             </h2>
             <p className="text-slate-400 text-base max-w-lg mx-auto leading-relaxed">
-              Join THE SHIVA and get access to structured courses, live classes, adaptive tests, and expert doubt support — all in one platform.
+              Join THE SHIVA and get access to structured courses, live classes, exam-pattern tests, and doubt support for enrolled students — all in one platform.
             </p>
           </div>
 

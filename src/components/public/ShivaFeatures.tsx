@@ -4,7 +4,7 @@ const FEATS = [
   { ico: '📡', bg: '#ede9fe', t: 'Live Interactive Classes', d: 'Learn from expert faculty in real-time.' },
   { ico: '📝', bg: '#dcfce7', t: 'Practice & Mock Tests', d: 'Improve with real exam pattern tests.' },
   { ico: '📚', bg: '#dbeafe', t: 'Study Material', d: 'Notes, PDFs, eBooks and more.' },
-  { ico: '❓', bg: '#fef3c7', t: 'Doubt Solving', d: 'Get your doubts cleared 24x7.' },
+  { ico: '❓', bg: '#fef3c7', t: 'Doubt Solving', d: 'Ask doubts in class and in the app — support for enrolled students.' },
   { ico: '🎓', bg: '#fee2e2', t: 'Scholarship Test', d: 'Fee discount on selected courses.' },
   { ico: '📱', bg: '#ede9fe', t: 'Mobile App', d: 'Learn anytime, anywhere on your device.' },
 ];

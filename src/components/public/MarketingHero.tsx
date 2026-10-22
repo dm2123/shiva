@@ -140,6 +140,21 @@ export default function MarketingHero() {
                 <MagneticCTA href="/courses" data-gsap="cta" className="px-6 md:px-8 py-3 md:py-4 bg-[#c8a96e] hover:bg-[#e8d5a3] text-[#0a0a12] font-bold text-sm rounded-full shadow-xl">Explore Courses</MagneticCTA>
                 <MagneticCTA href="/register" data-gsap="cta" className="px-6 md:px-8 py-3 md:py-4 shiva-glass text-white font-semibold text-sm rounded-full border border-white/15">Start Learning →</MagneticCTA>
               </div>
+              {/* Exam-goal chips — goal pehle, course baad me */}
+              <div data-gsap="sub" className="pt-1">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Mera exam goal:</p>
+                <div className="flex flex-wrap gap-2" role="group" aria-label="Exam goals">
+                  {['SSC', 'Railway', 'Banking', 'Defence', 'Teaching'].map((goal) => (
+                    <Link
+                      key={goal}
+                      href="/courses"
+                      className="rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-semibold text-white transition hover:border-[#f5b942]/70 hover:text-[#f5b942]"
+                    >
+                      {goal}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
             <div data-gsap="visual" className="relative flex-1 h-[360px] md:h-[440px] lg:h-[520px] w-full lg:w-auto">
               <div className="absolute inset-0 rounded-full bg-violet-500/10 blur-3xl" aria-hidden="true" />
@@ -155,8 +170,8 @@ export default function MarketingHero() {
 
       {showPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="w-full max-w-md p-8 bg-[#0a0a12] border border-[#c8a96e]/30 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-300">
-            <button onClick={dismissPopup} className="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
+          <div className="relative w-full max-w-md p-8 bg-[#0a0a12] border border-[#c8a96e]/30 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-300">
+            <button onClick={dismissPopup} aria-label="Close" className="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
             <h2 className="text-2xl font-bold text-white mb-2">THE SHIVA</h2>
             <p className="text-slate-400 mb-6">Start your learning journey today.</p>
             <div className="space-y-3">

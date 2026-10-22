@@ -23,6 +23,136 @@ const labelStyle: React.CSSProperties = {
   marginBottom: 6,
 };
 
+/* ---- Presentation only: brand panel (desktop split / mobile compact) ---- */
+
+const BENEFITS = [
+  'Structured courses aur batches — step-by-step padhai',
+  'Live classes, tests aur practice — sab ek hi dashboard me',
+  'Doubts poochho aur apni progress track karo',
+];
+
+function BrandPanel() {
+  return (
+    <aside
+      className="relative hidden overflow-hidden lg:flex lg:flex-col"
+      style={{
+        background: 'linear-gradient(160deg,#2a1650 0%,#4c1d95 55%,#6d28d9 100%)',
+        color: '#fff',
+        padding: '44px 40px',
+      }}
+      aria-hidden="true"
+    >
+      <div
+        style={{
+          position: 'absolute',
+          top: -70,
+          right: -70,
+          width: 240,
+          height: 240,
+          borderRadius: '50%',
+          background: 'rgba(245,185,66,.16)',
+          filter: 'blur(30px)',
+        }}
+      />
+      <div style={{ position: 'relative' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 36 }}>
+          <div
+            style={{
+              width: 52,
+              height: 52,
+              borderRadius: 14,
+              overflow: 'hidden',
+              border: '2px solid rgba(245,185,66,.7)',
+              flexShrink: 0,
+            }}
+          >
+            <Image src="/assets/logo.jpeg" alt="" width={52} height={52} className="object-cover w-full h-full" />
+          </div>
+          <div>
+            <p style={{ fontSize: 19, fontWeight: 900, lineHeight: 1.1, letterSpacing: '.4px' }}>THE SHIVA</p>
+            <p style={{ fontSize: 12, color: '#f5b942', fontWeight: 700 }}>Learn • Practice • Grow</p>
+          </div>
+        </div>
+
+        <h2 style={{ fontSize: 30, fontWeight: 900, lineHeight: 1.2, marginBottom: 12 }}>
+          Naya password,
+          <br />
+          nayi shuruaat.
+        </h2>
+        <p style={{ fontSize: 14.5, color: '#ddd6fe', lineHeight: 1.65, marginBottom: 28 }}>
+          OTP verify karke naya password set karo — phir seedha apni padhai par wapas.
+        </p>
+
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 14 }}>
+          {BENEFITS.map((b) => (
+            <li key={b} style={{ display: 'flex', gap: 10, fontSize: 14, lineHeight: 1.55, color: '#ede9fe' }}>
+              <span
+                style={{
+                  width: 22,
+                  height: 22,
+                  borderRadius: '50%',
+                  background: 'rgba(245,185,66,.2)',
+                  color: '#f5b942',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 12,
+                  fontWeight: 900,
+                  flexShrink: 0,
+                  marginTop: 1,
+                }}
+              >
+                ✓
+              </span>
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <p style={{ position: 'relative', marginTop: 'auto', paddingTop: 32, fontSize: 12.5, color: '#c4b5fd' }}>
+        OTP kisi ke saath share mat karo.
+      </p>
+    </aside>
+  );
+}
+
+function MobileBrandHeader() {
+  return (
+    <div
+      className="lg:hidden"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        background: 'linear-gradient(120deg,#2a1650,#6d28d9)',
+        borderRadius: 16,
+        padding: '14px 16px',
+        marginBottom: 24,
+        color: '#fff',
+      }}
+    >
+      <div style={{ width: 44, height: 44, borderRadius: 12, overflow: 'hidden', border: '2px solid rgba(245,185,66,.7)', flexShrink: 0 }}>
+        <Image src="/assets/logo.jpeg" alt="THE SHIVA" width={44} height={44} className="object-cover w-full h-full" priority />
+      </div>
+      <div>
+        <p style={{ fontSize: 16, fontWeight: 900, lineHeight: 1.1 }}>THE SHIVA</p>
+        <p style={{ fontSize: 12, color: '#f5b942', fontWeight: 700 }}>Learn • Practice • Grow</p>
+      </div>
+    </div>
+  );
+}
+
+function EyeIcon({ open }: { open: boolean }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6d28d9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+      <circle cx="12" cy="12" r="3" />
+      {!open && <line x1="3" y1="3" x2="21" y2="21" />}
+    </svg>
+  );
+}
+
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const identifier = searchParams.get('identifier') || '';
@@ -116,207 +246,221 @@ function ResetPasswordForm() {
           }}
         />
 
-        <div style={{ position: 'relative', width: '100%', maxWidth: 440 }}>
+        <div style={{ position: 'relative', width: '100%', maxWidth: 960 }}>
           <div
-            className="pop"
+            className="pop grid overflow-hidden lg:grid-cols-[400px_1fr]"
             style={{
               background: '#fff',
               border: '2px solid var(--line)',
               borderRadius: 24,
-              padding: '36px 32px',
               boxShadow: '0 24px 60px rgba(109,40,217,.12)',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-              <div
-                style={{
-                  width: 72,
-                  height: 72,
-                  borderRadius: 20,
-                  overflow: 'hidden',
-                  boxShadow: '0 8px 24px rgba(109,40,217,.2)',
-                  border: '3px solid var(--line)',
-                }}
-              >
-                <Image src="/assets/logo.jpeg" alt="THE SHIVA" width={72} height={72} className="object-cover w-full h-full" priority />
-              </div>
-            </div>
+            <BrandPanel />
 
-            <h2 style={{ fontSize: 26, fontWeight: 900, textAlign: 'center', color: 'var(--brand-dark)', marginBottom: 6 }}>
-              Naya Password 🔐
-            </h2>
-            <p style={{ fontSize: 14, textAlign: 'center', color: 'var(--muted)', marginBottom: 20 }}>
-              {identifier ? (
-                <>{identifier} par bheja gaya 6-digit OTP dalo</>
-              ) : (
-                <>Pehle forgot-password page se OTP mangwao</>
+            <div style={{ padding: '36px 32px' }} className="sm:px-10">
+              <MobileBrandHeader />
+
+              <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--brand-dark)', marginBottom: 6 }}>
+                Naya Password
+              </h2>
+              <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 20 }}>
+                {identifier ? (
+                  <>{identifier} par bheja gaya 6-digit OTP dalo</>
+                ) : (
+                  <>Pehle forgot-password page se OTP mangwao</>
+                )}
+              </p>
+
+              {error && (
+                <div className="form-err show" role="alert">
+                  ⚠️ {error}
+                </div>
               )}
-            </p>
 
-            {error && (
-              <div className="form-err show" role="alert">
-                ⚠️ {error}
-              </div>
-            )}
-
-            {success ? (
-              <div style={{ textAlign: 'center' }}>
-                <div
-                  style={{
-                    background: '#dcfce7',
-                    border: '1px solid #86efac',
-                    borderRadius: 12,
-                    padding: 16,
-                    fontSize: 14,
-                    color: '#166534',
-                    marginBottom: 20,
-                  }}
-                >
-                  ✅ Password reset ho gaya! Ab naye password se login karo.
+              {success ? (
+                <div style={{ textAlign: 'center' }}>
+                  <div
+                    style={{
+                      background: '#dcfce7',
+                      border: '1px solid #86efac',
+                      borderRadius: 12,
+                      padding: 16,
+                      fontSize: 14,
+                      color: '#166534',
+                      marginBottom: 20,
+                    }}
+                    role="status"
+                  >
+                    ✅ Password reset ho gaya! Ab naye password se login karo.
+                  </div>
+                  <Link
+                    href="/login"
+                    className="btn btn-primary"
+                    style={{
+                      display: 'block',
+                      textAlign: 'center',
+                      width: '100%',
+                      padding: '14px',
+                      fontSize: 16,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    Login Karo →
+                  </Link>
                 </div>
-                <Link
-                  href="/login"
-                  className="btn btn-primary"
-                  style={{
-                    display: 'block',
-                    textAlign: 'center',
-                    width: '100%',
-                    padding: '14px',
-                    fontSize: 16,
-                    textDecoration: 'none',
-                  }}
-                >
-                  Login Karo →
-                </Link>
-              </div>
-            ) : !identifier || !sessionId ? (
-              <div style={{ textAlign: 'center' }}>
-                <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 20 }}>
-                  Ye page seedha nahi khulta. Pehle apna email/phone verify karo.
-                </p>
-                <Link
-                  href="/forgot-password"
-                  className="btn btn-primary"
-                  style={{
-                    display: 'block',
-                    textAlign: 'center',
-                    width: '100%',
-                    padding: '14px',
-                    fontSize: 16,
-                    textDecoration: 'none',
-                  }}
-                >
-                  ← Forgot Password par jao
-                </Link>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: 16 }}>
-                  <label htmlFor="rp-otp" style={labelStyle}>
-                    6-Digit OTP
-                  </label>
-                  <input
-                    id="rp-otp"
-                    type="text"
-                    inputMode="numeric"
-                    value={otpCode}
-                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                    required
-                    autoFocus
-                    autoComplete="one-time-code"
-                    placeholder="123456"
-                    style={{ ...inputStyle, letterSpacing: 8, textAlign: 'center', fontSize: 20, fontWeight: 800 }}
-                    onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
-                    onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
-                  />
+              ) : !identifier || !sessionId ? (
+                <div style={{ textAlign: 'center' }}>
+                  <p style={{ fontSize: 14, color: 'var(--muted)', marginBottom: 20 }}>
+                    Ye page seedha nahi khulta. Pehle apna email/phone verify karo.
+                  </p>
+                  <Link
+                    href="/forgot-password"
+                    className="btn btn-primary"
+                    style={{
+                      display: 'block',
+                      textAlign: 'center',
+                      width: '100%',
+                      padding: '14px',
+                      fontSize: 16,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    ← Forgot Password par jao
+                  </Link>
                 </div>
-                <div style={{ marginBottom: 16 }}>
-                  <label htmlFor="rp-new" style={labelStyle}>
-                    Naya Password
-                  </label>
-                  <div style={{ position: 'relative' }}>
+              ) : (
+                <form onSubmit={handleSubmit}>
+                  <div style={{ marginBottom: 16 }}>
+                    <label htmlFor="rp-otp" style={labelStyle}>
+                      6-Digit OTP
+                    </label>
                     <input
-                      id="rp-new"
-                      type={showPassword ? 'text' : 'password'}
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
+                      id="rp-otp"
+                      type="text"
+                      inputMode="numeric"
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                       required
-                      minLength={6}
-                      autoComplete="new-password"
-                      placeholder="Kam se kam 6 characters"
-                      style={{ ...inputStyle, paddingRight: 48 }}
+                      autoFocus
+                      autoComplete="one-time-code"
+                      placeholder="123456"
+                      aria-describedby="rp-otp-hint"
+                      style={{ ...inputStyle, letterSpacing: 8, textAlign: 'center', fontSize: 20, fontWeight: 800 }}
                       onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
                       onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
                     />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      style={{
-                        position: 'absolute',
-                        right: 14,
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontSize: 18,
-                        lineHeight: 1,
-                      }}
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                      {showPassword ? '🙈' : '👁️'}
-                    </button>
-                  </div>
-                </div>
-                <div style={{ marginBottom: 20 }}>
-                  <label htmlFor="rp-confirm" style={labelStyle}>
-                    Password Confirm Karo
-                  </label>
-                  <input
-                    id="rp-confirm"
-                    type={showPassword ? 'text' : 'password'}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    autoComplete="new-password"
-                    placeholder="Dobara wahi password"
-                    style={{
-                      ...inputStyle,
-                      borderColor:
-                        confirmPassword && !passwordsMatch ? '#fca5a5' : undefined,
-                    }}
-                    onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
-                    onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
-                  />
-                  {confirmPassword && !passwordsMatch && (
-                    <p style={{ fontSize: 12, color: '#991b1b', marginTop: 6, fontWeight: 600 }}>
-                      ⚠️ Dono password match nahi ho rahe
+                    <p id="rp-otp-hint" style={{ fontSize: 12, color: 'var(--muted)', marginTop: 6, textAlign: 'center' }}>
+                      {otpCode.length}/6 digits
                     </p>
-                  )}
-                </div>
-                <button
-                  type="submit"
-                  disabled={!canSubmit}
-                  className="btn btn-primary"
-                  style={{
-                    width: '100%',
-                    padding: '14px',
-                    fontSize: 16,
-                    opacity: canSubmit ? 1 : 0.5,
-                    cursor: canSubmit ? 'pointer' : 'not-allowed',
-                  }}
-                >
-                  {loading ? '⏳ Reset ho raha hai...' : 'Password Reset Karo →'}
-                </button>
-              </form>
-            )}
+                  </div>
+                  <div style={{ marginBottom: 16 }}>
+                    <label htmlFor="rp-new" style={labelStyle}>
+                      Naya Password
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        id="rp-new"
+                        type={showPassword ? 'text' : 'password'}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        required
+                        minLength={6}
+                        autoComplete="new-password"
+                        placeholder="Kam se kam 6 characters"
+                        style={{ ...inputStyle, paddingRight: 48 }}
+                        onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
+                        onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        style={{
+                          position: 'absolute',
+                          right: 14,
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          lineHeight: 1,
+                          display: 'inline-flex',
+                          padding: 2,
+                        }}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      >
+                        <EyeIcon open={showPassword} />
+                      </button>
+                    </div>
+                    {newPassword.length > 0 && newPassword.length < 6 && (
+                      <p style={{ fontSize: 12, color: '#991b1b', marginTop: 6, fontWeight: 600 }}>
+                        Password kam se kam 6 characters ka ho ({newPassword.length}/6)
+                      </p>
+                    )}
+                  </div>
+                  <div style={{ marginBottom: 20 }}>
+                    <label htmlFor="rp-confirm" style={labelStyle}>
+                      Password Confirm Karo
+                    </label>
+                    <input
+                      id="rp-confirm"
+                      type={showPassword ? 'text' : 'password'}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      autoComplete="new-password"
+                      placeholder="Dobara wahi password"
+                      aria-invalid={!!(confirmPassword && !passwordsMatch)}
+                      style={{
+                        ...inputStyle,
+                        borderColor:
+                          confirmPassword && !passwordsMatch ? '#fca5a5' : undefined,
+                      }}
+                      onFocus={(e) => (e.target.style.borderColor = 'var(--brand)')}
+                      onBlur={(e) => (e.target.style.borderColor = 'var(--line)')}
+                    />
+                    {confirmPassword && !passwordsMatch && (
+                      <p style={{ fontSize: 12, color: '#991b1b', marginTop: 6, fontWeight: 600 }} role="alert">
+                        ⚠️ Dono password match nahi ho rahe
+                      </p>
+                    )}
+                    {confirmPassword && passwordsMatch && (
+                      <p style={{ fontSize: 12, color: '#166534', marginTop: 6, fontWeight: 600 }}>
+                        ✓ Dono password match ho gaye
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={!canSubmit}
+                    className="btn btn-primary"
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      fontSize: 16,
+                      opacity: canSubmit ? 1 : 0.5,
+                      cursor: canSubmit ? 'pointer' : 'not-allowed',
+                    }}
+                  >
+                    {loading ? (
+                      <>
+                        <span className="animate-spin" style={{ display: 'inline-block', width: 15, height: 15, border: '2px solid rgba(255,255,255,.4)', borderTopColor: '#fff', borderRadius: '50%', verticalAlign: -2, marginRight: 8 }} />
+                        Reset ho raha hai...
+                      </>
+                    ) : (
+                      'Password Reset Karo →'
+                    )}
+                  </button>
+                </form>
+              )}
 
-            <div style={{ marginTop: 24, paddingTop: 20, borderTop: '2px solid var(--line)', textAlign: 'center' }}>
-              <p style={{ fontSize: 14, color: 'var(--muted)' }}>
-                <Link href="/login" style={{ fontWeight: 800, color: 'var(--brand)' }}>
-                  ← Login par wapas
-                </Link>
-              </p>
+              <div style={{ marginTop: 24, paddingTop: 20, borderTop: '2px solid var(--line)', textAlign: 'center' }}>
+                <p style={{ fontSize: 14, color: 'var(--muted)' }}>
+                  <Link href="/login" style={{ fontWeight: 800, color: 'var(--brand)' }}>
+                    ← Login par wapas
+                  </Link>
+                </p>
+              </div>
             </div>
           </div>
         </div>

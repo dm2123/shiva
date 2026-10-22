@@ -9,8 +9,8 @@ const FAQS = [
     a: 'SSC (CGL/CHSL/MTS/GD), Railway (RRB NTPC/Group D), Banking (IBPS/SBI), Defence (Agniveer/NDA/CDS) aur Teaching (CTET/UPTET/STET) — sabhi major government exams.',
   },
   {
-    q: 'Fees kitni hai? Kya EMI available hai?',
-    a: 'Batches ki fees launch par ghoshit hogi — affordable rakhne ka wada hai. EMI available hogi, aur scholarship test me 100% tak chhoot mil sakti hai.',
+    q: 'Fees kitni hai?',
+    a: 'Har course ki asal fees uske course page par dikhti hai — Aptitude Foundation course bilkul free hai. Payment ke available options checkout par dikhte hain, aur scholarship test se selected courses par fee discount mil sakta hai.',
   },
   {
     q: 'Kya free demo class milti hai?',
@@ -22,11 +22,11 @@ const FAQS = [
   },
   {
     q: 'Doubt kaise poochhen?',
-    a: 'App me question ki photo kheecho — expert 24x7 me answer dete hain. Live class me turant poochh sakte ho.',
+    a: 'Enrolled students app me apna doubt bhej sakte hain aur live class me teacher se seedha poochh sakte hain. Doubt support ka exact samay batch ke hisaab se hota hai.',
   },
   {
     q: 'Kya mobile app hai?',
-    a: 'Haan! Android app jald aa raha hai — live classes, DPP, test series aur streaks sab app me. Website par bane raho.',
+    a: 'Haan, THE SHIVA ka Android app hai — courses, tests aur apni progress ek hi jagah. App na ho to website par bhi courses explore karke register kar sakte ho.',
   },
 ];
 
@@ -44,10 +44,19 @@ export default function ShivaFaq() {
           {FAQS.map((f, i) => (
             <Reveal key={f.q} delay={i % 3}>
               <div className={`faq-item${open === i ? ' open' : ''}`}>
-                <button className="faq-q" onClick={() => setOpen(open === i ? null : i)}>
+                <button
+                  className="faq-q"
+                  onClick={() => setOpen(open === i ? null : i)}
+                  aria-expanded={open === i}
+                  aria-controls={`shiva-faq-a-${i}`}
+                >
                   {f.q}
                 </button>
-                <div className="faq-a" style={open === i ? { maxHeight: 300 } : undefined}>
+                <div
+                  className="faq-a"
+                  id={`shiva-faq-a-${i}`}
+                  style={open === i ? { maxHeight: 300 } : undefined}
+                >
                   <div>{f.a}</div>
                 </div>
               </div>

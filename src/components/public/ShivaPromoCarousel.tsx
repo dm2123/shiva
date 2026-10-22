@@ -48,6 +48,7 @@ const SLIDES = [
 
 export default function ShivaPromoCarousel() {
   const [idx, setIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
   const total = SLIDES.length;
 
   const go = useCallback(
@@ -56,13 +57,23 @@ export default function ShivaPromoCarousel() {
   );
 
   useEffect(() => {
+    // Autoplay band rakho jab user hover/focus kare ya reduced-motion pasand ho
+    if (paused) return;
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const t = setInterval(() => go(idx + 1), 5000);
     return () => clearInterval(t);
-  }, [idx, go]);
+  }, [idx, go, paused]);
 
   return (
     <>
-      <div className="promo-carousel" aria-label="Promotions">
+      <div
+        className="promo-carousel"
+        aria-label="Promotions"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
+      >
         <div
           className="promo-track"
           style={{ transform: `translateX(-${idx * 100}%)` }}

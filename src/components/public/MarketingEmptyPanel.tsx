@@ -23,7 +23,10 @@ export default function MarketingEmptyPanel({
           <h2 className="text-xl md:text-2xl lg:text-2xl font-bold text-white">{title}</h2>
           <p className="text-slate-400 text-sm md:text-base max-w-xl mx-auto leading-relaxed">{description}</p>
           {href && cta && (
-            <Link href={href} className="inline-flex items-center gap-2 text-sm font-semibold text-[#c8a96e] hover:text-[#e8d5a3] transition-colors">
+            <Link
+              href={href}
+              className="inline-flex items-center gap-2 rounded-full border border-[#f5b942]/50 px-6 py-2.5 text-sm font-bold text-[#f5b942] transition-colors hover:bg-[#f5b942] hover:text-[#2a1650]"
+            >
               {cta} →
             </Link>
           )}

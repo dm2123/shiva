@@ -28,6 +28,14 @@ function IconCoin({ className = '' }: { className?: string }) {
     </svg>
   );
 }
+function IconBook({ className = '' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z" />
+      <path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5" />
+    </svg>
+  );
+}
 function IconShield({ className = '' }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
@@ -65,6 +73,13 @@ const CATEGORIES = [
     exams: ['Agniveer', 'NDA', 'CDS'],
     icon: <IconShield className="h-9 w-9" />,
     tint: 'bg-orange-100 text-orange-700',
+  },
+  {
+    title: 'Teaching',
+    desc: 'CTET, UPTET, STET',
+    exams: ['CTET', 'UPTET', 'STET'],
+    icon: <IconBook className="h-9 w-9" />,
+    tint: 'bg-violet-100 text-violet-700',
   },
 ];
 

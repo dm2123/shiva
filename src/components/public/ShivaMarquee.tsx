@@ -1,4 +1,4 @@
-const ITEMS = ['SSC CGL 2026', 'RRB NTPC', 'IBPS PO', 'Agniveer', 'CTET', 'SSC CHSL', 'SBI Clerk', 'NDA', 'UPTET', 'SSC MTS'];
+const ITEMS = ['SSC CGL', 'RRB NTPC', 'IBPS PO', 'Agniveer', 'CTET', 'SSC CHSL', 'SBI Clerk', 'NDA', 'UPTET', 'SSC MTS', 'RRB Group D', 'SSC GD'];
 
 export default function ShivaMarquee() {
   const row = [...ITEMS, ...ITEMS];

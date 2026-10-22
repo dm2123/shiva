@@ -1,171 +1,124 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useRef, useEffect } from 'react';
-import gsap from 'gsap';
 import {
-  IconHome, IconBook, IconPencil, IconClipboard, IconTrendingUp,
-  IconRadio, IconUsers, IconHelpCircle, IconMessageCircle,
-  IconBell, IconAward, IconUser, IconSettings, IconTarget, IconPieChart,
-  IconX, IconRefresh, IconBookOpen, IconZap, IconCalendar, IconGrid,
-  IconMic, IconFileText, IconStar, IconUpload, IconVideo
+  IconHome, IconBook, IconBookOpen, IconPlay, IconRadio, IconVideo,
+  IconClipboard, IconPencil, IconFileText, IconClock, IconTarget,
+  IconHash, IconLayers, IconHelpCircle, IconUsers, IconMessageCircle,
+  IconGrid, IconUser, IconAward, IconSettings,
 } from './StudentIcons';
 
-const navGroups = [
+/**
+ * Student portal ka grouped sidebar nav — SHIVA ke ASAL routes se bana.
+ * Har href src/app/(student)/app ke andar asal route hai (koi invent nahi).
+ * Desktop sidebar aur mobile drawer (PWStudentMenu) dono yahi list use karte hain.
+ */
+export const SIDEBAR_GROUPS = [
   {
-    title: 'LEARNING',
+    title: 'LEARN',
     items: [
-      { name: 'Home', href: '/app', icon: IconHome },
-      { name: 'My Courses', href: '/app/courses', icon: IconBook },
+      { name: 'Dashboard', href: '/app', icon: IconHome },
+      { name: 'My Courses', href: '/app/my-courses', icon: IconBook },
+      { name: 'Learn', href: '/app/learn', icon: IconPlay },
       { name: 'Live Classes', href: '/app/live', icon: IconRadio },
       { name: 'Recordings', href: '/app/recordings', icon: IconVideo },
     ],
   },
   {
-    title: 'PRACTICE & TESTS',
+    title: 'PRACTICE',
     items: [
+      { name: 'Tests', href: '/app/tests', icon: IconClipboard },
       { name: 'Practice', href: '/app/practice', icon: IconPencil },
-      { name: 'DPP', href: '/app/dpp', icon: IconClipboard },
-      { name: 'PYQ', href: '/app/pyq', icon: IconFileText },
+      { name: 'DPP', href: '/app/dpp', icon: IconFileText },
+      { name: 'PYQ', href: '/app/pyq', icon: IconClock },
       { name: 'Question Bank', href: '/app/question-bank', icon: IconTarget },
-      { name: 'Video Solutions', href: '/app/video-solutions', icon: IconVideo },
-      { name: 'Assignments', href: '/app/assignments', icon: IconBookOpen },
-      { name: 'Tests', href: '/app/tests', icon: IconTarget },
     ],
   },
   {
-    title: 'PLANNING & ANALYSIS',
+    title: 'LIBRARY',
     items: [
-      { name: 'Study Plan', href: '/app/study-plan', icon: IconCalendar },
-      { name: 'Results', href: '/app/results', icon: IconPieChart },
-      { name: 'Streak', href: '/app/streak', icon: IconAward },
-      { name: 'Leaderboard', href: '/app/leaderboard', icon: IconAward },
-      { name: 'Bookmarks', href: '/app/bookmarks', icon: IconStar },
+      { name: 'eBooks', href: '/app/ebooks', icon: IconBookOpen },
+      { name: 'Formula Sheets', href: '/app/formula-sheets', icon: IconHash },
+      { name: 'NCERT', href: '/app/ncert', icon: IconLayers },
     ],
   },
   {
-    title: 'TOOLS & SUPPORT',
+    title: 'SUPPORT',
     items: [
-      { name: 'e-Books', href: '/app/ebooks', icon: IconBook },
-      { name: 'Formula Sheets', href: '/app/formula-sheets', icon: IconFileText },
-      { name: 'Offline Downloads', href: '/app/offline-downloads', icon: IconVideo },
-      { name: 'Announcements', href: '/app/announcements', icon: IconBell },
       { name: 'Doubts', href: '/app/doubts', icon: IconHelpCircle },
+      { name: 'Mentors', href: '/app/mentors', icon: IconUsers },
       { name: 'Counsellor', href: '/app/counsellor', icon: IconMessageCircle },
-      { name: 'Offline Centres', href: '/app/offline-centres', icon: IconGrid },
-      { name: 'Community', href: '/app/community', icon: IconMessageCircle },
-      { name: 'Notifications', href: '/app/notifications/preferences', icon: IconBell },
-      { name: 'Certificates', href: '/app/certificates', icon: IconAward },
+      { name: 'Community', href: '/app/community', icon: IconGrid },
     ],
   },
-];
+  {
+    title: 'ACCOUNT',
+    items: [
+      { name: 'Profile', href: '/app/profile', icon: IconUser },
+      { name: 'Scholarships', href: '/app/scholarships', icon: IconAward },
+      { name: 'Settings', href: '/app/settings', icon: IconSettings },
+    ],
+  },
+] as const;
 
-const bottomItems = [
-  { name: 'Profile', href: '/app/profile', icon: IconUser },
-  { name: 'Settings', href: '/app/settings', icon: IconSettings },
-];
+/** Boundary-aware active check — /app/learn ko /app/leaderboard se alag rakhta hai. */
+export function isSidebarItemActive(pathname: string, href: string) {
+  if (href === '/app') return pathname === '/app';
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
-export default function StudentSidebar() {
-  const pathname = usePathname();
-  const sidebarRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const sidebar = sidebarRef.current;
-    if (!sidebar) return;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
-    gsap.fromTo(
-      sidebar,
-      { x: -20, opacity: 0 },
-      { x: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }
-    );
-  }, []);
-
-  const isActive = (href: string) => {
-    if (href === '/app') return pathname === '/app';
-    return pathname.startsWith(href);
-  };
+export function StudentSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+  const pathname = usePathname() || '/app';
 
   return (
-    <aside
-      ref={sidebarRef}
-      className="hidden lg:flex flex-col fixed top-0 left-0 z-40 h-screen bg-[var(--sidebar-bg)] border-r border-[var(--sidebar-border)]"
-      style={{ width: 'var(--sidebar-width)' }}
-      role="navigation"
-      aria-label="Student sidebar navigation"
-    >
-      {/* Logo */}
-      <div className="flex items-center px-6 h-[var(--header-height)] border-b border-[var(--student-border-light)] flex-shrink-0">
-        <Image
-          src="/assets/logo.jpeg"
-          alt="THE SHIVA"
-          width={40}
-          height={40}
-          className="rounded-xl shadow-sm"
-        />
-      </div>
-
-      {/* Primary Navigation */}
-      <nav className="flex-1 overflow-y-auto custom-scrollbar px-3 py-4 space-y-4">
-        {navGroups.map((group) => (
-          <div key={group.title}>
-            <h3 className="px-3 text-[10px] font-bold text-[var(--student-text-faint)] uppercase tracking-wider mb-1.5">
-              {group.title}
-            </h3>
-            <div className="space-y-0.5">
-              {group.items.map((item) => {
-                const active = isActive(item.href);
-                const ItemIcon = item.icon;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`group relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 ${
-                      active
-                        ? 'bg-[var(--sidebar-active-bg)] text-[var(--sidebar-active-text)] font-semibold'
-                        : 'text-[var(--student-text-muted)] hover:text-[var(--student-text)] hover:bg-[var(--student-surface-hover)]'
-                    }`}
-                    aria-current={active ? 'page' : undefined}
-                  >
-                    {/* Active indicator bar */}
-                    {active && (
-                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-[var(--student-primary)]" />
-                    )}
-                    <ItemIcon size={18} className={active ? 'text-[var(--sidebar-active-text)]' : 'text-[var(--student-text-faint)] group-hover:text-[var(--student-text-muted)]'} />
-                    <span>{item.name}</span>
-                  </Link>
-                );
-              })}
-            </div>
+    <nav className="px-3 py-4 space-y-5" aria-label="Student navigation">
+      {SIDEBAR_GROUPS.map((group) => (
+        <div key={group.title}>
+          <h3 className="px-3 mb-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400">
+            {group.title}
+          </h3>
+          <div className="space-y-0.5">
+            {group.items.map((item) => {
+              const active = isSidebarItemActive(pathname, item.href);
+              const ItemIcon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={onNavigate}
+                  aria-current={active ? 'page' : undefined}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-[13.5px] transition-colors ${
+                    active
+                      ? 'bg-violet-50 text-[#6d28d9] font-semibold'
+                      : 'text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900'
+                  }`}
+                >
+                  <ItemIcon size={18} className={active ? 'text-[#6d28d9]' : 'text-gray-400'} />
+                  <span className="truncate">{item.name}</span>
+                </Link>
+              );
+            })}
           </div>
-        ))}
-      </nav>
+        </div>
+      ))}
+    </nav>
+  );
+}
 
-      {/* Bottom Navigation */}
-      <div className="px-3 py-3 border-t border-[var(--student-border-light)] space-y-0.5 flex-shrink-0">
-        {bottomItems.map((item) => {
-          const active = isActive(item.href);
-          const ItemIcon = item.icon;
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`group flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 ${
-                active
-                  ? 'bg-[var(--sidebar-active-bg)] text-[var(--sidebar-active-text)] font-semibold'
-                  : 'text-[var(--student-text-muted)] hover:text-[var(--student-text)] hover:bg-[var(--student-surface-hover)]'
-              }`}
-              aria-current={active ? 'page' : undefined}
-            >
-              <ItemIcon size={18} className={active ? 'text-[var(--sidebar-active-text)]' : 'text-[var(--student-text-faint)] group-hover:text-[var(--student-text-muted)]'} />
-              <span>{item.name}</span>
-            </Link>
-          );
-        })}
-      </div>
+/**
+ * Desktop grouped sidebar — safed, sticky full-height.
+ * Mobile par ye render nahi hota (hidden); wahan PWStudentMenu ka drawer
+ * yahi StudentSidebarNav dikhata hai.
+ */
+export default function StudentSidebar() {
+  return (
+    <aside
+      className="hidden lg:flex lg:flex-col sticky top-0 self-start h-screen w-[264px] shrink-0 bg-white border-r border-gray-200 overflow-y-auto"
+      role="navigation"
+      aria-label="Student sidebar"
+    >
+      <StudentSidebarNav />
     </aside>
   );
 }

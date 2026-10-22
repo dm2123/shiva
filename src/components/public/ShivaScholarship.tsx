@@ -14,8 +14,11 @@ export default function ShivaScholarship() {
         <Reveal>
           <div className="scholar">
             <div>
-              <h2>🎓 SHIVA Scholarship Test — 100% Tak Chhoot!</h2>
-              <p>Har mahine scholarship test. Top rankers ko poori fees me chhoot.</p>
+              <h2>🎓 SHIVA Scholarship Test — <span className="hl">Fee Me Chhoot Ka Mauka</span></h2>
+              <p>
+                Scholarship test me apni taiyaari dikhao — performance ke basis par selected courses par
+                fee discount mil sakta hai. Test ki date aur shartein registration ke baad confirm hoti hain.
+              </p>
             </div>
             <a className="btn" style={{ background: '#1e1b2e', color: '#fff' }} href="/register">
               Register Free →

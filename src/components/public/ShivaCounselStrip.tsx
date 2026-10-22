@@ -17,7 +17,13 @@ export default function ShivaCounselStrip() {
               <a className="btn btn-accent" href="#demoCard">
                 Book Free Demo →
               </a>
-              <button className="btn btn-ghost" onClick={openCallbackModal}>
+              {/* .btn-ghost is white-text (dark-bg variant in CSS) — this strip is a
+                  white card, so the dark text/border is set explicitly. */}
+              <button
+                className="btn btn-ghost"
+                style={{ color: '#4c1d95', borderColor: '#6d28d9' }}
+                onClick={openCallbackModal}
+              >
                 📞 Request Callback
               </button>
             </div>

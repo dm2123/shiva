@@ -9,6 +9,12 @@ export default function Reveal({ children, className = '', delay = 0 }: { childr
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // Reduced-motion / no-IO fallback: content must never stay hidden.
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced || typeof IntersectionObserver === 'undefined') {
+      el.classList.add('visible');
+      return;
+    }
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -18,7 +24,7 @@ export default function Reveal({ children, className = '', delay = 0 }: { childr
           }
         });
       },
-      { threshold: 0.12 }
+      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
     );
     io.observe(el);
     return () => io.disconnect();

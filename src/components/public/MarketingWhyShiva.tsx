@@ -18,13 +18,13 @@ const whyItems = [
     number: '02',
     title: 'Assigned expert faculty, not a marketplace',
     desc: 'Teachers are provisioned by administrators and assigned to specific courses — ensuring quality control and institutional accountability.',
-    color: '#3b82f6',
+    color: '#a78bfa',
   },
   {
     number: '03',
     title: 'Isolated role portals with strict RBAC',
     desc: 'Student, Teacher, and Admin environments are completely separated — your data, workspace, and tools are private to your role.',
-    color: '#14b8a6',
+    color: '#f5b942',
   },
   {
     number: '04',
@@ -101,11 +101,14 @@ export default function MarketingWhyShiva() {
             ))}
           </div>
 
-          {/* Right — decorative SVG dashboard mock */}
+          {/* Right — decorative dashboard mock (illustrative preview, not real student data) */}
           <div data-gsap="why-visual" className="flex-1 flex items-center justify-center">
             <div className="relative w-full max-w-md">
+              <p className="mb-3 text-center text-[11px] font-semibold uppercase tracking-widest text-slate-500">
+                Illustrative preview — student dashboard aisa dikhta hai
+              </p>
               {/* Glass card mock */}
-              <div className="shiva-glass rounded-3xl p-8 space-y-5">
+              <div className="shiva-glass rounded-3xl p-8 space-y-5" aria-hidden="true">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-violet-500/20 flex items-center justify-center">
                     <svg className="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -149,11 +152,11 @@ export default function MarketingWhyShiva() {
               </div>
 
               {/* Floating small card */}
-              <div className="absolute -bottom-5 -right-5 shiva-glass-strong rounded-2xl px-4 py-3 flex items-center gap-2 shadow-2xl">
+              <div className="absolute -bottom-5 -right-5 shiva-glass-strong rounded-2xl px-4 py-3 flex items-center gap-2 shadow-2xl" aria-hidden="true">
                 <span className="text-lg">🏆</span>
                 <div>
-                  <p className="text-xs font-bold text-white">Top 10%</p>
-                  <p className="text-[10px] text-slate-400">Mock Rank</p>
+                  <p className="text-xs font-bold text-white">Mock Tests</p>
+                  <p className="text-[10px] text-slate-400">Apni progress track karo</p>
                 </div>
               </div>
             </div>

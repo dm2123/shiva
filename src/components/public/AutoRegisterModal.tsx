@@ -3,6 +3,12 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+const BENEFITS = [
+  'Structured courses aur batches',
+  'Live classes, tests aur practice',
+  'Doubts aur progress — ek hi jagah',
+];
+
 export default function AutoRegisterModal() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -26,39 +32,57 @@ export default function AutoRegisterModal() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#2a1650]/70 backdrop-blur-sm animate-fade-in">
+      <div className="bg-white dark:bg-slate-900 border border-[#ede9fe] dark:border-slate-800 rounded-3xl max-w-md w-full shadow-2xl relative overflow-hidden">
+        {/* Brand header */}
+        <div className="bg-gradient-to-r from-[#2a1650] to-[#6d28d9] px-6 md:px-8 py-5 text-white">
+          <p className="text-[11px] font-extrabold tracking-[0.18em] text-[#f5b942] uppercase">THE SHIVA</p>
+          <h3 className="text-xl font-extrabold mt-1">Apni padhai ek jagah lao</h3>
+          <p className="text-xs text-violet-200 mt-1">Learn • Practice • Grow</p>
+        </div>
+
         <button
           onClick={handleDismiss}
-          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm font-bold w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center"
+          className="absolute top-4 right-4 text-white/80 hover:text-white text-sm font-bold w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center transition-colors"
           aria-label="Close modal"
         >
           ✕
         </button>
 
-        <div className="text-center space-y-4">
-          <div className="w-14 h-14 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold">
-            ⚡
-          </div>
-
-          <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
-            Accelerate Your Learning
-          </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-            Join thousands of competitive aspirants on THE SHIVA. Register now to access Daily Practice Problems, live classes, and structured courses.
+        <div className="p-6 md:p-8 pt-5">
+          <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            Free student account banao aur apne courses, live classes aur tests ek hi dashboard se use karo.
           </p>
 
-          <div className="pt-2 flex flex-col gap-2">
+          <ul className="mt-4 space-y-2">
+            {BENEFITS.map((b) => (
+              <li key={b} className="flex items-start gap-2.5 text-sm text-slate-700 dark:text-slate-200">
+                <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#f5b942]/20 text-[11px] font-black text-[#b45309]">
+                  ✓
+                </span>
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="pt-5 flex flex-col gap-2">
             <Link
               href="/register"
               onClick={handleDismiss}
-              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all text-center shadow-lg shadow-indigo-500/30"
+              className="w-full py-3 bg-[#6d28d9] hover:bg-[#5b21b6] text-white rounded-xl text-sm font-bold transition-all text-center shadow-lg shadow-violet-600/30"
             >
-              Register with Mobile OTP
+              Free Register Karo →
+            </Link>
+            <Link
+              href="/login"
+              onClick={handleDismiss}
+              className="w-full py-2.5 text-sm text-[#6d28d9] hover:text-[#2a1650] dark:text-violet-300 font-bold text-center"
+            >
+              Pehle se account hai? Login karo
             </Link>
             <button
               onClick={handleDismiss}
-              className="w-full py-2.5 text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-semibold"
+              className="w-full py-2 text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-semibold"
             >
               Continue Browsing
             </button>

@@ -23,12 +23,14 @@ function formatTime(totalSeconds: number): string {
 
 export default function VideoPlayer({ src, poster, lectureId, durationSeconds = 0, title, onBookmark }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(durationSeconds);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const [isSeeking, setIsSeeking] = useState(false);
+  const [resumedFrom, setResumedFrom] = useState(0);
   const lastSaveRef = useRef<number>(0);
 
   useEffect(() => {
@@ -39,6 +41,7 @@ export default function VideoPlayer({ src, poster, lectureId, durationSeconds = 
           const pos = res.data.progress.positionSeconds || 0;
           videoRef.current.currentTime = pos;
           setCurrentTime(pos);
+          if (pos > 30) setResumedFrom(pos);
           if (res.data.progress.playbackSpeed) {
             setPlaybackSpeed(res.data.progress.playbackSpeed);
             videoRef.current.playbackRate = res.data.progress.playbackSpeed;
@@ -79,15 +82,21 @@ export default function VideoPlayer({ src, poster, lectureId, durationSeconds = 
       setIsPlaying(false);
       saveProgress(video.currentTime);
     };
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
 
     video.addEventListener('timeupdate', onTimeUpdate);
     video.addEventListener('loadedmetadata', onLoadedMetadata);
     video.addEventListener('ended', onEnded);
+    video.addEventListener('play', onPlay);
+    video.addEventListener('pause', onPause);
 
     return () => {
       video.removeEventListener('timeupdate', onTimeUpdate);
       video.removeEventListener('loadedmetadata', onLoadedMetadata);
       video.removeEventListener('ended', onEnded);
+      video.removeEventListener('play', onPlay);
+      video.removeEventListener('pause', onPause);
       saveProgress(video.currentTime);
     };
   }, [durationSeconds, isSeeking, saveProgress]);
@@ -124,14 +133,37 @@ export default function VideoPlayer({ src, poster, lectureId, durationSeconds = 
     }
   };
 
+  const skipBy = (delta: number) => {
+    const video = videoRef.current;
+    if (!video) return;
+    const next = Math.min(Math.max(0, video.currentTime + delta), duration || video.duration || 0);
+    video.currentTime = next;
+    setCurrentTime(next);
+  };
+
+  const toggleFullscreen = () => {
+    const el = containerRef.current;
+    if (!el) return;
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => {});
+    } else {
+      el.requestFullscreen?.().catch(() => {});
+    }
+  };
+
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
   const remaining = Math.max(0, duration - currentTime);
 
   return (
-    <div className="w-full rounded-2xl overflow-hidden bg-black border border-white/10">
+    <div ref={containerRef} className="w-full rounded-2xl overflow-hidden bg-black border border-white/10">
       {title && (
-        <div className="px-4 py-2 bg-white/5 border-b border-white/10">
-          <span className="text-sm font-medium text-white/90">{title}</span>
+        <div className="px-4 py-2 bg-[#2a1650] border-b border-white/10 flex items-center justify-between gap-3">
+          <span className="text-sm font-semibold text-white/90 truncate">{title}</span>
+          {duration > 0 && currentTime > 5 && (
+            <span className="shrink-0 text-[11px] font-bold text-[#f5b942]">
+              {Math.min(100, Math.round(progress))}% watched
+            </span>
+          )}
         </div>
       )}
 
@@ -145,12 +177,18 @@ export default function VideoPlayer({ src, poster, lectureId, durationSeconds = 
           playsInline
         />
 
+        {resumedFrom > 0 && !isPlaying && (
+          <div className="absolute top-3 left-3 z-10 rounded-full bg-black/70 px-3 py-1.5 text-[11px] font-bold text-[#f5b942] backdrop-blur">
+            Jahan chhoda tha, wahi se — {formatTime(resumedFrom)}
+          </div>
+        )}
+
         {!isPlaying && (
           <div
             className="absolute inset-0 flex items-center justify-center bg-black/30 cursor-pointer"
             onClick={togglePlay}
           >
-            <div className="w-16 h-16 flex items-center justify-center bg-[#c8a96e] text-black rounded-full shadow-lg hover:scale-110 transition-transform">
+            <div className="w-16 h-16 flex items-center justify-center bg-[#f5b942] text-[#2a1650] rounded-full shadow-lg hover:scale-110 transition-transform">
               <svg className="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
@@ -162,7 +200,7 @@ export default function VideoPlayer({ src, poster, lectureId, durationSeconds = 
       <div className="px-4 py-3 space-y-3 bg-white/5">
         <div className="relative group">
           <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-            <div className="h-full bg-[#c8a96e] rounded-full transition-all" style={{ width: `${progress}%` }} />
+            <div className="h-full bg-[#f5b942] rounded-full transition-all" style={{ width: `${progress}%` }} />
           </div>
           <input
             type="range"
@@ -194,21 +232,39 @@ export default function VideoPlayer({ src, poster, lectureId, durationSeconds = 
               )}
             </button>
 
+            <button
+              onClick={() => skipBy(-10)}
+              className="h-9 px-2 flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white text-[11px] font-bold"
+              title="10 second peeche"
+              aria-label="10 second peeche"
+            >
+              −10s
+            </button>
+            <button
+              onClick={() => skipBy(10)}
+              className="h-9 px-2 flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white text-[11px] font-bold"
+              title="10 second aage"
+              aria-label="10 second aage"
+            >
+              +10s
+            </button>
+
             <div className="relative">
               <button
                 onClick={() => setShowSpeedMenu(!showSpeedMenu)}
                 className="px-2 py-1 text-xs font-medium rounded bg-white/10 hover:bg-white/20 transition-colors text-white"
+                aria-label="Playback speed"
               >
                 {playbackSpeed}x
               </button>
               {showSpeedMenu && (
-                <div className="absolute bottom-full left-0 mb-2 bg-gray-900 border border-white/10 rounded-lg shadow-xl overflow-hidden z-10">
+                <div className="absolute bottom-full left-0 mb-2 bg-[#2a1650] border border-white/10 rounded-lg shadow-xl overflow-hidden z-10">
                   {SPEED_OPTIONS.map((speed) => (
                     <button
                       key={speed}
                       onClick={() => changeSpeed(speed)}
                       className={`block w-full px-4 py-2 text-sm text-left hover:bg-white/10 transition-colors ${
-                        playbackSpeed === speed ? 'text-[#c8a96e] font-bold' : 'text-white'
+                        playbackSpeed === speed ? 'text-[#f5b942] font-bold' : 'text-white'
                       }`}
                     >
                       {speed}x
@@ -229,11 +285,23 @@ export default function VideoPlayer({ src, poster, lectureId, durationSeconds = 
             </button>
           </div>
 
-          <div className="text-xs text-white/60 font-mono">
-            <span>{formatTime(currentTime)}</span>
-            <span className="mx-1">/</span>
-            <span>{formatTime(duration)}</span>
-            <span className="ml-2 text-white/40">(-{formatTime(remaining)})</span>
+          <div className="flex items-center gap-3">
+            <div className="text-xs text-white/60 font-mono">
+              <span>{formatTime(currentTime)}</span>
+              <span className="mx-1">/</span>
+              <span>{formatTime(duration)}</span>
+              <span className="ml-2 text-white/40">(-{formatTime(remaining)})</span>
+            </div>
+            <button
+              onClick={toggleFullscreen}
+              className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white"
+              title="Fullscreen"
+              aria-label="Fullscreen"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 9V5a1 1 0 011-1h4M20 9V5a1 1 0 00-1-1h-4M4 15v4a1 1 0 001 1h4M20 15v4a1 1 0 01-1 1h-4" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>

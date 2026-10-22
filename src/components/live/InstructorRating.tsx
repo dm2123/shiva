@@ -25,7 +25,7 @@ function StarInput({ value, onChange, disabled }: { value: number; onChange: (v:
           className="disabled:cursor-not-allowed"
         >
           <span
-            className={`text-2xl ${n <= value ? 'text-yellow-400' : 'text-gray-500'}`}
+            className={`text-2xl ${n <= value ? 'text-[#f5b942]' : 'text-[var(--student-text-faint)]'}`}
           >
             {n <= value ? '★' : '☆'}
           </span>
@@ -67,19 +67,19 @@ export default function InstructorRating({ liveClassId, onRated }: Props) {
 
   if (done) {
     return (
-      <div className="bg-gray-800 border border-green-600 rounded-lg p-4 text-green-400 text-center">
-        Thank you for your feedback!
+      <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-emerald-600 dark:text-emerald-400 text-center text-sm font-bold">
+        Dhanyavaad! Tumhara feedback mil gaya hai.
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 space-y-4">
-      <h3 className="text-white font-semibold">Rate this class</h3>
+    <div className="rounded-xl border border-[var(--student-border)] bg-[var(--student-surface)] p-6 space-y-4">
+      <h3 className="text-[var(--student-text)] font-bold">Is class ko rate karo</h3>
 
       {categories.map(({ key, label }) => (
         <div key={key} className="flex items-center justify-between">
-          <span className="text-gray-300 text-sm">{label}</span>
+          <span className="text-[var(--student-text-secondary)] text-sm">{label}</span>
           <StarInput
             value={ratings[key]}
             onChange={(v) => setRatings((prev) => ({ ...prev, [key]: v }))}
@@ -91,18 +91,18 @@ export default function InstructorRating({ liveClassId, onRated }: Props) {
       <textarea
         value={feedback}
         onChange={(e) => setFeedback(e.target.value)}
-        placeholder="Optional feedback..."
-        className="w-full bg-gray-900 border border-gray-600 rounded-md p-3 text-white placeholder-gray-500 text-sm resize-y focus:outline-none focus:border-purple-500 min-h-[80px]"
+        placeholder="Kuch aur kehna hai? (optional)"
+        className="w-full bg-[var(--student-surface)] border border-[var(--student-border)] rounded-md p-3 text-[var(--student-text)] placeholder:text-[var(--student-text-faint)] text-sm resize-y focus:outline-none focus:border-[#6d28d9] min-h-[80px]"
         disabled={submitting}
       />
 
       <button
         onClick={handleSubmit}
         disabled={!allFilled || submitting}
-        className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-5 py-2 rounded-md font-medium transition text-sm"
+        className="flex items-center gap-2 bg-[#6d28d9] hover:bg-[#2a1650] disabled:opacity-40 disabled:cursor-not-allowed text-white px-5 py-2 rounded-md font-bold transition text-sm"
       >
         ➤
-        {submitting ? 'Submitting...' : 'Submit Rating'}
+        {submitting ? 'Bhej raha hai...' : 'Rating Bhejo'}
       </button>
     </div>
   );

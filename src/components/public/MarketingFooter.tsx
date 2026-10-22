@@ -39,7 +39,7 @@ export default function MarketingFooter() {
   return (
     <footer className="relative border-t border-white/8 bg-[#0a0a12]">
       {/* Top gradient line */}
-      <div className="h-px bg-gradient-to-r from-transparent via-[#c8a96e]/40 to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-[#f5b942]/50 to-transparent" />
 
       <div className="marketing-container py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 md:gap-10 mb-10">
@@ -47,14 +47,14 @@ export default function MarketingFooter() {
           <div className="lg:col-span-4 space-y-4">
             <THEShivaLogo size={36} variant="full" />
             <p className="text-xs md:text-sm text-slate-400 leading-relaxed max-w-xs">
-              Premium digital learning platform for competitive exam preparation. Expert-led courses for SSC, Railway, Banking, Defence, and Teaching exams.
+              Digital learning platform for competitive exam preparation. Expert-led courses for SSC, Railway, Banking, Defence, and Teaching exams.
             </p>
             
             {/* Educator Partner */}
             <div className="pt-3 border-t border-white/5">
               <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-2">Educator Partner</p>
               <div className="space-y-1.5">
-                <Link href="/teachers/delhi-shiksha-academy" className="block text-xs md:text-sm font-semibold text-[#14b8a6] hover:text-[#5eead4] transition-colors">
+                <Link href="/teachers/delhi-shiksha-academy" className="block text-xs md:text-sm font-semibold text-[#f5b942] hover:text-[#ffd97a] transition-colors">
                   Delhi Shiksha Academy
                 </Link>
                 <div className="flex gap-2 text-xs">

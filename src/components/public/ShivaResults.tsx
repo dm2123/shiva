@@ -7,7 +7,7 @@ export default function ShivaResults() {
         <Reveal className="sec-head">
           <span className="kicker">Results</span>
           <h2>Selection — Hamara Ek Hi Lakshya</h2>
-          <p>Hamara pehla batch jald launch ho raha hai — yahan hamare students ki asli success stories aayengi.</p>
+          <p>Yahan sirf asli students ki asli success stories aayengi — jab pehle results aayenge, tabhi. Tab tak koi nakli topper nahi.</p>
         </Reveal>
         <Reveal>
           <div className="toppers">
@@ -25,7 +25,7 @@ export default function ShivaResults() {
               <div className="medal">🏆</div>
               <b>Scholarship Test Se Shuruaat</b>
               <span>
-                100% tak chhoot ka mauka — <a href="/#scholarship">details dekho</a>
+                Fee me chhoot ka mauka — <a href="/#scholarship">details dekho</a>
               </span>
             </div>
           </div>

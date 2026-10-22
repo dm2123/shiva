@@ -1,21 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IconBell, IconHelpCircle, IconCheckCircle, IconX } from '@/components/student/StudentIcons';
 
+export interface StudentNotificationItem {
+  id: string;
+  title: string;
+  message: string;
+  type: 'INFO' | 'WARNING' | 'SUCCESS' | 'ERROR';
+  isRead: boolean;
+  createdAt: string;
+}
+
 interface StudentNotificationListProps {
-  notifications: {
-    id: string;
-    title: string;
-    message: string;
-    type: 'INFO' | 'WARNING' | 'SUCCESS' | 'ERROR';
-    isRead: boolean;
-    createdAt: string;
-  }[];
+  notifications: StudentNotificationItem[];
 }
 
 export default function StudentNotificationList({ notifications }: StudentNotificationListProps) {
   const [items, setItems] = useState(notifications);
+  const [markingAll, setMarkingAll] = useState(false);
+
+  // Drawer/page dobara khulne par nayi list aaye to state sync rakho
+  useEffect(() => {
+    setItems(notifications);
+  }, [notifications]);
 
   const iconFor = (type: string) => {
     switch (type) {
@@ -48,17 +56,46 @@ export default function StudentNotificationList({ notifications }: StudentNotifi
     }
   };
 
+  // Asal API (PATCH /api/student/notifications, ids[]) se saare unread ek saath read
+  const markAllRead = async () => {
+    const unreadIds = items.filter((n) => !n.isRead).map((n) => n.id);
+    if (unreadIds.length === 0 || markingAll) return;
+    setMarkingAll(true);
+    setItems((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    try {
+      await fetch('/api/student/notifications', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: unreadIds }),
+      });
+    } catch {
+      /* non-fatal — agli baar fetch par asal state dikhega */
+    } finally {
+      setMarkingAll(false);
+    }
+  };
+
   const unread = items.filter((n) => !n.isRead).length;
 
   return (
     <div className="space-y-4">
       {unread > 0 && (
-        <p className="text-[11px] font-bold text-[var(--student-primary)] uppercase tracking-widest">
-          {unread} unread {unread === 1 ? 'notification' : 'notifications'}
-        </p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-[11px] font-bold text-[var(--student-primary)] uppercase tracking-widest">
+            {unread} unread {unread === 1 ? 'notification' : 'notifications'}
+          </p>
+          <button
+            type="button"
+            onClick={markAllRead}
+            disabled={markingAll}
+            className="text-[11px] font-bold text-[#6d28d9] hover:text-[#2a1650] uppercase tracking-widest disabled:opacity-50 transition-colors"
+          >
+            {markingAll ? 'Marking…' : 'Mark All Read'}
+          </button>
+        </div>
       )}
 
-      <div className={`space-y-3 ${unread > 0 ? '' : ''}`}>
+      <div className="space-y-3">
         {items.map((n) => (
           <button
             key={n.id}

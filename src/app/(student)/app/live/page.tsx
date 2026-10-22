@@ -1,4 +1,5 @@
 import { StudentPageHeader } from '@/components/student/StudentShared';
+import StudentEmptyState from '@/components/student/StudentEmptyState';
 import { IconRadio, IconPlay, IconCalendar, IconClock } from '@/components/student/StudentIcons';
 import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
@@ -21,6 +22,19 @@ function formatDateTime(iso: string): string {
   }
 }
 
+/** Honest relative label from the real scheduled time — no invented data. */
+function startsInLabel(iso: string): string | null {
+  const diffMs = new Date(iso).getTime() - Date.now();
+  if (!Number.isFinite(diffMs)) return null;
+  if (diffMs <= 0) return 'Shuru hone wala hai';
+  const mins = Math.round(diffMs / 60000);
+  if (mins < 60) return `${mins} min me shuru`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ${mins % 60 > 0 ? `${mins % 60}m ` : ''}me shuru`;
+  const days = Math.floor(hours / 24);
+  return `${days} din me shuru`;
+}
+
 function StatusBadge({ status }: { status: string }) {
   if (status === 'LIVE') {
     return (
@@ -38,7 +52,7 @@ function StatusBadge({ status }: { status: string }) {
     );
   }
   return (
-    <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-500">
+    <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#6d28d9]/10 text-[#6d28d9]">
       Upcoming
     </span>
   );
@@ -52,9 +66,15 @@ export default async function LiveClassesPage() {
 
   const liveClasses = await listStudentLiveClasses(session.userId);
 
-  const liveNow = liveClasses.filter((c: any) => c.status === 'LIVE');
-  const upcoming = liveClasses.filter((c: any) => c.status === 'SCHEDULED' || c.status === 'UPCOMING');
-  const ended = liveClasses.filter((c: any) => c.status === 'ENDED');
+  const byStartAsc = (a: any, b: any) =>
+    new Date(a.scheduledStartAt).getTime() - new Date(b.scheduledStartAt).getTime();
+  const byStartDesc = (a: any, b: any) => -byStartAsc(a, b);
+  // Live pehle, upcoming sabse pehle shuru hone wali pehle, past sabse recent pehle
+  const liveNow = liveClasses.filter((c: any) => c.status === 'LIVE').sort(byStartAsc);
+  const upcoming = liveClasses
+    .filter((c: any) => c.status === 'SCHEDULED' || c.status === 'UPCOMING')
+    .sort(byStartAsc);
+  const ended = liveClasses.filter((c: any) => c.status === 'ENDED').sort(byStartDesc);
 
   return (
     <div className="space-y-8">
@@ -64,42 +84,35 @@ export default async function LiveClassesPage() {
       />
 
       {liveClasses.length === 0 ? (
-        <div className="student-card p-10 md:p-14 text-center">
-          <div
-            className="mx-auto mb-5 w-20 h-20 rounded-3xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #a855f7 100%)' }}
-          >
-            <IconRadio size={36} className="text-white" />
-          </div>
-          <h2 className="text-xl font-extrabold text-[var(--student-text)] mb-2">
-            No live classes scheduled yet
-          </h2>
-          <p className="text-sm text-[var(--student-text-muted)] max-w-md mx-auto mb-6">
-            Jab tumhare teachers live class schedule karenge, wo yahan dikhegi.
-            Tab tak courses explore karo ya purani recordings dekho.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Link
-              href="/app/courses"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[var(--student-primary)] text-white text-sm font-bold hover:opacity-90 transition-opacity"
-            >
-              <IconPlay size={15} />
-              Browse Courses
-            </Link>
-            <Link
-              href="/app/recordings"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-[var(--student-border)] text-[var(--student-text)] text-sm font-bold hover:bg-[var(--student-surface-hover)] transition-colors"
-            >
-              View Recordings
-            </Link>
-          </div>
-        </div>
+        <StudentEmptyState
+          icon={<IconRadio size={22} />}
+          title="Abhi koi live class nahi hai"
+          description="Is samay koi live ya upcoming class scheduled nahi hai. Jab tumhare teachers live class schedule karenge, wo yahan dikhegi. Tab tak courses explore karo ya purani recordings dekho."
+          actionText="Browse Courses"
+          actionHref="/app/courses"
+          secondaryActionText="View Recordings"
+          secondaryActionHref="/app/recordings"
+          variant="large"
+        />
       ) : (
         <>
+          {/* Honest live strip — classes hain par is samay koi live nahi */}
+          {liveNow.length === 0 && (
+            <div className="student-card px-5 py-4 flex items-center gap-3">
+              <span className="w-2.5 h-2.5 rounded-full bg-[var(--student-text-faint)] shrink-0" />
+              <p className="text-sm text-[var(--student-text-muted)]">
+                <span className="font-bold text-[var(--student-text)]">Abhi koi live class nahi hai.</span>{' '}
+                {upcoming.length > 0
+                  ? 'Neeche upcoming classes ka asal schedule diya hai — time par Join button yahi milega.'
+                  : 'Nayi class schedule hote hi yahan dikhegi.'}
+              </p>
+            </div>
+          )}
+
           {/* Live Now */}
           {liveNow.length > 0 && (
             <section>
-              <h2 className="text-lg font-extrabold text-[var(--student-text)] mb-4 flex items-center gap-2">
+              <h2 className="text-lg font-bold text-[var(--student-text)] mb-4 flex items-center gap-2">
                 <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse" />
                 Live Now
               </h2>
@@ -128,6 +141,12 @@ export default async function LiveClassesPage() {
                       {lc.courseTitle && (
                         <p className="text-xs text-[var(--student-text-muted)] mt-1">{lc.courseTitle}</p>
                       )}
+                      {lc.actualStartedAt && (
+                        <p className="flex items-center gap-1.5 text-[11px] font-medium text-red-500 mt-1.5">
+                          <IconClock size={11} />
+                          Started {formatDateTime(lc.actualStartedAt)}
+                        </p>
+                      )}
                     </div>
                     <div className="p-5 pt-4">
                       {lc.description && (
@@ -152,7 +171,7 @@ export default async function LiveClassesPage() {
           {/* Upcoming */}
           {upcoming.length > 0 && (
             <section>
-              <h2 className="text-lg font-extrabold text-[var(--student-text)] mb-4">Upcoming</h2>
+              <h2 className="text-lg font-bold text-[var(--student-text)] mb-4">Upcoming</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {upcoming.map((lc: any) => (
                   <Link key={lc.id} href={`/app/live/${lc.id}`} className="student-card p-5 block">
@@ -171,6 +190,12 @@ export default async function LiveClassesPage() {
                       <IconCalendar size={13} />
                       {formatDateTime(lc.scheduledStartAt)}
                     </p>
+                    {startsInLabel(lc.scheduledStartAt) && (
+                      <p className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-[#f5b942]/15 px-2.5 py-1 text-[11px] font-bold text-[#92600a]">
+                        <IconClock size={11} />
+                        {startsInLabel(lc.scheduledStartAt)}
+                      </p>
+                    )}
                     {lc.description && (
                       <p className="text-xs text-[var(--student-text-faint)] line-clamp-2 mt-2">
                         {lc.description}
@@ -186,25 +211,37 @@ export default async function LiveClassesPage() {
             </section>
           )}
 
-          {/* Ended */}
+          {/* Recordings — khatm hui classes; recording sirf tab jab asal URL hai */}
           {ended.length > 0 && (
             <section>
-              <h2 className="text-lg font-extrabold text-[var(--student-text)] mb-4">Past Classes</h2>
+              <h2 className="text-lg font-bold text-[var(--student-text)] mb-4">Recordings</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {ended.map((lc: any) => (
                   <Link key={lc.id} href={`/app/live/${lc.id}`} className="student-card p-5 block opacity-90">
                     <div className="flex items-center justify-between mb-3">
                       <StatusBadge status={lc.status} />
+                      {lc.recordingUrl ? (
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-600">
+                          Recording ready
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-[var(--student-surface-hover)] text-[var(--student-text-faint)]">
+                          Recording pending
+                        </span>
+                      )}
                     </div>
                     <h3 className="text-[15px] font-bold text-[var(--student-text)] leading-snug mb-2">
                       {lc.title}
                     </h3>
+                    {lc.courseTitle && (
+                      <p className="text-xs text-[var(--student-text-faint)] mb-1.5">{lc.courseTitle}</p>
+                    )}
                     <p className="flex items-center gap-1.5 text-xs text-[var(--student-text-muted)]">
                       <IconClock size={13} />
                       {formatDateTime(lc.scheduledStartAt)}
                     </p>
                     <span className="inline-flex items-center gap-1 mt-4 text-sm font-bold text-[var(--student-primary)]">
-                      {lc.recordingUrl ? 'Watch Recording' : 'View Details'}
+                      {lc.recordingUrl ? 'Watch Recording' : 'Recording jald aayegi'}
                       <span aria-hidden>→</span>
                     </span>
                   </Link>
@@ -221,12 +258,12 @@ export default async function LiveClassesPage() {
             <div className="flex items-center gap-4">
               <div
                 className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #a855f7 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #2a1650 0%, #6d28d9 100%)' }}
               >
                 <IconPlay size={20} className="text-white" />
               </div>
               <div>
-                <p className="text-sm font-extrabold text-[var(--student-text)]">All Recordings</p>
+                <p className="text-sm font-bold text-[var(--student-text)]">All Recordings</p>
                 <p className="text-xs text-[var(--student-text-muted)]">
                   Missed a class? Watch it anytime.
                 </p>

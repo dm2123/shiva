@@ -46,17 +46,17 @@ export default function ShivaAppDownload() {
               <h2>📱 THE SHIVA App — Padhai Ab Pocket Me</h2>
               <p>Website par sirf batches dekho — asli padhai app me hoti hai:</p>
               <ul className="app-points">
-                <li>Live classes with polls &amp; quizzes</li>
-                <li>Doubt photo upload — instant answer</li>
-                <li>Offline download for travel</li>
-                <li>Daily streaks &amp; leaderboard</li>
-                <li>Push notifications for classes</li>
+                <li>Courses aur lectures — apne pace par padho</li>
+                <li>Doubt bhejo — enrolled students ke liye support</li>
+                <li>Tests aur practice — taiyaari khud aanko</li>
+                <li>Streaks — roz ki padhai ki aadat banao</li>
+                <li>Apni progress ek hi jagah dekho</li>
               </ul>
               <br />
               <div className={`form-ok${done ? ' show' : ''}`} style={{ marginTop: 6 }}>
                 ✅ Noted, <b>{name}</b>!
                 <br />
-                Android app launch hote hi <b>{phone}</b> par inform karenge.
+                App ki nayi khabar sabse pehle <b>{phone}</b> par bhejenge.
               </div>
               <div className={`form-err${error ? ' show' : ''}`}>{error}</div>
               {!done && (
@@ -83,7 +83,7 @@ export default function ShivaAppDownload() {
                 </form>
               )}
               <p style={{ fontSize: 13, opacity: 0.85, marginTop: 8 }}>
-                📱 Android app jald aa raha hai — launch par sabse pehle khabar pao.
+                📱 Apna number chhodo — app updates aur naye courses ki khabar sabse pehle pao.
               </p>
             </div>
             <div>
@@ -105,13 +105,13 @@ export default function ShivaAppDownload() {
                       textAlign: 'left',
                     }}
                   >
-                    🔴 LIVE now: Maths — SSC CGL
+                    📚 Aaj ka goal: ek chapter poora karo
                     <br />
                     <br />
-                    📝 Today&apos;s DPP: 20 questions
+                    📝 Practice: chapter ke sawal try karo
                     <br />
                     <br />
-                    🏆 Your AIR: #1,247
+                    🔥 Streak: roz padho, aadat banao
                   </div>
                 </div>
               </div>

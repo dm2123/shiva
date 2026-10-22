@@ -78,7 +78,7 @@ export default function MarketingNav() {
                 className="text-xs lg:text-sm font-semibold text-slate-300 hover:text-white transition-colors duration-200 relative group"
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#c8a96e] group-hover:w-full transition-all duration-300 ease-out" />
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#f5b942] group-hover:w-full transition-all duration-300 ease-out" />
               </Link>
             ))}
           </div>
@@ -93,7 +93,7 @@ export default function MarketingNav() {
             </Link>
             <Link
               href="/register"
-              className="px-4 lg:px-5 py-2 lg:py-2.5 text-xs lg:text-sm font-bold text-[#0a0a12] bg-[#c8a96e] hover:bg-[#e8d5a3] rounded-full transition-all shadow-lg shadow-[#c8a96e]/20 hover:shadow-[#c8a96e]/40 hover:-translate-y-0.5"
+              className="px-4 lg:px-5 py-2 lg:py-2.5 text-xs lg:text-sm font-bold text-[#2a1650] bg-[#f5b942] hover:bg-[#ffd97a] rounded-full transition-all shadow-lg shadow-[#f5b942]/25 hover:shadow-[#f5b942]/40 hover:-translate-y-0.5"
             >
               Get Started
             </Link>
@@ -137,7 +137,7 @@ export default function MarketingNav() {
               key={link.href}
               href={link.href}
               onClick={() => setMenuOpen(false)}
-              className="text-2xl font-bold text-white hover:text-[#c8a96e] transition-colors"
+              className="text-2xl font-bold text-white hover:text-[#f5b942] transition-colors"
             >
               {link.label}
             </Link>
@@ -145,7 +145,7 @@ export default function MarketingNav() {
 
           <div className="flex flex-col items-center gap-4 mt-4 w-full px-12">
             <Link href="/login" onClick={() => setMenuOpen(false)} className="w-full text-center py-3 border border-white/20 rounded-full font-semibold text-white hover:bg-white/5 transition">Sign In</Link>
-            <Link href="/register" onClick={() => setMenuOpen(false)} className="w-full text-center py-3 bg-[#c8a96e] text-[#0a0a12] rounded-full font-bold hover:bg-[#e8d5a3] transition">Get Started</Link>
+            <Link href="/register" onClick={() => setMenuOpen(false)} className="w-full text-center py-3 bg-[#f5b942] text-[#0a0a12] rounded-full font-bold hover:bg-[#ffd97a] transition">Get Started</Link>
           </div>
         </div>
       )}

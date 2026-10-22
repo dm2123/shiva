@@ -4,11 +4,15 @@ import { useState } from 'react';
 import Reveal from './Reveal';
 
 const CARDS = [
-  { ico: '📄', t: 'Previous Year Papers', d: 'SSC, Railway, Banking ke pichhle 10 saal ke papers with solutions.', note: '📥 Free PDFs jald aa rahe hain!', cta: 'Download Free' },
-  { ico: '📓', t: 'Handwritten Notes', d: 'Expert faculty ke notes — Maths, Reasoning, GK sab subjects.', note: '📥 Free PDFs jald aa rahe hain!', cta: 'Download Free' },
-  { ico: '📰', t: 'Daily Current Affairs', d: 'Roz subah 7 baje — exam-oriented current affairs quiz.', note: '📥 Jald aa raha hai!', cta: 'Read Free' },
-  { ico: '🧪', t: 'Free Mock Tests', d: 'Har exam ka 1 free full mock test with All-India rank.', note: '', cta: 'Attempt Free', href: '/login' },
+  { ico: '📄', t: 'Previous Year Papers', d: 'SSC, Railway aur Banking ke previous year papers — asli exam pattern samajhne ke liye.', note: '📥 Free PDFs jald aa rahe hain!', cta: 'Download Free' },
+  { ico: '📓', t: 'Handwritten Notes', d: 'Faculty ke taiyaar notes — Maths, Reasoning, GK sab subjects.', note: '📥 Free PDFs jald aa rahe hain!', cta: 'Download Free' },
+  { ico: '📰', t: 'Daily Current Affairs', d: 'Exam-oriented current affairs — roz ki taiyaari ke liye chhoti, kaam ki updates.', note: '📥 Jald aa raha hai!', cta: 'Read Free' },
+  { ico: '🧪', t: 'Free Mock Tests', d: 'Register karke free mock test do aur apni taiyaari khud aanko.', note: '', cta: 'Attempt Free', href: '/login' },
 ];
+
+// .btn-ghost in shiva-landing.css is styled for dark backgrounds (white text),
+// so on these white cards it needs an explicit dark variant.
+const GHOST_ON_LIGHT = { color: '#4c1d95', borderColor: '#6d28d9' } as const;
 
 export default function ShivaFreeMaterial() {
   const [shown, setShown] = useState<boolean[]>(CARDS.map(() => false));
@@ -29,7 +33,7 @@ export default function ShivaFreeMaterial() {
                 <b>{c.t}</b>
                 <p>{c.d}</p>
                 {c.href ? (
-                  <a className="btn btn-ghost" href={c.href}>
+                  <a className="btn btn-ghost" style={GHOST_ON_LIGHT} href={c.href}>
                     {c.cta}
                   </a>
                 ) : (
@@ -37,6 +41,7 @@ export default function ShivaFreeMaterial() {
                     {!shown[i] && (
                       <button
                         className="btn btn-ghost"
+                        style={GHOST_ON_LIGHT}
                         onClick={() => setShown((s) => s.map((v, j) => (j === i ? true : v)))}
                       >
                         {c.cta}

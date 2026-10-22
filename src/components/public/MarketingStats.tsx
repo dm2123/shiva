@@ -110,10 +110,21 @@ export default function MarketingStats({ stats }: MarketingStatsProps) {
     },
   ];
 
+  const allZero =
+    stats.students === 0 && stats.teachers === 0 && stats.courses === 0 && stats.educators === 0;
+
   return (
-    <section ref={sectionRef} className="marketing-section-xs relative">
+    <section ref={sectionRef} className="marketing-section-xs relative" aria-label="Platform numbers">
       <div className="marketing-container">
         <div className="shiva-glass rounded-2xl px-6 py-8 md:px-10 md:py-10">
+          {allZero ? (
+            /* Koi asal count abhi nahi hai — nakli zero-grid ki jagah imaandaar sandesh */
+            <p className="text-center text-sm md:text-base text-slate-300 leading-relaxed">
+              THE SHIVA abhi shuru ho raha hai — jaise-jaise students judenge, yahan ke numbers
+              <span className="text-white font-semibold"> asal platform data </span>
+              se badhte jayenge. Koi nakli ankde nahi.
+            </p>
+          ) : (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {statItems.map((stat, i) => (
               <div key={i} className="stat-card">
@@ -127,6 +138,12 @@ export default function MarketingStats({ stats }: MarketingStatsProps) {
               </div>
             ))}
           </div>
+          )}
+          {!allZero && (
+            <p className="mt-6 text-center text-[11px] text-slate-500">
+              Live counts — THE SHIVA platform ke asal data se
+            </p>
+          )}
         </div>
       </div>
     </section>

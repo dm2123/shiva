@@ -91,6 +91,12 @@ export default function HandRaise({ liveClassId, userRole, userId }: HandRaisePr
       {userRole === 'TEACHER' && handRaises.length === 0 && (
         <p className="text-sm text-slate-500 text-center py-2">No raised hands</p>
       )}
+
+      {userRole === 'STUDENT' && !myHandRaised && handRaises.length === 0 && (
+        <p className="text-xs text-slate-500 text-center mt-3">
+          Abhi kisi ne hand raise nahi kiya hai. Doubt hai to hand raise karo — teacher ko dikhega.
+        </p>
+      )}
     </div>
   );
 }

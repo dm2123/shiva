@@ -7,9 +7,9 @@ export default function ShivaTestimonials() {
         <Reveal className="sec-head">
           <span className="kicker">Success Stories</span>
           <h2>
-            Our Students, <span className="hl">Our Pride</span>
+            Asli Kahaniyan, <span className="hl">Jab Asli Results Aayenge</span>
           </h2>
-          <p>Real stories. Real journeys. Real dreams.</p>
+          <p>Hum nakli testimonials nahi dikhate. Pehle students ke asli results yahin, unke naam ke saath aayenge.</p>
         </Reveal>
         <div className="grid3" style={{ gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))' }}>
           <Reveal>
@@ -19,9 +19,9 @@ export default function ShivaTestimonials() {
                 &ldquo;Pehle batch ke students ki success stories yahan dikhengi. Tumhari kahani agli ho
                 sakti hai!&rdquo;
               </p>
-              <b>Your Name Here</b>
+              <b>Agli Kahani — Tumhari</b>
               <br />
-              <span>Future Achiever</span>
+              <span>Taiyaari aaj se shuru karo</span>
             </div>
           </Reveal>
           <Reveal delay={1}>

@@ -20,6 +20,21 @@ export default function ShivaFloats() {
     return () => window.removeEventListener('shiva:open-callback', handler);
   }, []);
 
+  // Modal: Esc close + body scroll-lock (shell-level a11y polish).
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [open ]);
+
   async function submit(e: FormEvent) {
     e.preventDefault();
     setError('');
@@ -50,7 +65,7 @@ export default function ShivaFloats() {
   return (
     <>
       <div className="sticky-cta">
-        <button className="btn btn-ghost" onClick={() => setOpen(true)}>
+        <button type="button" className="btn btn-ghost" onClick={() => setOpen(true)}>
           📞 Callback
         </button>
         <a className="btn btn-primary" href="/#demoCard">
@@ -58,37 +73,57 @@ export default function ShivaFloats() {
         </a>
       </div>
 
-      <button className="cb-float" onClick={() => setOpen(true)}>
+      <button type="button" className="cb-float" onClick={() => setOpen(true)} aria-label="Request a call back">
         📞 Request a Call Back
       </button>
 
-      <div className={`modal${open ? ' open' : ''}`} onClick={(e) => e.target === e.currentTarget && setOpen(false)}>
+      <div
+        className={`modal${open ? ' open' : ''}`}
+        onClick={(e) => e.target === e.currentTarget && setOpen(false)}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Request a call back"
+        aria-hidden={!open}
+      >
         <div className="modal-box">
-          <button className="x" onClick={() => setOpen(false)} aria-label="Close">
+          <button type="button" className="x" onClick={() => setOpen(false)} aria-label="Close">
             ×
           </button>
           <h3>📞 Request a Call Back</h3>
           <p>Apna number do — hamara counselor 30 minute me call karega.</p>
-          <div className={`form-ok${done ? ' show' : ''}`}>
+          <div className={`form-ok${done ? ' show' : ''}`} role="status">
             ✅ Dhanyavaad <b>{name}</b>! 📞<br />
             Hamara counselor 30 minute me <b>{phone}</b> par call karega.
           </div>
-          <div className={`form-err${error ? ' show' : ''}`}>{error}</div>
+          <div className={`form-err${error ? ' show' : ''}`} role="alert">
+            {error}
+          </div>
           {!done && (
             <form onSubmit={submit}>
+              <label className="sr-only" htmlFor="cb-name">
+                Your Name
+              </label>
               <input
+                id="cb-name"
                 type="text"
                 placeholder="Your Name"
                 required
+                autoComplete="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 maxLength={60}
               />
+              <label className="sr-only" htmlFor="cb-phone">
+                Mobile Number (10-digit)
+              </label>
               <input
+                id="cb-phone"
                 type="tel"
                 placeholder="Mobile Number (10-digit)"
                 required
                 pattern="[0-9]{10}"
+                inputMode="numeric"
+                autoComplete="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
               />

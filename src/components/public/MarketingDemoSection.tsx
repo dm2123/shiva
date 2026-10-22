@@ -18,7 +18,7 @@ export default function MarketingDemoSection() {
               <span className="text-shiva-gold">Teaching</span>
             </h2>
             <p className="text-slate-400 text-lg leading-relaxed max-w-lg">
-              Watch a real classroom session with our founder, Shivajay Sir. Experience the quality of teaching before enrolling in our premium courses.
+              Watch a real classroom session with our founder, Shivajay Sir. Experience the quality of teaching before you enrol in a course.
             </p>
             <div className="pt-4">
               <span className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white font-medium text-sm">Class 9 & 10 Special Batch • Maths & Science</span>
