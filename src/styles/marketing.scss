@@ -1,0 +1,362 @@
+// ============================================================
+// THE SHIVA — Marketing Website Design System
+// Ultra Premium Interactive Education Website
+// ============================================================
+
+// ── Brand Tokens ──────────────────────────────────────────────
+:root {
+  // Core brand
+  --shiva-gold:       #c8a96e;
+  --shiva-gold-light: #e8d5a3;
+  --shiva-gold-dark:  #a07840;
+  --shiva-ink:        #0a0a12;
+  --shiva-ink-soft:   #12121e;
+  --shiva-surface:    #16162a;
+  --shiva-muted:      #6b7280;
+
+  // Accent palette
+  --shiva-blue:       #3b82f6;
+  --shiva-violet:     #8b5cf6;
+  --shiva-teal:       #14b8a6;
+  --shiva-rose:       #f43f5e;
+
+  // Glass
+  --shiva-glass-bg:       rgba(255, 255, 255, 0.06);
+  --shiva-glass-border:   rgba(255, 255, 255, 0.1);
+  --shiva-glass-shadow:   0 8px 40px rgba(0, 0, 0, 0.4);
+  --shiva-glass-blur:     blur(20px) saturate(1.8);
+
+  // Nav
+  --nav-height: 4.5rem;
+}
+
+// ── Global Marketing Reset ────────────────────────────────────
+.marketing-root {
+  background: var(--shiva-ink);
+  color: #e8eaf0;
+  overflow-x: hidden;
+}
+
+// ── Premium Typography ────────────────────────────────────────
+.text-shiva-display {
+  font-size: clamp(2.8rem, 7vw, 6rem);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.text-shiva-hero {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.text-shiva-section {
+  font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.text-shiva-gold {
+  background: linear-gradient(135deg, #c8a96e, #e8d5a3, #c8a96e);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gold-shimmer 4s linear infinite;
+}
+
+@keyframes gold-shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+// ── Glassmorphism (Marketing Dark) ───────────────────────────
+.shiva-glass {
+  background: var(--shiva-glass-bg);
+  backdrop-filter: var(--shiva-glass-blur);
+  -webkit-backdrop-filter: var(--shiva-glass-blur);
+  border: 1px solid var(--shiva-glass-border);
+  box-shadow: var(--shiva-glass-shadow);
+}
+
+.shiva-glass-strong {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(32px) saturate(2);
+  -webkit-backdrop-filter: blur(32px) saturate(2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+}
+
+.shiva-glass-light {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+}
+
+// ── Capsule UI ────────────────────────────────────────────────
+.shiva-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.shiva-capsule-gold {
+  background: rgba(200, 169, 110, 0.15);
+  color: #c8a96e;
+  border-color: rgba(200, 169, 110, 0.3);
+}
+
+.shiva-capsule-blue {
+  background: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.shiva-capsule-violet {
+  background: rgba(139, 92, 246, 0.15);
+  color: #c4b5fd;
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.shiva-capsule-live {
+  background: rgba(244, 63, 94, 0.15);
+  color: #fb7185;
+  border-color: rgba(244, 63, 94, 0.3);
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.15); }
+}
+
+// ── Morphing Blobs ────────────────────────────────────────────
+.shiva-blob {
+  position: absolute;
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  filter: blur(80px);
+  opacity: 0.18;
+  pointer-events: none;
+  will-change: border-radius, transform;
+  animation: shiva-morph 16s ease-in-out infinite alternate;
+}
+
+.shiva-blob-2 {
+  border-radius: 40% 60% 70% 30% / 50% 60% 40% 70%;
+  filter: blur(100px);
+  opacity: 0.12;
+  animation: shiva-morph2 22s ease-in-out infinite alternate;
+}
+
+.shiva-blob-3 {
+  border-radius: 50% 50% 40% 60% / 40% 60% 50% 50%;
+  filter: blur(120px);
+  opacity: 0.08;
+  animation: shiva-morph3 30s ease-in-out infinite alternate;
+}
+
+@keyframes shiva-morph {
+  0%   { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: rotate(0deg) scale(1); }
+  33%  { border-radius: 40% 60% 60% 40% / 40% 50% 50% 60%; transform: rotate(45deg) scale(1.05); }
+  66%  { border-radius: 50% 50% 40% 60% / 60% 40% 60% 40%; transform: rotate(120deg) scale(0.97); }
+  100% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: rotate(200deg) scale(1.1); }
+}
+
+@keyframes shiva-morph2 {
+  0%   { border-radius: 40% 60% 70% 30% / 50% 40% 60% 50%; }
+  50%  { border-radius: 70% 30% 40% 60% / 60% 50% 40% 50%; }
+  100% { border-radius: 50% 50% 60% 40% / 40% 60% 50% 50%; }
+}
+
+@keyframes shiva-morph3 {
+  0%   { border-radius: 50% 50% 40% 60% / 40% 60% 50% 50%; transform: scale(1); }
+  100% { border-radius: 60% 40% 50% 50% / 60% 40% 60% 40%; transform: scale(1.15); }
+}
+
+// ── Liquid Gradient Surfaces ──────────────────────────────────
+.shiva-liquid-hero {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 40%, rgba(139, 92, 246, 0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 80% at 80% 60%, rgba(59, 130, 246, 0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 50% 100%, rgba(200, 169, 110, 0.08) 0%, transparent 70%),
+    #0a0a12;
+}
+
+.shiva-liquid-section {
+  background:
+    radial-gradient(ellipse 70% 50% at 30% 50%, rgba(139, 92, 246, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 70% at 70% 50%, rgba(20, 184, 166, 0.05) 0%, transparent 70%),
+    transparent;
+}
+
+// ── Floating Elements ─────────────────────────────────────────
+.shiva-float {
+  animation: shiva-float 6s ease-in-out infinite;
+}
+.shiva-float-slow {
+  animation: shiva-float 9s ease-in-out infinite;
+}
+.shiva-float-delay {
+  animation: shiva-float 7s ease-in-out infinite 1.5s;
+}
+
+@keyframes shiva-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%  { transform: translateY(-10px) rotate(0.5deg); }
+  66%  { transform: translateY(-5px) rotate(-0.5deg); }
+}
+
+// ── Noise Texture Overlay ─────────────────────────────────────
+.shiva-noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+// ── Grid Pattern ──────────────────────────────────────────────
+.shiva-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+// ── Glow Effects ──────────────────────────────────────────────
+.shiva-glow-gold {
+  box-shadow: 0 0 40px rgba(200, 169, 110, 0.3), 0 0 80px rgba(200, 169, 110, 0.1);
+}
+.shiva-glow-violet {
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.3), 0 0 80px rgba(139, 92, 246, 0.1);
+}
+.shiva-glow-blue {
+  box-shadow: 0 0 40px rgba(59, 130, 246, 0.3), 0 0 80px rgba(59, 130, 246, 0.1);
+}
+
+// ── Feature Card ──────────────────────────────────────────────
+.shiva-feature-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 1.5rem;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(200, 169, 110, 0.08), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  &:hover {
+    border-color: rgba(200, 169, 110, 0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(200, 169, 110, 0.1);
+
+    &::before { opacity: 1; }
+  }
+}
+
+// ── Magnetic Button ───────────────────────────────────────────
+.shiva-magnetic {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+// ── 3D Tilt Card ──────────────────────────────────────────────
+.shiva-tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease;
+}
+
+// ── Course Card ───────────────────────────────────────────────
+.shiva-course-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    border-color: rgba(200, 169, 110, 0.25);
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  }
+}
+
+// ── Section Divider ───────────────────────────────────────────
+.shiva-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+
+// ── Text Reveal (for GSAP clip-path) ─────────────────────────
+.shiva-reveal-line {
+  overflow: hidden;
+  display: block;
+}
+
+.shiva-reveal-word {
+  display: inline-block;
+  clip-path: inset(0 0 100% 0);
+}
+
+// ── Reduced Motion ────────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .shiva-blob,
+  .shiva-blob-2,
+  .shiva-blob-3,
+  .shiva-float,
+  .shiva-float-slow,
+  .shiva-float-delay {
+    animation: none !important;
+  }
+
+  .shiva-capsule-live {
+    animation: none !important;
+  }
+
+  .text-shiva-gold {
+    animation: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// ── Dark / Light mode glass ───────────────────────────────────
+@media (prefers-color-scheme: light) {
+  .shiva-glass {
+    background: rgba(255, 255, 255, 0.75);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08);
+  }
+}
