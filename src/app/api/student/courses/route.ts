@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { getStudentEnrolledCourses, listPublicCourses } from '@/services/academic.service';
+import { hasCourseInfoColumns } from '@/lib/ensure-course-schema';
 import { ensureMojibakeRepair, sanitizeTextDeep } from '@/lib/fix-mojibake';
 import { createApiResponse, createApiError } from '@/lib/utils';
 
@@ -17,6 +18,8 @@ import { createApiResponse, createApiError } from '@/lib/utils';
 export async function GET(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+    // Course info columns (§21) ka self-heal — catalog rows me language/validity bhi aayein.
+    await hasCourseInfoColumns();
     const [catalog, enrolledCourses] = await Promise.all([
       listPublicCourses(),
       getStudentEnrolledCourses(session.userId),

@@ -3,6 +3,7 @@ import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { findCourseByIdDb, findCourseBySlugDb, isStudentEnrolledInCourseDb, getLectureProgressDb } from '@/lib/db';
 import { getCourseSyllabusTree } from '@/services/academic.service';
+import { hasCourseInfoColumns } from '@/lib/ensure-course-schema';
 import { ensureMojibakeRepair, sanitizeTextDeep } from '@/lib/fix-mojibake';
 import { createApiResponse, createApiError } from '@/lib/utils';
 
@@ -35,6 +36,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     if (!course) {
       return NextResponse.json(createApiError('NOT_FOUND', 'Course not found'), { status: 404 });
     }
+
+    // Course info columns (§21: language/validity/targetAudience) purane DB par
+    // self-heal ho jayein taaki tree spread me woh fields bhi aayein.
+    await hasCourseInfoColumns();
 
     const tree: any = await getCourseSyllabusTree(course.id);
     await ensureMojibakeRepair();

@@ -91,6 +91,12 @@ export interface Course {
   status: CourseStatus;
   isPublished: boolean;
   educatorId?: string; // Links to EducatorProfile
+  /** e.g. "Hindi + English" — dikhta hai course detail par; na ho to app chip chhupata hai. */
+  language?: string;
+  /** Enrollment ke baad kitne mahine tak access rahega; na ho to validity nahi dikhti. */
+  validityMonths?: number;
+  /** "Ye course kiske liye hai" — har line ek bullet (admin form me \n se alag). */
+  targetAudience?: string;
   createdAt: string;
   updatedAt: string;
 }

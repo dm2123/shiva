@@ -36,6 +36,7 @@ import {
 } from '@/lib/db';
 import { ensureSeed } from '@/db/ensure-seed';
 import { ensureAptitudePetLectures } from '@/lib/ensure-aptitude-content';
+import { hasCourseInfoColumns } from '@/lib/ensure-course-schema';
 
 // -------------------------------------------------------------
 // ZOD SCHEMAS
@@ -49,6 +50,10 @@ export const courseSchema = z.object({
   price: z.number().min(0, 'Price cannot be negative').default(0),
   status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']).default('DRAFT'),
   isPublished: z.boolean().default(false),
+  // Course-detail info (§21): language, validity (months), "kiske liye hai".
+  language: z.string().trim().max(60).optional(),
+  validityMonths: z.number().int().min(1).max(60).optional(),
+  targetAudience: z.string().trim().max(1000).optional(),
 });
 
 export const subjectSchema = z.object({
@@ -96,6 +101,9 @@ export async function createCourse(input: z.infer<typeof courseSchema>): Promise
   }
 
   const now = new Date().toISOString();
+  // Purane DBs par columns na hon to self-heal try karo; na bane to keys
+  // hata do taaki INSERT purane schema par bhi na gire.
+  const infoCols = await hasCourseInfoColumns();
   const course: Course = {
     id: randomUUID(),
     title: validated.title,
@@ -105,6 +113,13 @@ export async function createCourse(input: z.infer<typeof courseSchema>): Promise
     price: validated.price,
     status: validated.status,
     isPublished: validated.isPublished || validated.status === 'PUBLISHED',
+    ...(infoCols
+      ? {
+          language: validated.language || undefined,
+          validityMonths: validated.validityMonths,
+          targetAudience: validated.targetAudience || undefined,
+        }
+      : {}),
     createdAt: now,
     updatedAt: now,
   };
@@ -116,6 +131,13 @@ export async function updateCourse(id: string, updates: Partial<z.infer<typeof c
   const existing = await findCourseByIdDb(id);
   if (!existing) {
     throw new Error(`NOT_FOUND: Course with ID '${id}' does not exist.`);
+  }
+
+  // Info columns purane DB par na hon to unhe update se hata do (UPDATE na gire).
+  if (!(await hasCourseInfoColumns())) {
+    delete (updates as any).language;
+    delete (updates as any).validityMonths;
+    delete (updates as any).targetAudience;
   }
 
   if (updates.slug && updates.slug !== existing.slug) {

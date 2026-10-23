@@ -23,7 +23,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     await requireRole(req, UserRole.ADMIN);
     const body = await req.json();
     const updates: any = {};
-    for (const k of ['title', 'slug', 'description', 'thumbnailUrl', 'price', 'status', 'isPublished']) {
+    for (const k of ['title', 'slug', 'description', 'thumbnailUrl', 'price', 'status', 'isPublished', 'language', 'validityMonths', 'targetAudience']) {
       if (body[k] !== undefined) updates[k] = body[k];
     }
     const course = await updateCourse(params.id, updates);

@@ -108,8 +108,14 @@ export async function createCourseDb(c: any) {
   try {
     const createdAt = c.createdAt ? c.createdAt.slice(0, 19).replace('T', ' ') : null;
     const updatedAt = c.updatedAt ? c.updatedAt.slice(0, 19).replace('T', ' ') : null;
-    await mysqlPool.query('INSERT INTO Courses (id, title, slug, description, thumbnailUrl, price, status, isPublished, createdAt, updatedAt) VALUES (?,?,?,?,?,?,?,?,?,?)',
-      [c.id, c.title, c.slug, c.description, c.thumbnailUrl || '', c.price, c.status, c.isPublished ? 1 : 0, createdAt, updatedAt]);
+    const cols = ['id', 'title', 'slug', 'description', 'thumbnailUrl', 'price', 'status', 'isPublished', 'createdAt', 'updatedAt'];
+    const vals = [c.id, c.title, c.slug, c.description, c.thumbnailUrl || '', c.price, c.status, c.isPublished ? 1 : 0, createdAt, updatedAt];
+    // Course info columns (§21) — sirf tabhi jab key maujood ho (purane DBs par
+    // service layer keys hata deta hai, taaki INSERT kabhi na gire).
+    for (const [k, v] of [['language', c.language || null], ['validityMonths', c.validityMonths ?? null], ['targetAudience', c.targetAudience || null]] as const) {
+      if (c[k] !== undefined) { cols.push(k); vals.push(v); }
+    }
+    await mysqlPool.query(`INSERT INTO Courses (${cols.join(',')}) VALUES (${cols.map(() => '?').join(',')})`, vals);
     return c;
   } catch(e) {
     console.error("Course Create Error DB:", e);

@@ -11,6 +11,9 @@ export default function AdminCoursesPage() {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState(4999);
   const [thumbnail, setThumbnail] = useState('');
+  const [language, setLanguage] = useState('');
+  const [validityMonths, setValidityMonths] = useState('');
+  const [targetAudience, setTargetAudience] = useState('');
   const [fileLoading, setFileLoading] = useState(false);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,6 +81,9 @@ export default function AdminCoursesPage() {
         price: Number(price),
         status: isPublished ? 'PUBLISHED' : 'DRAFT',
         isPublished,
+        language: language.trim() || undefined,
+        validityMonths: validityMonths ? Number(validityMonths) : undefined,
+        targetAudience: targetAudience.trim() || undefined,
       }),
     });
 
@@ -89,6 +95,9 @@ export default function AdminCoursesPage() {
       setSlug('');
       setDescription('');
       setThumbnail('');
+      setLanguage('');
+      setValidityMonths('');
+      setTargetAudience('');
       fetchCourses();
     }
     setLoading(false);
@@ -168,6 +177,38 @@ export default function AdminCoursesPage() {
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
                 min={0}
+                className="w-full px-3 py-2 border rounded text-xs focus:ring-2 focus:ring-red-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Language</label>
+              <input
+                type="text"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                placeholder="e.g. Hindi + English"
+                className="w-full px-3 py-2 border rounded text-xs focus:ring-2 focus:ring-red-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Validity (months)</label>
+              <input
+                type="number"
+                value={validityMonths}
+                onChange={(e) => setValidityMonths(e.target.value)}
+                min={1}
+                max={60}
+                placeholder="e.g. 12"
+                className="w-full px-3 py-2 border rounded text-xs focus:ring-2 focus:ring-red-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Ye course kiske liye hai (har line ek point)</label>
+              <textarea
+                value={targetAudience}
+                onChange={(e) => setTargetAudience(e.target.value)}
+                rows={3}
+                placeholder={'Class 10 ke students\nUPSSSC PET ki taiyari karne wale'}
                 className="w-full px-3 py-2 border rounded text-xs focus:ring-2 focus:ring-red-500 focus:outline-none"
               />
             </div>
