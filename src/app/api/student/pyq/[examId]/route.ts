@@ -4,12 +4,14 @@ import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
 import { createApiResponse, createApiError } from '@/lib/utils';
 import { randomUUID } from 'crypto';
+import { ensurePyqSchema } from '@/lib/ensure-pyq-schema';
 
 export async function GET(
   req: NextRequest,
   { params }: { params: { examId: string } }
 ) {
   try {
+    await ensurePyqSchema();
     const session = await requireRole(req, UserRole.STUDENT);
     const { examId } = params;
 
@@ -53,6 +55,7 @@ export async function POST(
   { params }: { params: { examId: string } }
 ) {
   try {
+    await ensurePyqSchema();
     const session = await requireRole(req, UserRole.STUDENT);
     const { examId } = params;
     const body = await req.json();

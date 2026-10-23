@@ -4,9 +4,11 @@ import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
 import { createApiResponse, createApiError } from '@/lib/utils';
 import { randomUUID } from 'crypto';
+import { ensurePyqSchema } from '@/lib/ensure-pyq-schema';
 
 export async function GET(req: NextRequest) {
   try {
+    await ensurePyqSchema();
     const session = await requireRole(req, UserRole.STUDENT);
     const url = new URL(req.url);
     const examName = url.searchParams.get('examName');
@@ -46,6 +48,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    await ensurePyqSchema();
     const session = await requireRole(req, UserRole.TEACHER);
     const body = await req.json();
 
