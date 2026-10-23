@@ -3,11 +3,14 @@ import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
 import { createApiResponse, createApiError } from '@/lib/utils';
+import { ensureBookmarkTable } from '@/lib/ensure-bookmark-schema';
 import { randomUUID } from 'crypto';
 
 export async function GET(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+    // Self-heal: purane DBs par ContentBookmarks table missing ho sakti hai.
+    await ensureBookmarkTable();
     const url = new URL(req.url);
     const type = url.searchParams.get('type');
 
@@ -35,6 +38,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+    await ensureBookmarkTable();
     const body = await req.json();
 
     const { contentType, contentId, title, note, highlightColor, positionSeconds } = body;
@@ -64,6 +68,7 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+    await ensureBookmarkTable();
     const url = new URL(req.url);
     const id = url.searchParams.get('id');
 

@@ -1,7 +1,1 @@
-{
-  "latestVersion": 23,
-  "url": "https://the-shiva.onrender.com/ota/android/23/index.android.bundle",
-  "sha256": "1f50e88f4374251fbb40428cb9eed4020cac589e61b9b165e76bd148f9fcadb7",
-  "mandatory": false,
-  "notes": "Course detail par ab Batch Announcements — teacher ki ghoshnaayein sirf enrolled students ko"
-}
+{"latestVersion":24,"mandatory":false,"notes":"Learn me Lecture Bookmark + 'Wapas Dekho' — pasandida lectures save karo, baad me wahin se dobara dekho","sha256":"d85318ac7bab7de5ddd3864f44ffba491e3d444b239a96a2fb39504fac1e5f44","url":"https://the-shiva.onrender.com/ota/android/24/index.android.bundle"}
