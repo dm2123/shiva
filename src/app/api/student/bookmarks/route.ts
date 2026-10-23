@@ -47,6 +47,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(createApiError('BAD_REQUEST', 'contentType and contentId are required'), { status: 400 });
     }
 
+    // Idempotent: pehle se saved ho to dobara row mat banao (double-tap /
+    // network retry par duplicate bookmarks bante the). Purani wali ka id
+    // wapas do taaki app toggle-state seedha sync kar sake.
+    const [existing]: any = await mysqlPool.query(
+      'SELECT id FROM ContentBookmarks WHERE studentId = ? AND contentType = ? AND contentId = ? LIMIT 1',
+      [session.userId, contentType, contentId]
+    );
+    if (existing && existing.length > 0) {
+      return NextResponse.json(
+        createApiResponse({ bookmarkId: existing[0].id, contentType, contentId, alreadySaved: true }),
+        { status: 200 }
+      );
+    }
+
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const bookmarkId = randomUUID();
 
