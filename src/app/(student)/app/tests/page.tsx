@@ -8,6 +8,7 @@ import StudentEmptyState from '@/components/student/StudentEmptyState';
 import {
   IconClipboard, IconArrowRight, IconClock, IconTarget,
   IconCheckCircle, IconZap, IconAward, IconPlay, IconTrendingUp,
+  IconBook, IconRefresh, IconShield, IconPlus,
 } from '@/components/student/StudentIcons';
 
 export const revalidate = 0;
@@ -391,6 +392,96 @@ export default async function TestsListPage() {
           ))}
         </div>
       )}
+
+      {/* ── Common Benefits (asal platform features — test detail/attempt flow se verified) ── */}
+      <section className="space-y-5">
+        <div>
+          <h2 className="text-xl font-bold text-[var(--student-text)] tracking-tight">Har Test Ke Saath</h2>
+          <p className="text-xs text-[var(--student-text-faint)] mt-1 font-medium">
+            Ye features THE SHIVA ke har published test par lagu hote hain.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          {[
+            {
+              icon: <IconClock size={20} />,
+              title: 'Real Exam Timer',
+              text: 'Timer test khulte hi shuru hota hai aur samay khatam hone par test apne aap submit ho jata hai — bilkul asli exam jaisa.',
+            },
+            {
+              icon: <IconTrendingUp size={20} />,
+              title: 'Detailed Analysis',
+              text: 'Submit ke baad score, accuracy aur topic-wise strong/weak areas ke saath poora analysis milta hai.',
+            },
+            {
+              icon: <IconBook size={20} />,
+              title: 'Syllabus Coverage',
+              text: 'Har test ke detail page par subject aur chapter-wise question breakup pehle se dikhta hai.',
+            },
+            {
+              icon: <IconRefresh size={20} />,
+              title: 'Re-attempt Anytime',
+              text: 'Ek hi test dobara attempt karo — tumhara best score track hota hai, progress kabhi nahi kho ti.',
+            },
+          ].map((b) => (
+            <div key={b.title} className="student-card p-5">
+              <div className="w-11 h-11 rounded-2xl bg-[#6d28d9]/10 text-[#6d28d9] flex items-center justify-center mb-3">
+                {b.icon}
+              </div>
+              <h3 className="text-sm font-bold text-[var(--student-text)]">{b.title}</h3>
+              <p className="text-xs text-[var(--student-text-muted)] mt-1.5 leading-relaxed">{b.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FAQ (honest — sirf asal test behaviour par) ── */}
+      <section className="space-y-5">
+        <div>
+          <h2 className="text-xl font-bold text-[var(--student-text)] tracking-tight">Aksar Poochhe Jaane Wale Sawal</h2>
+          <p className="text-xs text-[var(--student-text-faint)] mt-1 font-medium">
+            Test dene se pehle ye jaan lo.
+          </p>
+        </div>
+        <div className="space-y-3">
+          {[
+            {
+              q: 'Test ka timer kaise kaam karta hai?',
+              a: 'Jaise hi tum test kholte ho, timer shuru ho jata hai. Samay khatam hone par test apne aap submit ho jata hai, isliye time management asli exam ki tarah hi rakho.',
+            },
+            {
+              q: 'Kya negative marking hoti hai?',
+              a: 'Har test ki apni configured marking hoti hai — galat jawab par negative marks usi hisaab se lagte hain jo test me set hai. Har test ke detail page par total marks aur passing marks pehle se dikhte hain.',
+            },
+            {
+              q: 'Result aur analysis kahan milega?',
+              a: 'Submit karte hi tumhe score ke saath detailed analysis milta hai. Purane attempts ke results is page par Completed test ke "Result" link se, ya Results section se, kabhi bhi dekhe ja sakte hain.',
+            },
+            {
+              q: 'Kya main ek hi test dobara de sakta hoon?',
+              a: 'Haan. Completed test par "Re-attempt" ka option milta hai. Tumhare saare attempts save rehte hain aur best score alag se track hota hai.',
+            },
+            {
+              q: 'Beech me internet chala jaye to kya hoga?',
+              a: 'Tumhara attempt "In Progress" state me rehta hai. Wapas aakar is page se ya test ke detail page se "Resume" karke wahi se aage badh sakte ho.',
+            },
+          ].map((item) => (
+            <details key={item.q} className="student-card group">
+              <summary className="flex items-center justify-between gap-3 p-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <span className="text-sm font-bold text-[var(--student-text)]">{item.q}</span>
+                <span className="w-7 h-7 rounded-full bg-[#6d28d9]/10 text-[#6d28d9] flex items-center justify-center flex-shrink-0 transition-transform group-open:rotate-45">
+                  <IconPlus size={13} />
+                </span>
+              </summary>
+              <p className="px-5 pb-5 text-sm text-[var(--student-text-muted)] leading-relaxed">{item.a}</p>
+            </details>
+          ))}
+        </div>
+        <p className="flex items-center gap-2 text-xs text-[var(--student-text-faint)]">
+          <IconShield size={14} className="text-[#f5b942] flex-shrink-0" />
+          Sawaal bacha hai? Test ke detail page par instructions padho, ya Doubts section me apna sawaal poochho.
+        </p>
+      </section>
     </div>
   );
 }

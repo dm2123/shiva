@@ -5,13 +5,14 @@
  * ---------------------------------------------------------------
  * Workstream 2 (Public Courses Listing).
  *
- * HONEST-DATA RULE: The Course model only carries real fields —
- * title, slug, description, thumbnailUrl, price, status, createdAt.
- * There is NO mrp/originalPrice, rating, student-count, teacher,
- * language or validity field in the API/service layer, so this file
- * never renders those. Badges/prices appear only when the real
- * field exists (FREE / price from `price`; exam chip derived from
- * the course's own title/slug keywords).
+ * HONEST-DATA RULE: Sirf asal Course fields hi render hote hain —
+ * title, slug, description, thumbnailUrl, price, status, createdAt,
+ * aur jab record me maujood hon to language / validityMonths bhi
+ * (ye optional fields hain — khaali hon to pill nahi dikhta).
+ * mrp/originalPrice, rating, student-count ya teacher field listing
+ * data me nahi aata, isliye woh kabhi render nahi hota — MRP sirf
+ * tab jab asal record par ho. Exam chip course ke apne title/slug
+ * keywords se derive hota hai.
  */
 
 import { useMemo, useState } from 'react';
@@ -71,7 +72,7 @@ function formatINR(value: number): string {
 }
 
 /**
- * Price-pattern helper (pw-live map ka niyam #1):
+ * Price-pattern helper (design-map ka niyam #1):
  * bold current price → grey kata-hua MRP → green % OFF chip.
  * MRP SIRF tab jab asal data me originalPrice/mrp maujood ho aur
  * price se zyada ho — Course model me aam taur par ye field NAHI
@@ -250,6 +251,42 @@ export default function CourseCard({ course }: CourseCardProps) {
           </p>
         ) : null}
 
+        {/* Meta pills — grey outline; sirf tab jab asal record me
+            language / validityMonths maujood ho (warna kuch nahi) */}
+        {(course.language?.trim() ||
+          (typeof course.validityMonths === 'number' && course.validityMonths > 0)) && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
+            {course.language?.trim() && (
+              <span
+                style={{
+                  fontSize: 11.5,
+                  fontWeight: 700,
+                  color: '#4b5563',
+                  border: '1.5px solid var(--line)',
+                  padding: '4px 11px',
+                  borderRadius: 999,
+                }}
+              >
+                🗣️ {course.language.trim()}
+              </span>
+            )}
+            {typeof course.validityMonths === 'number' && course.validityMonths > 0 && (
+              <span
+                style={{
+                  fontSize: 11.5,
+                  fontWeight: 700,
+                  color: '#4b5563',
+                  border: '1.5px solid var(--line)',
+                  padding: '4px 11px',
+                  borderRadius: 999,
+                }}
+              >
+                📅 {course.validityMonths} mahine validity
+              </span>
+            )}
+          </div>
+        )}
+
         <div style={{ flex: 1 }} />
 
         {/* Price row — map ka pakka pattern: bold current price →
@@ -392,10 +429,15 @@ const controlStyle: React.CSSProperties = {
   fontFamily: 'inherit',
 };
 
+/** Grouped (default) view me har category ke itne courses pehle dikhte
+ *  hain; baaki 'View All' dabane par usi category filter se khulte hain. */
+const GROUP_PREVIEW = 8;
+
 export function CoursesExplorer({ courses }: { courses: Course[] }) {
   const [query, setQuery] = useState('');
   const [categoryId, setCategoryId] = useState<string>('all');
   const [priceFilter, setPriceFilter] = useState<PriceFilter>('all');
+  const [languageFilter, setLanguageFilter] = useState<string>('all');
   const [sort, setSort] = useState<SortKey>('newest');
 
   /* Chips sirf un categories ke liye jo asal courses me maujood hain */
@@ -414,12 +456,30 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
   const freeCount = useMemo(() => courses.filter((c) => (Number(c.price) || 0) <= 0).length, [courses]);
   const paidCount = courses.length - freeCount;
 
+  /* Language options — sirf wohi languages jo asal courses par lagi hain */
+  const languages = useMemo(() => {
+    const set = new Map<string, number>();
+    for (const c of courses) {
+      const lang = c.language?.trim();
+      if (lang) set.set(lang, (set.get(lang) || 0) + 1);
+    }
+    return Array.from(set.entries())
+      .map(([label, count]) => ({ label, count }))
+      .sort((a, b) => b.count - a.count);
+  }, [courses]);
+  /* Filter tabhi dikhao jab chunav asal me matlab rakhta ho:
+     2+ languages hon, ya kuch courses par language lagi hi na ho */
+  const showLanguageFilter =
+    languages.length > 0 &&
+    (languages.length > 1 || courses.some((c) => !c.language?.trim()));
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     const list = courses.filter((c) => {
       if (categoryId !== 'all' && deriveExamCategory(c)?.id !== categoryId) return false;
       if (priceFilter === 'free' && (Number(c.price) || 0) > 0) return false;
       if (priceFilter === 'paid' && (Number(c.price) || 0) <= 0) return false;
+      if (languageFilter !== 'all' && c.language?.trim() !== languageFilter) return false;
       if (q) {
         const text = `${c.title} ${c.description ?? ''} ${c.slug.replace(/-/g, ' ')}`.toLowerCase();
         if (!text.includes(q)) return false;
@@ -434,18 +494,44 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
       'title-az': (a, b) => a.title.localeCompare(b.title, 'en-IN'),
     };
     return [...list].sort(by[sort]);
-  }, [courses, query, categoryId, priceFilter, sort]);
+  }, [courses, query, categoryId, priceFilter, languageFilter, sort]);
 
-  const hasActiveFilters = query.trim() !== '' || categoryId !== 'all' || priceFilter !== 'all';
+  const hasActiveFilters =
+    query.trim() !== '' || categoryId !== 'all' || priceFilter !== 'all' || languageFilter !== 'all';
 
   const resetFilters = () => {
     setQuery('');
     setCategoryId('all');
     setPriceFilter('all');
+    setLanguageFilter('all');
     setSort('newest');
   };
 
   const activeCategoryLabel = categories.find((c) => c.cat.id === categoryId)?.cat.label;
+
+  /* Grouped view — koi filter/search/sort active na ho to courses apni
+     exam category ke groups me dikhte hain (listing-map ka pattern:
+     group heading + count + aakhir me 'View All'). Jis course ki
+     category derive nahi hoti woh 'Baaki Courses' group me aata hai. */
+  const isGroupedView = !hasActiveFilters && sort === 'newest';
+  const groups = useMemo(() => {
+    if (!isGroupedView) return null;
+    const byCat = new Map<string, { cat: ExamCategory | null; items: Course[] }>();
+    for (const c of filtered) {
+      const cat = deriveExamCategory(c);
+      const key = cat?.id ?? '__other__';
+      const entry = byCat.get(key);
+      if (entry) entry.items.push(c);
+      else byCat.set(key, { cat, items: [c] });
+    }
+    const ordered = Array.from(byCat.values()).sort((a, b) => {
+      if (a.cat === null) return 1;
+      if (b.cat === null) return -1;
+      return b.items.length - a.items.length;
+    });
+    // Ek hi group ho to grouping ka koi matlab nahi — flat grid hi rahe
+    return ordered.length > 1 ? ordered : null;
+  }, [filtered, isGroupedView]);
 
   return (
     <div>
@@ -571,12 +657,50 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
         ))}
       </div>
 
+      {/* ── Language chips (sirf asal data wali languages) ── */}
+      {showLanguageFilter && (
+        <div
+          style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 22 }}
+          role="group"
+          aria-label="Language se filter karo"
+        >
+          <button
+            type="button"
+            onClick={() => setLanguageFilter('all')}
+            style={{
+              ...(languageFilter === 'all' ? chipActive : chipBase),
+              padding: '6px 13px',
+              fontSize: 12.5,
+            }}
+            aria-pressed={languageFilter === 'all'}
+          >
+            🗣️ Sabhi Languages
+          </button>
+          {languages.map(({ label, count }) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => setLanguageFilter(label)}
+              style={{
+                ...(languageFilter === label ? chipActive : chipBase),
+                padding: '6px 13px',
+                fontSize: 12.5,
+              }}
+              aria-pressed={languageFilter === label}
+            >
+              🗣️ {label} · {count}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* ── Result count ── */}
       <p style={{ fontSize: 13.5, color: 'var(--muted)', fontWeight: 600, marginBottom: 16 }} aria-live="polite">
         {filtered.length === courses.length
           ? `Kul ${courses.length} published course${courses.length === 1 ? '' : 's'}`
           : `${filtered.length} of ${courses.length} courses dikh rahe hain`}
         {activeCategoryLabel ? ` · Category: ${activeCategoryLabel}` : ''}
+        {languageFilter !== 'all' ? ` · Language: ${languageFilter}` : ''}
       </p>
 
       {/* ── Grid / honest empty state ── */}
@@ -600,6 +724,86 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
           <button type="button" onClick={resetFilters} className="btn btn-primary" style={{ fontFamily: 'inherit' }}>
             Filters Saaf Karo — Saare Courses Dekho
           </button>
+        </div>
+      ) : groups ? (
+        /* ── Grouped view: category-wise sections + 'View All' ── */
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
+          {groups.map(({ cat, items }) => {
+            const preview = cat ? items.slice(0, GROUP_PREVIEW) : items;
+            const label = cat ? `${cat.icon} ${cat.label} Courses` : '📚 Baaki Courses';
+            return (
+              <section key={cat?.id ?? 'other'} aria-label={label}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 12,
+                    flexWrap: 'wrap',
+                    marginBottom: 16,
+                    paddingBottom: 10,
+                    borderBottom: '2px solid var(--line)',
+                  }}
+                >
+                  <h2 style={{ fontSize: 21, fontWeight: 800, color: '#2a1650' }}>
+                    {label}
+                    <span
+                      style={{
+                        marginLeft: 10,
+                        fontSize: 12,
+                        fontWeight: 800,
+                        background: '#ede9fe',
+                        color: '#6d28d9',
+                        padding: '3px 10px',
+                        borderRadius: 999,
+                        verticalAlign: 'middle',
+                      }}
+                    >
+                      {items.length}
+                    </span>
+                  </h2>
+                  {cat && items.length > preview.length && (
+                    <button
+                      type="button"
+                      onClick={() => setCategoryId(cat.id)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        cursor: 'pointer',
+                        fontFamily: 'inherit',
+                        fontWeight: 800,
+                        fontSize: 14,
+                        color: '#6d28d9',
+                      }}
+                    >
+                      View All {cat.label} Courses →
+                    </button>
+                  )}
+                </div>
+                <div
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                  style={{ gap: 22 }}
+                >
+                  {preview.map((course) => (
+                    <CourseCard key={course.id} course={course} />
+                  ))}
+                </div>
+                {cat && items.length > preview.length && (
+                  <div style={{ textAlign: 'center', marginTop: 20 }}>
+                    <button
+                      type="button"
+                      onClick={() => setCategoryId(cat.id)}
+                      className="btn btn-primary"
+                      style={{ fontFamily: 'inherit' }}
+                    >
+                      View All {cat.label} Courses ({items.length}) →
+                    </button>
+                  </div>
+                )}
+              </section>
+            );
+          })}
         </div>
       ) : (
         <div

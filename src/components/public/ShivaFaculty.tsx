@@ -78,7 +78,7 @@ export default async function ShivaFaculty() {
                   borderRadius: '50%',
                   margin: '0 auto 14px',
                   background: 'linear-gradient(135deg,#2a1650,#6d28d9)',
-                  color: '#f5b942',
+                  color: '#fff',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -134,7 +134,10 @@ export default async function ShivaFaculty() {
                 const about = t.bio || t.description || undefined;
 
                 const card = (
-                  <div className="teacher" style={{ height: '100%' }}>
+                  <div
+                    className="teacher"
+                    style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                  >
                     {photo ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -148,7 +151,8 @@ export default async function ShivaFaculty() {
                           objectFit: 'cover',
                           margin: '0 auto 12px',
                           display: 'block',
-                          border: '3px solid #f5b942',
+                          border: '3px solid #ddd6fe',
+                          background: '#f5f3ff',
                         }}
                       />
                     ) : (
@@ -156,21 +160,34 @@ export default async function ShivaFaculty() {
                         className="av"
                         style={{
                           background: 'linear-gradient(135deg,#2a1650,#6d28d9)',
-                          color: '#f5b942',
+                          color: '#fff',
                           fontWeight: 900,
-                          border: '3px solid #f5b942',
+                          border: '3px solid #ddd6fe',
                         }}
                         aria-hidden="true"
                       >
                         {initialsOf(name)}
                       </div>
                     )}
-                    <b>{name}</b>
+                    <b style={{ fontSize: 16 }}>{name}</b>
                     {subjectLine && <span>{subjectLine}</span>}
+                    {/* Grey experience pill — SIRF asal experienceYears par */}
                     {exp > 0 && (
-                      <p style={{ fontWeight: 600, color: '#6d28d9' }}>
-                        {exp} {exp === 1 ? 'year' : 'years'} experience
-                      </p>
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          marginTop: 9,
+                          fontSize: 12,
+                          fontWeight: 700,
+                          color: '#4b5563',
+                          background: '#f3f4f6',
+                          border: '1px solid #e5e7eb',
+                          padding: '5px 12px',
+                          borderRadius: 999,
+                        }}
+                      >
+                        🎓 {exp} {exp === 1 ? 'Year' : 'Years'} Exp
+                      </span>
                     )}
                     {about && (
                       <p
@@ -183,6 +200,35 @@ export default async function ShivaFaculty() {
                       >
                         {about}
                       </p>
+                    )}
+                    {/* Detail arrow — profile wale cards par */}
+                    {t.slug && (
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          marginTop: 'auto',
+                          paddingTop: 14,
+                          display: 'inline-flex',
+                        }}
+                      >
+                        <span
+                          style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: '50%',
+                            border: '2px solid #6d28d9',
+                            color: '#6d28d9',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: 16,
+                            fontWeight: 900,
+                            lineHeight: 1,
+                          }}
+                        >
+                          →
+                        </span>
+                      </span>
                     )}
                   </div>
                 );

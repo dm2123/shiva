@@ -49,12 +49,17 @@ export default function AboutPage() {
         }}
       >
         <div className="wrap">
+          <nav className="page-crumb" aria-label="Breadcrumb">
+            <Link href="/">Home</Link>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">About</span>
+          </nav>
           <div className="sec-head">
             <span className="kicker">About THE SHIVA</span>
-            <h2>
+            <h1 className="h-display">
               Competitive exams ke liye hi bana{' '}
               <span className="hl">ek focused platform</span>
-            </h2>
+            </h1>
             <p>
               THE SHIVA ek focused digital learning ecosystem hai — SSC, Railway, Banking,
               Defence aur Teaching exams ki taiyaari karne wale students ke liye, shuru se

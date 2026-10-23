@@ -394,7 +394,7 @@
 
 /* ============================================================
    ROUND 2 · STREAM E — PUBLIC SHELL + HEADINGS SCALE (2026-10-22)
-   pw.live design map ke pattern par (structure/scale sirf — koi
+   design map ke pattern par (structure/scale sirf — koi
    copy/text borrow nahi). ADDITIVE hi hai: purane class contracts
    (.btn, .btn-primary, .btn-ghost, .btn-gold, .sec-head, .hero,
    .fgrid, .mobile-menu …) ke naam/maayne barkarar; neeche sirf
@@ -475,4 +475,41 @@
 }
 @media(prefers-reduced-motion:reduce){
   .shiva-landing .mega-caret,.shiva-landing .mega-tile,.shiva-landing .btn-dark{transition:none}
+}
+
+/* ============================================================
+   ROUND 3 · PUBLIC SHELL + ABOUT/CONTACT (2026-10-23, additive)
+   - Footer social row (.fsocial) — brand.ts ke asal URLs ke liye
+   - Callback modal ka /contact alt-link (.cb-alt)
+   - FIX: mobile sticky-cta bar safed hai, par .btn-ghost ka text bhi
+     safed tha (dark header ke liye bana) → Callback text invisible tha;
+     sticky-cta ke andar ghost ko dark treatment diya.
+   - Sub-page hero headings: .sec-head h1 = h2 wali hi scale (h1
+     semantics ke saath), .h-display ke andar .hl = purple.
+   - Breadcrumb (.page-crumb) — listing-page pattern: chhota grey
+     crumb → bada bold heading → grey intro.
+   ============================================================ */
+.shiva-landing .fsocial{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.shiva-landing .fsocial a{display:inline-flex;align-items:center;min-height:36px;padding:6px 14px;border:1.5px solid #37316b;border-radius:999px;font-size:13px;font-weight:700;color:#c4c0e8;transition:border-color .2s ease,color .2s ease}
+.shiva-landing .fsocial a:hover{border-color:var(--gold);color:var(--gold)}
+
+.shiva-landing .cb-alt{margin:16px 0 0;padding-top:14px;border-top:1px solid #f0edff;text-align:center}
+.shiva-landing .cb-alt a{color:#6d28d9;font-weight:800}
+.shiva-landing .cb-alt a:hover{color:#4c1d95;text-decoration:underline;text-underline-offset:3px}
+
+.shiva-landing .sticky-cta .btn-ghost{color:var(--ink);border-color:var(--line);background:#fff}
+.shiva-landing .sticky-cta .btn-ghost:hover{border-color:var(--brand);color:#4c1d95}
+
+.shiva-landing .sec-head h1{font-size:32px;font-weight:800;line-height:1.22;letter-spacing:-.01em;color:var(--ink)}
+.shiva-landing .sec-head h1.h-display{font-size:clamp(34px,5.2vw,54px);font-weight:900;line-height:1.08;letter-spacing:-.015em}
+.shiva-landing .sec-head h1 .hl{color:#6d28d9}
+.shiva-landing .h-display .hl{color:#6d28d9}
+
+.shiva-landing .page-crumb{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:20px}
+.shiva-landing .page-crumb a{color:#6d28d9}
+.shiva-landing .page-crumb a:hover{text-decoration:underline;text-underline-offset:3px}
+.shiva-landing .page-crumb [aria-current]{color:var(--ink);font-weight:700}
+
+@media(max-width:900px){
+  .shiva-landing .sec-head h1{font-size:27px}
 }

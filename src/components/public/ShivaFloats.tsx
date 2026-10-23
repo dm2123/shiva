@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, type FormEvent } from 'react';
+import Link from 'next/link';
 
 export default function ShivaFloats() {
   const [open, setOpen] = useState(false);
@@ -132,6 +133,12 @@ export default function ShivaFloats() {
               </button>
             </form>
           )}
+          <p className="cb-alt">
+            Likha hua message bhejna hai?{' '}
+            <Link href="/contact" onClick={() => setOpen(false)}>
+              Contact page par jayein →
+            </Link>
+          </p>
         </div>
       </div>
     </>

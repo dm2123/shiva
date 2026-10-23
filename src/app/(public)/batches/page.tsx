@@ -241,7 +241,7 @@ function BatchCard({ batch }: { batch: BatchRow }) {
 /* ------------------------------- page ------------------------------- */
 
 type PageProps = {
-  searchParams?: { status?: string; exam?: string };
+  searchParams?: { status?: string; exam?: string; q?: string };
 };
 
 const STATUS_FILTERS = [
@@ -251,10 +251,11 @@ const STATUS_FILTERS = [
   { key: 'COMPLETED', label: 'Completed' },
 ] as const;
 
-function chipHref(status: string, exam: string | null): string {
+function chipHref(status: string, exam: string | null, q: string): string {
   const params = new URLSearchParams();
   if (status !== 'all') params.set('status', status);
   if (exam) params.set('exam', exam);
+  if (q) params.set('q', q);
   const qs = params.toString();
   return qs ? `/batches?${qs}` : '/batches';
 }
@@ -280,6 +281,10 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
   const activeExam =
     searchParams?.exam && exams.includes(searchParams.exam) ? searchParams.exam : null;
 
+  /* Search — sirf asal fields par: batch naam, course title/description, teacher naam */
+  const query = (searchParams?.q || '').trim();
+  const qLower = query.toLowerCase();
+
   const filtered = batches.filter((b) => {
     if (validStatus === 'ACTIVE' && (b.status || '').toUpperCase() !== 'ACTIVE') return false;
     if (validStatus === 'UPCOMING' && (b.status || '').toUpperCase() !== 'UPCOMING') return false;
@@ -289,10 +294,15 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
     )
       return false;
     if (activeExam && deriveExam(b) !== activeExam) return false;
+    if (qLower) {
+      const haystack =
+        `${b.name || ''} ${b.courseTitle || ''} ${b.courseDescription || ''} ${b.teacherName || ''}`.toLowerCase();
+      if (!haystack.includes(qLower)) return false;
+    }
     return true;
   });
 
-  const isFiltered = validStatus !== 'ALL' || activeExam !== null;
+  const isFiltered = validStatus !== 'ALL' || activeExam !== null || query !== '';
 
   const groups: Array<{ key: string; title: string; blurb: string; items: BatchRow[] }> = [
     {
@@ -321,6 +331,17 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
       <div className="shiva-blob shiva-blob-2 bottom-[10%] right-[-100px] h-[500px] w-[500px] bg-[#6d28d9]" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto max-w-7xl">
+        {/* Breadcrumb — chhota, halka (listing-page pattern) */}
+        <nav aria-label="Breadcrumb" className="mb-8 text-[13px] text-slate-400">
+          <Link href="/" className="font-semibold text-[#c4b5fd] hover:text-white">
+            Home
+          </Link>
+          {' / '}
+          <span aria-current="page" className="text-slate-300">
+            Batches
+          </span>
+        </nav>
+
         {/* Hero */}
         <div className="mb-12 space-y-5 text-center">
           <span className="shiva-capsule shiva-capsule-violet">Organized Learning · THE SHIVA</span>
@@ -379,6 +400,50 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
           </div>
         ) : (
           <>
+            {/* Search — GET form (server-side filter, asal fields par).
+                Status/exam selection hidden fields se barkarar rehti hai. */}
+            <form
+              method="get"
+              action="/batches"
+              role="search"
+              className="mx-auto mb-8 flex max-w-xl items-stretch gap-2"
+            >
+              {validStatus !== 'ALL' && (
+                <input type="hidden" name="status" value={validStatus} />
+              )}
+              {activeExam && <input type="hidden" name="exam" value={activeExam} />}
+              <div className="relative flex-1">
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[15px] opacity-60"
+                >
+                  🔍
+                </span>
+                <input
+                  type="search"
+                  name="q"
+                  defaultValue={query}
+                  placeholder="Batch, course ya teacher khojo…"
+                  aria-label="Batch search karo"
+                  className="w-full rounded-full border border-white/15 bg-white/5 py-3 pl-11 pr-4 text-sm text-white placeholder:text-slate-500 focus:border-[#6d28d9] focus:outline-none"
+                />
+              </div>
+              <button
+                type="submit"
+                className="shrink-0 rounded-full bg-[#6d28d9] px-6 py-3 text-sm font-bold text-white shadow-lg shadow-[#6d28d9]/30 transition-all hover:bg-[#7c3aed]"
+              >
+                Khojo
+              </button>
+              {query && (
+                <Link
+                  href={chipHref(validStatus === 'ALL' ? 'all' : validStatus, activeExam, '')}
+                  className="inline-flex shrink-0 items-center rounded-full border border-white/15 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-300 transition-colors hover:text-white"
+                >
+                  ✕ Saaf
+                </Link>
+              )}
+            </form>
+
             {/* Filter chips — status */}
             <div className="mb-4 flex flex-wrap items-center justify-center gap-2" role="navigation" aria-label="Batch status filter">
               {STATUS_FILTERS.map((f) => {
@@ -386,7 +451,7 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
                 return (
                   <Link
                     key={f.key}
-                    href={chipHref(f.key === 'all' ? 'all' : f.key, activeExam)}
+                    href={chipHref(f.key === 'all' ? 'all' : f.key, activeExam, query)}
                     aria-current={isActive ? 'page' : undefined}
                     className={`rounded-full px-4 py-2 text-[13px] font-bold transition-all ${
                       isActive
@@ -404,7 +469,7 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
             {exams.length > 1 && (
               <div className="mb-10 flex flex-wrap items-center justify-center gap-2" role="navigation" aria-label="Exam filter">
                 <Link
-                  href={chipHref(validStatus === 'ALL' ? 'all' : validStatus, null)}
+                  href={chipHref(validStatus === 'ALL' ? 'all' : validStatus, null, query)}
                   aria-current={!activeExam ? 'page' : undefined}
                   className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
                     !activeExam
@@ -417,7 +482,7 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
                 {exams.map((exam) => (
                   <Link
                     key={exam}
-                    href={chipHref(validStatus === 'ALL' ? 'all' : validStatus, exam)}
+                    href={chipHref(validStatus === 'ALL' ? 'all' : validStatus, exam, query)}
                     aria-current={activeExam === exam ? 'page' : undefined}
                     className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
                       activeExam === exam
@@ -438,7 +503,9 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
                   Is filter me abhi koi batch available nahi hai
                 </h2>
                 <p className="text-sm leading-relaxed text-slate-400">
-                  Dusra status ya exam chunkar dekho — ya saare batches ek saath dekho.
+                  {query
+                    ? `“${query}” se match karta koi batch nahi mila. Spelling check karo, dusra status ya exam chuno — ya saare batches ek saath dekho.`
+                    : 'Dusra status ya exam chunkar dekho — ya saare batches ek saath dekho.'}
                 </p>
                 <Link
                   href="/batches"
@@ -453,6 +520,7 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
                 <p className="mb-6 text-center text-sm text-slate-400">
                   <span className="font-bold text-white">{filtered.length}</span>{' '}
                   {filtered.length === 1 ? 'batch mila' : 'batches mile'}
+                  {query ? ` · “${query}”` : ''}
                   {activeExam ? ` · ${activeExam}` : ''}
                   {validStatus !== 'ALL' ? ` · ${statusMeta(validStatus).label}` : ''}
                   {' — '}

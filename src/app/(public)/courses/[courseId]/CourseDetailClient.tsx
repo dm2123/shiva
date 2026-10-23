@@ -55,6 +55,8 @@ export interface FreeLectureDTO extends LectureDTO {
 export interface CourseMetaDTO {
   language?: string | null;
   validityLabel?: string | null;
+  /** Asal record ka "kiske liye hai" text (lines \n se alag) — FAQ ke liye. */
+  targetAudience?: string | null;
 }
 
 interface Props {
@@ -78,7 +80,7 @@ const GREEN_DARK = '#166534';
 const GREEN_BG = '#dcfce7';
 
 /**
- * 6 tabs — PW-live-map wala kram (structure only, SHIVA ka apna content):
+ * 6 tabs — design-map wala kram (structure only, SHIVA ka apna content):
  * Features | About | Schedule | Teachers | Free Content | More Details
  */
 const TABS: { id: TabId; label: string; icon: string }[] = [
@@ -149,6 +151,7 @@ export default function CourseDetailClient({
   meta,
 }: Props) {
   const [activeTab, setActiveTab] = useState<TabId>('features');
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [openSubject, setOpenSubject] = useState<string | null>(subjects[0]?.id ?? null);
   const [openChapter, setOpenChapter] = useState<string | null>(
     subjects[0]?.chapters[0]?.id ?? null
@@ -318,6 +321,143 @@ export default function CourseDetailClient({
 
     return sections;
   }, [description, subjects, totals, meta, batches, teachers, freeLectures, isEnrolled]);
+
+  /* -------- FAQ: sawal asal course fields se hi bante hain --------
+     Duration / validity / language / kiske-liye-hai — jo field record
+     me nahi hai, uska sawal hi nahi banta. Refund ka jawaab THE SHIVA
+     ke asal Terms of Service (§6 Payment) se hai — usse zyada koi
+     daava nahi. Support ka jawaab asal maujooda raaste (Contact page
+     ka form / login ke baad student portal) hi deta hai — koi phone
+     ya email invent nahi hota. */
+  const faqItems = useMemo(() => {
+    const items: { q: string; a: React.ReactNode }[] = [];
+
+    if (meta?.targetAudience?.trim()) {
+      items.push({
+        q: 'Ye course kiske liye hai?',
+        a: <span style={{ whiteSpace: 'pre-line' }}>{meta.targetAudience.trim()}</span>,
+      });
+    } else if (subjects.length > 0) {
+      items.push({
+        q: 'Ye course kiske liye hai?',
+        a: (
+          <>
+            Ye course un students ke liye hai jo{' '}
+            {subjects.map((s) => s.name).join(', ')} ko structured tareeke se, basics se
+            shuru karke seekhna chahte hain. Poora syllabus Schedule tab me pehle se dekh
+            sakte ho.
+          </>
+        ),
+      });
+    }
+
+    if (totals.lectures > 0) {
+      items.push({
+        q: 'Course me kitna content hai aur kitna samay lagega?',
+        a: (
+          <>
+            Is course me kul {totals.lectures} recorded lectures aur {totals.chapters}{' '}
+            chapters hain
+            {totals.seconds > 0
+              ? ` — mila kar lagbhag ${formatDuration(totals.seconds)} ka video content`
+              : ''}
+            . Saare lectures recorded hain, isliye tum apni gati se, apne samay par padh
+            sakte ho.
+          </>
+        ),
+      });
+    }
+
+    if (meta?.language) {
+      items.push({
+        q: 'Course kis language (medium) me hai?',
+        a: (
+          <>
+            Is course ki padhai <strong>{meta.language}</strong> medium me hai.
+          </>
+        ),
+      });
+    }
+
+    if (meta?.validityLabel) {
+      items.push({
+        q: 'Enroll karne ke baad course ka access kitne samay tak rahega?',
+        a: (
+          <>
+            Enroll karne ke baad is course ki validity <strong>{meta.validityLabel}</strong>{' '}
+            hai. Access tumhare THE SHIVA student dashboard se milta hai — mobile aur
+            desktop dono par.
+          </>
+        ),
+      });
+    }
+
+    if (batches.length > 0) {
+      const next = batches.find((b) => b.status === 'ACTIVE') || batches[0];
+      const start = formatDate(next.startDate);
+      items.push({
+        q: 'Batch kab shuru hoga?',
+        a: (
+          <>
+            Is course ke {batches.length} batch option{batches.length === 1 ? '' : 's'}{' '}
+            uplabdh hain. {next.name}
+            {start ? ` — ${start} se shuru` : ''} ({next.status}). Saare batches ki
+            dates Schedule tab me di gayi hain.
+          </>
+        ),
+      });
+    }
+
+    items.push({
+      q: 'Kya main enroll karne se pehle free me try kar sakta/sakti hoon?',
+      a:
+        freeLectures.length > 0 ? (
+          <>
+            Haan — is course ke {freeLectures.length} lecture bilkul free preview ke liye
+            khule hain. Upar <strong>Free Content</strong> tab me jaakar bina payment ke
+            teaching style aur quality pehle check karo, phir faisla lo.
+          </>
+        ) : (
+          <>
+            Is course ke liye abhi koi free preview lecture publish nahi hua hai. Lekin
+            poora syllabus — har subject, chapter aur lecture ki list —{' '}
+            <strong>Schedule</strong> tab me bina enroll kiye dekh sakte ho.
+          </>
+        ),
+    });
+
+    items.push({
+      q: 'Refund policy kya hai?',
+      a: (
+        <>
+          THE SHIVA ke Terms of Service ke hisaab se course enrollment aur subscription
+          fees aam taur par <strong>non-refundable</strong> hain — siwaye wahan jahan
+          kanoon (law) ke tahat refund zaroori ho. Poori policy yahan padho:{' '}
+          <Link href="/terms" style={{ color: PURPLE, fontWeight: 700 }}>
+            Terms of Service →
+          </Link>
+        </>
+      ),
+    });
+
+    items.push({
+      q: 'Madad chahiye ya koi sawaal hai — sampark kaise karoon?',
+      a: (
+        <>
+          {isEnrolled
+            ? 'Tum enrolled ho — login ke baad apne student portal se support tak pahunch sakte ho. '
+            : ''}
+          Aam sawaalon ke liye hamari team se{' '}
+          <Link href="/contact" style={{ color: PURPLE, fontWeight: 700 }}>
+            Contact page
+          </Link>{' '}
+          par diye gaye form se sampark karo — wahi hamara official support raasta hai.
+        </>
+      ),
+    });
+
+    return items;
+  }, [meta, subjects, totals, batches, freeLectures, isEnrolled]);
 
   return (
     <div>
@@ -986,6 +1126,49 @@ export default function CourseDetailClient({
               ? 'Tum enrolled ho — kisi bhi lecture par click karke seedha seekhna shuru karo.'
               : 'Ye lectures bilkul free hain. Play karne ke liye free register/login karo — koi payment nahi lagega.'}
           </p>
+          {freeLectures.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+              <span
+                style={{
+                  fontSize: 12,
+                  fontWeight: 800,
+                  background: '#fef3c7',
+                  color: '#92400e',
+                  padding: '5px 12px',
+                  borderRadius: 999,
+                }}
+              >
+                🎁 {freeLectures.length} free lecture{freeLectures.length === 1 ? '' : 's'}
+              </span>
+              {freeLectures.reduce((n, l) => n + (l.durationSeconds || 0), 0) > 0 && (
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 800,
+                    background: '#ede9fe',
+                    color: PURPLE,
+                    padding: '5px 12px',
+                    borderRadius: 999,
+                  }}
+                >
+                  ⏱️ Kul {formatDuration(freeLectures.reduce((n, l) => n + (l.durationSeconds || 0), 0))} free content
+                </span>
+              )}
+              <span
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  background: '#faf9ff',
+                  border: '1px solid var(--line)',
+                  color: 'var(--muted)',
+                  padding: '5px 12px',
+                  borderRadius: 999,
+                }}
+              >
+                {Array.from(new Set(freeLectures.map((l) => l.subjectName))).length} subjects se
+              </span>
+            </div>
+          )}
           {freeLectures.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '32px 16px' }}>
               <div style={{ fontSize: 44, marginBottom: 10, opacity: 0.35 }}>🎬</div>
@@ -1085,6 +1268,90 @@ export default function CourseDetailClient({
           )}
         </div>
       )}
+
+      {/* ------------------------- FAQ ------------------------- */}
+      {/* Tabs ke neeche hamesha dikhne wala accordion — sawal asal
+          course data se bane hain (upar faqItems dekho). */}
+      <section
+        aria-label="Aksar poochhe jaane wale sawaal"
+        className="batch"
+        style={{ padding: 26, marginTop: 22 }}
+      >
+        <h2 style={sectionTitle}>❓ Aksar Poochhe Jaane Wale Sawaal</h2>
+        <p style={{ fontSize: 13.5, color: 'var(--muted)', marginBottom: 14, lineHeight: 1.65 }}>
+          Is course ke baare me aam sawaal aur unke seedhe jawaab.
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          {faqItems.map((item, i) => {
+            const open = openFaq === i;
+            return (
+              <div
+                key={item.q}
+                style={{ borderTop: i === 0 ? 'none' : '1px solid var(--line)' }}
+              >
+                <button
+                  type="button"
+                  aria-expanded={open}
+                  aria-controls={`cd-faq-a-${i}`}
+                  onClick={() => setOpenFaq(open ? null : i)}
+                  style={{
+                    width: '100%',
+                    appearance: 'none',
+                    border: 'none',
+                    background: 'transparent',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    textAlign: 'left',
+                    padding: '15px 2px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: 12,
+                    fontSize: 14.5,
+                    fontWeight: 700,
+                    color: open ? PURPLE : PURPLE_DARK,
+                  }}
+                >
+                  <span>{item.q}</span>
+                  <span
+                    aria-hidden
+                    style={{
+                      width: 26,
+                      height: 26,
+                      borderRadius: '50%',
+                      background: open ? PURPLE : '#ede9fe',
+                      color: open ? '#fff' : PURPLE,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: 15,
+                      fontWeight: 900,
+                      flexShrink: 0,
+                      transition: 'all .2s',
+                    }}
+                  >
+                    {open ? '−' : '+'}
+                  </span>
+                </button>
+                {open && (
+                  <div
+                    id={`cd-faq-a-${i}`}
+                    style={{
+                      fontSize: 14,
+                      color: '#374151',
+                      lineHeight: 1.75,
+                      padding: '0 2px 16px',
+                      maxWidth: 720,
+                    }}
+                  >
+                    {item.a}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       <style>{`
         @media (max-width: 700px) {

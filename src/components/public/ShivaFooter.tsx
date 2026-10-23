@@ -3,13 +3,22 @@
 import Link from 'next/link';
 import Reveal from './Reveal';
 import { openCallbackModal } from './ShivaScholarship';
+import { BRAND } from '@/lib/brand';
+
+/** Social links — URLs src/lib/brand.ts se (codebase me pehle se asal config). */
+const SOCIALS = [
+  { label: 'Facebook', href: BRAND.social.facebook },
+  { label: 'YouTube', href: BRAND.social.youtube },
+  { label: 'Instagram', href: BRAND.social.instagram },
+  { label: 'X (Twitter)', href: BRAND.social.twitter },
+];
 
 /**
  * GLOBAL PUBLIC SHELL — Footer (Workstream 10 + Round 2 Stream E)
  * Brand row + 5 link columns (map pattern: Company / Popular Exams / Products /
  * Free Resources / Legal) + bottom bar with copyright.
- * Only real routes are linked (/courses, /batches, /teachers, /about, /contact,
- * /privacy, /terms, /app/tests, homepage anchors) — no invented address / phone /
+ * Only real routes are linked (/courses, /batches, /test-series, /teachers,
+ * /about, /contact, /privacy, /terms, homepage anchors) — no invented address / phone /
  * social counts. Popular Exams = platform ke asal exam families, sab /courses par.
  * Class contract preserved: footer, .wrap, .fgrid, .fbot, .flink.
  * WS10 additive classes: .fbrand, .fbot-links. (Grid 5-column R2 CSS me hai.)
@@ -44,7 +53,7 @@ const COLUMNS: {
     links: [
       { label: 'Courses', href: '/courses' },
       { label: 'Batches', href: '/batches' },
-      { label: 'Test Series', href: '/app/tests' },
+      { label: 'Test Series', href: '/test-series' },
       { label: 'Book Free Demo', href: '/#demoCard' },
       { label: 'Student Login', href: '/login' },
     ],
@@ -79,6 +88,13 @@ export default function ShivaFooter() {
                 India ka affordable learning platform — SSC, Railway, Banking, Defence aur Teaching exams ke
                 liye.
               </p>
+              <div className="fsocial" aria-label="Social media">
+                {SOCIALS.map((s) => (
+                  <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer">
+                    {s.label}
+                  </a>
+                ))}
+              </div>
             </div>
             <p className="fbrand-help">
               🤔 <strong>Sawaal hain?</strong>

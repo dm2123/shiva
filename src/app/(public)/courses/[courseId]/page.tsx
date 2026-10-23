@@ -182,7 +182,16 @@ export default async function PublicCourseDetailPage({ params }: { params: { cou
     ? `/app/learn/${courseTree.slug || courseTree.id}`
     : ctaHref;
 
-  // "Ye course kiske liye hai" — from real exam categories / subjects only.
+  // "Ye course kiske liye hai" — sabse pehle asal record ka targetAudience
+  // field (har line ek bullet, jaisa admin form me bhara jata hai); woh na
+  // ho to hi neeche wale derived points (exam categories / subjects) bante hain.
+  const targetAudienceLines: string[] =
+    typeof raw.targetAudience === 'string' && raw.targetAudience.trim()
+      ? raw.targetAudience
+          .split(/\r?\n+/)
+          .map((line: string) => line.trim())
+          .filter(Boolean)
+      : [];
   const audiencePoints: string[] = [];
   const examCats = Array.from(
     new Set(teachers.flatMap((t) => t.examCategories || []))
@@ -424,7 +433,11 @@ export default async function PublicCourseDetailPage({ params }: { params: { cou
                 freeLectures={freeLectures}
                 previewHref={previewHref}
                 isEnrolled={isEnrolled}
-                meta={{ language, validityLabel }}
+                meta={{
+                  language,
+                  validityLabel,
+                  targetAudience: targetAudienceLines.length > 0 ? raw.targetAudience : null,
+                }}
               />
             </div>
 
@@ -583,19 +596,27 @@ export default async function PublicCourseDetailPage({ params }: { params: { cou
                 </div>
               </div>
 
-              {/* Ye course kiske liye hai */}
-              {audiencePoints.length > 0 && (
+              {/* Ye course kiske liye hai — asal targetAudience field pehle,
+                  na ho to derived points */}
+              {(targetAudienceLines.length > 0 || audiencePoints.length > 0) && (
                 <div className="batch" style={{ padding: 22 }}>
                   <h3 style={{ fontSize: 15, fontWeight: 800, color: PURPLE_DARK, marginBottom: 12 }}>
                     🎯 Ye course kiske liye hai?
                   </h3>
                   <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 9 }}>
-                    {audiencePoints.map((point) => (
-                      <li key={point} style={{ fontSize: 13.5, color: '#374151', display: 'flex', gap: 8, lineHeight: 1.55 }}>
+                    {targetAudienceLines.map((line) => (
+                      <li key={line} style={{ fontSize: 13.5, color: '#374151', display: 'flex', gap: 8, lineHeight: 1.55 }}>
                         <span style={{ color: '#059669', fontWeight: 900 }}>✓</span>
-                        <span>Jo {point}</span>
+                        <span>{line}</span>
                       </li>
                     ))}
+                    {targetAudienceLines.length === 0 &&
+                      audiencePoints.map((point) => (
+                        <li key={point} style={{ fontSize: 13.5, color: '#374151', display: 'flex', gap: 8, lineHeight: 1.55 }}>
+                          <span style={{ color: '#059669', fontWeight: 900 }}>✓</span>
+                          <span>Jo {point}</span>
+                        </li>
+                      ))}
                   </ul>
                 </div>
               )}

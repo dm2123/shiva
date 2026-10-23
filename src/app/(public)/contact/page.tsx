@@ -25,11 +25,16 @@ export default function ContactPage() {
         }}
       >
         <div className="wrap">
+          <nav className="page-crumb" aria-label="Breadcrumb">
+            <Link href="/">Home</Link>
+            <span aria-hidden="true">/</span>
+            <span aria-current="page">Contact</span>
+          </nav>
           <div className="sec-head">
             <span className="kicker">Get in Touch</span>
-            <h2>
+            <h1 className="h-display">
               Contact <span className="hl">THE SHIVA</span>
-            </h2>
+            </h1>
             <p>
               Have questions, feedback, or partnership inquiries? We&apos;re here to help.
               Neeche apne liye sahi raasta chunein — portal support ya general form.

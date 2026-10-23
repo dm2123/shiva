@@ -42,7 +42,7 @@ function formatINR(n: number) {
 }
 
 /**
- * Price-pattern helper (pw-live map ka niyam #1): MRP sirf tab jab
+ * Price-pattern helper (design-map ka niyam #1): MRP sirf tab jab
  * asal data me originalPrice/mrp ho aur price se zyada ho — Course
  * model me aam taur par NAHI hai, tab sirf bold price. Invent nahi.
  */
@@ -152,6 +152,43 @@ export default async function ShivaBatches() {
                         {free && <span className="free-tag">100% FREE</span>}
                       </div>
                       <div className="body">
+                        {/* Meta pills — grey outline; sirf asal record me
+                            language / validityMonths ho tabhi (CourseCard jaisa hi pattern) */}
+                        {(c.language?.trim() ||
+                          (typeof c.validityMonths === 'number' && c.validityMonths > 0)) && (
+                          <div
+                            style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}
+                          >
+                            {c.language?.trim() && (
+                              <span
+                                style={{
+                                  fontSize: 11.5,
+                                  fontWeight: 700,
+                                  color: '#4b5563',
+                                  border: '1.5px solid var(--line)',
+                                  padding: '4px 11px',
+                                  borderRadius: 999,
+                                }}
+                              >
+                                🗣️ {c.language.trim()}
+                              </span>
+                            )}
+                            {typeof c.validityMonths === 'number' && c.validityMonths > 0 && (
+                              <span
+                                style={{
+                                  fontSize: 11.5,
+                                  fontWeight: 700,
+                                  color: '#4b5563',
+                                  border: '1.5px solid var(--line)',
+                                  padding: '4px 11px',
+                                  borderRadius: 999,
+                                }}
+                              >
+                                📅 {c.validityMonths} mahine validity
+                              </span>
+                            )}
+                          </div>
+                        )}
                         {c.description ? (
                           <p
                             style={{

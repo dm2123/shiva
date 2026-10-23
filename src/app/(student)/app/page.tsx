@@ -4,8 +4,11 @@ import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
 import { listStudentLiveClasses } from '@/services/live-class.service';
 import DashboardClient, {
+  type DashboardAnnouncement,
+  type DashboardDoubtSummary,
   type DashboardEnrollment,
   type DashboardLiveClass,
+  type DashboardRecentLearning,
   type DashboardStreak,
   type RecommendedCourse,
 } from './page.client';
@@ -89,7 +92,8 @@ export default async function DashboardPage() {
   try {
     const [rows]: any = await mysqlPool.query(
       `SELECT c.id AS courseId, c.title AS courseTitle, c.slug AS courseSlug,
-              c.price AS price, b.name AS batchName, e.enrolledAt AS enrolledAt,
+              c.price AS price, b.name AS batchName, b.endDate AS batchEndDate,
+              e.enrolledAt AS enrolledAt,
               COUNT(DISTINCT l.id) AS totalLectures,
               COUNT(DISTINCT CASE WHEN lp.isCompleted = 1 THEN l.id END) AS completedLectures,
               MAX(lp.lastWatchedAt) AS lastActivityAt
@@ -101,10 +105,26 @@ export default async function DashboardPage() {
          LEFT JOIN Lectures l ON l.chapterId = ch.id
          LEFT JOIN LectureProgress lp ON lp.lectureId = l.id AND lp.studentId = e.studentId
         WHERE e.studentId = ? AND e.status = 'ACTIVE'
-        GROUP BY c.id, c.title, c.slug, c.price, b.name, e.enrolledAt
+        GROUP BY c.id, c.title, c.slug, c.price, b.name, b.endDate, e.enrolledAt
         ORDER BY (lastActivityAt IS NULL), lastActivityAt DESC, e.enrolledAt DESC`,
       [userId]
     );
+    // Course validity (Courses.validityMonths) — column purane DB par na bhi
+    // ho sakta hai, isliye alag best-effort query; na mile to null (alert nahi).
+    const validityByCourse = new Map<string, number | null>();
+    try {
+      const ids = (rows || []).map((r: any) => String(r.courseId));
+      if (ids.length > 0) {
+        const placeholders = ids.map(() => '?').join(',');
+        const [vrows]: any = await mysqlPool.query(
+          `SELECT id, validityMonths FROM Courses WHERE id IN (${placeholders})`,
+          ids
+        );
+        for (const v of vrows || []) {
+          validityByCourse.set(String(v.id), v.validityMonths != null ? Number(v.validityMonths) : null);
+        }
+      }
+    } catch { /* validity column nahi — batch endDate hi alert ka aadhaar */ }
     const base: DashboardEnrollment[] = (rows || []).map((r: any) => ({
       courseId: String(r.courseId),
       courseTitle: r.courseTitle,
@@ -112,6 +132,9 @@ export default async function DashboardPage() {
       price: Number(r.price) || 0,
       batchName: r.batchName || null,
       enrolledAt: toISO(r.enrolledAt),
+      lastActivityAt: toISO(r.lastActivityAt),
+      batchEndDate: toISO(r.batchEndDate),
+      validityMonths: validityByCourse.get(String(r.courseId)) ?? null,
       totalLectures: Number(r.totalLectures) || 0,
       completedLectures: Number(r.completedLectures) || 0,
       resumeLecture: null,
@@ -220,6 +243,98 @@ export default async function DashboardPage() {
     pendingDoubts = Number(rows?.[0]?.n) || 0;
   } catch { /* badge nahi dikhega */ }
 
+  // My Doubts card ke liye asal summary + haal ke doubts (sirf asal rows)
+  let doubtSummary: DashboardDoubtSummary = { total: 0, open: 0, resolved: 0, recent: [] };
+  try {
+    const [rows]: any = await mysqlPool.query(
+      `SELECT d.id, d.title, d.status, d.createdAt, c.title AS courseTitle
+         FROM Doubts d
+         LEFT JOIN Courses c ON d.courseId = c.id
+        WHERE d.studentId = ?
+        ORDER BY d.updatedAt DESC, d.createdAt DESC LIMIT 3`,
+      [userId]
+    );
+    const recent = (rows || []).map((d: any) => ({
+      id: String(d.id),
+      title: d.title,
+      status: d.status,
+      courseTitle: d.courseTitle || null,
+      createdAt: toISO(d.createdAt),
+    }));
+    const [counts]: any = await mysqlPool.query(
+      `SELECT COUNT(*) AS total,
+              SUM(CASE WHEN status = 'OPEN' THEN 1 ELSE 0 END) AS openCount,
+              SUM(CASE WHEN status = 'RESOLVED' THEN 1 ELSE 0 END) AS resolvedCount
+         FROM Doubts WHERE studentId = ?`,
+      [userId]
+    );
+    doubtSummary = {
+      total: Number(counts?.[0]?.total) || 0,
+      open: Number(counts?.[0]?.openCount) || 0,
+      resolved: Number(counts?.[0]?.resolvedCount) || 0,
+      recent,
+    };
+    pendingDoubts = doubtSummary.open;
+  } catch { /* summary khaali rahega — card honest empty state dikhayega */ }
+
+  // Recent Learning — LectureProgress ki sabse taza asal activity (lecture-wise)
+  let recentLearning: DashboardRecentLearning[] = [];
+  try {
+    const [rows]: any = await mysqlPool.query(
+      `SELECT l.id AS lectureId, l.title AS lectureTitle,
+              c.id AS courseId, c.title AS courseTitle,
+              lp.isCompleted AS isCompleted, lp.lastWatchedAt AS lastWatchedAt
+         FROM LectureProgress lp
+         JOIN Lectures l ON l.id = lp.lectureId
+         JOIN Chapters ch ON ch.id = l.chapterId
+         JOIN Subjects s ON s.id = ch.subjectId
+         JOIN Courses c ON c.id = s.courseId
+        WHERE lp.studentId = ? AND lp.lastWatchedAt IS NOT NULL
+        ORDER BY lp.lastWatchedAt DESC LIMIT 3`,
+      [userId]
+    );
+    recentLearning = (rows || []).map((r: any) => ({
+      lectureId: String(r.lectureId),
+      lectureTitle: r.lectureTitle,
+      courseId: String(r.courseId),
+      courseTitle: r.courseTitle,
+      isCompleted: !!r.isCompleted,
+      lastWatchedAt: toISO(r.lastWatchedAt),
+    }));
+  } catch { /* asal activity na mile to card honest empty state dikhayega */ }
+
+  // Boost carousel ke liye asal announcements (wahi targeting jo
+  // /api/student/announcements use karta hai; expire hue hue nahi)
+  let announcements: DashboardAnnouncement[] = [];
+  try {
+    const [rows]: any = await mysqlPool.query(
+      `SELECT ta.id, ta.title, ta.message, ta.createdAt
+         FROM TeacherAnnouncements ta
+        WHERE (ta.targetAudience = 'ALL'
+               OR ta.batchId IN (SELECT batchId FROM StudentEnrollments
+                                  WHERE studentId = ? AND status = 'ACTIVE'))
+          AND (ta.expiresAt IS NULL OR ta.expiresAt > NOW())
+        ORDER BY ta.pinToTop DESC, ta.createdAt DESC LIMIT 3`,
+      [userId]
+    );
+    announcements = (rows || []).map((a: any) => ({
+      id: String(a.id),
+      title: a.title,
+      message: a.message,
+      createdAt: toISO(a.createdAt),
+    }));
+  } catch { /* announcement na mile to carousel hi nahi dikhega */ }
+
+  // Bookmarks ki asal ginti (Quick Access badge ke liye)
+  let bookmarksCount = 0;
+  try {
+    const [rows]: any = await mysqlPool.query(
+      'SELECT COUNT(*) AS n FROM ContentBookmarks WHERE studentId = ?',
+      [userId]
+    );
+    bookmarksCount = Number(rows?.[0]?.n) || 0;
+  } catch { /* badge nahi dikhega */ }
+
   // Recommended — asal PUBLISHED courses jinme enroll nahi hai
   let recommended: RecommendedCourse[] = [];
   try {
@@ -253,6 +368,10 @@ export default async function DashboardPage() {
       streak={streak}
       totalXP={totalXP}
       pendingDoubts={pendingDoubts}
+      doubtSummary={doubtSummary}
+      recentLearning={recentLearning}
+      announcements={announcements}
+      bookmarksCount={bookmarksCount}
       recommended={recommended}
     />
   );

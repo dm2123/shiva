@@ -25,7 +25,7 @@ function MethodBadge({ method }: { method: string }) {
   let label = m || 'PAID';
   let bg = 'bg-slate-100 text-slate-600';
   if (m === 'UPI') { label = 'UPI'; bg = 'bg-emerald-100 text-emerald-700'; }
-  else if (m === 'CARD') { label = 'CARD'; bg = 'bg-indigo-100 text-indigo-700'; }
+  else if (m === 'CARD') { label = 'CARD'; bg = 'bg-[#6d28d9]/10 text-[#6d28d9]'; }
   else if (m === 'NETBANKING') { label = 'NETBANKING'; bg = 'bg-amber-100 text-amber-700'; }
   else if (m === 'WALLET') { label = 'WALLET'; bg = 'bg-violet-100 text-violet-700'; }
   else if (m === 'EMI') { label = 'EMI'; bg = 'bg-sky-100 text-sky-700'; }
@@ -62,10 +62,21 @@ function formatINR(n: number) {
   return '₹' + Number(n || 0).toLocaleString('en-IN');
 }
 
+type StatusTab = 'ALL' | 'SUCCESS' | 'PENDING' | 'FAILED' | 'REFUNDED';
+
+const TAB_LABELS: Record<StatusTab, string> = {
+  ALL: 'All Purchases',
+  SUCCESS: 'Successful',
+  PENDING: 'Pending',
+  FAILED: 'Failed',
+  REFUNDED: 'Refunded',
+};
+
 export default function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [activeTab, setActiveTab] = useState<StatusTab>('ALL');
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -86,12 +97,24 @@ export default function PaymentsPage() {
   const successful = payments.filter((p) => (p.status || '').toUpperCase() === 'SUCCESS');
   const totalPaid = successful.reduce((sum, p) => sum + Number(p.amount || 0), 0);
 
+  // Tabs sirf un status categories par banti hain jo asal data me
+  // maujood hain — khaali category ka tab nahi dikhta.
+  const presentTabs = (['SUCCESS', 'PENDING', 'FAILED', 'REFUNDED'] as StatusTab[]).filter((t) =>
+    payments.some((p) => (p.status || '').toUpperCase() === t)
+  );
+  const visiblePayments =
+    activeTab === 'ALL'
+      ? payments
+      : payments.filter((p) => (p.status || '').toUpperCase() === activeTab);
+
   return (
-    <main className="max-w-[1200px] mx-auto px-4 py-4 space-y-5 pb-20">
+    <main className="space-y-5 pb-20">
       {/* Page header */}
       <div>
-        <h1 className="text-[20px] font-extrabold text-gray-900 tracking-tight">Payments</h1>
-        <p className="text-[13px] text-gray-500 mt-0.5">Your complete transaction history, in one place.</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-[var(--student-text)] tracking-tight">My Purchases</h1>
+        <p className="text-sm text-[var(--student-text-muted)] mt-1.5">
+          Tumhari saari course purchases aur payments — receipt ke saath, ek jagah.
+        </p>
       </div>
 
       {loading ? (
@@ -110,19 +133,19 @@ export default function PaymentsPage() {
           <p className="text-[13px] text-gray-500 mt-1">Please check your connection and try again.</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-4 px-5 py-2 rounded-xl bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-700 transition"
+            className="mt-4 px-5 py-2 rounded-xl bg-[#6d28d9] text-white text-sm font-bold hover:bg-[#2a1650] transition"
           >
             Retry
           </button>
         </div>
       ) : payments.length === 0 ? (
         <>
-          {/* Celebrate free learning — honest empty state */}
+          {/* Honest empty state — StudentEmptyState standard */}
           <StudentEmptyState
             icon={<IconShield size={28} />}
-            title="No payments yet"
-            description="Good news — you haven't spent a single rupee. The Aptitude Foundation course is 100% FREE, forever."
-            actionText="Browse Free Courses"
+            title="No Purchases Yet"
+            description="Abhi tak tumne koi course ya batch nahi kharida hai. Jab tum koi purchase karoge, uski poori detail — amount, method, date aur status — yahan dikhegi."
+            actionText="Explore Courses"
             actionHref="/app/courses"
           />
           {/* Trust strip */}
@@ -155,11 +178,52 @@ export default function PaymentsPage() {
             </div>
           </div>
 
+          {/* Status tabs — sirf asal data me maujood categories */}
+          {presentTabs.length > 0 && (
+            <nav className="flex gap-2 overflow-x-auto pb-1" aria-label="Purchase status">
+              {(['ALL', ...presentTabs] as StatusTab[]).map((tab) => {
+                const count =
+                  tab === 'ALL'
+                    ? payments.length
+                    : payments.filter((p) => (p.status || '').toUpperCase() === tab).length;
+                const active = activeTab === tab;
+                return (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    aria-pressed={active}
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-semibold whitespace-nowrap transition-colors ${
+                      active
+                        ? 'bg-[#2a1650] text-white border-transparent'
+                        : 'border-[var(--student-border)] bg-[var(--student-surface)] text-[var(--student-text-secondary)] hover:border-[#6d28d9] hover:text-[#6d28d9]'
+                    }`}
+                  >
+                    {TAB_LABELS[tab]}
+                    <span
+                      className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                        active ? 'bg-white/20 text-white' : 'bg-[#6d28d9]/10 text-[#6d28d9]'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </nav>
+          )}
+
           {/* Transaction list */}
           <section>
-            <h2 className="text-[15px] font-bold text-gray-900 mb-3">All Transactions</h2>
+            <h2 className="text-[15px] font-bold text-gray-900 mb-3">
+              {activeTab === 'ALL' ? 'All Transactions' : `${TAB_LABELS[activeTab]} Transactions`}
+            </h2>
+            {visiblePayments.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center">
+                <p className="text-sm text-gray-500">Is category me koi transaction nahi hai.</p>
+              </div>
+            ) : (
             <div className="space-y-3">
-              {payments.map((p) => (
+              {visiblePayments.map((p) => (
                 <div
                   key={p.id}
                   className="bg-white rounded-2xl border border-gray-200 p-4 hover:shadow-md transition"
@@ -190,20 +254,21 @@ export default function PaymentsPage() {
                 </div>
               ))}
             </div>
+            )}
           </section>
         </>
       )}
 
       {/* Help strip */}
-      <div className="bg-gradient-to-r from-indigo-50 to-violet-50 rounded-2xl border border-indigo-100 p-5">
+      <div className="student-card p-5">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-bold text-gray-900">Payment related question?</p>
-            <p className="text-[13px] text-gray-500 mt-0.5">Our counsellors will help you out.</p>
+            <p className="text-sm font-bold text-[var(--student-text)]">Payment related question?</p>
+            <p className="text-[13px] text-[var(--student-text-muted)] mt-0.5">Our counsellors will help you out.</p>
           </div>
           <Link
             href="/app/counsellor"
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-700 transition flex-shrink-0"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#6d28d9] text-white text-sm font-bold hover:bg-[#2a1650] transition flex-shrink-0"
           >
             Ask Us <IconArrowRight size={14} />
           </Link>

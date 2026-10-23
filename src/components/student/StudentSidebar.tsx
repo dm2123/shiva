@@ -38,7 +38,8 @@ export const SIDEBAR_GROUPS = [
   {
     title: 'LIBRARY',
     items: [
-      { name: 'eBooks', href: '/app/ebooks', icon: IconBookOpen },
+      { name: 'Library', href: '/app/library', icon: IconBookOpen },
+      { name: 'eBooks', href: '/app/ebooks', icon: IconBook },
       { name: 'Formula Sheets', href: '/app/formula-sheets', icon: IconHash },
       { name: 'NCERT', href: '/app/ncert', icon: IconLayers },
     ],

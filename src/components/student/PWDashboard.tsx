@@ -2,19 +2,24 @@
 
 // ============================================================
 // THE SHIVA — Student Study Home (dashboard)
-// Structure: greeting + goal chip → Continue Learning →
-// aaj ka schedule → hafta progress → quick access →
-// popular exams → Recommended For You.
+// Structure (andar ke pages wala shaant pattern):
+// 'Study' heading + greeting → asal validity alert (ho to) →
+// My Learning trio (My Batches / Recent Learning / My Doubts) →
+// Continue Learning → aaj ka schedule → hafta progress →
+// Boost Your Learning → Quick Access → exams → Recommended.
 // HAR number asal data se aata hai (server page.tsx DB se
-// bhejta hai). Jo data nahi mila, wo section chip/show hi
-// nahi hota — koi placeholder/fake stat nahi.
+// bhejta hai). Jo data nahi mila, wo card/section honest
+// empty state dikhata hai ya dikhta hi nahi — koi fake
+// count, promo ya placeholder nahi.
 // ============================================================
 
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   IconSSC, IconRailway, IconBanking, IconDefence, IconTeaching,
   IconTestSeries, IconDoubts, IconLibrary, IconLive, IconMyCourses, IconTrophy,
   IconBatches, IconAssignment, IconFlame, IconPlay, IconBook, IconClock, IconCheck,
+  IconBookmark, IconStar, IconSearch, IconX, IconVideo,
 } from '@/components/student/ShivaIcons';
 
 export interface DashboardEnrollment {
@@ -24,6 +29,12 @@ export interface DashboardEnrollment {
   price: number;
   batchName: string | null;
   enrolledAt: string | null;
+  /** LectureProgress ki sabse taza activity (asal last-watched) */
+  lastActivityAt: string | null;
+  /** Batches.endDate — asal batch validity ka aakhri din */
+  batchEndDate: string | null;
+  /** Courses.validityMonths — asal validity avadhi (mahine); na ho to null */
+  validityMonths: number | null;
   totalLectures: number;
   completedLectures: number;
   /** Lecture jahan student ruka tha (asal Video/Lecture progress se) */
@@ -52,6 +63,37 @@ export interface DashboardStreak {
   week: DashboardWeekDay[]; // pichhle 7 din, aaj last
 }
 
+export interface DashboardDoubt {
+  id: string;
+  title: string;
+  status: string; // 'OPEN' | 'RESOLVED' | …
+  courseTitle: string | null;
+  createdAt: string | null;
+}
+
+export interface DashboardDoubtSummary {
+  total: number;
+  open: number;
+  resolved: number;
+  recent: DashboardDoubt[];
+}
+
+export interface DashboardRecentLearning {
+  lectureId: string;
+  lectureTitle: string;
+  courseId: string;
+  courseTitle: string;
+  isCompleted: boolean;
+  lastWatchedAt: string | null;
+}
+
+export interface DashboardAnnouncement {
+  id: string;
+  title: string;
+  message: string;
+  createdAt: string | null;
+}
+
 export interface RecommendedCourse {
   id: string;
   title: string;
@@ -75,6 +117,14 @@ export interface PWDashboardProps {
   /** StudentXP ka asal total; load na ho paya ho to null */
   totalXP: number | null;
   pendingDoubts: number;
+  /** Doubts table se asal summary + haal ke doubts */
+  doubtSummary: DashboardDoubtSummary;
+  /** LectureProgress se asal haal ki dekhi hui lectures */
+  recentLearning: DashboardRecentLearning[];
+  /** TeacherAnnouncements se asal announcements (Boost carousel ke liye) */
+  announcements: DashboardAnnouncement[];
+  /** ContentBookmarks ki asal ginti */
+  bookmarksCount: number;
   recommended: RecommendedCourse[];
 }
 
@@ -85,6 +135,8 @@ const GOALS = [
   { label: 'Defence', Icon: IconDefence, bg: 'bg-orange-100', iconColor: 'text-orange-600', href: '/app/goals?exam=defence' },
   { label: 'Teaching', Icon: IconTeaching, bg: 'bg-purple-100', iconColor: 'text-purple-600', href: '/app/goals?exam=teaching' },
 ];
+
+const STAR_KEY = 'shiva-starred-batches';
 
 function learnHref(e: DashboardEnrollment): string {
   const lecture = e.resumeLecture ?? e.nextLecture;
@@ -108,8 +160,46 @@ function formatDayTime(iso: string): string {
   } catch { return ''; }
 }
 
+function formatDate(iso: string | null): string {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleDateString('en-IN', {
+      timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric',
+    });
+  } catch { return ''; }
+}
+
+/** Asal last-watched ko dostana relative samay me ("aaj", "kal", "3 din pehle") */
+function formatRelative(iso: string | null): string {
+  if (!iso) return '';
+  const t = new Date(iso).getTime();
+  if (isNaN(t)) return '';
+  const days = Math.floor((Date.now() - t) / 86400000);
+  if (days <= 0) return 'Aaj';
+  if (days === 1) return 'Kal';
+  if (days < 30) return `${days} din pehle`;
+  return formatDate(iso);
+}
+
+/** Ek enrollment ki asal validity ka aakhri din: batch endDate pehle,
+ *  warna enrolledAt + course validityMonths. Dono na hon to null (koi alert nahi). */
+function expiryOf(e: DashboardEnrollment): Date | null {
+  if (e.batchEndDate) {
+    const d = new Date(e.batchEndDate);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  if (e.enrolledAt && e.validityMonths && e.validityMonths > 0) {
+    const d = new Date(e.enrolledAt);
+    if (isNaN(d.getTime())) return null;
+    d.setMonth(d.getMonth() + e.validityMonths);
+    return d;
+  }
+  return null;
+}
+
 export default function PWDashboard({
-  userName, goal, enrollments, todaysClasses, nextClass, streak, totalXP, pendingDoubts, recommended,
+  userName, goal, enrollments, todaysClasses, nextClass, streak, totalXP,
+  doubtSummary, recentLearning, announcements, bookmarksCount, recommended,
 }: PWDashboardProps) {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
@@ -121,80 +211,281 @@ export default function PWDashboard({
   const totalLectures = enrollments.reduce((s, e) => s + e.totalLectures, 0);
   const weekActive = streak ? streak.week.filter((d) => d.active).length : 0;
 
+  // ── Validity alert — sirf asal expiry (30 din ke andar / khatam) par ──
+  const [alertDismissed, setAlertDismissed] = useState(false);
+  const expiring = useMemo(() => {
+    const now = Date.now();
+    return enrollments
+      .map((e) => {
+        const expiry = expiryOf(e);
+        if (!expiry) return null;
+        const daysLeft = Math.ceil((expiry.getTime() - now) / 86400000);
+        return daysLeft <= 30 ? { e, expiry, daysLeft } : null;
+      })
+      .filter((x): x is { e: DashboardEnrollment; expiry: Date; daysLeft: number } => x !== null)
+      .sort((a, b) => a.daysLeft - b.daysLeft);
+  }, [enrollments]);
+  const nearestExpiring = expiring[0] || null;
+
+  // ── My Batches drawer — search + starred (star sirf is device ki pasand,
+  //    localStorage me; koi server data nahi badalta) ──
+  const [batchesOpen, setBatchesOpen] = useState(false);
+  const [batchQuery, setBatchQuery] = useState('');
+  const [starred, setStarred] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(STAR_KEY);
+      if (raw) setStarred(new Set(JSON.parse(raw) as string[]));
+    } catch { /* pasand na mile to bina star ke list chalegi */ }
+  }, []);
+  const toggleStar = (courseId: string) => {
+    setStarred((prev) => {
+      const next = new Set(prev);
+      if (next.has(courseId)) next.delete(courseId); else next.add(courseId);
+      try { window.localStorage.setItem(STAR_KEY, JSON.stringify([...next])); } catch { /* ignore */ }
+      return next;
+    });
+  };
+  useEffect(() => {
+    if (!batchesOpen) return;
+    const onKey = (ev: KeyboardEvent) => { if (ev.key === 'Escape') setBatchesOpen(false); };
+    document.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [batchesOpen]);
+  const filteredBatches = useMemo(() => {
+    const q = batchQuery.trim().toLowerCase();
+    const list = q
+      ? enrollments.filter((e) =>
+          e.courseTitle.toLowerCase().includes(q) || (e.batchName || '').toLowerCase().includes(q))
+      : enrollments;
+    return [...list].sort((a, b) => Number(starred.has(b.courseId)) - Number(starred.has(a.courseId)));
+  }, [enrollments, batchQuery, starred]);
+
   const QUICK_ACTIONS = [
     { label: 'My Courses', Icon: IconMyCourses, href: '/app/my-courses' },
     { label: 'My Batches', Icon: IconBatches, href: '/app/batches' },
     { label: 'Test Series', Icon: IconTestSeries, href: '/app/tests' },
-    { label: 'DPP', Icon: IconAssignment, href: '/app/dpp' },
-    { label: 'Library', Icon: IconLibrary, href: '/app/ebooks' },
-    { label: 'Doubts', Icon: IconDoubts, href: '/app/doubts', badge: pendingDoubts > 0 ? pendingDoubts : 0 },
+    { label: 'PDF Bank', Icon: IconAssignment, href: '/app/ebooks' },
+    { label: 'Library', Icon: IconLibrary, href: '/app/library' },
+    { label: 'Bookmarks', Icon: IconBookmark, href: '/app/bookmarks', badge: bookmarksCount > 0 ? bookmarksCount : 0 },
+    { label: 'Doubts', Icon: IconDoubts, href: '/app/doubts', badge: doubtSummary.open > 0 ? doubtSummary.open : 0 },
     { label: 'Live Classes', Icon: IconLive, href: '/app/live' },
-    { label: 'Leaderboard', Icon: IconTrophy, href: '/app/leaderboard' },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="max-w-[1200px] mx-auto px-4 py-4 space-y-6 pb-20">
 
-        {/* ── Greeting + goal chip + asal streak/XP ─────────── */}
-        <section className="rounded-2xl overflow-hidden bg-gradient-to-br from-[#2a1650] via-[#4c1d95] to-[#6d28d9] text-white p-5 relative">
-          <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-white/10" />
-          <div className="absolute right-10 bottom-0 w-20 h-20 rounded-full bg-[#f5b942]/20" />
-          <div className="relative z-10">
-            <div className="flex flex-wrap items-center gap-2">
-              <p className="text-[13px] text-white/70">{greeting},</p>
-              {goal ? (
-                <Link href="/app/goals" className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/15 rounded-full px-3 py-1 text-[12px] font-semibold transition">
-                  <span aria-hidden>🎯</span> {goal}
+        {/* ── Shaant heading: Study + greeting + asal chips ─── */}
+        <section className="bg-white rounded-2xl border border-gray-200 p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="text-[20px] font-bold text-gray-900">Study</h1>
+              <p className="text-[13px] text-gray-500 mt-0.5">
+                {greeting}, {firstName} — {firstContinue
+                  ? 'jahan chhoda tha, wahin se shuru karo.'
+                  : 'aaj kya seekhna hai? Chalo shuru karte hain.'}
+              </p>
+            </div>
+            {goal ? (
+              <Link href="/app/goals" className="inline-flex items-center gap-1.5 bg-violet-50 hover:bg-violet-100 text-[#6d28d9] rounded-full px-3 py-1.5 text-[12px] font-semibold transition shrink-0">
+                <span aria-hidden>🎯</span> {goal}
+              </Link>
+            ) : (
+              <Link href="/app/goals" className="inline-flex items-center gap-1.5 bg-[#f5b942] text-[#2a1650] rounded-full px-3 py-1.5 text-[12px] font-bold transition hover:bg-[#ffcf6b] shrink-0">
+                🎯 Apna goal set karo
+              </Link>
+            )}
+          </div>
+
+          {(streak !== null || totalXP !== null || totalLectures > 0) && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {streak !== null && (
+                <Link href="/app/streak" className="inline-flex items-center gap-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-100 rounded-full px-3 py-1.5 text-[12px] font-bold text-gray-700 transition">
+                  <IconFlame size={14} className="text-orange-500" />
+                  {streak.currentStreak} din streak
                 </Link>
-              ) : (
-                <Link href="/app/goals" className="inline-flex items-center gap-1.5 bg-[#f5b942] text-[#2a1650] rounded-full px-3 py-1 text-[12px] font-bold transition hover:bg-[#ffcf6b]">
-                  🎯 Apna goal set karo
+              )}
+              {totalXP !== null && (
+                <Link href="/app/analytics" className="inline-flex items-center gap-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-100 rounded-full px-3 py-1.5 text-[12px] font-bold text-gray-700 transition">
+                  <IconTrophy size={14} className="text-[#d99a17]" />
+                  {Number(totalXP).toLocaleString('en-IN')} XP
                 </Link>
+              )}
+              {totalLectures > 0 && (
+                <span className="inline-flex items-center gap-1.5 bg-gray-50 border border-gray-100 rounded-full px-3 py-1.5 text-[12px] font-bold text-gray-700">
+                  <IconCheck size={14} className="text-emerald-600" />
+                  {totalCompleted}/{totalLectures} lectures done
+                </span>
               )}
             </div>
-            <h1 className="text-xl font-black mt-1">{firstName}!</h1>
-            <p className="text-[13px] text-white/70 mt-1">
-              {firstContinue
-                ? 'Jahan chhoda tha, wahin se shuru karo — tumhari padhai tumhara intezaar kar rahi hai.'
-                : 'Aaj kya seekhna hai? Chalo shuru karte hain.'}
-            </p>
+          )}
 
-            {(streak !== null || totalXP !== null) && (
-              <div className="flex flex-wrap gap-2 mt-3">
-                {streak !== null && (
-                  <Link href="/app/streak" className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/15 rounded-full px-3 py-1.5 text-[12px] font-bold transition">
-                    <IconFlame size={14} className="text-[#f5b942]" />
-                    {streak.currentStreak} din streak
-                  </Link>
-                )}
-                {totalXP !== null && (
-                  <Link href="/app/analytics" className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/15 rounded-full px-3 py-1.5 text-[12px] font-bold transition">
-                    <IconTrophy size={14} className="text-[#f5b942]" />
-                    {Number(totalXP).toLocaleString('en-IN')} XP
-                  </Link>
-                )}
-                {totalLectures > 0 && (
-                  <span className="inline-flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5 text-[12px] font-bold">
-                    <IconCheck size={14} className="text-[#f5b942]" />
-                    {totalCompleted}/{totalLectures} lectures done
-                  </span>
+          <div className="flex flex-wrap gap-2 mt-4">
+            {firstContinue ? (
+              <Link href={learnHref(firstContinue)} className="inline-flex items-center gap-2 bg-[#2a1650] hover:bg-[#3b1d73] text-white text-sm font-bold rounded-xl px-5 py-2.5 transition">
+                <IconPlay size={15} /> Continue Learning
+              </Link>
+            ) : (
+              <Link href="/app/courses" className="inline-block bg-[#2a1650] hover:bg-[#3b1d73] text-white text-sm font-bold rounded-xl px-5 py-2.5 transition">
+                Explore Courses →
+              </Link>
+            )}
+            <Link href="/app/my-courses" className="inline-flex items-center bg-white hover:bg-gray-50 border border-gray-200 text-gray-800 text-sm font-bold rounded-xl px-5 py-2.5 transition">
+              My Courses
+            </Link>
+          </div>
+        </section>
+
+        {/* ── Validity alert — sirf asal expiry par, band ho sakta hai ── */}
+        {nearestExpiring && !alertDismissed && (
+          <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3.5" role="alert">
+            <span className="text-red-500 mt-0.5 shrink-0"><IconClock size={18} /></span>
+            <div className="flex-1 min-w-0 text-[13px] leading-relaxed">
+              <p className="font-bold text-red-800">
+                {nearestExpiring.daysLeft < 0
+                  ? `‘${nearestExpiring.e.courseTitle}’ ki validity khatam ho gayi hai`
+                  : nearestExpiring.daysLeft === 0
+                    ? `‘${nearestExpiring.e.courseTitle}’ ki validity aaj khatam ho rahi hai`
+                    : `‘${nearestExpiring.e.courseTitle}’ ki validity ${nearestExpiring.daysLeft} din me khatam hogi`}
+              </p>
+              <p className="text-red-700 mt-0.5">
+                Valid till {formatDate(nearestExpiring.expiry.toISOString())}
+                {expiring.length > 1 && <> · kul {expiring.length} courses ki validity nazdeek hai</>}
+                {' '}· <Link href="/app/my-courses" className="font-bold underline underline-offset-2">My Courses me dekho</Link>
+              </p>
+            </div>
+            <button
+              onClick={() => setAlertDismissed(true)}
+              aria-label="Alert band karo"
+              className="shrink-0 min-w-[32px] min-h-[32px] flex items-center justify-center rounded-full text-red-400 hover:bg-red-100 hover:text-red-600 transition"
+            >
+              <IconX size={16} />
+            </button>
+          </div>
+        )}
+
+        {/* ── My Learning — 3 asal cards ────────────────────── */}
+        <section>
+          <h2 className="text-[15px] font-bold text-gray-900 mb-3">My Learning</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            {/* My Batches — asal enrollments; drawer me search + starred */}
+            <div className="bg-violet-50/70 rounded-2xl border border-violet-100 p-5 flex flex-col">
+              <div className="flex items-center gap-2.5">
+                <span className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-[#6d28d9] shrink-0">
+                  <IconBatches size={20} />
+                </span>
+                <h3 className="text-[14px] font-bold text-gray-900">My Batches</h3>
+                {enrollments.length > 0 && (
+                  <span className="ml-auto text-[11px] font-bold text-[#6d28d9] bg-white rounded-full px-2 py-0.5">{enrollments.length}</span>
                 )}
               </div>
-            )}
-
-            <div className="flex flex-wrap gap-2 mt-4">
-              {firstContinue ? (
-                <Link href={learnHref(firstContinue)} className="inline-flex items-center gap-2 bg-[#f5b942] hover:bg-[#ffcf6b] text-[#2a1650] text-sm font-bold rounded-xl px-5 py-2.5 transition">
-                  <IconPlay size={15} /> Continue Learning
-                </Link>
+              {enrollments.length === 0 ? (
+                <p className="text-[12.5px] text-gray-500 leading-relaxed mt-3 flex-1">
+                  Abhi koi batch join nahi kiya hai. Course me enroll karte hi tumhara batch yahan dikhega.
+                </p>
               ) : (
-                <Link href="/app/courses" className="inline-block bg-[#f5b942] hover:bg-[#ffcf6b] text-[#2a1650] text-sm font-bold rounded-xl px-5 py-2.5 transition">
-                  Explore Courses →
-                </Link>
+                <ul className="mt-3 space-y-2 flex-1">
+                  {enrollments.slice(0, 2).map((e) => (
+                    <li key={e.courseId} className="text-[12.5px] leading-snug">
+                      <Link href={learnHref(e)} className="font-semibold text-gray-800 hover:text-[#6d28d9] line-clamp-1 transition-colors">
+                        {e.batchName || e.courseTitle}
+                      </Link>
+                      {e.batchName && <span className="text-gray-400 line-clamp-1">{e.courseTitle}</span>}
+                    </li>
+                  ))}
+                  {enrollments.length > 2 && (
+                    <li className="text-[12px] text-gray-400">+ {enrollments.length - 2} aur batches/courses</li>
+                  )}
+                </ul>
               )}
-              <Link href="/app/my-courses" className="inline-flex items-center bg-white/10 hover:bg-white/15 text-white text-sm font-bold rounded-xl px-5 py-2.5 transition">
-                My Courses
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={() => setBatchesOpen(true)}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 bg-[#6d28d9] hover:bg-[#5b21b6] text-white text-[12.5px] font-bold rounded-xl px-3 py-2 transition"
+                >
+                  <IconSearch size={13} /> Batches khojo
+                </button>
+                <Link href="/app/batches" className="inline-flex items-center justify-center bg-white hover:bg-violet-100 border border-violet-100 text-[#6d28d9] text-[12.5px] font-bold rounded-xl px-3 py-2 transition">
+                  Saare →
+                </Link>
+              </div>
+            </div>
+
+            {/* Recent Learning — asal last-watched lectures */}
+            <div className="bg-sky-50/70 rounded-2xl border border-sky-100 p-5 flex flex-col">
+              <div className="flex items-center gap-2.5">
+                <span className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-sky-600 shrink-0">
+                  <IconPlay size={20} />
+                </span>
+                <h3 className="text-[14px] font-bold text-gray-900">Recent Learning</h3>
+              </div>
+              {recentLearning.length === 0 ? (
+                <p className="text-[12.5px] text-gray-500 leading-relaxed mt-3 flex-1">
+                  Abhi koi lecture nahi dekha hai. Pehli lecture shuru karte hi tumhari haal ki padhai yahan dikhegi.
+                </p>
+              ) : (
+                <ul className="mt-3 space-y-2.5 flex-1">
+                  {recentLearning.map((r) => (
+                    <li key={r.lectureId} className="text-[12.5px] leading-snug">
+                      <Link href={`/app/learn/${r.courseId}?lecture=${r.lectureId}`} className="font-semibold text-gray-800 hover:text-[#6d28d9] line-clamp-1 transition-colors">
+                        {r.lectureTitle}
+                      </Link>
+                      <span className="text-gray-400 line-clamp-1">
+                        {r.courseTitle} · {formatRelative(r.lastWatchedAt)}{r.isCompleted ? ' · Poora dekha' : ''}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <Link href="/app/my-courses" className="mt-4 inline-flex items-center justify-center bg-white hover:bg-sky-100 border border-sky-100 text-sky-700 text-[12.5px] font-bold rounded-xl px-3 py-2 transition">
+                Continue Learning →
+              </Link>
+            </div>
+
+            {/* My Doubts — asal counts + haal ka doubt */}
+            <div className="bg-amber-50/70 rounded-2xl border border-amber-100 p-5 flex flex-col">
+              <div className="flex items-center gap-2.5">
+                <span className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-amber-600 shrink-0">
+                  <IconDoubts size={20} />
+                </span>
+                <h3 className="text-[14px] font-bold text-gray-900">My Doubts</h3>
+                {doubtSummary.open > 0 && (
+                  <span className="ml-auto text-[11px] font-bold text-amber-700 bg-white rounded-full px-2 py-0.5">{doubtSummary.open} open</span>
+                )}
+              </div>
+              {doubtSummary.total === 0 ? (
+                <p className="text-[12.5px] text-gray-500 leading-relaxed mt-3 flex-1">
+                  Abhi koi doubt nahi poochha hai. Kahin atko to sawal poochho — teacher ka jawab yahin milega.
+                </p>
+              ) : (
+                <div className="mt-3 flex-1">
+                  <p className="text-[12.5px] text-gray-500">
+                    Kul <b className="text-gray-800">{doubtSummary.total}</b> doubts ·{' '}
+                    <b className="text-gray-800">{doubtSummary.resolved}</b> hal hue ·{' '}
+                    <b className="text-gray-800">{doubtSummary.open}</b> jawab baaki
+                  </p>
+                  {doubtSummary.recent[0] && (
+                    <p className="text-[12.5px] leading-snug mt-2">
+                      <span className="text-gray-400">Haal ka sawal:</span>{' '}
+                      <Link href="/app/doubts" className="font-semibold text-gray-800 hover:text-[#6d28d9] line-clamp-1 transition-colors">
+                        {doubtSummary.recent[0].title}
+                      </Link>
+                      <span className={`inline-flex mt-1 text-[10px] font-bold uppercase tracking-wide rounded-full px-2 py-0.5 ${doubtSummary.recent[0].status === 'RESOLVED' ? 'bg-emerald-100 text-emerald-700' : 'bg-white text-amber-700'}`}>
+                        {doubtSummary.recent[0].status}
+                      </span>
+                    </p>
+                  )}
+                </div>
+              )}
+              <Link href="/app/doubts" className="mt-4 inline-flex items-center justify-center bg-white hover:bg-amber-100 border border-amber-100 text-amber-700 text-[12.5px] font-bold rounded-xl px-3 py-2 transition">
+                Doubt poochho →
               </Link>
             </div>
           </div>
@@ -203,7 +494,7 @@ export default function PWDashboard({
         {/* ── Continue Learning / Continue Watching ─────────── */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[17px] font-bold text-gray-900">Continue Learning</h2>
+            <h2 className="text-[15px] font-bold text-gray-900">Continue Learning</h2>
             {enrollments.length > 0 && (
               <Link href="/app/my-courses" className="text-[13px] font-semibold text-[#6d28d9]">View all →</Link>
             )}
@@ -242,6 +533,9 @@ export default function PWDashboard({
                       </span>
                     </div>
                     {e.batchName && <p className="text-xs text-gray-500 mt-1">Batch: {e.batchName}</p>}
+                    {e.lastActivityAt && (
+                      <p className="text-xs text-gray-400 mt-0.5">Aakhri baar dekha: {formatRelative(e.lastActivityAt)}</p>
+                    )}
 
                     {e.totalLectures > 0 ? (
                       <div className="mt-4">
@@ -279,7 +573,7 @@ export default function PWDashboard({
         {(todaysClasses.length > 0 || nextClass) && (
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-[17px] font-bold text-gray-900">Aaj ka Schedule</h2>
+              <h2 className="text-[15px] font-bold text-gray-900">Aaj ka Schedule</h2>
               <Link href="/app/live" className="text-[13px] font-semibold text-[#6d28d9]">All classes →</Link>
             </div>
             {todaysClasses.length === 0 && nextClass ? (
@@ -349,9 +643,67 @@ export default function PWDashboard({
           </section>
         )}
 
+        {/* ── Boost Your Learning ───────────────────────────── */}
+        <section>
+          <h2 className="text-[15px] font-bold text-gray-900 mb-3">Boost Your Learning</h2>
+
+          {/* Promo carousel — sirf asal announcements hon tabhi */}
+          {announcements.length > 0 && (
+            <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 snap-x mb-4">
+              {announcements.map((a) => (
+                <Link
+                  key={a.id}
+                  href="/app/announcements"
+                  className="snap-start flex-shrink-0 w-[300px] max-w-[85vw] bg-gradient-to-br from-[#2a1650] to-[#6d28d9] text-white rounded-2xl p-5 hover:shadow-md transition"
+                >
+                  <span className="text-[10px] font-black uppercase tracking-wider bg-white/15 rounded-full px-2.5 py-1">Announcement</span>
+                  <h3 className="text-[14px] font-bold leading-snug line-clamp-2 mt-3">{a.title}</h3>
+                  <p className="text-[12px] text-white/70 leading-relaxed line-clamp-2 mt-1">{a.message}</p>
+                  {a.createdAt && <p className="text-[11px] text-white/50 mt-3">{formatDate(a.createdAt)}</p>}
+                </Link>
+              ))}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Link href="/app/library" className="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-md transition group">
+              <span className="w-11 h-11 rounded-2xl bg-violet-50 flex items-center justify-center text-[#6d28d9]">
+                <IconLibrary size={22} />
+              </span>
+              <h3 className="text-[14px] font-bold text-gray-900 mt-3 group-hover:text-[#6d28d9] transition-colors">Library</h3>
+              <p className="text-[12.5px] text-gray-500 leading-relaxed mt-1">
+                Saara free study material ek jagah — short notes, PYQs, practice papers aur free lectures.
+              </p>
+              <span className="inline-block text-[12px] font-bold text-[#6d28d9] mt-3">Library kholo →</span>
+            </Link>
+
+            <Link href="/app/doubts" className="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-md transition group">
+              <span className="w-11 h-11 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600">
+                <IconDoubts size={22} />
+              </span>
+              <h3 className="text-[14px] font-bold text-gray-900 mt-3 group-hover:text-[#6d28d9] transition-colors">Ask Doubt</h3>
+              <p className="text-[12.5px] text-gray-500 leading-relaxed mt-1">
+                Kahin atke ho? Apna sawal likho — teacher ka jawab tumhare doubts page par milega.
+              </p>
+              <span className="inline-block text-[12px] font-bold text-[#6d28d9] mt-3">Sawal poochho →</span>
+            </Link>
+
+            <Link href="/app/video-solutions" className="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-md transition group">
+              <span className="w-11 h-11 rounded-2xl bg-sky-50 flex items-center justify-center text-sky-600">
+                <IconVideo size={22} />
+              </span>
+              <h3 className="text-[14px] font-bold text-gray-900 mt-3 group-hover:text-[#6d28d9] transition-colors">Video Solutions</h3>
+              <p className="text-[12.5px] text-gray-500 leading-relaxed mt-1">
+                Mushkil sawalon ke step-by-step video hal dekho aur concept turant saaf karo.
+              </p>
+              <span className="inline-block text-[12px] font-bold text-[#6d28d9] mt-3">Solutions dekho →</span>
+            </Link>
+          </div>
+        </section>
+
         {/* ── Quick Access ──────────────────────────────────── */}
         <section>
-          <h2 className="text-[17px] font-bold text-gray-900 mb-3">Quick Access</h2>
+          <h2 className="text-[15px] font-bold text-gray-900 mb-3">Quick Access</h2>
           <div className="grid grid-cols-4 gap-3">
             {QUICK_ACTIONS.map((q) => (
               <Link key={q.label} href={q.href} className="relative bg-white rounded-2xl border border-gray-200 p-4 flex flex-col items-center gap-2 hover:shadow-md hover:-translate-y-0.5 transition">
@@ -370,7 +722,7 @@ export default function PWDashboard({
         {/* ── Popular Exams ─────────────────────────────────── */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[17px] font-bold text-gray-900">Popular Exams</h2>
+            <h2 className="text-[15px] font-bold text-gray-900">Popular Exams</h2>
             <Link href="/app/goals" className="text-[13px] font-semibold text-[#6d28d9]">View all →</Link>
           </div>
           <div className="grid grid-cols-5 gap-3">
@@ -387,7 +739,7 @@ export default function PWDashboard({
         {recommended.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-[17px] font-bold text-gray-900">Recommended For You</h2>
+              <h2 className="text-[15px] font-bold text-gray-900">Recommended For You</h2>
               <Link href="/app/courses" className="text-[13px] font-semibold text-[#6d28d9]">View all →</Link>
             </div>
             <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 snap-x">
@@ -413,6 +765,119 @@ export default function PWDashboard({
           </section>
         )}
       </main>
+
+      {/* ── My Batches drawer — search + starred (asal enrollments) ── */}
+      {batchesOpen && (
+        <>
+          <div className="fixed inset-0 bg-black/50 z-[70]" onClick={() => setBatchesOpen(false)} aria-hidden="true" />
+          <aside
+            className="fixed right-0 top-0 bottom-0 w-[380px] max-w-[92vw] bg-white z-[71] shadow-2xl flex flex-col"
+            role="dialog"
+            aria-modal="true"
+            aria-label="My Batches"
+          >
+            <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100 shrink-0">
+              <span className="text-[#6d28d9]"><IconBatches size={20} /></span>
+              <h2 className="text-[15px] font-bold text-gray-900 flex-1">My Batches</h2>
+              <button
+                onClick={() => setBatchesOpen(false)}
+                aria-label="Batches band karo"
+                className="min-w-[40px] min-h-[40px] flex items-center justify-center rounded-full hover:bg-gray-100 transition"
+              >
+                <IconX size={20} />
+              </button>
+            </div>
+
+            <div className="px-4 pt-4 shrink-0">
+              <label className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5">
+                <IconSearch size={16} className="text-gray-400 shrink-0" />
+                <input
+                  value={batchQuery}
+                  onChange={(ev) => setBatchQuery(ev.target.value)}
+                  placeholder="Batch ya course khojo…"
+                  className="flex-1 bg-transparent text-sm text-gray-800 placeholder:text-gray-400 outline-none min-w-0"
+                  aria-label="Batch ya course khojo"
+                />
+              </label>
+              {starred.size > 0 && (
+                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mt-3">
+                  ⭐ Starred pehle dikhte hain
+                </p>
+              )}
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 py-4">
+              {enrollments.length === 0 ? (
+                <div className="text-center py-12 px-4">
+                  <span className="mx-auto w-14 h-14 rounded-full bg-violet-50 text-[#6d28d9] flex items-center justify-center">
+                    <IconBatches size={24} />
+                  </span>
+                  <p className="text-sm font-bold text-gray-800 mt-4">Koi batch nahi hai</p>
+                  <p className="text-xs text-gray-400 mt-1 leading-relaxed">
+                    Tum abhi kisi course me enrolled nahi ho. Enroll karte hi batch yahan dikhega.
+                  </p>
+                  <Link href="/app/courses" onClick={() => setBatchesOpen(false)} className="inline-block mt-4 text-sm font-semibold text-white bg-[#6d28d9] hover:bg-[#2a1650] rounded-full px-5 py-2 transition">
+                    Courses dekho
+                  </Link>
+                </div>
+              ) : filteredBatches.length === 0 ? (
+                <p className="text-sm text-gray-400 text-center py-10">
+                  ‘{batchQuery}’ se koi batch nahi mila.
+                </p>
+              ) : (
+                <ul className="space-y-3">
+                  {filteredBatches.map((e) => {
+                    const pct = e.totalLectures === 0 ? 0 : Math.round((e.completedLectures / e.totalLectures) * 100);
+                    const isStarred = starred.has(e.courseId);
+                    return (
+                      <li key={e.courseId} className="bg-white border border-gray-200 rounded-2xl p-4">
+                        <div className="flex items-start gap-2">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[13.5px] font-bold text-gray-900 leading-snug line-clamp-2">{e.batchName || e.courseTitle}</p>
+                            {e.batchName && <p className="text-[12px] text-gray-400 line-clamp-1 mt-0.5">{e.courseTitle}</p>}
+                          </div>
+                          <button
+                            onClick={() => toggleStar(e.courseId)}
+                            aria-label={isStarred ? 'Star hatao' : 'Star karo'}
+                            aria-pressed={isStarred}
+                            className={`shrink-0 min-w-[32px] min-h-[32px] flex items-center justify-center rounded-full transition ${isStarred ? 'text-[#d99a17] bg-amber-50' : 'text-gray-300 hover:text-[#d99a17] hover:bg-amber-50'}`}
+                          >
+                            <IconStar size={16} />
+                          </button>
+                        </div>
+                        {e.totalLectures > 0 && (
+                          <div className="mt-3">
+                            <div className="flex items-center justify-between text-[11px] mb-1">
+                              <span className="text-gray-400">{e.completedLectures}/{e.totalLectures} lectures</span>
+                              <span className="font-bold text-[#6d28d9]">{pct}%</span>
+                            </div>
+                            <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                              <div className="h-full rounded-full bg-gradient-to-r from-[#6d28d9] to-[#f5b942]" style={{ width: `${pct}%` }} />
+                            </div>
+                          </div>
+                        )}
+                        <Link
+                          href={learnHref(e)}
+                          onClick={() => setBatchesOpen(false)}
+                          className="mt-3 w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#6d28d9] text-white text-[12.5px] font-bold hover:bg-[#5b21b6] transition"
+                        >
+                          <IconPlay size={13} /> Continue
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+
+            <div className="px-4 py-3 border-t border-gray-100 shrink-0">
+              <Link href="/app/batches" onClick={() => setBatchesOpen(false)} className="block text-center text-sm font-semibold text-[#6d28d9] hover:text-[#2a1650] py-1.5 transition">
+                Saare batches dekho →
+              </Link>
+            </div>
+          </aside>
+        </>
+      )}
     </div>
   );
 }

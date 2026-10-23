@@ -16,6 +16,10 @@ export type {
   DashboardLiveClass,
   DashboardWeekDay,
   DashboardStreak,
+  DashboardDoubt,
+  DashboardDoubtSummary,
+  DashboardRecentLearning,
+  DashboardAnnouncement,
   RecommendedCourse,
   PWDashboardProps,
 } from '@/components/student/PWDashboard';

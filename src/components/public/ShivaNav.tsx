@@ -23,6 +23,7 @@ import { usePathname } from 'next/navigation';
 const LINKS = [
   { href: '/courses', label: 'Courses' },
   { href: '/batches', label: 'Batches' },
+  { href: '/test-series', label: 'Test Series' },
   { href: '/teachers', label: 'Teachers' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
@@ -212,6 +213,9 @@ export default function ShivaNav() {
                   <div className="mega-foot">
                     <Link href="/batches" onClick={() => setMegaOpen(false)}>
                       All Batches →
+                    </Link>
+                    <Link href="/test-series" onClick={() => setMegaOpen(false)}>
+                      Test Series →
                     </Link>
                     <Link href="/teachers" onClick={() => setMegaOpen(false)}>
                       Meet Our Teachers →

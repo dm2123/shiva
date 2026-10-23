@@ -174,7 +174,7 @@ export default function ContactForm() {
           <button
             type="submit"
             disabled={sending}
-            className="btn btn-gold"
+            className="btn btn-primary"
             style={{ padding: '13px 34px', fontSize: 15, opacity: sending ? 0.6 : 1 }}
             aria-busy={sending}
           >
