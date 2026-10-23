@@ -6,6 +6,7 @@ const EXAMS = [
   { ico: '🏦', bg: '#fef3c7', name: 'Banking', sub: 'PO | Clerk | SO' },
   { ico: '🛡️', bg: '#dcfce7', name: 'Defence', sub: 'NDA | CDS | AFCAT' },
   { ico: '👩‍🏫', bg: '#ede9fe', name: 'Teaching', sub: 'TET | CTET | Others' },
+  { ico: '🗺️', bg: '#e0f2fe', name: 'State Exams', sub: 'UPSSSC | Lekhpal | Police' },
 ];
 
 export default function ShivaExamCategories() {

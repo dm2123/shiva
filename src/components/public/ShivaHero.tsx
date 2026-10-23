@@ -16,13 +16,14 @@ const EXAMS = [
   'Banking (IBPS / SBI PO-Clerk)',
   'Defence (Agniveer / CDS / NDA)',
   'Teaching (CTET / UPTET / STET)',
+  'State Exams (UPSSSC / Lekhpal)',
 ];
 
 /* Map pattern: hero ke neeche 4 stat cards (flat icon + bold number/label + grey subtext).
    Saare asal platform facts hi — koi invented count nahi. */
 const STATS = [
   { ico: '🎯', b: '100% Free', s: 'Starter Courses' },
-  { ico: '📚', b: '5 Exams', s: 'Categories Covered' },
+  { ico: '📚', b: '6 Exams', s: 'Categories Covered' },
   { ico: '🔴', b: 'Live Classes', s: '+ Recordings' },
   { ico: '🌐', b: 'Hindi + English', s: 'Bilingual Content' },
 ];

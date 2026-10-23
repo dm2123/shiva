@@ -513,3 +513,30 @@
 @media(max-width:900px){
   .shiva-landing .sec-head h1{font-size:27px}
 }
+
+/* ===== R4 JSX HOME — circular category strip / stats band / exam pills ===== */
+.shiva-landing .circ-strip-wrap{background:#fff;border-bottom:1px solid #f3f0ff;padding:20px 0 10px}
+.shiva-landing .circ-strip{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;max-width:1200px;margin:0 auto;padding:0 16px}
+.shiva-landing .circ-tile{display:flex;flex-direction:column;align-items:center;gap:7px;width:100px;text-align:center;padding:6px 2px;border-radius:16px;transition:.2s}
+.shiva-landing .circ-tile:hover{transform:translateY(-3px)}
+.shiva-landing .circ-tile .circ{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--line);background:#f5f3ff;color:#6d28d9;transition:.2s}
+.shiva-landing .circ-tile:hover .circ{border-color:#6d28d9;box-shadow:0 10px 22px rgba(109,40,217,.16)}
+.shiva-landing .circ-tile .circ svg{width:30px;height:30px}
+.shiva-landing .circ-tile b{font-size:13.5px;color:var(--ink);line-height:1.25}
+.shiva-landing .circ-tile span{font-size:11px;color:var(--muted);line-height:1.3}
+.shiva-landing .stats-band{background:linear-gradient(120deg,#0d0b1e,#2d1b69);border-radius:24px;padding:38px 34px;color:#fff;position:relative;overflow:hidden}
+.shiva-landing .stats-band::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(245,185,66,.20) 1.6px,transparent 1.8px);background-size:24px 24px;opacity:.35;pointer-events:none}
+.shiva-landing .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;text-align:center;position:relative;z-index:1}
+.shiva-landing .stats-cell .stats-num{display:block;font-size:40px;font-weight:900;color:#f5b942;letter-spacing:-.5px;line-height:1.1}
+.shiva-landing .stats-cell span{font-size:13.5px;color:#c4b5fd;font-weight:600}
+.shiva-landing .stats-cta{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:26px;padding-top:22px;border-top:1px solid rgba(255,255,255,.14);position:relative;z-index:1}
+.shiva-landing .stats-cta p{font-size:15px;color:#e9e4ff}
+.shiva-landing .exam-pills{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;max-width:900px;margin:0 auto}
+.shiva-landing .exam-pills a{font-size:13px;font-weight:700;border:1.5px solid var(--line);background:#fff;padding:8px 16px;border-radius:999px;color:#4c1d95;transition:.2s}
+.shiva-landing .exam-pills a:hover{border-color:#6d28d9;background:#f5f3ff}
+@media(max-width:900px){
+  .shiva-landing .circ-tile{width:86px}
+  .shiva-landing .stats-grid{grid-template-columns:1fr 1fr}
+  .shiva-landing .stats-cell .stats-num{font-size:32px}
+  .shiva-landing .stats-band{padding:30px 20px}
+}
