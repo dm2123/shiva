@@ -7,6 +7,7 @@ import TestSeriesPublic, {
   type PublicTestItem,
   type PublicTestKind,
 } from '@/components/public/TestSeriesPublic';
+import ShivaPromoCarousel from '@/components/public/ShivaPromoCarousel';
 import type { Course, Test } from '@/types/models';
 
 export const revalidate = 0;
@@ -207,6 +208,13 @@ export default async function PublicTestSeriesPage() {
               </div>
             )}
           </div>
+        </div>
+      </section>
+
+      {/* ── Promo carousel — hero ke baad, body sections se pehle ── */}
+      <section className="px-6 pb-4 pt-10">
+        <div className="mx-auto max-w-7xl overflow-hidden rounded-3xl shadow-[0_12px_32px_rgba(42,22,80,0.14)]">
+          <ShivaPromoCarousel />
         </div>
       </section>
 

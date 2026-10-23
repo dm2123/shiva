@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import PWStudentHeader from './PWStudentHeader';
 
 const TITLES: Record<string, string> = {
-  '/app': 'Home',
+  '/app': 'Study',
   '/app/batches': 'My Batches',
   '/app/courses': 'Courses',
   '/app/my-courses': 'My Courses',

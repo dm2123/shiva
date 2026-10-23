@@ -1,5 +1,8 @@
 import Link from 'next/link';
 import { mysqlPool } from '@/lib/db';
+import ShivaPromoCarousel from '@/components/public/ShivaPromoCarousel';
+import ListingInfo from '@/components/public/ListingInfo';
+import ShareButton from '@/components/public/ShareButton';
 
 export const revalidate = 0;
 
@@ -125,9 +128,12 @@ function BatchCard({ batch }: { batch: BatchRow }) {
       {/* Top strip — deep purple → violet, gold edge */}
       <div className="h-1.5 w-full bg-gradient-to-r from-[#2a1650] via-[#6d28d9] to-[#f5b942]" aria-hidden="true" />
 
+      {/* Share — card ke upar-right kone me; url card ke apne detail href par */}
+      <ShareButton title={batch.name} url={href ?? '/courses'} className="absolute right-3 top-3.5" />
+
       <div className="flex flex-1 flex-col gap-4 p-6">
-        {/* Badges row: narangi exam tag + status */}
-        <div className="flex flex-wrap items-center gap-2">
+        {/* Badges row: narangi exam tag + status (right me share button ki jagah chhodi) */}
+        <div className="flex flex-wrap items-center gap-2 pr-11">
           {exam && (
             <span className="inline-flex items-center rounded-full border border-orange-200 bg-orange-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-orange-700">
               {exam}
@@ -374,6 +380,11 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
           )}
         </div>
 
+        {/* Promo carousel — hero ke turant baad, filters/search se pehle */}
+        <div className="mb-12 overflow-hidden rounded-3xl shadow-[0_18px_44px_rgba(13,11,30,0.45)]">
+          <ShivaPromoCarousel />
+        </div>
+
         {batches.length === 0 ? (
           /* Honest empty state — koi batch hi publish nahi hai */
           <div className="shiva-glass mx-auto max-w-2xl space-y-5 rounded-3xl p-12 text-center">
@@ -578,6 +589,9 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
             </div>
           </>
         )}
+
+        {/* Why THE SHIVA + FAQ — page ke aakhir me (footer se pehle) */}
+        <ListingInfo />
       </div>
     </div>
   );

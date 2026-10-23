@@ -2,6 +2,8 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { listPublicCourses } from '@/services/academic.service';
 import { CoursesExplorer, CoursesGridSkeleton } from '@/components/public/CourseCard';
+import ShivaPromoCarousel from '@/components/public/ShivaPromoCarousel';
+import ListingInfo from '@/components/public/ListingInfo';
 
 export const revalidate = 0;
 
@@ -90,6 +92,19 @@ export default function PublicCoursesPage() {
             </p>
           </div>
 
+          {/* Promo carousel — free course + scholarship slides (ShivaPromoCarousel);
+              wrap ke andar rounded band ki tarah */}
+          <div
+            style={{
+              marginBottom: 34,
+              borderRadius: 20,
+              overflow: 'hidden',
+              boxShadow: '0 12px 32px rgba(42,22,80,.14)',
+            }}
+          >
+            <ShivaPromoCarousel />
+          </div>
+
           {/* Quick-link cards — sirf asal maujooda routes (koi page invent nahi) */}
           <div
             style={{
@@ -151,6 +166,9 @@ export default function PublicCoursesPage() {
           <Suspense fallback={<CoursesGridSkeleton count={8} />}>
             <CoursesSection />
           </Suspense>
+
+          {/* Why THE SHIVA + FAQ — shared ListingInfo (counsel-strip se pehle) */}
+          <ListingInfo />
 
           {/* Bottom CTA */}
           <div className="counsel-strip" style={{ marginTop: 48 }}>

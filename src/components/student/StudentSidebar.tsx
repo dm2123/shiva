@@ -20,6 +20,7 @@ export const SIDEBAR_GROUPS = [
     items: [
       { name: 'Dashboard', href: '/app', icon: IconHome },
       { name: 'My Courses', href: '/app/my-courses', icon: IconBook },
+      { name: 'Batches', href: '/app/batches', icon: IconLayers },
       { name: 'Learn', href: '/app/learn', icon: IconPlay },
       { name: 'Live Classes', href: '/app/live', icon: IconRadio },
       { name: 'Recordings', href: '/app/recordings', icon: IconVideo },
@@ -57,6 +58,7 @@ export const SIDEBAR_GROUPS = [
     title: 'ACCOUNT',
     items: [
       { name: 'Profile', href: '/app/profile', icon: IconUser },
+      { name: 'My Purchases', href: '/app/payments', icon: IconFileText },
       { name: 'Scholarships', href: '/app/scholarships', icon: IconAward },
       { name: 'Settings', href: '/app/settings', icon: IconSettings },
     ],
