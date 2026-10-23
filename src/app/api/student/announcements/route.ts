@@ -10,8 +10,23 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const courseId = searchParams.get('courseId');
 
-    let where = "WHERE (ta.targetAudience = 'ALL' OR ta.batchId IN (SELECT batchId FROM StudentEnrollments WHERE studentId = ? AND status = 'ACTIVE'))";
-    const params: any[] = [session.userId];
+    // Visibility — "sirf us course ke students ko" guarantee:
+    // ALL → sabko; ENROLLED → courseId set ho to us course ke ACTIVE
+    // enrolled students ko (courseId na ho to kisi bhi active enrollment
+    // walon ko); BATCH → us batch ke ACTIVE students ko.
+    // (Pehle batchId-NULL wali ghoshnaayein kabhi nahi dikhti thi —
+    // NULL IN (...) hamesha false hota hai.)
+    const visibility = `(
+      ta.targetAudience = 'ALL'
+      OR (ta.targetAudience = 'ENROLLED' AND (
+        ta.courseId IS NULL
+        OR ta.courseId IN (SELECT courseId FROM StudentEnrollments WHERE studentId = ? AND status = 'ACTIVE')
+      ))
+      OR (ta.targetAudience = 'BATCH' AND ta.batchId IN (SELECT batchId FROM StudentEnrollments WHERE studentId = ? AND status = 'ACTIVE'))
+    )`;
+    const params: any[] = [session.userId, session.userId];
+
+    let where = `WHERE ${visibility}`;
 
     if (courseId) {
       where += ' AND ta.courseId = ?';
@@ -35,8 +50,9 @@ export async function GET(request: NextRequest) {
     const [unreadCount]: any = await mysqlPool.query(
       `SELECT COUNT(*) AS count FROM TeacherAnnouncements ta
        WHERE NOT EXISTS (SELECT 1 FROM AnnouncementReads WHERE announcementId = ta.id AND userId = ?)
-       AND (ta.targetAudience = 'ALL' OR ta.batchId IN (SELECT batchId FROM StudentEnrollments WHERE studentId = ? AND status = 'ACTIVE'))`,
-      [session.userId, session.userId]
+       AND ${visibility}
+       AND (ta.expiresAt IS NULL OR ta.expiresAt > NOW())`,
+      [session.userId, session.userId, session.userId]
     );
 
     return NextResponse.json({
