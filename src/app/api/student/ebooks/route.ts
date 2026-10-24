@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureEbooksSchema } from '@/lib/ensure-ebooks-schema';
 
 // GET - List e-books with filters
 export async function GET(request: NextRequest) {
   try {
     const session = await requireRole(request, UserRole.STUDENT);
+    // Self-heal: purane DBs par EBooks/EBookProgress missing ho to bana lo,
+    // warna Library ka "Short Notes" tab 500 dekar hamesha khaali dikhega.
+    await ensureEbooksSchema();
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
     const subjectId = searchParams.get('subjectId');
