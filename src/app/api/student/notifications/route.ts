@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureNotificationsSchema } from '@/lib/ensure-notifications-schema';
 
 export async function GET(req: NextRequest) {
   try {
     const user = await requireRole(req, UserRole.STUDENT);
+    await ensureNotificationsSchema();
     const [rows]: any = await mysqlPool.query(
       `SELECT id, title, message, type, isRead, createdAt
        FROM Notifications
@@ -31,6 +33,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     const placeholders = ids.map(() => '?').join(', ');
+    await ensureNotificationsSchema();
     await mysqlPool.query(
       `UPDATE Notifications SET isRead = TRUE
        WHERE userId = ? AND id IN (${placeholders})`,
