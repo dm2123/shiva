@@ -2,11 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureAnnouncementsSchema } from '@/lib/ensure-announcements-schema';
 
 // GET - Get teacher announcements
 export async function GET(request: NextRequest) {
   try {
     const session = await requireRole(request, UserRole.STUDENT);
+    await ensureAnnouncementsSchema();
     const { searchParams } = new URL(request.url);
     const courseId = searchParams.get('courseId');
 
@@ -69,6 +71,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const session = await requireRole(request, UserRole.STUDENT);
+    await ensureAnnouncementsSchema();
     const body = await request.json();
     const { randomUUID } = await import('crypto');
     await mysqlPool.query(
