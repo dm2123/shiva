@@ -2,11 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureDoubtsSchema } from '@/lib/ensure-doubts-schema';
 import { v4 as uuid } from 'uuid';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireRole(req, UserRole.STUDENT);
+    await ensureDoubtsSchema();
 
     const [messages]: any = await mysqlPool.query(
       `SELECT dm.*, 
@@ -33,6 +35,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+    await ensureDoubtsSchema();
     const body = await req.json();
     const { content } = body;
 

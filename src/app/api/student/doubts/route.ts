@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureDoubtsSchema } from '@/lib/ensure-doubts-schema';
 
 async function isEnrolled(studentId: string, courseId: string): Promise<boolean> {
   const [rows]: any = await mysqlPool.query(
@@ -22,6 +23,7 @@ async function getCourseTeacherId(courseId: string): Promise<string | null> {
 export async function GET(req: NextRequest) {
   try {
     const user = await requireRole(req, UserRole.STUDENT);
+    await ensureDoubtsSchema();
     const [rows]: any = await mysqlPool.query(
       `SELECT d.id, d.courseId, d.chapterId, d.title, d.description, d.status, d.teacherResponse, d.createdAt, d.updatedAt,
               c.title AS courseTitle,
@@ -44,6 +46,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const user = await requireRole(req, UserRole.STUDENT);
+    await ensureDoubtsSchema();
 
     let body: any;
     const contentType = req.headers.get('content-type') || '';
