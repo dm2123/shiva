@@ -186,7 +186,10 @@ export default function OfflineDownloadsPage() {
                     <TypeIcon size={20} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-bold text-slate-900 truncate">{d.title}</p>
+                    {/* title null ho sakta hai: OfflineContent me title sirf
+                        writer ke snapshot se aata hai; tab tak content-type
+                        label dikhao — koi nakli title nahi. */}
+                    <p className="text-[14px] font-bold text-slate-900 truncate">{d.title || d.contentType.replace(/_/g, ' ')}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-[11px] text-slate-400 font-medium">{formatSize(d.sizeMB)}</span>
                       {d.downloadedAt && (
