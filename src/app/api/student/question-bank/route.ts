@@ -2,11 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureQuestionBankSchema } from '@/lib/ensure-question-bank-schema';
 
 // GET - Enhanced question bank with filters
 export async function GET(request: NextRequest) {
   try {
     const session = await requireRole(request, UserRole.STUDENT);
+    // Self-heal: purane DBs par Questions/QuestionTags/QuestionDifficulty
+    // missing ho to bana lo, warna Question Bank tab + DPP section 500 dega.
+    // Note: canonical columns title/type hain (lib/db.ts writer) — pehle
+    // route questionText/questionType filter karta tha, jo unknown-column
+    // 500 deta tha; neeche filters + response alias canonical par hain.
+    await ensureQuestionBankSchema();
     const { searchParams } = new URL(request.url);
     const subjectId = searchParams.get('subjectId');
     const chapterId = searchParams.get('chapterId');
@@ -23,7 +30,7 @@ export async function GET(request: NextRequest) {
 
     if (subjectId) { where += ' AND q.subjectId = ?'; params.push(subjectId); }
     if (chapterId) { where += ' AND q.chapterId = ?'; params.push(chapterId); }
-    if (type) { where += ' AND q.questionType = ?'; params.push(type); }
+    if (type) { where += ' AND q.type = ?'; params.push(type); }
     if (difficulty) {
       where += ' AND qd.difficulty = ?';
       params.push(difficulty);
@@ -33,7 +40,7 @@ export async function GET(request: NextRequest) {
       params.push(tag);
     }
     if (search) {
-      where += ' AND q.questionText LIKE ?';
+      where += ' AND q.title LIKE ?';
       params.push(`%${search}%`);
     }
 
@@ -75,6 +82,11 @@ export async function GET(request: NextRequest) {
       data: {
         questions: questions.map((q: any) => ({
           ...q,
+          // Web + app dono questionText/questionType dekhte hain; canonical
+          // columns title/type hain — alias do, taaki text kabhi khaali na aaye.
+          // Legacy row (dono column maujood) par title/type hi jeetega.
+          questionText: q.title ?? q.questionText ?? null,
+          questionType: q.type ?? q.questionType ?? null,
           options: typeof q.options === 'string' ? JSON.parse(q.options) : q.options,
           tags: q.tags ? q.tags.split(',') : [],
         })),
