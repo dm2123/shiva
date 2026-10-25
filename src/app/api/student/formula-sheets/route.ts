@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureFormulaSchema } from '@/lib/ensure-formula-schema';
 
 // GET - List formula sheets
 export async function GET(request: NextRequest) {
   try {
     const session = await requireRole(request, UserRole.STUDENT);
+    // Self-heal: purane DBs par FormulaSheets missing ho to bana lo,
+    // warna Library ka "Formula" tab 500 dekar hamesha khaali dikhega.
+    await ensureFormulaSchema();
     const { searchParams } = new URL(request.url);
     const subjectId = searchParams.get('subjectId');
     const courseId = searchParams.get('courseId');
