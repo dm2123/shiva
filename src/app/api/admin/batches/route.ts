@@ -3,10 +3,14 @@ import { mysqlPool } from '@/lib/db';
 import { randomUUID } from 'crypto';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
+import { ensureBatchScheduleSchema } from '@/lib/ensure-batch-schedule-schema';
 
 export async function POST(req: NextRequest) {
   try {
     await requireRole(req, UserRole.ADMIN);
+    // Batches purane DB par missing ho to INSERT 1146 par 500 deta — pehle self-heal.
+    // (TeacherCourseAssignments insert isi ensure me nahi hai — wo alag candidate hai.)
+    await ensureBatchScheduleSchema();
     const body = await req.json();
     const { courseId, teacherId, name, startDate, endDate, status } = body;
 
@@ -40,6 +44,8 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     await requireRole(req, UserRole.ADMIN);
+    // Batches purane DB par missing ho to SELECT 1146 par 500 deta — pehle self-heal.
+    await ensureBatchScheduleSchema();
     const [rows] = await mysqlPool.query('SELECT * FROM Batches ORDER BY createdAt DESC');
     return NextResponse.json({ success: true, data: { batches: rows } });
   } catch (error: any) {

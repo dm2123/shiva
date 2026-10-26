@@ -26,10 +26,12 @@ import { mysqlPool } from '@/lib/db';
  *   bhi call karte hain, is file me dobara DDL nahi banaya.
  * - LiveClasses: uska CREATE pehle se ensure-live-class-schema.ts
  *   me hai — today route wahi ensure bhi call karta hai.
- * - Admin batches list (SELECT * FROM Batches): wahi Batches table
- *   hai, par wo route db.ts-style seedha query karta hai aur is run
- *   ka scope student timetable routes hai; Batches ka ensure yahan
- *   hone se wo route bhi agle wiring par isi ka fayda utha sakta hai.
+ * - Admin batches list (SELECT * FROM Batches) aur admin teachers
+ *   list (SELECT FROM TeacherProfiles): 2026-10-26 21:30 run se ye
+ *   ensure un routes me bhi wired hai (admin/batches GET+POST,
+ *   admin/teachers GET). Admin teachers/assignments GET abhi wired
+ *   nahi — wo TeacherCourseAssignments bhi poochta hai, jo is
+ *   ensure ke scope me nahi hai.
  *
  * Do deliberate deviations canonical SQL se (doosre ensure-* jaisa):
  * - Koi FOREIGN KEY nahi: cross-table DDL doosri tables ke schema par

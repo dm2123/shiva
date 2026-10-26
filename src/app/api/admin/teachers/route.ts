@@ -3,6 +3,7 @@ import { mysqlPool } from '@/lib/db';
 import { provisionTeacherAccount } from '@/services/user.service';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
+import { ensureBatchScheduleSchema } from '@/lib/ensure-batch-schedule-schema';
 
 export async function POST(req: NextRequest) {
   try {
@@ -30,6 +31,8 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     await requireRole(req, UserRole.ADMIN);
+    // TeacherProfiles purane DB par missing ho to SELECT 1146 par 500 deta — pehle self-heal.
+    await ensureBatchScheduleSchema();
     const [rows]: any = await mysqlPool.query('SELECT id, userId, name, email, status FROM TeacherProfiles');
     return NextResponse.json({ success: true, data: { educators: rows } });
   } catch (error: any) {
