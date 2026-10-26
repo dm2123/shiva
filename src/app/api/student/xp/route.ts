@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureGamificationSchema } from '@/lib/ensure-gamification-schema';
 
 export async function GET(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+    await ensureGamificationSchema();
 
     const [totalXP]: any = await mysqlPool.query(
       'SELECT COALESCE(SUM(points), 0) AS total FROM StudentXP WHERE studentId = ?',

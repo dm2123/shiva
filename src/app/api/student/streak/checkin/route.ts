@@ -2,11 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureGamificationSchema } from '@/lib/ensure-gamification-schema';
 import { v4 as uuid } from 'uuid';
 
 export async function POST(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+    await ensureGamificationSchema();
     const today = new Date().toISOString().split('T')[0];
 
     // Check if already checked in today
@@ -19,12 +21,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, data: { alreadyCheckedIn: true } });
     }
 
-    // Create today's streak entry
-    const id = uuid();
-    await mysqlPool.query(
-      'INSERT INTO DailyStreaks (id, studentId, streakDate, loginMinutes) VALUES (?, ?, ?, 1)',
-      [id, session.userId, today]
-    );
+    // Create today's streak entry. SELECT-then-INSERT races on a
+    // double-tap/concurrent request: the loser used to 500 on the
+    // UNIQUE (studentId, streakDate) key and could double-award XP.
+    // A duplicate-key failure here is the same already-checked-in
+    // state, so return it instead of erroring.
+    try {
+      await mysqlPool.query(
+        'INSERT INTO DailyStreaks (id, studentId, streakDate, loginMinutes) VALUES (?, ?, ?, 1)',
+        [uuid(), session.userId, today]
+      );
+    } catch (e: any) {
+      if (e?.code === 'ER_DUP_ENTRY' || e?.errno === 1062) {
+        return NextResponse.json({ success: true, data: { alreadyCheckedIn: true } });
+      }
+      throw e;
+    }
 
     // Award daily login XP
     await mysqlPool.query(
