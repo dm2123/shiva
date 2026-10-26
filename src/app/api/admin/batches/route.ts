@@ -4,13 +4,15 @@ import { randomUUID } from 'crypto';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { ensureBatchScheduleSchema } from '@/lib/ensure-batch-schedule-schema';
+import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 
 export async function POST(req: NextRequest) {
   try {
     await requireRole(req, UserRole.ADMIN);
     // Batches purane DB par missing ho to INSERT 1146 par 500 deta — pehle self-heal.
-    // (TeacherCourseAssignments insert isi ensure me nahi hai — wo alag candidate hai.)
+    // TeacherCourseAssignments ka apna ensure hai (neeche) — wahi is insert ko bachata hai.
     await ensureBatchScheduleSchema();
+    await ensureTeacherAssignmentSchema();
     const body = await req.json();
     const { courseId, teacherId, name, startDate, endDate, status } = body;
 

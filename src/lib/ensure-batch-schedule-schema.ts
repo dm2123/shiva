@@ -29,9 +29,10 @@ import { mysqlPool } from '@/lib/db';
  * - Admin batches list (SELECT * FROM Batches) aur admin teachers
  *   list (SELECT FROM TeacherProfiles): 2026-10-26 21:30 run se ye
  *   ensure un routes me bhi wired hai (admin/batches GET+POST,
- *   admin/teachers GET). Admin teachers/assignments GET abhi wired
- *   nahi — wo TeacherCourseAssignments bhi poochta hai, jo is
- *   ensure ke scope me nahi hai.
+ *   admin/teachers GET). Admin teachers/assignments GET ka
+ *   TeacherProfiles hissa isi ensure se cover hota hai (2026-10-27
+ *   00:30 run se us route me wired); TeacherCourseAssignments ka
+ *   apna ensure ab ensure-teacher-assignment-schema.ts me hai.
  *
  * Do deliberate deviations canonical SQL se (doosre ensure-* jaisa):
  * - Koi FOREIGN KEY nahi: cross-table DDL doosri tables ke schema par

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 
 async function getTeacherCourseIds(teacherId: string): Promise<string[]> {
   const [rows]: any = await mysqlPool.query(
@@ -14,6 +15,8 @@ async function getTeacherCourseIds(teacherId: string): Promise<string[]> {
 export async function GET(req: NextRequest) {
   try {
     const user = await requireRole(req, UserRole.TEACHER);
+    // TCA missing ho to getTeacherCourseIds 1146 par 500 deta — khaali inbox hi sahi jawab hai.
+    await ensureTeacherAssignmentSchema();
     const courseIds = await getTeacherCourseIds(user.userId);
 
     if (courseIds.length === 0) {
@@ -41,6 +44,7 @@ export async function GET(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     const user = await requireRole(req, UserRole.TEACHER);
+    await ensureTeacherAssignmentSchema();
     const { id, response } = await req.json();
 
     if (!id || !response) {

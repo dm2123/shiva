@@ -3,6 +3,7 @@ import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
 import { ensureDoubtsSchema } from '@/lib/ensure-doubts-schema';
+import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 
 async function isEnrolled(studentId: string, courseId: string): Promise<boolean> {
   const [rows]: any = await mysqlPool.query(
@@ -47,6 +48,8 @@ export async function POST(req: NextRequest) {
   try {
     const user = await requireRole(req, UserRole.STUDENT);
     await ensureDoubtsSchema();
+    // getCourseTeacherId TCA poochta hai — table missing ho to doubt banne se pehle hi 500.
+    await ensureTeacherAssignmentSchema();
 
     let body: any;
     const contentType = req.headers.get('content-type') || '';
