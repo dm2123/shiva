@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { saveLectureProgressDb } from '@/lib/db';
+import { ensureLectureProgressSchema } from '@/lib/ensure-lecture-progress-schema';
 import { createApiResponse, createApiError } from '@/lib/utils';
 import { z } from 'zod';
 
@@ -23,6 +24,9 @@ export async function POST(req: NextRequest) {
     
     const { lectureId, isCompleted, positionSeconds } = validated.data;
 
+    // LectureProgress table purane DB par missing ho to save 500 ke
+    // bajay self-heal ke baad kaam kare.
+    await ensureLectureProgressSchema();
     await saveLectureProgressDb(session.userId, lectureId, isCompleted, positionSeconds);
     return NextResponse.json(createApiResponse({ success: true }), { status: 200 });
   } catch (error: any) {

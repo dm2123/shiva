@@ -7,6 +7,7 @@ import {
   isStudentEnrolledInCourseDb,
 } from '@/lib/db';
 import { ensureAptitudePetLectures } from '@/lib/ensure-aptitude-content';
+import { ensureLectureProgressSchema } from '@/lib/ensure-lecture-progress-schema';
 import { ensureMojibakeRepair, sanitizeTextDeep } from '@/lib/fix-mojibake';
 import { createApiResponse, createApiError } from '@/lib/utils';
 
@@ -38,6 +39,9 @@ export async function GET(req: NextRequest) {
     await ensureAptitudePetLectures();
     // Purani rows ke double-encoded akshar DB me hi theek karo (ek baar).
     await ensureMojibakeRepair();
+    // Learn progress table purane DB par missing ho to Mark Complete /
+    // progress wali list 500 ke bajay honest empty de.
+    await ensureLectureProgressSchema();
 
     const enrolled = await isStudentEnrolledInCourseDb(session.userId, course.id);
 
