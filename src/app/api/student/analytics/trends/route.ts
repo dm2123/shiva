@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureAnalyticsSchema } from '@/lib/ensure-analytics-schema';
+import { ensureGamificationSchema } from '@/lib/ensure-gamification-schema';
 
 export async function GET(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+    await ensureAnalyticsSchema();
+    await ensureGamificationSchema();
 
     // Score trends over last 10 tests
     const [trends]: any = await mysqlPool.query(

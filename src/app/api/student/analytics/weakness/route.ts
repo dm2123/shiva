@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureAnalyticsSchema } from '@/lib/ensure-analytics-schema';
 
 export async function GET(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+    await ensureAnalyticsSchema();
 
     // Get subjects with low scores (weakness)
     const [weakSubjects]: any = await mysqlPool.query(

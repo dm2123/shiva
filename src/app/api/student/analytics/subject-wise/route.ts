@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureAnalyticsSchema } from '@/lib/ensure-analytics-schema';
 
 export async function GET(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+    await ensureAnalyticsSchema();
     const url = new URL(req.url);
     const courseId = url.searchParams.get('courseId');
 
