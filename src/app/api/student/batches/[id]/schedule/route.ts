@@ -2,10 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureBatchScheduleSchema } from '@/lib/ensure-batch-schedule-schema';
+import { ensureAnalyticsSchema } from '@/lib/ensure-analytics-schema';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireRole(req, UserRole.STUDENT);
+    // BatchSchedule / TeacherProfiles / Batches (naya ensure) + Subjects /
+    // Courses (analytics ensure) purane DB par missing hon to query
+    // 1146 par 500 deti — pehle self-heal.
+    await ensureBatchScheduleSchema();
+    await ensureAnalyticsSchema();
 
     // Get weekly schedule
     const [schedule]: any = await mysqlPool.query(

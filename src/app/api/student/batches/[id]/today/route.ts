@@ -2,10 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureBatchScheduleSchema } from '@/lib/ensure-batch-schedule-schema';
+import { ensureAnalyticsSchema } from '@/lib/ensure-analytics-schema';
+import { ensureLiveClassSchema } from '@/lib/ensure-live-class-schema';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireRole(req, UserRole.STUDENT);
+    // BatchSchedule / TeacherProfiles (naya ensure) + Subjects (analytics
+    // ensure) + LiveClasses (live-class ensure) purane DB par missing hon
+    // to LEFT JOIN ke bawajood query 1146 par 500 deti — pehle self-heal.
+    await ensureBatchScheduleSchema();
+    await ensureAnalyticsSchema();
+    await ensureLiveClassSchema();
     const today = new Date().getDay();
 
     const [classes]: any = await mysqlPool.query(

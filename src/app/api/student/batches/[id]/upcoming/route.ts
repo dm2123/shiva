@@ -2,10 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureBatchScheduleSchema } from '@/lib/ensure-batch-schedule-schema';
+import { ensureAnalyticsSchema } from '@/lib/ensure-analytics-schema';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireRole(req, UserRole.STUDENT);
+    // BatchSchedule / TeacherProfiles (naya ensure) + Subjects (analytics
+    // ensure) purane DB par missing hon to har din ki query 1146 par
+    // 500 deti — pehle self-heal.
+    await ensureBatchScheduleSchema();
+    await ensureAnalyticsSchema();
     const today = new Date().getDay();
 
     // Get next 7 days of classes
