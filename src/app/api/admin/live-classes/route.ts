@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { mysqlPool } from '@/lib/db';
+import { ensureLiveClassSchema } from '@/lib/ensure-live-class-schema';
 import { createApiResponse } from '@/lib/utils';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
@@ -7,6 +8,9 @@ import { UserRole } from '@/types/auth';
 export async function GET(req: NextRequest) {
   try {
     await requireRole(req, UserRole.ADMIN);
+    // LiveClasses table purane DB par missing ho to admin list 500 ke
+    // bajay self-heal ke baad honest empty de.
+    await ensureLiveClassSchema();
     if (mysqlPool) {
       const [rows] = await mysqlPool.query('SELECT * FROM LiveClasses ORDER BY startTime ASC');
       return NextResponse.json(createApiResponse({ classes: rows }));
@@ -21,6 +25,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     await requireRole(req, UserRole.ADMIN);
+    await ensureLiveClassSchema();
     const body = await req.json();
     if (!body?.title || !body?.courseId || !body?.startTime || !body?.endTime) {
       return NextResponse.json(createApiResponse({ success: false, error: 'title, courseId, startTime and endTime are required' }), { status: 400 });

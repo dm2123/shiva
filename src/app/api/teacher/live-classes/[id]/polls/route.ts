@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureLiveClassSchema } from '@/lib/ensure-live-class-schema';
 import { v4 as uuid } from 'uuid';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireRole(req, UserRole.TEACHER);
+    // LiveClassPolls / Responses tables purane DB par missing hon to
+    // poll list 500 ke bajay honest empty de.
+    await ensureLiveClassSchema();
 
     const [polls]: any = await mysqlPool.query(
       `SELECT lcp.*,
@@ -30,6 +34,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const session = await requireRole(req, UserRole.TEACHER);
+    await ensureLiveClassSchema();
     const body = await req.json();
     const { question, options } = body;
 

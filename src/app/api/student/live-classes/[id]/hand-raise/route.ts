@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureLiveClassSchema } from '@/lib/ensure-live-class-schema';
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+    // LiveClasses.handRaises column kisi schema file me nahi hai — bina
+    // is ensure ke hand-raise canonical DB par bhi "Unknown column" 500 deta.
+    await ensureLiveClassSchema();
 
     // Get current handRaises
     const [rows]: any = await mysqlPool.query(

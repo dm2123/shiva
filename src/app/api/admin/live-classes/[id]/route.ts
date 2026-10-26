@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { mysqlPool } from '@/lib/db';
+import { ensureLiveClassSchema } from '@/lib/ensure-live-class-schema';
 import { createApiResponse } from '@/lib/utils';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
@@ -10,6 +11,7 @@ export async function PATCH(
 ) {
   try {
     await requireRole(req, UserRole.ADMIN);
+    await ensureLiveClassSchema();
     const body = await req.json();
 
     const [existing]: any = await mysqlPool.query('SELECT * FROM LiveClasses WHERE id = ?', [params.id]);
@@ -52,6 +54,7 @@ export async function DELETE(
 ) {
   try {
     await requireRole(req, UserRole.ADMIN);
+    await ensureLiveClassSchema();
     const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const [result]: any = await mysqlPool.query(
       `UPDATE LiveClasses SET status = 'CANCELLED', actualEndedAt = ? WHERE id = ? AND status NOT IN ('ENDED', 'CANCELLED')`,

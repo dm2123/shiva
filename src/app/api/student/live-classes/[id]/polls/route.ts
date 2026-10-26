@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureLiveClassSchema } from '@/lib/ensure-live-class-schema';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireRole(req, UserRole.STUDENT);
+    // LiveClassPolls / Responses tables purane DB par missing hon to
+    // poll list 500 ke bajay honest empty de.
+    await ensureLiveClassSchema();
 
     const [polls]: any = await mysqlPool.query(
       `SELECT lcp.*,

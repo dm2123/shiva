@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { listTeacherLiveClasses, createLiveClass } from '@/services/live-class.service';
+import { ensureLiveClassSchema } from '@/lib/ensure-live-class-schema';
 import { z } from 'zod';
 import * as db from '@/lib/db';
 
@@ -57,6 +58,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'scheduledEndAt must be after scheduledStartAt' }, { status: 400 });
     }
 
+    // LiveClasses table purane DB par missing ho to createLiveClassDb
+    // throw karke 500 deta — pehle self-heal.
+    await ensureLiveClassSchema();
     const lc = await createLiveClass({
       ...data,
       teacherId: session.userId,

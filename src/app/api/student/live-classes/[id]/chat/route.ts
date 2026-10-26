@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureLiveClassSchema } from '@/lib/ensure-live-class-schema';
 import { v4 as uuid } from 'uuid';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireRole(req, UserRole.STUDENT);
+    // Live-class tables purane DB par missing hon to chat 500 ke bajay
+    // self-heal ke baad honest empty / save de.
+    await ensureLiveClassSchema();
     const url = new URL(req.url);
     const since = url.searchParams.get('since');
 
@@ -31,6 +35,9 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+    // LiveClassMessages table purane DB par missing ho to save 500 ke
+    // bajay self-heal ke baad kaam kare.
+    await ensureLiveClassSchema();
     const body = await req.json();
     const message = body.message?.trim();
 

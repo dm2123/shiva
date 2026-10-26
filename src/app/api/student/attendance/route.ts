@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { mysqlPool } from "@/lib/db";
+import { ensureLiveClassSchema } from "@/lib/ensure-live-class-schema";
 import { requireRoleOneOf, requireRole } from "@/lib/rbac";
 import { UserRole } from "@/types/auth";
 
@@ -13,6 +14,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "liveClassId required" }, { status: 400 });
   }
 
+  // LiveClassAttendance table purane DB par missing ho to ye route
+  // (isme try/catch bhi nahi hai) unhandled 500 deta.
+  await ensureLiveClassSchema();
   const [rows] = await mysqlPool.query(
     `SELECT * FROM LiveClassAttendance WHERE liveClassId = ? AND studentId = ?`,
     [liveClassId, session.userId]
@@ -44,6 +48,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "liveClassId required" }, { status: 400 });
   }
 
+  await ensureLiveClassSchema();
   const [existing] = await mysqlPool.query(
     `SELECT id FROM LiveClassAttendance WHERE liveClassId = ? AND studentId = ?`,
     [liveClassId, session.userId]

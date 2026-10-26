@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureLiveClassSchema } from '@/lib/ensure-live-class-schema';
 import { v4 as uuid } from 'uuid';
 
 export async function POST(
@@ -10,6 +11,9 @@ export async function POST(
 ) {
   try {
     const session = await requireRole(req, UserRole.STUDENT);
+    // LiveClassPollResponses table purane DB par missing ho to vote
+    // 500 ke bajay self-heal ke baad kaam kare.
+    await ensureLiveClassSchema();
     const body = await req.json();
     const { selectedOption } = body;
 
