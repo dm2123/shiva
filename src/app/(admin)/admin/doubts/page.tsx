@@ -2,6 +2,7 @@ import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
+import { ensureCoreTablesSchema } from '@/lib/ensure-core-tables-schema';
 
 export const revalidate = 0;
 
@@ -16,6 +17,10 @@ export default async function AdminDoubtsPage() {
   if (!session || session.role !== 'ADMIN') {
     redirect('/admin/login');
   }
+
+  // LEFT JOIN Users/Courses: purane DB par ye tables missing hon to
+  // page 1146 par 500 deta tha (Doubts ka apna leg alag hai).
+  await ensureCoreTablesSchema();
 
   const [rows]: any = await mysqlPool.query(
     `SELECT d.id, d.title, d.description, d.status, d.teacherResponse, d.createdAt,

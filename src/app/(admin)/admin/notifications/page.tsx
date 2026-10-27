@@ -2,6 +2,7 @@ import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
+import { ensureCoreTablesSchema } from '@/lib/ensure-core-tables-schema';
 
 export const revalidate = 0;
 
@@ -17,6 +18,10 @@ export default async function AdminNotificationsPage() {
   if (!session || session.role !== 'ADMIN') {
     redirect('/admin/login');
   }
+
+  // JOIN Users: purane DB par Users missing ho to page 1146 par 500
+  // deta tha (Notifications ka apna leg alag hai).
+  await ensureCoreTablesSchema();
 
   const [rows]: any = await mysqlPool.query(
     `SELECT n.id, n.title, n.message, n.type, n.isRead, n.createdAt,

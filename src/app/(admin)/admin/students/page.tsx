@@ -1,4 +1,5 @@
 import { mysqlPool } from '@/lib/db';
+import { ensureCoreTablesSchema } from '@/lib/ensure-core-tables-schema';
 
 export const revalidate = 0;
 
@@ -7,6 +8,9 @@ export const metadata = {
 };
 
 async function getStudents() {
+  // Users JOIN + StudentEnrollments subquery: purane DB par ye tables
+  // missing hon to page 1146 deta tha (catch sirf [] chhupa deta tha).
+  await ensureCoreTablesSchema();
   try {
     const [rows]: any = await mysqlPool.query(`
       SELECT u.id as userId, u.email, u.status as userStatus, u.createdAt,

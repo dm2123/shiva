@@ -2,6 +2,7 @@ import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
+import { ensureCoreTablesSchema } from '@/lib/ensure-core-tables-schema';
 
 export const revalidate = 0;
 
@@ -10,6 +11,10 @@ export default async function AdminCertificatesPage() {
   if (!session || session.role !== 'ADMIN') {
     redirect('/admin/login');
   }
+
+  // FROM StudentEnrollments + JOIN Courses/Users: purane DB par ye
+  // tables missing hon to page 1146 par 500 deta tha.
+  await ensureCoreTablesSchema();
 
   const [rows]: any = await mysqlPool.query(
     `SELECT sp.name AS studentName, st.email AS studentEmail, c.title AS courseTitle, e.enrolledAt,

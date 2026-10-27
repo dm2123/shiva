@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { TeacherPageHeader } from '@/components/teacher/TeacherShared';
 import TeacherEmptyState from '@/components/teacher/TeacherEmptyState';
 import { getTeacherAssignmentsDb, mysqlPool } from '@/lib/db';
+import { ensureCoreTablesSchema } from '@/lib/ensure-core-tables-schema';
 import { IconUsers } from '@/components/teacher/TeacherIcons';
 
 export const metadata = {
@@ -16,6 +17,10 @@ export default async function TeacherStudents() {
   if (!session || session.role !== 'TEACHER') {
     redirect('/teacher/login');
   }
+
+  // FROM StudentEnrollments + JOIN Courses/Users/StudentProfiles: purane
+  // DB par core tables missing hon to page 1146 par 500 deta tha.
+  await ensureCoreTablesSchema();
 
   const assignments = await getTeacherAssignmentsDb(session.userId);
   const courseIds = assignments.map((a: any) => a.courseId);
