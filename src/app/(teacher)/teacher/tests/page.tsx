@@ -3,6 +3,7 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import TeacherTestsClient from './page.client';
 import { getTeacherAssignmentsDb, findCourseByIdDb } from '@/lib/db';
+import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 import { listTestByCourse } from '@/services/test.service';
 
 export const metadata = {
@@ -16,6 +17,11 @@ export default async function TeacherTests() {
     redirect('/teacher/login');
   }
 
+  // getTeacherAssignmentsDb TeacherCourseAssignments poochta hai -
+  // purane DB par table missing ho to helper error swallow karke []
+  // deta hai (page khaali dikhta). Page-level leg: helper me wiring
+  // nahi (db <-> ensure circular import hota).
+  await ensureTeacherAssignmentSchema();
   const assignments = await getTeacherAssignmentsDb(session.userId);
   const courses: any[] = [];
   const tests: any[] = [];

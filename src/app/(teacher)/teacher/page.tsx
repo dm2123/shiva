@@ -2,6 +2,7 @@ import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getTeacherAssignmentsDb, findCourseByIdDb, mysqlPool } from '@/lib/db';
+import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 import TeacherDashboardClient from './page.client';
 
 export const metadata = {
@@ -16,6 +17,11 @@ export default async function TeacherDashboard() {
   }
 
   // Fetch actual real data
+  // getTeacherAssignmentsDb TeacherCourseAssignments poochta hai -
+  // purane DB par table missing ho to helper error swallow karke []
+  // deta hai (page khaali dikhta). Page-level leg: helper me wiring
+  // nahi (db <-> ensure circular import hota).
+  await ensureTeacherAssignmentSchema();
   const assignments = await getTeacherAssignmentsDb(session.userId);
   const courses = [];
   const courseStats: Record<string, any> = {};

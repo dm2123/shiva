@@ -2,6 +2,7 @@ import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getTeacherAssignmentsDb, findCourseByIdDb, listSubjectsByCourseDb, listChaptersBySubjectDb, listLecturesByChapterDb } from '@/lib/db';
+import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 import TeacherLecturesClient from './page.client';
 
 export const metadata = {
@@ -15,6 +16,11 @@ export default async function TeacherLectures({ searchParams }: { searchParams: 
     redirect('/teacher/login');
   }
 
+  // getTeacherAssignmentsDb TeacherCourseAssignments poochta hai -
+  // purane DB par table missing ho to helper error swallow karke []
+  // deta hai (page khaali dikhta). Page-level leg: helper me wiring
+  // nahi (db <-> ensure circular import hota).
+  await ensureTeacherAssignmentSchema();
   const assignments = await getTeacherAssignmentsDb(session.userId);
   const courses: any[] = [];
   const lectures: any[] = [];

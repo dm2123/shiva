@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { TeacherPageHeader, TeacherGlassPanel } from '@/components/teacher/TeacherShared';
 import { IconUser, IconCheck } from '@/components/teacher/TeacherIcons';
 import { getTeacherAssignmentsDb, mysqlPool } from '@/lib/db';
+import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 
 export const metadata = {
   title: 'Profile | The Shiva',
@@ -23,6 +24,11 @@ export default async function TeacherProfile() {
   );
   const profile = profileRows?.[0] || null;
 
+  // getTeacherAssignmentsDb TeacherCourseAssignments poochta hai -
+  // purane DB par table missing ho to helper error swallow karke []
+  // deta hai (page khaali dikhta). Page-level leg: helper me wiring
+  // nahi (db <-> ensure circular import hota).
+  await ensureTeacherAssignmentSchema();
   const assignments = await getTeacherAssignmentsDb(session.userId);
   const courseIds = assignments.map((a: any) => a.courseId);
 

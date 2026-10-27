@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { TeacherPageHeader } from '@/components/teacher/TeacherShared';
 import TeacherEmptyState from '@/components/teacher/TeacherEmptyState';
 import { getTeacherAssignmentsDb, mysqlPool } from '@/lib/db';
+import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 import { ensureCoreTablesSchema } from '@/lib/ensure-core-tables-schema';
 import { ensureStudentProfileSchema } from '@/lib/ensure-student-profile-schema';
 import { IconUsers } from '@/components/teacher/TeacherIcons';
@@ -25,6 +26,11 @@ export default async function TeacherStudents() {
   await ensureCoreTablesSchema();
   await ensureStudentProfileSchema();
 
+  // getTeacherAssignmentsDb TeacherCourseAssignments poochta hai -
+  // purane DB par table missing ho to helper error swallow karke []
+  // deta hai (page khaali dikhta). Page-level leg: helper me wiring
+  // nahi (db <-> ensure circular import hota).
+  await ensureTeacherAssignmentSchema();
   const assignments = await getTeacherAssignmentsDb(session.userId);
   const courseIds = assignments.map((a: any) => a.courseId);
 

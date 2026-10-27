@@ -5,6 +5,7 @@ import { TeacherPageHeader, TeacherGlassPanel } from '@/components/teacher/Teach
 import TeacherEmptyState from '@/components/teacher/TeacherEmptyState';
 import { IconVideo, IconBookOpen, IconFolder } from '@/components/teacher/TeacherIcons';
 import { getTeacherAssignmentsDb, mysqlPool } from '@/lib/db';
+import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 
 export const metadata = {
   title: 'Notes & Materials | The Shiva',
@@ -17,6 +18,11 @@ export default async function TeacherNotes() {
     redirect('/teacher/login');
   }
 
+  // getTeacherAssignmentsDb TeacherCourseAssignments poochta hai -
+  // purane DB par table missing ho to helper error swallow karke []
+  // deta hai (page khaali dikhta). Page-level leg: helper me wiring
+  // nahi (db <-> ensure circular import hota).
+  await ensureTeacherAssignmentSchema();
   const assignments = await getTeacherAssignmentsDb(session.userId);
   const courseIds = assignments.map((a: any) => a.courseId);
 
