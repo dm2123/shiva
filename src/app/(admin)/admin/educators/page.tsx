@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
 import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 import { ensureBatchScheduleSchema } from '@/lib/ensure-batch-schedule-schema';
+import { ensureCoreTablesSchema } from '@/lib/ensure-core-tables-schema';
 import AdminEducatorsClient from './page.client';
 
 export const revalidate = 0;
@@ -19,6 +20,10 @@ export default async function AdminEducators() {
   // main table: purane DB par missing hon to page 1146 par 500 deta tha.
   await ensureTeacherAssignmentSchema();
   await ensureBatchScheduleSchema();
+  // Users JOIN + Courses/StudentEnrollments subqueries: purane DB par ye
+  // teen tables missing hon to page 1146 par 500 deta tha (koi ensure
+  // inhe banata nahi tha — course/google ensures sirf columns jodte hain).
+  await ensureCoreTablesSchema();
 
   const [rows]: any = await mysqlPool.query(
     `SELECT tp.userId AS id, tp.name AS educatorName, tp.slug, tp.qualification, tp.experienceYears, tp.status,

@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
 import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 import { ensureLiveClassSchema } from '@/lib/ensure-live-class-schema';
+import { ensureCoreTablesSchema } from '@/lib/ensure-core-tables-schema';
 import AdminLiveClassesClient from './page.client';
 
 export const revalidate = 0;
@@ -18,6 +19,9 @@ export default async function AdminLiveClassesPage() {
   // table: purane DB par missing hon to page 1146 par 500 deta tha.
   await ensureTeacherAssignmentSchema();
   await ensureLiveClassSchema();
+  // Courses main query + Users subqueries/teachers list: purane DB par ye
+  // teen tables missing hon to page 1146 par 500 deta tha.
+  await ensureCoreTablesSchema();
 
   const [classes]: any = await mysqlPool.query(
     `SELECT lc.*, c.title AS courseTitle,
