@@ -2,11 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureDoubtsSchema } from '@/lib/ensure-doubts-schema';
 import { v4 as uuid } from 'uuid';
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const session = await requireRole(req, UserRole.TEACHER);
+    // Teenon actions (assign/reply/resolve) Doubts/DoubtMessages par likhte hain —
+    // tables missing hon to 1146 par 500. Assign ka 'IN_PROGRESS' status bhi isi
+    // ensure se chalta hai (canonical ENUM me wo value nahi hai, ensure VARCHAR par widen karta hai).
+    await ensureDoubtsSchema();
     const body = await req.json();
     const { action, content } = body;
 
