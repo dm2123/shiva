@@ -4,15 +4,17 @@ import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
 import { ensureDoubtsSchema } from '@/lib/ensure-doubts-schema';
 import { ensureBatchScheduleSchema } from '@/lib/ensure-batch-schedule-schema';
+import { ensureStudentProfileSchema } from '@/lib/ensure-student-profile-schema';
 
 export async function GET(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.TEACHER);
     // Doubts/DoubtMessages missing hon to queue + SLA count 1146 par 500 dete;
-    // TeacherProfiles missing ho to teesra filter ka LEFT JOIN bhi 1146 deta.
-    // (StudentProfiles ka apna ensure abhi nahi hai — wo agla candidate hai.)
+    // TeacherProfiles missing ho to teesra filter ka LEFT JOIN bhi 1146 deta;
+    // StudentProfiles missing ho to teenon filters ka JOIN 1146 deta.
     await ensureDoubtsSchema();
     await ensureBatchScheduleSchema();
+    await ensureStudentProfileSchema();
     const url = new URL(req.url);
     const filter = url.searchParams.get('filter') || 'assigned';
 

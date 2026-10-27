@@ -4,6 +4,7 @@ import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
 import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 import { ensureDoubtsSchema } from '@/lib/ensure-doubts-schema';
+import { ensureStudentProfileSchema } from '@/lib/ensure-student-profile-schema';
 
 async function getTeacherCourseIds(teacherId: string): Promise<string[]> {
   const [rows]: any = await mysqlPool.query(
@@ -20,6 +21,9 @@ export async function GET(req: NextRequest) {
     await ensureTeacherAssignmentSchema();
     // Doubts missing ho to neeche wali query 1146 par 500 deti — khaali inbox hi sahi jawab hai.
     await ensureDoubtsSchema();
+    // StudentProfiles missing ho to neeche wala LEFT JOIN bhi 1146 deta (MySQL me
+    // LEFT JOIN wali missing table bhi error hai) — studentName ke liye ye leg zaroori hai.
+    await ensureStudentProfileSchema();
     const courseIds = await getTeacherCourseIds(user.userId);
 
     if (courseIds.length === 0) {
@@ -50,6 +54,7 @@ export async function PATCH(req: NextRequest) {
     await ensureTeacherAssignmentSchema();
     // Doubts missing ho to neeche wala UPDATE 1146 par 500 deta.
     await ensureDoubtsSchema();
+    // PATCH khud StudentProfiles ko nahi chhoota — yahan ensure ki zaroorat nahi.
     const { id, response } = await req.json();
 
     if (!id || !response) {
