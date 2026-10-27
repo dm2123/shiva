@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureStudentSearchSchema } from '@/lib/ensure-student-search-schema';
+import { ensureStudentProfileSchema } from '@/lib/ensure-student-profile-schema';
 
 // GET - Search students (teacher/admin)
 export async function GET(request: NextRequest) {
   try {
     const session = await requireRole(request, UserRole.TEACHER);
+    await ensureStudentSearchSchema();
+    await ensureStudentProfileSchema();
     const { searchParams } = new URL(request.url);
     const q = searchParams.get('q') || '';
     const status = searchParams.get('status');
