@@ -3,6 +3,9 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
 import { ensureCoreTablesSchema } from '@/lib/ensure-core-tables-schema';
+import { ensureDoubtsSchema } from '@/lib/ensure-doubts-schema';
+import { ensureStudentProfileSchema } from '@/lib/ensure-student-profile-schema';
+import { ensureAnalyticsSchema } from '@/lib/ensure-analytics-schema';
 
 export const revalidate = 0;
 
@@ -19,8 +22,12 @@ export default async function AdminDoubtsPage() {
   }
 
   // LEFT JOIN Users/Courses: purane DB par ye tables missing hon to
-  // page 1146 par 500 deta tha (Doubts ka apna leg alag hai).
+  // page 1146 par 500 deta tha. Apne legs: Doubts + StudentProfiles
+  // (LEFT JOIN) + Chapters (analytics ensure se).
   await ensureCoreTablesSchema();
+  await ensureDoubtsSchema();
+  await ensureStudentProfileSchema();
+  await ensureAnalyticsSchema();
 
   const [rows]: any = await mysqlPool.query(
     `SELECT d.id, d.title, d.description, d.status, d.teacherResponse, d.createdAt,

@@ -3,6 +3,9 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
 import { ensureCoreTablesSchema } from '@/lib/ensure-core-tables-schema';
+import { ensureStudentProfileSchema } from '@/lib/ensure-student-profile-schema';
+import { ensureDoubtsSchema } from '@/lib/ensure-doubts-schema';
+import { ensureAnalyticsSchema } from '@/lib/ensure-analytics-schema';
 
 export const revalidate = 0;
 
@@ -13,8 +16,13 @@ export default async function AdminCommunityPage() {
   }
 
   // Users JOIN + StudentEnrollments subquery: purane DB par ye tables
-  // missing hon to page 1146 par 500 deta tha.
+  // missing hon to page 1146 par 500 deta tha. Apne legs: FROM
+  // StudentProfiles + Doubts subquery + AssessmentAttempts subquery
+  // (analytics ensure se).
   await ensureCoreTablesSchema();
+  await ensureStudentProfileSchema();
+  await ensureDoubtsSchema();
+  await ensureAnalyticsSchema();
 
   const [rows]: any = await mysqlPool.query(
     `SELECT sp.userId, sp.name, st.email, st.status AS accountStatus, sp.targetExam, st.createdAt,

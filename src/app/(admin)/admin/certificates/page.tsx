@@ -3,6 +3,9 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
 import { ensureCoreTablesSchema } from '@/lib/ensure-core-tables-schema';
+import { ensureStudentProfileSchema } from '@/lib/ensure-student-profile-schema';
+import { ensureAnalyticsSchema } from '@/lib/ensure-analytics-schema';
+import { ensureLectureProgressSchema } from '@/lib/ensure-lecture-progress-schema';
 
 export const revalidate = 0;
 
@@ -13,8 +16,13 @@ export default async function AdminCertificatesPage() {
   }
 
   // FROM StudentEnrollments + JOIN Courses/Users: purane DB par ye
-  // tables missing hon to page 1146 par 500 deta tha.
+  // tables missing hon to page 1146 par 500 deta tha. Apne legs: JOIN
+  // StudentProfiles + Lectures/Chapters/Subjects subqueries (analytics
+  // ensure se) + LectureProgress subquery.
   await ensureCoreTablesSchema();
+  await ensureStudentProfileSchema();
+  await ensureAnalyticsSchema();
+  await ensureLectureProgressSchema();
 
   const [rows]: any = await mysqlPool.query(
     `SELECT sp.name AS studentName, st.email AS studentEmail, c.title AS courseTitle, e.enrolledAt,
