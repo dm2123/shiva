@@ -5,6 +5,7 @@ import { createTest, listTestByCourse } from '@/services/test.service';
 import { verifyTeacherCourseAuthorization } from '@/services/academic.service';
 import { getTeacherAssignmentsDb } from '@/lib/db';
 import { findCourseByIdDb } from '@/lib/db';
+import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,6 +17,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: { message: 'courseId is required' } }, { status: 400 });
     }
 
+    // verifyTeacherCourseAuthorization TeacherCourseAssignments poochta hai
+    // (isTeacherAssignedToCourseDb) — purane DB par table missing ho to wo
+    // error swallow karke false deta hai, aur asal assigned teacher ko bhi
+    // galat 403 milta. Auth ke baad ensure, phir verify (pages wali hi leg).
+    await ensureTeacherAssignmentSchema();
     await verifyTeacherCourseAuthorization(session.userId, courseId);
 
     const test = await createTest({
@@ -44,6 +50,10 @@ export async function GET(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.TEACHER);
 
+    // getTeacherAssignmentsDb TeacherCourseAssignments poochta hai — purane
+    // DB par table missing ho to helper [] deta hai (tests list khaali
+    // dikhti). Auth ke baad ensure, phir helper (pages wali hi leg).
+    await ensureTeacherAssignmentSchema();
     const assignments = await getTeacherAssignmentsDb(session.userId);
     const tests: any[] = [];
     const courseMap = new Map<string, string>();

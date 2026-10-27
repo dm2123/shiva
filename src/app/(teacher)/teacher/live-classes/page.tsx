@@ -3,7 +3,7 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { TeacherPageHeader } from '@/components/teacher/TeacherShared';
 import TeacherLiveClassesClient from './page.client';
-import { getTeacherProfileByUserId, getTeacherAssignmentsDb } from '@/lib/db';
+import { getTeacherProfileByUserId } from '@/lib/db';
 import { listTeacherLiveClasses } from '@/services/live-class.service';
 
 export const metadata = {
