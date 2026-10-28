@@ -2,10 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { createChapter, verifyTeacherCourseAuthorization, listChaptersBySubject, getSubjectById } from '@/services/academic.service';
+import { ensureTeacherAssignmentSchema } from '@/lib/ensure-teacher-assignment-schema';
 
 export async function POST(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.TEACHER);
+    // verifyTeacherCourseAuthorization TeacherCourseAssignments poochta hai
+    // (isTeacherAssignedToCourseDb) — purane DB par table missing ho to wo
+    // error swallow karke false deta hai, aur asal assigned teacher ko bhi
+    // galat 403 milta. Auth ke baad ensure, phir verify (tests/courses wali hi leg).
+    await ensureTeacherAssignmentSchema();
     const body = await req.json();
 
     // Must map subject to course to check authorization
@@ -26,6 +32,11 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   try {
     const session = await requireRole(req, UserRole.TEACHER);
+    // verifyTeacherCourseAuthorization TeacherCourseAssignments poochta hai
+    // (isTeacherAssignedToCourseDb) — purane DB par table missing ho to wo
+    // error swallow karke false deta hai, aur asal assigned teacher ko bhi
+    // galat 403 milta. Auth ke baad ensure, phir verify (tests/courses wali hi leg).
+    await ensureTeacherAssignmentSchema();
     const url = new URL(req.url);
     const subjectId = url.searchParams.get('subjectId');
 
