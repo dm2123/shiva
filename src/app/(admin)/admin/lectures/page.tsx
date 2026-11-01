@@ -2,6 +2,8 @@ import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
+import { ensureAnalyticsSchema } from '@/lib/ensure-analytics-schema';
+import { ensureLectureProgressSchema } from '@/lib/ensure-lecture-progress-schema';
 
 export const revalidate = 0;
 
@@ -17,6 +19,13 @@ export default async function AdminLecturesPage() {
   if (!session || session.role !== 'ADMIN') {
     redirect('/admin/login');
   }
+
+  // Lectures/Chapters/Subjects/Courses (analytics ensure) + LectureProgress
+  // subquery (lecture-progress ensure): purane DB par koi table missing ho
+  // to page 1146 par 500 deta tha. Koi naya DDL nahi, maujooda ensures hi
+  // reuse — khaali par honest empty.
+  await ensureAnalyticsSchema();
+  await ensureLectureProgressSchema();
 
   const [rows]: any = await mysqlPool.query(
     `SELECT l.id, l.title, l.videoUrl, l.durationSeconds, l.isPreviewable, l.createdAt,

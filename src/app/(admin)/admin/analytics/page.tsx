@@ -2,6 +2,13 @@ import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
+import { ensureTestsCommerceSchema } from '@/lib/ensure-tests-commerce-schema';
+import { ensureAnalyticsSchema } from '@/lib/ensure-analytics-schema';
+import { ensureCoreTablesSchema } from '@/lib/ensure-core-tables-schema';
+import { ensureStudentProfileSchema } from '@/lib/ensure-student-profile-schema';
+import { ensureBatchScheduleSchema } from '@/lib/ensure-batch-schedule-schema';
+import { ensureDoubtsSchema } from '@/lib/ensure-doubts-schema';
+import { ensureLiveClassSchema } from '@/lib/ensure-live-class-schema';
 
 export const revalidate = 0;
 
@@ -10,6 +17,20 @@ export default async function AdminAnalyticsPage() {
   if (!session || session.role !== 'ADMIN') {
     redirect('/admin/login');
   }
+
+  // Page ke saare FROM/JOIN tables ke legs (maujooda ensures hi reuse +
+  // naya tests-commerce ensure): Tests/Orders/AuditLogs (tests-commerce),
+  // Assessments/AssessmentAttempts/LectureProgress (analytics), Courses/
+  // StudentEnrollments (core), StudentProfiles, TeacherProfiles
+  // (batch-schedule), Doubts, LiveClasses. Purane DB par koi table
+  // missing ho to page 1146 par 500 deta tha — khaali par honest empty.
+  await ensureTestsCommerceSchema();
+  await ensureAnalyticsSchema();
+  await ensureCoreTablesSchema();
+  await ensureStudentProfileSchema();
+  await ensureBatchScheduleSchema();
+  await ensureDoubtsSchema();
+  await ensureLiveClassSchema();
 
   const [students]: any = await mysqlPool.query('SELECT COUNT(*) AS c FROM StudentProfiles');
   const [teachers]: any = await mysqlPool.query('SELECT COUNT(*) AS c FROM TeacherProfiles WHERE status = "active"');

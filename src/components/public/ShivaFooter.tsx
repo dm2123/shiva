@@ -130,6 +130,35 @@ export default function ShivaFooter() {
           </nav>
         </Reveal>
 
+        {/* SEO paragraph — design-map wala footer pattern: platform kya hai,
+            kin exams ke liye, aur free-first approach. Koi sankhya, rank ya
+            result ka daava nahi — sirf wahi jo platform asal me deta hai. */}
+        <div
+          style={{
+            borderTop: '1px solid #232044',
+            marginTop: 4,
+            paddingTop: 22,
+            paddingBottom: 22,
+            fontSize: 13,
+            lineHeight: 1.8,
+            color: '#8b87b0',
+          }}
+        >
+          <p style={{ margin: '0 0 10px', maxWidth: 860 }}>
+            THE SHIVA ek free-first learning platform hai — SSC, Railway, Banking, Defence,
+            Teaching aur State exams ki taiyaari ke liye. Yahan structured courses, live aur
+            recorded lectures, chapter-wise practice, mock tests, previous year papers aur doubt
+            solving ek hi jagah milte hain, taaki student ko taiyaari ke liye alag-alag jagah
+            bhaagna na pade.
+          </p>
+          <p style={{ margin: 0, maxWidth: 860 }}>
+            Shuruaat free registration se hoti hai: apna exam goal chuno, published course ya
+            batch join karo, free demo lectures dekhkar faisla lo, aur tests se apni taiyaari
+            ko number me aanko. Free study material — notes, previous year papers aur mock
+            tests — har student ke liye bina fee ke uplabdh hai.
+          </p>
+        </div>
+
         <div className="fbot">
           <span>© 2026 THE SHIVA. All rights reserved.</span>
           <span className="fbot-links">

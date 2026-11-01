@@ -2,6 +2,9 @@ import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
+import { ensureTestsCommerceSchema } from '@/lib/ensure-tests-commerce-schema';
+import { ensureAnalyticsSchema } from '@/lib/ensure-analytics-schema';
+import { ensureCoreTablesSchema } from '@/lib/ensure-core-tables-schema';
 
 export const revalidate = 0;
 
@@ -16,6 +19,13 @@ export default async function AdminTestsPage() {
   if (!session || session.role !== 'ADMIN') {
     redirect('/admin/login');
   }
+
+  // Tests + AssessmentResponses (naya tests-commerce ensure) + AssessmentAttempts
+  // subquery (analytics ensure) + Courses LEFT JOIN (core ensure): purane DB par
+  // koi table missing ho to page 1146 par 500 deta tha — khaali par honest empty.
+  await ensureTestsCommerceSchema();
+  await ensureAnalyticsSchema();
+  await ensureCoreTablesSchema();
 
   const [rows]: any = await mysqlPool.query(
     `SELECT t.id, t.title, t.description, t.durationMinutes, t.totalMarks, t.passingMarks, t.status, t.createdAt,

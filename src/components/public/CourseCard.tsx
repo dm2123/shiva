@@ -84,12 +84,12 @@ function readMrp(course: Course): number {
   return Number.isFinite(value) ? value : 0;
 }
 
-/* Kharid/enroll CTA — solid KAALA (map: kaala sirf final-buy buttons ke liye) */
+/* Kharid/enroll CTA — solid violet (dark card pattern ka primary) */
 const buyBtnStyle: React.CSSProperties = {
   flex: 1,
   display: 'inline-block',
   textAlign: 'center',
-  background: '#111111',
+  background: '#6d28d9',
   color: '#fff',
   padding: '12px 18px',
   borderRadius: 12,
@@ -105,8 +105,8 @@ const detailBtnStyle: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  background: '#fff',
-  color: '#6d28d9',
+  background: 'transparent',
+  color: '#c4b5fd',
   border: '2px solid #6d28d9',
   borderRadius: 12,
   fontWeight: 900,
@@ -139,9 +139,10 @@ export default function CourseCard({ course }: CourseCardProps) {
       className="batch"
       style={{
         height: '100%',
-        background: '#fff',
+        background: '#12121a',
+        border: '1px solid rgba(255,255,255,0.09)',
         borderRadius: 16,
-        boxShadow: '0 6px 24px rgba(42,22,80,.08)',
+        boxShadow: '0 10px 30px rgba(0,0,0,.45)',
       }}
     >
       {/* Thumbnail / banner area */}
@@ -183,9 +184,9 @@ export default function CourseCard({ course }: CourseCardProps) {
               fontWeight: 800,
               letterSpacing: 0.6,
               textTransform: 'uppercase',
-              background: '#ffedd5',
-              border: '1px solid #fed7aa',
-              color: '#c2410c',
+              background: 'rgba(109,40,217,.22)',
+              border: '1px solid rgba(167,139,250,.45)',
+              color: '#c4b5fd',
               padding: '4px 10px',
               borderRadius: 999,
             }}
@@ -223,7 +224,7 @@ export default function CourseCard({ course }: CourseCardProps) {
             fontSize: 17,
             fontWeight: 800,
             lineHeight: 1.35,
-            color: '#2a1650',
+            color: '#f4f4f5',
             marginBottom: 8,
             display: '-webkit-box',
             WebkitLineClamp: 2,
@@ -238,7 +239,7 @@ export default function CourseCard({ course }: CourseCardProps) {
           <p
             style={{
               fontSize: 14,
-              color: '#6b7280',
+              color: '#a1a1aa',
               lineHeight: 1.6,
               marginBottom: 14,
               display: '-webkit-box',
@@ -261,8 +262,8 @@ export default function CourseCard({ course }: CourseCardProps) {
                 style={{
                   fontSize: 11.5,
                   fontWeight: 700,
-                  color: '#4b5563',
-                  border: '1.5px solid var(--line)',
+                  color: '#d4d4d8',
+                  border: '1.5px solid rgba(255,255,255,.16)',
                   padding: '4px 11px',
                   borderRadius: 999,
                 }}
@@ -275,8 +276,8 @@ export default function CourseCard({ course }: CourseCardProps) {
                 style={{
                   fontSize: 11.5,
                   fontWeight: 700,
-                  color: '#4b5563',
-                  border: '1.5px solid var(--line)',
+                  color: '#d4d4d8',
+                  border: '1.5px solid rgba(255,255,255,.16)',
                   padding: '4px 11px',
                   borderRadius: 999,
                 }}
@@ -295,16 +296,16 @@ export default function CourseCard({ course }: CourseCardProps) {
         <div className="price" style={{ alignItems: 'center', flexWrap: 'wrap' }}>
           {isFree ? (
             <>
-              <b style={{ color: '#059669' }}>Free</b>
-              <span style={{ fontSize: 12.5, color: 'var(--muted)', fontWeight: 600 }}>
+              <b style={{ color: '#34d399' }}>Free</b>
+              <span style={{ fontSize: 12.5, color: '#a1a1aa', fontWeight: 600 }}>
                 Poora access, koi fee nahi
               </span>
             </>
           ) : (
             <>
-              <b style={{ fontSize: 21 }}>{formatINR(price)}</b>
+              <b style={{ fontSize: 21, color: '#f4f4f5' }}>{formatINR(price)}</b>
               {hasMrp && (
-                <s style={{ fontSize: 14, color: '#9ca3af', fontWeight: 600 }}>
+                <s style={{ fontSize: 14, color: '#71717a', fontWeight: 600 }}>
                   {formatINR(mrp)}
                 </s>
               )}
@@ -313,8 +314,8 @@ export default function CourseCard({ course }: CourseCardProps) {
                   style={{
                     fontSize: 11.5,
                     fontWeight: 800,
-                    color: '#047857',
-                    background: '#d1fae5',
+                    color: '#34d399',
+                    background: 'rgba(52,211,153,.14)',
                     padding: '3px 9px',
                     borderRadius: 999,
                   }}
@@ -403,9 +404,9 @@ const chipBase: React.CSSProperties = {
   fontSize: 13.5,
   fontWeight: 700,
   cursor: 'pointer',
-  border: '2px solid var(--line)',
-  background: '#fff',
-  color: '#4c1d95',
+  border: '1px solid rgba(255,255,255,.14)',
+  background: '#12121a',
+  color: '#e4e4e7',
   transition: 'all .18s ease',
   whiteSpace: 'nowrap',
   fontFamily: 'inherit',
@@ -421,11 +422,11 @@ const chipActive: React.CSSProperties = {
 
 const controlStyle: React.CSSProperties = {
   padding: '11px 14px',
-  border: '2px solid var(--line)',
+  border: '1px solid rgba(255,255,255,.14)',
   borderRadius: 12,
   fontSize: 14.5,
-  color: 'var(--ink)',
-  background: '#fff',
+  color: '#f4f4f5',
+  background: '#12121a',
   fontFamily: 'inherit',
 };
 
@@ -574,8 +575,8 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
                 height: 28,
                 borderRadius: '50%',
                 border: 'none',
-                background: '#ede9fe',
-                color: '#6d28d9',
+                background: 'rgba(109,40,217,.25)',
+                color: '#c4b5fd',
                 fontWeight: 800,
                 cursor: 'pointer',
                 fontFamily: 'inherit',

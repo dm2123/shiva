@@ -36,6 +36,13 @@ export default function TeacherLoginPage() {
 
   return (
     <div className="max-w-md mx-auto my-12 bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-slate-200/80">
+      {/* Back to marketing site */}
+      <a
+        href="https://dm2123.github.io/shiva/"
+        className="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#6d28d9] no-underline hover:underline"
+      >
+        ← Back
+      </a>
       <div className="flex justify-center mb-6">
         <div className="w-16 h-16 relative overflow-hidden rounded-full border border-amber-200 bg-white flex items-center justify-center p-1 shadow-md">
           <Image

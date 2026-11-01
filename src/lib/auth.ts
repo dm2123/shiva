@@ -79,8 +79,16 @@ export function parseSessionCookie(cookieHeader: string | null): string | null {
 
 export function serializeSessionCookie(sessionId: string, maxAgeSeconds: number = 604800): string {
   const cookieName = process.env.SESSION_COOKIE_NAME || 'shiva_session_id';
-  const isProd = process.env.NODE_ENV === 'production';
-  return `${cookieName}=${sessionId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAgeSeconds}${isProd ? '; Secure' : ''}`;
+  // `Secure` cookies are NEVER sent by browsers over plain HTTP. The old code
+  // set Secure whenever NODE_ENV=production, but the live site is served over
+  // HTTP (the old Azure address), so the browser dropped the session cookie on every
+  // request after login and the user bounced straight back to the login page
+  // (login-loop bug, fixed 2026-10-30). Only mark the cookie Secure when the
+  // site is actually served over HTTPS — decided from NEXT_PUBLIC_SITE_URL's
+  // protocol, with the same default the sitemap/robots use.
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://the-shiva.onrender.com';
+  const isHttps = siteUrl.startsWith('https://');
+  return `${cookieName}=${sessionId}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAgeSeconds}${isHttps ? '; Secure' : ''}`;
 }
 
 export function serializeExpiredSessionCookie(): string {

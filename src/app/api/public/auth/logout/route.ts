@@ -15,7 +15,15 @@ export async function POST(req: NextRequest) {
     await logoutService(session.sessionId);
   }
 
-  const response = NextResponse.redirect(new URL('/login', req.url), { status: 303 });
+  // Build redirect from the public host, not the internal address.
+  // On Render/proxies, req.url may be localhost — prefer forwarded headers.
+  const forwardedHost = req.headers.get('x-forwarded-host') || req.headers.get('host');
+  const forwardedProto = req.headers.get('x-forwarded-proto') || 'https';
+  const loginUrl = forwardedHost
+    ? `${forwardedProto}://${forwardedHost}/login`
+    : new URL('/login', req.url).toString();
+
+  const response = NextResponse.redirect(loginUrl, { status: 303 });
   response.headers.set('Set-Cookie', serializeExpiredSessionCookie());
   return response;
 }

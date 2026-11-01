@@ -38,13 +38,19 @@ export default function ShivaFreeMaterial() {
                   </a>
                 ) : (
                   <>
+                    {/* Imaandaar CTA: jo material abhi uplabdh nahi hai us par
+                        'Download Free' likhna galat ummeed deta tha (click par
+                        sirf 'jald aa raha hai' note khulta tha). Ab button hi
+                        sach batata hai; click par wahi note vistaar se khulta
+                        hai. Mock Tests wala card (href ke saath) asal hai, woh
+                        unchanged hai. */}
                     {!shown[i] && (
                       <button
                         className="btn btn-ghost"
                         style={GHOST_ON_LIGHT}
                         onClick={() => setShown((s) => s.map((v, j) => (j === i ? true : v)))}
                       >
-                        {c.cta}
+                        ⏳ Jald Aa Raha Hai
                       </button>
                     )}
                     <span className={`mat-note${shown[i] ? ' show' : ''}`}>{c.note}</span>

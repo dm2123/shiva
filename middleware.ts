@@ -19,7 +19,9 @@ export async function middleware(req: NextRequest) {
 
   const cookieHeader = req.headers.get('cookie');
   const sessionId = parseSessionCookie(cookieHeader);
-  const session = sessionId ? await validateServerSession(sessionId) : null;
+  // Origin is passed so the Edge-safe validator can call the app's internal
+  // session-check route (Edge memory can never see the Node session store).
+  const session = sessionId ? await validateServerSession(sessionId, req.nextUrl.origin) : null;
 
   // 1. PUBLIC AUTH ROUTES (/login, /register, /teacher/login, /admin/login)
   const isPublicAuthRoute =
@@ -53,8 +55,14 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 3. TEACHER PORTAL (/teacher/*) -> ALLOWED FOR TEACHER ONLY
-  if (pathname.startsWith('/teacher')) {
+  // 3. TEACHER PORTAL (/teacher, /teacher/*) -> ALLOWED FOR TEACHER ONLY
+  // NOTE: exact match + trailing-slash prefix ONLY — startsWith('/teacher')
+  // galat tareeke se PUBLIC /teachers page (aur /teachers/[slug]) ko bhi
+  // pakad leta tha aur logged-out visitor ko /teacher/login par bhej deta
+  // tha, jabki Teachers page public hai (nav/footer/mega-dropdown se link).
+  const isTeacherPortal =
+    pathname === '/teacher' || pathname.startsWith('/teacher/');
+  if (isTeacherPortal) {
     if (!session) {
       return NextResponse.redirect(new URL('/teacher/login', req.url));
     }

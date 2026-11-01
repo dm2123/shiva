@@ -278,13 +278,27 @@ export default async function PublicCourseDetailPage({ params }: { params: { cou
     <div className="shiva-landing">
       <section style={{ paddingTop: 32, paddingBottom: 72 }}>
         <div className="wrap">
-          {/* Breadcrumb */}
-          <nav aria-label="Breadcrumb" style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 18 }}>
-            <Link href="/" style={{ color: 'var(--brand)' }}>Home</Link>
-            {' / '}
-            <Link href="/courses" style={{ color: 'var(--brand)' }}>Courses</Link>
-            {' / '}
-            <span>{courseTree.title}</span>
+          {/* Breadcrumb — dark chip card (design pattern: Home › Courses › Course) */}
+          <nav
+            aria-label="Breadcrumb"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              flexWrap: 'wrap',
+              fontSize: 13,
+              background: '#0d0d13',
+              border: '1px solid rgba(255,255,255,.09)',
+              borderRadius: 999,
+              padding: '8px 16px',
+              marginBottom: 18,
+            }}
+          >
+            <Link href="/" style={{ color: '#c4b5fd', fontWeight: 700 }}>🏠 Home</Link>
+            <span aria-hidden style={{ color: '#52525b' }}>›</span>
+            <Link href="/courses" style={{ color: '#c4b5fd', fontWeight: 700 }}>Courses</Link>
+            <span aria-hidden style={{ color: '#52525b' }}>›</span>
+            <span aria-current="page" style={{ color: '#e4e4e7', fontWeight: 600 }}>{courseTree.title}</span>
           </nav>
 
           {/* ================= HERO ================= */}

@@ -224,6 +224,23 @@ export default function ForgotPasswordPage() {
         />
 
         <div style={{ position: 'relative', width: '100%', maxWidth: 960 }}>
+          {/* Back to marketing site */}
+          <a
+            href="https://dm2123.github.io/shiva/"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              marginBottom: 16,
+              fontSize: 14,
+              fontWeight: 600,
+              color: 'var(--brand)',
+              textDecoration: 'none',
+            }}
+          >
+            ← Back
+          </a>
+
           <div
             className="pop grid overflow-hidden lg:grid-cols-[400px_1fr]"
             style={{

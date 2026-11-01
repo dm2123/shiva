@@ -93,18 +93,18 @@ function formatDate(value: string | Date | null): string | null {
 const STATUS_META: Record<string, { label: string; chip: string; dot: string }> = {
   ACTIVE: {
     label: 'Live · Running',
-    chip: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-    dot: 'bg-emerald-500 animate-pulse',
+    chip: 'bg-emerald-500/10 text-emerald-300 border border-emerald-400/25',
+    dot: 'bg-emerald-400 animate-pulse',
   },
   UPCOMING: {
     label: 'Upcoming',
-    chip: 'bg-amber-50 text-amber-700 border border-amber-200',
+    chip: 'bg-[#f5b942]/10 text-[#f5b942] border border-[#f5b942]/25',
     dot: 'bg-[#f5b942]',
   },
   COMPLETED: {
     label: 'Completed',
-    chip: 'bg-slate-100 text-slate-600 border border-slate-200',
-    dot: 'bg-slate-400',
+    chip: 'bg-white/5 text-slate-400 border border-white/10',
+    dot: 'bg-slate-500',
   },
 };
 
@@ -124,7 +124,7 @@ function BatchCard({ batch }: { batch: BatchRow }) {
   const href = batch.courseSlug ? `/courses/${batch.courseSlug}` : null;
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-[#ede9fe] bg-white shadow-[0_6px_24px_rgba(42,22,80,0.18)] transition-all duration-300 hover:-translate-y-1 hover:border-[#6d28d9]/40 hover:shadow-[0_18px_44px_rgba(42,22,80,0.30)]">
+    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#12121a] shadow-[0_10px_30px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-[#6d28d9]/50 hover:shadow-[0_18px_44px_rgba(42,22,80,0.55)]">
       {/* Top strip — deep purple → violet, gold edge */}
       <div className="h-1.5 w-full bg-gradient-to-r from-[#2a1650] via-[#6d28d9] to-[#f5b942]" aria-hidden="true" />
 
@@ -135,7 +135,7 @@ function BatchCard({ batch }: { batch: BatchRow }) {
         {/* Badges row: narangi exam tag + status (right me share button ki jagah chhodi) */}
         <div className="flex flex-wrap items-center gap-2 pr-11">
           {exam && (
-            <span className="inline-flex items-center rounded-full border border-orange-200 bg-orange-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-orange-700">
+            <span className="inline-flex items-center rounded-full border border-[#6d28d9]/40 bg-[#6d28d9]/15 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-[#c4b5fd]">
               {exam}
             </span>
           )}
@@ -154,23 +154,23 @@ function BatchCard({ batch }: { batch: BatchRow }) {
 
         {/* Batch name + linked course */}
         <div className="space-y-1.5">
-          <h3 className="text-lg font-bold leading-snug text-[#2a1650]">{batch.name}</h3>
+          <h3 className="text-lg font-bold leading-snug text-white">{batch.name}</h3>
           {batch.courseTitle && batch.courseTitle !== batch.name && (
-            <p className="text-sm font-medium text-slate-600">{batch.courseTitle}</p>
+            <p className="text-sm font-medium text-slate-300">{batch.courseTitle}</p>
           )}
           {batch.courseDescription && (
-            <p className="line-clamp-2 text-[13px] leading-relaxed text-slate-500">
+            <p className="line-clamp-2 text-[13px] leading-relaxed text-slate-400">
               {batch.courseDescription}
             </p>
           )}
         </div>
 
         {/* Meta — sirf asal fields */}
-        <dl className="mt-auto space-y-2 border-t border-[#ede9fe] pt-4 text-[13px]">
+        <dl className="mt-auto space-y-2 border-t border-white/10 pt-4 text-[13px]">
           {batch.teacherName && (
             <div className="flex items-center gap-2">
               <dt className="sr-only">Teacher</dt>
-              <dd className="flex items-center gap-2 text-slate-600">
+              <dd className="flex items-center gap-2 text-slate-300">
                 <span
                   className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#6d28d9] to-[#2a1650] text-[11px] font-extrabold text-white"
                   aria-hidden="true"
@@ -178,21 +178,21 @@ function BatchCard({ batch }: { batch: BatchRow }) {
                   {batch.teacherName.trim().charAt(0).toUpperCase()}
                 </span>
                 <span>
-                  Teacher: <span className="font-semibold text-[#6d28d9]">{batch.teacherName}</span>
+                  Teacher: <span className="font-semibold text-[#c4b5fd]">{batch.teacherName}</span>
                 </span>
               </dd>
             </div>
           )}
           {(start || end) && (
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-slate-500">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-slate-400">
               {start && (
                 <span>
-                  🗓️ Shuru: <span className="font-semibold text-slate-700">{start}</span>
+                  🗓️ Shuru: <span className="font-semibold text-slate-200">{start}</span>
                 </span>
               )}
               {end && (
                 <span>
-                  Khatm: <span className="font-semibold text-slate-700">{end}</span>
+                  Khatm: <span className="font-semibold text-slate-200">{end}</span>
                 </span>
               )}
             </div>
@@ -204,14 +204,14 @@ function BatchCard({ batch }: { batch: BatchRow }) {
             chip yahan nahi dikhta (invent nahi hota). */}
         {price &&
           (isFree ? (
-            <p className="text-lg font-extrabold text-emerald-600">
+            <p className="text-lg font-extrabold text-emerald-400">
               Free
               <span className="ml-2 align-middle text-[11px] font-semibold normal-case tracking-normal text-slate-500">
                 Poora access, koi fee nahi
               </span>
             </p>
           ) : (
-            <p className="text-xl font-extrabold text-[#2a1650]">{price}</p>
+            <p className="text-xl font-extrabold text-white">{price}</p>
           ))}
 
         {/* CTA row — kharid/enroll = solid KAALA; detail = purple outline */}
@@ -219,14 +219,14 @@ function BatchCard({ batch }: { batch: BatchRow }) {
           <div className="mt-1 flex items-stretch gap-2.5">
             <Link
               href={href}
-              className="inline-flex flex-1 items-center justify-center rounded-xl bg-[#111111] px-6 py-3 text-sm font-extrabold text-white transition-all hover:bg-black"
+              className="inline-flex flex-1 items-center justify-center rounded-xl bg-[#6d28d9] px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-[#6d28d9]/30 transition-all hover:bg-[#7c3aed]"
             >
               {isFree ? 'Register Now' : 'Buy Now'}
             </Link>
             <Link
               href={href}
               aria-label={`${batch.name} — details dekho`}
-              className="inline-flex w-12 shrink-0 items-center justify-center rounded-xl border-2 border-[#6d28d9] bg-white text-lg font-black leading-none text-[#6d28d9] transition-colors hover:bg-[#f5f3ff]"
+              className="inline-flex w-12 shrink-0 items-center justify-center rounded-xl border-2 border-[#6d28d9] bg-transparent text-lg font-black leading-none text-[#c4b5fd] transition-colors hover:bg-[#6d28d9]/15"
             >
               ›
             </Link>
@@ -234,7 +234,7 @@ function BatchCard({ batch }: { batch: BatchRow }) {
         ) : (
           <Link
             href="/courses"
-            className="mt-1 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#6d28d9] bg-white px-6 py-3 text-sm font-bold text-[#6d28d9] transition-all hover:bg-[#f5f3ff]"
+            className="mt-1 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#6d28d9] bg-transparent px-6 py-3 text-sm font-bold text-[#c4b5fd] transition-all hover:bg-[#6d28d9]/15"
           >
             Course dekho →
           </Link>

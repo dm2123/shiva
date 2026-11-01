@@ -37,6 +37,13 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4">
       <div className="max-w-md w-full bg-slate-900 p-8 rounded-3xl shadow-2xl border border-red-900/50">
+        {/* Back to marketing site */}
+        <a
+          href="https://dm2123.github.io/shiva/"
+          className="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#c4b5fd] no-underline hover:underline"
+        >
+          ← Back
+        </a>
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 bg-red-950 flex items-center justify-center rounded-full border border-red-800">
              <span className="text-red-500 font-black text-xl">A</span>

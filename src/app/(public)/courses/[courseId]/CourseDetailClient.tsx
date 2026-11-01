@@ -462,6 +462,8 @@ export default function CourseDetailClient({
   return (
     <div>
       {/* ------------------------- TAB BAR ------------------------- */}
+      {/* Dark pill tab bar — Subjects/Tests/Announcements wale pattern par:
+          gehra container, active tab solid violet. */}
       <div
         role="tablist"
         aria-label="Course sections"
@@ -469,9 +471,11 @@ export default function CourseDetailClient({
           display: 'flex',
           gap: 6,
           overflowX: 'auto',
-          borderBottom: '2px solid var(--line)',
+          background: '#0d0d13',
+          border: '1px solid rgba(255,255,255,0.09)',
+          borderRadius: 16,
+          padding: 6,
           marginBottom: 22,
-          paddingBottom: 0,
           scrollbarWidth: 'none',
         }}
         className="cd-tabs"
@@ -487,16 +491,15 @@ export default function CourseDetailClient({
               style={{
                 appearance: 'none',
                 border: 'none',
-                background: 'transparent',
+                background: active ? PURPLE : 'transparent',
+                borderRadius: 11,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
                 whiteSpace: 'nowrap',
-                padding: '11px 16px',
+                padding: '10px 16px',
                 fontSize: 14,
                 fontWeight: active ? 800 : 600,
-                color: active ? PURPLE : 'var(--muted)',
-                borderBottom: active ? `3px solid ${GOLD}` : '3px solid transparent',
-                marginBottom: -2,
+                color: active ? '#fff' : '#a1a1aa',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 7,
@@ -509,8 +512,8 @@ export default function CourseDetailClient({
                   style={{
                     fontSize: 10,
                     fontWeight: 800,
-                    background: '#fef3c7',
-                    color: '#92400e',
+                    background: 'rgba(245,185,66,.18)',
+                    color: GOLD,
                     padding: '2px 8px',
                     borderRadius: 999,
                   }}
@@ -523,8 +526,8 @@ export default function CourseDetailClient({
                   style={{
                     fontSize: 10,
                     fontWeight: 800,
-                    background: '#ede9fe',
-                    color: PURPLE,
+                    background: active ? 'rgba(255,255,255,.22)' : 'rgba(109,40,217,.28)',
+                    color: active ? '#fff' : '#c4b5fd',
                     padding: '2px 8px',
                     borderRadius: 999,
                   }}
@@ -710,81 +713,112 @@ export default function CourseDetailClient({
       {/* ------------------------- SCHEDULE ------------------------- */}
       {activeTab === 'schedule' && (
         <div role="tabpanel" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          {/* Subject pastel cards — halka tint + gehra left accent */}
+          {/* Subject rows — dark pattern: ring-graphic box + naam +
+              "N Lectures | N Chapters" (sirf asal counts; koi % nahi,
+              kyunki public page par visitor ki asal progress hoti hi nahi) */}
           {subjects.length > 0 && (
             <div>
               <h2 style={{ ...sectionTitle, marginBottom: 12 }}>Subjects aur unki schedule</h2>
-              <div
-                style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}
-                className="cd-subject-grid"
-              >
-                {subjects.map((subject, i) => {
-                  const palette = SUBJECT_PASTELS[i % SUBJECT_PASTELS.length];
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {subjects.map((subject) => {
                   const lectureCount = subject.chapters.reduce(
                     (n, c) => n + c.lectures.length,
                     0
                   );
                   const teacher = teacherForSubject(subject, teachers);
+                  const initials =
+                    subject.name
+                      .split(/\s+/)
+                      .filter(Boolean)
+                      .slice(0, 2)
+                      .map((w) => w.charAt(0).toUpperCase())
+                      .join('') || 'S';
                   return (
                     <div
                       key={subject.id}
                       style={{
-                        background: palette.bg,
-                        borderLeft: `5px solid ${palette.accent}`,
-                        borderRadius: 14,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 16,
+                        background: '#12121a',
+                        border: '1px solid rgba(255,255,255,0.09)',
+                        borderRadius: 16,
                         padding: '16px 18px',
                       }}
                     >
-                      <div
+                      <span
+                        aria-hidden
                         style={{
+                          width: 52,
+                          height: 52,
+                          flexShrink: 0,
+                          borderRadius: 14,
+                          background: '#17171f',
+                          border: '1px solid rgba(255,255,255,0.1)',
                           display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'flex-start',
-                          gap: 10,
-                          marginBottom: 6,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          position: 'relative',
                         }}
                       >
-                        <h3 style={{ fontSize: 15, fontWeight: 800, color: PURPLE_DARK, lineHeight: 1.35 }}>
-                          {subject.name}
-                        </h3>
+                        <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+                          <circle cx="20" cy="20" r="15.5" fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="3.5" />
+                          <circle
+                            cx="20"
+                            cy="20"
+                            r="15.5"
+                            fill="none"
+                            stroke={PURPLE}
+                            strokeWidth="3.5"
+                            strokeLinecap="round"
+                            strokeDasharray="24 97.4"
+                            transform="rotate(-90 20 20)"
+                          />
+                        </svg>
                         <span
                           style={{
-                            fontSize: 11,
-                            fontWeight: 800,
-                            background: palette.chipBg,
-                            color: palette.accent,
-                            padding: '3px 9px',
-                            borderRadius: 999,
-                            whiteSpace: 'nowrap',
+                            position: 'absolute',
+                            inset: 0,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: 12,
+                            fontWeight: 900,
+                            color: '#e4e4e7',
                           }}
                         >
-                          {lectureCount} lectures
+                          {initials}
                         </span>
-                      </div>
-                      <p style={{ fontSize: 12.5, color: 'var(--muted)', lineHeight: 1.6 }}>
-                        {subject.chapters.length} chapters
-                        {teacher && (
-                          <>
-                            {' · '}Teacher: <strong style={{ color: '#374151' }}>{teacher.displayName}</strong>
-                          </>
+                      </span>
+                      <span style={{ minWidth: 0 }}>
+                        <span style={{ display: 'block', fontSize: 15.5, fontWeight: 800, color: '#f4f4f5', lineHeight: 1.35 }}>
+                          {subject.name}
+                        </span>
+                        <span style={{ display: 'block', fontSize: 12.5, color: '#a1a1aa', marginTop: 3 }}>
+                          {lectureCount} Lectures | {subject.chapters.length} Chapters
+                          {teacher && (
+                            <>
+                              {' · '}Teacher: <strong style={{ color: '#d4d4d8' }}>{teacher.displayName}</strong>
+                            </>
+                          )}
+                        </span>
+                        {subject.description && (
+                          <span
+                            style={{
+                              display: '-webkit-box',
+                              fontSize: 12.5,
+                              color: '#a1a1aa',
+                              lineHeight: 1.6,
+                              marginTop: 4,
+                              WebkitLineClamp: 1,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                            }}
+                          >
+                            {subject.description}
+                          </span>
                         )}
-                      </p>
-                      {subject.description && (
-                        <p
-                          style={{
-                            fontSize: 12.5,
-                            color: '#4b5563',
-                            lineHeight: 1.6,
-                            marginTop: 6,
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                          }}
-                        >
-                          {subject.description}
-                        </p>
-                      )}
+                      </span>
                     </div>
                   );
                 })}
@@ -799,7 +833,16 @@ export default function CourseDetailClient({
             </div>
           )}
 
-          <div className="batch" style={{ padding: 26 }}>
+          {/* Curriculum panel — dark (chapter cards wala pattern) */}
+          <div
+            className="batch"
+            style={{
+              padding: 26,
+              background: '#0d0d13',
+              border: '1px solid rgba(255,255,255,0.09)',
+              color: '#e4e4e7',
+            }}
+          >
             <div
               style={{
                 display: 'flex',
@@ -810,9 +853,9 @@ export default function CourseDetailClient({
                 marginBottom: 18,
               }}
             >
-              <h2 style={sectionTitle}>📋 Curriculum — Contents</h2>
+              <h2 style={{ ...sectionTitle, color: '#f4f4f5' }}>📋 Curriculum — Contents</h2>
               {totals.lectures > 0 && (
-                <span style={{ fontSize: 12.5, color: 'var(--muted)', fontWeight: 600 }}>
+                <span style={{ fontSize: 12.5, color: '#a1a1aa', fontWeight: 600 }}>
                   {subjects.length} subjects · {totals.chapters} chapters · {totals.lectures} lectures
                   {totals.seconds > 0 ? ` · ${formatDuration(totals.seconds)}` : ''}
                 </span>
@@ -837,11 +880,11 @@ export default function CourseDetailClient({
                     <div
                       key={subject.id}
                       style={{
-                        border: `1.5px solid ${isOpen ? palette.accent : 'var(--line)'}`,
+                        border: `1.5px solid ${isOpen ? palette.accent : 'rgba(255,255,255,0.1)'}`,
                         borderLeft: `5px solid ${palette.accent}`,
                         borderRadius: 14,
                         overflow: 'hidden',
-                        background: '#fff',
+                        background: '#12121a',
                       }}
                     >
                       <button
@@ -855,8 +898,8 @@ export default function CourseDetailClient({
                           cursor: 'pointer',
                           fontFamily: 'inherit',
                           textAlign: 'left',
-                          background: isOpen ? palette.bg : '#fff',
-                          color: 'var(--ink)',
+                          background: isOpen ? '#17171f' : '#12121a',
+                          color: '#f4f4f5',
                           padding: '14px 18px',
                           display: 'flex',
                           justifyContent: 'space-between',
@@ -881,19 +924,19 @@ export default function CourseDetailClient({
                           </span>
                           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{subject.name}</span>
                         </span>
-                        <span style={{ fontSize: 12, color: 'var(--muted)', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontSize: 12, color: '#a1a1aa', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 8 }}>
                           {subject.chapters.length} chapters · {lectureCount} lectures
                           <span style={{ display: 'inline-block', transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform .25s' }}>▾</span>
                         </span>
                       </button>
 
                       {isOpen && (
-                        <div style={{ padding: '14px 16px', background: '#faf9ff', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        <div style={{ padding: '14px 16px', background: '#0d0d13', display: 'flex', flexDirection: 'column', gap: 10 }}>
                           {subject.description && (
-                            <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>{subject.description}</p>
+                            <p style={{ fontSize: 13, color: '#a1a1aa', lineHeight: 1.6 }}>{subject.description}</p>
                           )}
                           {subject.chapters.length === 0 ? (
-                            <p style={{ fontSize: 13, color: 'var(--muted)', fontStyle: 'italic' }}>
+                            <p style={{ fontSize: 13, color: '#a1a1aa', fontStyle: 'italic' }}>
                               Is subject ke chapters jald publish honge.
                             </p>
                           ) : (
@@ -902,7 +945,13 @@ export default function CourseDetailClient({
                               return (
                                 <div
                                   key={chapter.id}
-                                  style={{ background: '#fff', borderRadius: 12, border: '1px solid var(--line)', overflow: 'hidden' }}
+                                  style={{
+                                    background: '#17171f',
+                                    borderRadius: 12,
+                                    border: '1px solid rgba(255,255,255,0.09)',
+                                    borderLeft: `4px solid ${PURPLE}`,
+                                    overflow: 'hidden',
+                                  }}
                                 >
                                   <button
                                     type="button"
@@ -916,6 +965,7 @@ export default function CourseDetailClient({
                                       cursor: 'pointer',
                                       fontFamily: 'inherit',
                                       textAlign: 'left',
+                                      color: '#f4f4f5',
                                       padding: '13px 16px',
                                       display: 'flex',
                                       justifyContent: 'space-between',
@@ -924,13 +974,24 @@ export default function CourseDetailClient({
                                     }}
                                   >
                                     <span style={{ fontWeight: 700, fontSize: 14 }}>
-                                      <span style={{ color: 'var(--muted)', fontWeight: 600, marginRight: 6 }}>
+                                      <span style={{ color: '#a1a1aa', fontWeight: 600, marginRight: 6 }}>
                                         {sIdx + 1}.{cIdx + 1}
                                       </span>
                                       {chapter.title}
                                     </span>
-                                    <span style={{ fontSize: 12, color: 'var(--muted)', whiteSpace: 'nowrap' }}>
-                                      {chapter.lectures.length} lectures{' '}
+                                    <span style={{ fontSize: 12, color: '#a1a1aa', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 8 }}>
+                                      <span
+                                        style={{
+                                          fontSize: 11,
+                                          fontWeight: 800,
+                                          background: 'rgba(109,40,217,.25)',
+                                          color: '#c4b5fd',
+                                          padding: '3px 9px',
+                                          borderRadius: 999,
+                                        }}
+                                      >
+                                        🎬 {chapter.lectures.length} Lectures
+                                      </span>
                                       <span style={{ display: 'inline-block', transform: chOpen ? 'rotate(180deg)' : 'none', transition: 'transform .25s' }}>▾</span>
                                     </span>
                                   </button>
@@ -938,11 +999,11 @@ export default function CourseDetailClient({
                                   {chOpen && (
                                     <div style={{ padding: '0 16px 14px', display: 'flex', flexDirection: 'column' }}>
                                       {chapter.description && (
-                                        <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 8 }}>{chapter.description}</p>
+                                        <p style={{ fontSize: 13, color: '#a1a1aa', marginBottom: 8 }}>{chapter.description}</p>
                                       )}
                                       {chapter.lectures.length === 0 ? (
-                                        <p style={{ fontSize: 12, color: 'var(--muted)', fontStyle: 'italic' }}>
-                                          Lectures jald add honge.
+                                        <p style={{ fontSize: 12.5, color: '#a1a1aa', fontStyle: 'italic' }}>
+                                          Is chapter ke liye abhi koi lecture uplabdh nahi hai.
                                         </p>
                                       ) : (
                                         chapter.lectures.map((lecture, lIdx) => (
@@ -952,6 +1013,7 @@ export default function CourseDetailClient({
                                             index={lIdx}
                                             previewHref={previewHref}
                                             isEnrolled={isEnrolled}
+                                            dark
                                           />
                                         ))
                                       )}
@@ -1474,12 +1536,16 @@ function LectureRow({
   index,
   previewHref,
   isEnrolled,
+  dark = false,
 }: {
   lecture: LectureDTO;
   index: number;
   previewHref: string;
   isEnrolled: boolean;
+  /** dark = gehre panel (curriculum) par; warna halke panel (free tab) ke rang */
+  dark?: boolean;
 }) {
+  const muted = dark ? '#a1a1aa' : 'var(--muted)';
   const duration = formatDuration(lecture.durationSeconds || 0);
   const row = (
     <>
@@ -1488,8 +1554,8 @@ function LectureRow({
           width: 34,
           height: 34,
           borderRadius: '50%',
-          background: lecture.isPreviewable ? GOLD : '#ede9fe',
-          color: lecture.isPreviewable ? PURPLE_DARK : PURPLE,
+          background: lecture.isPreviewable ? GOLD : dark ? 'rgba(109,40,217,.28)' : '#ede9fe',
+          color: lecture.isPreviewable ? PURPLE_DARK : dark ? '#c4b5fd' : PURPLE,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -1501,7 +1567,7 @@ function LectureRow({
         ▶
       </span>
       <span style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ display: 'block', fontWeight: 600, fontSize: 13.5, lineHeight: 1.45 }}>
+        <span style={{ display: 'block', fontWeight: 600, fontSize: 13.5, lineHeight: 1.45, color: dark ? '#e4e4e7' : 'inherit' }}>
           {index + 1}. {lecture.title}
         </span>
         {lecture.description && (
@@ -1509,7 +1575,7 @@ function LectureRow({
             style={{
               display: 'block',
               fontSize: 12,
-              color: 'var(--muted)',
+              color: muted,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
@@ -1520,7 +1586,7 @@ function LectureRow({
         )}
       </span>
       {duration && (
-        <span style={{ fontSize: 12, color: 'var(--muted)', fontWeight: 600, whiteSpace: 'nowrap' }}>
+        <span style={{ fontSize: 12, color: muted, fontWeight: 600, whiteSpace: 'nowrap' }}>
           {duration}
         </span>
       )}
@@ -1529,8 +1595,8 @@ function LectureRow({
           style={{
             fontSize: 10,
             fontWeight: 800,
-            background: '#fef3c7',
-            color: '#92400e',
+            background: dark ? 'rgba(245,185,66,.18)' : '#fef3c7',
+            color: dark ? GOLD : '#92400e',
             padding: '4px 10px',
             borderRadius: 999,
             whiteSpace: 'nowrap',
@@ -1553,7 +1619,7 @@ function LectureRow({
     alignItems: 'center',
     gap: 12,
     padding: '9px 4px',
-    borderBottom: '1px solid #f5f3ff',
+    borderBottom: `1px solid ${dark ? 'rgba(255,255,255,.07)' : '#f5f3ff'}`,
     width: '100%',
     textAlign: 'left',
   };
