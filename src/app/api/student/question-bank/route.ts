@@ -77,6 +77,29 @@ export async function GET(request: NextRequest) {
        GROUP BY qd.difficulty`
     );
 
+    // Subject / chapter filter options — SIRF wahi subjects/chapters
+    // jinke paas asal questions hain (dropdown me khaali options kabhi
+    // nahi). Pehle ye lists response me thi hi nahi, isliye page par
+    // subject/chapter dropdown banana hi mumkin nahi tha, chahe API
+    // subjectId/chapterId params accept karta tha.
+    const [subjectOptions]: any = await mysqlPool.query(
+      `SELECT s.id, s.name, COUNT(q.id) AS questionCount
+       FROM Questions q
+       JOIN Subjects s ON s.id = q.subjectId
+       WHERE q.subjectId IS NOT NULL
+       GROUP BY s.id, s.name
+       ORDER BY s.name`
+    );
+
+    const [chapterOptions]: any = await mysqlPool.query(
+      `SELECT c.id, c.title, c.subjectId, COUNT(q.id) AS questionCount
+       FROM Questions q
+       JOIN Chapters c ON c.id = q.chapterId
+       WHERE q.chapterId IS NOT NULL
+       GROUP BY c.id, c.title, c.subjectId
+       ORDER BY c.title`
+    );
+
     return NextResponse.json({
       success: true,
       data: {
@@ -91,7 +114,7 @@ export async function GET(request: NextRequest) {
           tags: q.tags ? q.tags.split(',') : [],
         })),
         pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
-        filters: { tags, difficultyDistribution: diffDist }
+        filters: { tags, difficultyDistribution: diffDist, subjects: subjectOptions, chapters: chapterOptions }
       }
     });
   } catch (error: any) {

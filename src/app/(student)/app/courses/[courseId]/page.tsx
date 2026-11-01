@@ -5,6 +5,7 @@ import { headers } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import CourseCurriculum from './CourseCurriculum';
+import CourseBookmarkButton from './CourseBookmarkButton';
 import {
   IconPlay, IconCheckCircle, IconArrowRight, IconTarget, IconClock,
   IconBook, IconShield, IconZap, IconAward,
@@ -64,6 +65,7 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
             <span className="rounded-full bg-white/15 px-3.5 py-1.5 text-[11px] font-bold text-white backdrop-blur">
               Self-paced
             </span>
+            <CourseBookmarkButton courseId={courseTree.id} courseTitle={courseTree.title} />
           </div>
 
           <h1 className="max-w-2xl text-2xl font-black leading-tight tracking-tight sm:text-3xl">
@@ -249,6 +251,9 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
                     </button>
                   </form>
                 )}
+                <div className="pt-1">
+                  <CourseBookmarkButton courseId={courseTree.id} courseTitle={courseTree.title} variant="card" />
+                </div>
                 <p className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-[var(--student-text-faint)]">
                   <IconShield size={12} />
                   {isFree ? 'Koi payment nahi — poori tarah free' : 'Secure enrollment'}

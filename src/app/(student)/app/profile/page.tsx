@@ -2,6 +2,7 @@ import { headers } from 'next/headers';
 import Link from 'next/link';
 import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { mysqlPool } from '@/lib/db';
+import ProfileEditForm from './ProfileEditForm';
 import {
   IconTarget,
   IconPlay,
@@ -22,13 +23,17 @@ export const revalidate = 0;
 /**
  * THE SHIVA — Student Profile.
  *
- * Banawat andar-ke standard par: beech me avatar, bada naam, asal data se
- * bane badges aur stat cards, phir 'Personal Details' aur
- * 'Academic Details' cards. Har number asal table se aata hai —
- * StudentXP (Total XP), LectureProgress, AssessmentAttempts, Doubts
- * (status = RESOLVED matlab solved). Jo data platform par maujood hi
- * nahi (level system, satisfaction rating, class/board), uska card ya
- * badge nahi banta.
+ * PW-grade banawat: gehra purple hero (gold-ring avatar, bada naam, asal
+ * badges), 4 stat cards, 'Personal Details' aur 'Academic Details' cards.
+ * Har number asal table se aata hai — StudentXP (Total XP),
+ * LectureProgress, AssessmentAttempts, Doubts (status = RESOLVED matlab
+ * solved). Jo data platform par maujood hi nahi (level system,
+ * satisfaction rating, class/board), uska card ya badge nahi banta.
+ *
+ * EDIT NOTE: profile-update API (PUT /api/student/profile) ab maujood
+ * hai — student apna naam, target exam aur avatar URL khud badal
+ * sakta hai (neeche ProfileEditForm). Email/phone ab bhi view-only
+ * hain kyunki unke liye koi safe self-service flow nahi hai.
  */
 export default async function ProfilePage() {
   const session = await getSessionFromHeaders(headers());
@@ -70,6 +75,8 @@ export default async function ProfilePage() {
     day: 'numeric', month: 'long', year: 'numeric',
   });
 
+  // Hamesha 4 stat cards: pehla slot XP (agar asal XP hai), warna
+  // Enrolled Courses — grid kabhi aadha-khali nahi dikhta.
   const statCards = [
     ...(totalXp !== null
       ? [{
@@ -79,7 +86,13 @@ export default async function ProfilePage() {
           href: '/app/leaderboard',
           bg: 'from-[#f5b942] to-amber-600',
         }]
-      : []),
+      : [{
+          label: 'Enrolled Courses',
+          value: String(s.enrolledCourses || 0),
+          icon: <IconBook size={20} />,
+          href: '/app/my-courses',
+          bg: 'from-[#6d28d9] to-[#2a1650]',
+        }]),
     {
       label: 'Lectures Done',
       value: String(s.lecturesCompleted || 0),
@@ -112,11 +125,19 @@ export default async function ProfilePage() {
     { label: 'Study Plan', desc: 'Tumhara personalised roadmap', icon: <IconTarget size={18} />, href: '/app/study-plan' },
   ];
 
+  const personalRows: { label: string; value: string; mono?: boolean; chip?: 'verified' }[] = [
+    { label: 'Full Name', value: displayName },
+    { label: 'Email Address', value: session.email, chip: 'verified' },
+    ...(profile?.phone ? [{ label: 'Mobile Number', value: String(profile.phone) }] : []),
+    { label: 'Member Since', value: memberSince },
+    { label: 'Student ID', value: session.userId, mono: true },
+  ];
+
   return (
     <div className="space-y-6">
-      {/* ── Hero: beech avatar + bada naam + asal badges ── */}
+      {/* ── Hero: gehra purple banner + gold-ring avatar + asal badges ── */}
       <div className="student-card overflow-hidden">
-        <div className="h-24 bg-gradient-to-r from-[#2a1650] via-[#6d28d9] to-[#7c3aed] relative">
+        <div className="h-28 bg-gradient-to-r from-[#2a1650] via-[#6d28d9] to-[#7c3aed] relative">
           <div
             className="absolute inset-0 opacity-20"
             style={{
@@ -127,6 +148,7 @@ export default async function ProfilePage() {
             aria-hidden="true"
           />
           <div className="absolute -top-10 right-10 w-36 h-36 rounded-full bg-[#f5b942]/20 blur-2xl" aria-hidden="true" />
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#f5b942] via-[#f5b942]/40 to-transparent" aria-hidden="true" />
         </div>
         <div className="px-5 pb-6 -mt-12 relative flex flex-col items-center text-center">
           <div className="w-24 h-24 rounded-full bg-[var(--student-surface)] p-1 shadow-lg flex-shrink-0">
@@ -135,15 +157,15 @@ export default async function ProfilePage() {
               <img
                 src={profile.avatarUrl}
                 alt={displayName}
-                className="w-full h-full rounded-full object-cover"
+                className="w-full h-full rounded-full object-cover ring-4 ring-[#f5b942]/60"
               />
             ) : (
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-[#6d28d9] to-[#2a1650] flex items-center justify-center text-white text-4xl font-black">
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-[#6d28d9] to-[#2a1650] ring-4 ring-[#f5b942]/60 flex items-center justify-center text-white text-4xl font-black">
                 {initial}
               </div>
             )}
           </div>
-          <h1 className="text-2xl font-extrabold text-[var(--student-text)] tracking-tight mt-3 truncate max-w-full">
+          <h1 className="text-[26px] leading-tight font-extrabold text-[var(--student-text)] tracking-tight mt-3 truncate max-w-full">
             {displayName}
           </h1>
           <p className="text-sm text-[var(--student-text-muted)] truncate max-w-full">{session.email}</p>
@@ -171,8 +193,11 @@ export default async function ProfilePage() {
 
       {/* ── Stat cards (sirf asal data) ── */}
       <section>
-        <h2 className="text-lg font-bold text-[var(--student-text)] tracking-tight mb-3">Your Progress</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="flex items-center gap-2.5 mb-3">
+          <span className="w-1.5 h-5 rounded-full bg-gradient-to-b from-[#f5b942] to-[#6d28d9]" aria-hidden="true" />
+          <h2 className="text-lg font-bold text-[var(--student-text)] tracking-tight">Your Progress</h2>
+        </div>
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
           {statCards.map((c) => (
             <Link
               key={c.label}
@@ -196,50 +221,49 @@ export default async function ProfilePage() {
 
       {/* ── Personal Details ── */}
       <section>
-        <h2 className="text-lg font-bold text-[var(--student-text)] tracking-tight mb-3">Personal Details</h2>
-        <div className="student-card divide-y divide-[var(--student-border-light)]">
-          <div className="p-4 flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-[var(--student-text)]">Full Name</p>
-              <p className="text-xs text-[var(--student-text-muted)] truncate">{displayName}</p>
-            </div>
-          </div>
-          <div className="p-4 flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-[var(--student-text)]">Email Address</p>
-              <p className="text-xs text-[var(--student-text-muted)] truncate">{session.email}</p>
-            </div>
-            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400 rounded-full px-2.5 py-1 flex-shrink-0">
-              Verified
-            </span>
-          </div>
-          {profile?.phone && (
-            <div className="p-4">
-              <p className="text-sm font-semibold text-[var(--student-text)]">Mobile Number</p>
-              <p className="text-xs text-[var(--student-text-muted)]">{profile.phone}</p>
-            </div>
-          )}
-          <div className="p-4">
-            <p className="text-sm font-semibold text-[var(--student-text)]">Member Since</p>
-            <p className="text-xs text-[var(--student-text-muted)]">{memberSince}</p>
-          </div>
-          <div className="p-4">
-            <p className="text-sm font-semibold text-[var(--student-text)]">Student ID</p>
-            <p className="text-xs text-[var(--student-text-muted)] font-mono break-all">{session.userId}</p>
-          </div>
+        <div className="flex items-center gap-2.5 mb-3">
+          <span className="w-1.5 h-5 rounded-full bg-gradient-to-b from-[#f5b942] to-[#6d28d9]" aria-hidden="true" />
+          <h2 className="text-lg font-bold text-[var(--student-text)] tracking-tight">Personal Details</h2>
         </div>
+        <div className="student-card divide-y divide-[var(--student-border-light)]">
+          {personalRows.map((row) => (
+            <div key={row.label} className="p-4 flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--student-text-faint)]">{row.label}</p>
+                <p className={`text-sm font-semibold text-[var(--student-text)] mt-0.5 ${row.mono ? 'font-mono break-all' : 'truncate'}`}>
+                  {row.value}
+                </p>
+              </div>
+              {row.chip === 'verified' && (
+                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400 rounded-full px-2.5 py-1 flex-shrink-0">
+                  Verified
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+        {/* Edit form — sirf wahi fields jo PUT /api/student/profile
+            asal me save karta hai (naam, target exam, avatar URL) */}
+        <ProfileEditForm
+          initialName={profile?.name || ''}
+          initialTargetExam={profile?.targetExam || ''}
+          initialAvatarUrl={profile?.avatarUrl || ''}
+        />
         <p className="text-[11px] text-[var(--student-text-faint)] mt-2.5">
-          Naam ya mobile me galti hai?{' '}
+          Email ya mobile number badalna hai to{' '}
           <Link href="/app/counsellor" className="font-bold text-[#6d28d9] hover:underline">
             Counsellor se sampark karo
           </Link>{' '}
-          — woh tumhari details sahi kar denge.
+          — woh tumhari madad kar denge.
         </p>
       </section>
 
       {/* ── Academic Details (sirf asal fields) ── */}
       <section>
-        <h2 className="text-lg font-bold text-[var(--student-text)] tracking-tight mb-3">Academic Details</h2>
+        <div className="flex items-center gap-2.5 mb-3">
+          <span className="w-1.5 h-5 rounded-full bg-gradient-to-b from-[#f5b942] to-[#6d28d9]" aria-hidden="true" />
+          <h2 className="text-lg font-bold text-[var(--student-text)] tracking-tight">Academic Details</h2>
+        </div>
         <div className="student-card divide-y divide-[var(--student-border-light)]">
           {profile?.targetExam && (
             <div className="p-4 flex items-center justify-between gap-3">
@@ -277,7 +301,10 @@ export default async function ProfilePage() {
 
       {/* ── Quick links ── */}
       <section>
-        <h2 className="text-lg font-bold text-[var(--student-text)] tracking-tight mb-3">Quick Actions</h2>
+        <div className="flex items-center gap-2.5 mb-3">
+          <span className="w-1.5 h-5 rounded-full bg-gradient-to-b from-[#f5b942] to-[#6d28d9]" aria-hidden="true" />
+          <h2 className="text-lg font-bold text-[var(--student-text)] tracking-tight">Quick Actions</h2>
+        </div>
         <div className="student-card divide-y divide-[var(--student-border-light)]">
           {quickLinks.map((q) => (
             <Link key={q.label} href={q.href} className="p-4 flex items-center gap-3 hover:bg-[var(--student-surface-hover)] transition-colors">

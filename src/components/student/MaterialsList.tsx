@@ -7,6 +7,7 @@ interface Material {
   title: string;
   fileUrl: string;
   fileType: string;
+  category?: 'NOTE' | 'DPP' | 'OTHER';
   createdAt: string;
 }
 
@@ -14,6 +15,14 @@ interface MaterialsListProps {
   lectureId: string;
 }
 
+/**
+ * Per-lecture study materials (notes / DPP / slides) —
+ * GET /api/student/lectures/[id]/materials se asal data aata hai.
+ * Material na ho to component kuch render hi nahi karta (null) —
+ * nakli placeholder kabhi nahi. Pehle ye component kahin mount hi
+ * nahi tha aur iski API ke peeche LectureMaterials table ka koi
+ * runtime ensure nahi tha; dono ab jude hue hain (learn page).
+ */
 export default function MaterialsList({ lectureId }: MaterialsListProps) {
   const [materials, setMaterials] = useState<Material[]>([]);
 
@@ -43,8 +52,10 @@ export default function MaterialsList({ lectureId }: MaterialsListProps) {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-      <h3 className="font-bold text-slate-900 dark:text-white mb-3">Study Materials</h3>
+    <div className="mt-4 rounded-[24px] border border-white/10 bg-[#12121a] p-4 shadow-sm sm:p-5">
+      <h3 className="text-sm font-bold text-white mb-3">
+        Study Materials <span className="text-slate-500 font-semibold">· Notes & DPP</span>
+      </h3>
       <div className="space-y-2">
         {materials.map(m => (
           <a
@@ -52,14 +63,17 @@ export default function MaterialsList({ lectureId }: MaterialsListProps) {
             href={m.fileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            className="flex items-center gap-3 p-3 rounded-xl border border-white/5 bg-white/[0.03] hover:bg-white/[0.07] hover:border-[#6d28d9]/40 transition-colors"
           >
             <span className="text-xl">{fileTypeIcon(m.fileType)}</span>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{m.title}</p>
-              <p className="text-xs text-slate-500">{m.fileType}</p>
+              <p className="text-sm font-medium text-slate-100 truncate">{m.title}</p>
+              <p className="text-xs text-slate-500">
+                {m.category === 'DPP' ? 'DPP' : m.category === 'NOTE' ? 'Notes' : m.fileType}
+                {' · '}{m.fileType}
+              </p>
             </div>
-            <span className="text-xs text-indigo-600 font-medium">Download</span>
+            <span className="text-xs text-[#a78bfa] font-bold">Download</span>
           </a>
         ))}
       </div>

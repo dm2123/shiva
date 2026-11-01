@@ -9,6 +9,7 @@ import { headers } from 'next/headers';
 import { getSessionFromHeaders } from '@/lib/rbac-server';
 import StudentEmptyState from '@/components/student/StudentEmptyState';
 import LecturePlayer from '@/components/student/LecturePlayer';
+import MaterialsList from '@/components/student/MaterialsList';
 import {
   IconArrowLeft, IconBookOpen, IconPlay, IconCheckCircle, IconShield,
   IconChevronDown, IconClock, IconAward, IconList,
@@ -290,6 +291,10 @@ export default async function ClassroomPage({
                 </span>
               )}
             </div>
+
+            {/* Study materials (Notes/DPP) — asal LectureMaterials data;
+                material na ho to component khud null deta hai */}
+            <MaterialsList lectureId={effectiveLecture.id} />
 
             {/* Up next */}
             {nextLecture && (

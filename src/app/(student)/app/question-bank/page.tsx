@@ -11,9 +11,9 @@ const DIFF_STYLES: Record<string, string> = {
 };
 
 const TYPE_STYLES: Record<string, string> = {
-  MCQ: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-  MULTIPLE_CORRECT: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',
-  NUMERICAL: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400',
+  MCQ: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300',
+  MULTIPLE_CORRECT: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+  NUMERICAL: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
   SUBJECTIVE: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
 };
 
@@ -77,6 +77,7 @@ export default function QuestionBankPage() {
 
       {/* Filters */}
       <div className="student-card p-4 md:p-5">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--student-text-faint)] mb-3">Filter questions</p>
         <div className="flex flex-wrap gap-3">
           <div className="relative flex-1 min-w-[200px]">
             <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--student-text-faint)]" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -112,6 +113,37 @@ export default function QuestionBankPage() {
             <option value="NUMERICAL">Numerical</option>
             <option value="SUBJECTIVE">Subjective</option>
           </select>
+          {/* Subject / Chapter — options API ke filters.subjects /
+              filters.chapters se aate hain (sirf wahi jinke paas asal
+              questions hain). List khaali ho to dropdown hi nahi banta. */}
+          {data?.filters?.subjects?.length > 0 && (
+            <select
+              value={filters.subjectId}
+              onChange={e => { setFilters({ ...filters, subjectId: e.target.value, chapterId: '' }); setPage(1); }}
+              className="px-3 py-2.5 border border-[var(--student-border)] rounded-xl text-sm bg-[var(--student-surface)] text-[var(--student-text)] focus:outline-none focus:border-[var(--student-primary)]"
+              aria-label="Subject se filter karo"
+            >
+              <option value="">All Subjects</option>
+              {data.filters.subjects.map((s: any) => (
+                <option key={s.id} value={s.id}>{s.name} ({s.questionCount})</option>
+              ))}
+            </select>
+          )}
+          {data?.filters?.chapters?.length > 0 && (
+            <select
+              value={filters.chapterId}
+              onChange={e => { setFilters({ ...filters, chapterId: e.target.value }); setPage(1); }}
+              className="px-3 py-2.5 border border-[var(--student-border)] rounded-xl text-sm bg-[var(--student-surface)] text-[var(--student-text)] focus:outline-none focus:border-[var(--student-primary)]"
+              aria-label="Chapter se filter karo"
+            >
+              <option value="">All Chapters</option>
+              {data.filters.chapters
+                .filter((c: any) => !filters.subjectId || c.subjectId === filters.subjectId)
+                .map((c: any) => (
+                  <option key={c.id} value={c.id}>{c.title} ({c.questionCount})</option>
+                ))}
+            </select>
+          )}
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
@@ -175,7 +207,7 @@ export default function QuestionBankPage() {
       ) : totalQuestions === 0 && !hasActiveFilters ? (
         <div className="space-y-6">
           <div className="relative flex flex-col items-center justify-center p-12 md:p-16 text-center rounded-3xl border border-dashed border-[var(--student-border)] bg-gradient-to-b from-[var(--student-surface)] to-transparent overflow-hidden">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center mb-6 shadow-lg shadow-teal-500/20">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#6d28d9] to-[#2a1650] flex items-center justify-center mb-6 shadow-lg shadow-[#6d28d9]/20">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3 2.95-1.722.375-3 1.55-3 2.95V17m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -220,7 +252,7 @@ export default function QuestionBankPage() {
           {data?.questions?.map((q: any, i: number) => (
             <div key={q.id} className="student-card p-5 hover:shadow-md transition-all">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[var(--student-surface)] border border-[var(--student-border-light)] flex items-center justify-center text-xs font-bold text-[var(--student-text-muted)] flex-shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-[#6d28d9]/10 border border-[#6d28d9]/15 flex items-center justify-center text-xs font-bold text-[#6d28d9] flex-shrink-0">
                   {(page - 1) * 20 + i + 1}
                 </div>
                 <div className="flex-1 min-w-0">

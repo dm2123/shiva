@@ -28,6 +28,7 @@ const TABS = [
   { key: 'NOTE', label: 'Notes', Icon: IconBook },
   { key: 'DPP', label: 'DPPs', Icon: IconAssignment },
   { key: 'PYQ', label: 'PYQs', Icon: IconTarget },
+  { key: 'COURSE', label: 'Courses', Icon: IconBook },
 ] as const;
 
 const TAB_ICON: Record<string, (p: { size?: number; className?: string }) => JSX.Element> = {
@@ -35,6 +36,7 @@ const TAB_ICON: Record<string, (p: { size?: number; className?: string }) => JSX
   NOTE: IconBook,
   DPP: IconAssignment,
   PYQ: IconTarget,
+  COURSE: IconBook,
 };
 
 function formatTimestamp(sec: number) {
@@ -106,7 +108,7 @@ export default function BookmarksPage() {
         </div>
         <div>
           <h1 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">My Bookmarks</h1>
-          <p className="text-[13px] text-slate-500">Saved lectures, notes, DPPs & PYQs — revise anytime.</p>
+          <p className="text-[13px] text-slate-500">Saved lectures, notes, DPPs, PYQs & courses — revise anytime.</p>
         </div>
       </div>
 
@@ -114,7 +116,7 @@ export default function BookmarksPage() {
       <div
         role="tablist"
         aria-label="Bookmark categories"
-        className="grid grid-cols-4 gap-1 p-1 rounded-2xl bg-slate-100 border border-slate-200"
+        className="grid grid-cols-5 gap-1 p-1 rounded-2xl bg-slate-100 border border-slate-200"
       >
         {TABS.map((tab) => {
           const isActive = activeTab === tab.key;
