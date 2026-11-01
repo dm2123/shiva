@@ -126,6 +126,23 @@ export default async function DashboardPage() {
         }
       }
     } catch { /* validity column nahi — batch endDate hi alert ka aadhaar */ }
+    // Course thumbnails — asal Courses.thumbnailUrl; column/value na ho to
+    // null (client designed gradient fallback dikhata hai, kaala dabba nahi).
+    // Alag best-effort query taaki isse enrollments kabhi na girein.
+    const thumbByCourse = new Map<string, string | null>();
+    try {
+      const ids = (rows || []).map((r: any) => String(r.courseId));
+      if (ids.length > 0) {
+        const placeholders = ids.map(() => '?').join(',');
+        const [trows]: any = await mysqlPool.query(
+          `SELECT id, thumbnailUrl FROM Courses WHERE id IN (${placeholders})`,
+          ids
+        );
+        for (const t of trows || []) {
+          thumbByCourse.set(String(t.id), t.thumbnailUrl ? String(t.thumbnailUrl) : null);
+        }
+      }
+    } catch { /* thumbnail column nahi — saare fallback banner par rahenge */ }
     const base: DashboardEnrollment[] = (rows || []).map((r: any) => ({
       courseId: String(r.courseId),
       courseTitle: r.courseTitle,
@@ -136,6 +153,7 @@ export default async function DashboardPage() {
       lastActivityAt: toISO(r.lastActivityAt),
       batchEndDate: toISO(r.batchEndDate),
       validityMonths: validityByCourse.get(String(r.courseId)) ?? null,
+      thumbnailUrl: thumbByCourse.get(String(r.courseId)) ?? null,
       totalLectures: Number(r.totalLectures) || 0,
       completedLectures: Number(r.completedLectures) || 0,
       resumeLecture: null,
@@ -336,15 +354,27 @@ export default async function DashboardPage() {
     bookmarksCount = Number(rows?.[0]?.n) || 0;
   } catch { /* badge nahi dikhega */ }
 
-  // Recommended — asal PUBLISHED courses jinme enroll nahi hai
+  // Recommended — asal PUBLISHED courses jinme enroll nahi hai.
+  // thumbnailUrl/language best-effort: naye columns wali query fail ho
+  // (purana DB) to purani column-list se dobara — data kabhi invent nahi.
   let recommended: RecommendedCourse[] = [];
   try {
     const enrolledIds = new Set(enrollments.map((e) => e.courseId));
-    const [rows]: any = await mysqlPool.query(
-      `SELECT id, title, slug, description, price FROM Courses
-        WHERE status = 'PUBLISHED' ORDER BY createdAt DESC LIMIT 12`
-    );
-    recommended = (rows || [])
+    let rows: any[] = [];
+    try {
+      const [r]: any = await mysqlPool.query(
+        `SELECT id, title, slug, description, price, thumbnailUrl, language FROM Courses
+          WHERE status = 'PUBLISHED' ORDER BY createdAt DESC LIMIT 12`
+      );
+      rows = r || [];
+    } catch {
+      const [r]: any = await mysqlPool.query(
+        `SELECT id, title, slug, description, price FROM Courses
+          WHERE status = 'PUBLISHED' ORDER BY createdAt DESC LIMIT 12`
+      );
+      rows = r || [];
+    }
+    recommended = rows
       .filter((c: any) => !enrolledIds.has(String(c.id)))
       .slice(0, 6)
       .map((c: any) => ({
@@ -353,13 +383,15 @@ export default async function DashboardPage() {
         slug: c.slug,
         description: c.description || null,
         price: Number(c.price) || 0,
+        thumbnailUrl: c.thumbnailUrl ? String(c.thumbnailUrl) : null,
+        language: c.language ? String(c.language) : null,
       }));
   } catch {
     recommended = [];
   }
 
   return (
-    <div className="bg-[#07070c]">
+    <div>
       <DashboardClient
         userName={userName}
         userEmail={session.email}
@@ -376,14 +408,14 @@ export default async function DashboardPage() {
         bookmarksCount={bookmarksCount}
         recommended={recommended}
       />
-      {/* Study home (StudyRays-pattern, sirf asal data): search, quick
-          actions, Study Material tiles, course carousels, teachers.
-          Dashboard ke neeche ek dark panel ke roop me mount hai. */}
-      <div className="mx-auto w-full max-w-[1200px] px-4 pb-24">
-        <div className="overflow-hidden rounded-3xl shadow-xl ring-1 ring-white/10">
-          <ShivaStudyHome />
-        </div>
-      </div>
+      {/* Study home (PW-pattern, sirf asal data): search, quick
+          actions, Study Material tiles, course grids, teachers.
+          Dashboard ke neeche light theme me hi mount hai. */}
+      <ShivaStudyHome />
+      {/* Portal ki band karne wali brand line (dashboard ke neeche) */}
+      <p className="px-4 pb-24 pt-2 text-center text-[12px] font-medium text-gray-400">
+        THE SHIVA — tumhari taiyaari ka saathi
+      </p>
     </div>
   );
 }

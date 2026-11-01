@@ -7,7 +7,7 @@ import StudyHomeClient, {
 } from './StudyHomeClient';
 
 /* ------------------------------------------------------------------ */
-/* ShivaStudyHome — student study home ka dark block (server data)    */
+/* ShivaStudyHome — student study home (server data)                  */
 /* Data: listPublicCourses() (sirf published asal courses),           */
 /* listActiveEducators() (asal active teachers) aur Batches table     */
 /* (exam tiles ke liye). Koi bhi hissa fail ho to woh khaali rehta    */

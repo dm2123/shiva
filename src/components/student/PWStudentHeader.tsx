@@ -14,6 +14,9 @@ interface PWStudentHeaderProps {
   userEmail: string;
   goal?: string;
   pageTitle?: string;
+  /** Dashboard par true — page ka apna 'Study' header hi ekmatra title hai,
+   *  shell ki duplicate title-patti nahi dikhti. */
+  hideTitleBar?: boolean;
   /** DailyStreaks se asal current streak; load na ho to null (chip nahi dikhega) */
   streak?: number | null;
   /** StudentXP se asal total XP; load na ho to null (chip nahi dikhega) */
@@ -27,6 +30,7 @@ export default function PWStudentHeader({
   userEmail,
   goal,
   pageTitle = 'Home',
+  hideTitleBar = false,
   streak = null,
   totalXP = null,
   unreadCount = 0,
@@ -91,7 +95,7 @@ export default function PWStudentHeader({
 
   return (
     <>
-      <header className="sticky top-0 z-50">
+      <header className="sticky top-0 z-50 shadow-[0_1px_8px_rgba(16,24,40,0.14)]">
         {/* ── Upar patti (dark purple strip) ─────────────────── */}
         <div className="bg-[#2a1650] text-white">
           <div className="flex items-center gap-2 sm:gap-3 px-4 lg:px-6 py-2.5">
@@ -149,7 +153,7 @@ export default function PWStudentHeader({
                 <span className="text-orange-400">
                   <IconFlame size={15} />
                 </span>
-                {streak} din streak
+                <span>{`${streak} din streak`}</span>
               </Link>
             )}
 
@@ -162,9 +166,18 @@ export default function PWStudentHeader({
                 <span className="text-[#f5b942]">
                   <IconStar size={15} />
                 </span>
-                {Number(totalXP).toLocaleString('en-IN')} XP
+                <span>{`${Number(totalXP).toLocaleString('en-IN')} XP`}</span>
               </span>
             )}
+
+            {/* Search — har page par top bar se hi uplabdh */}
+            <Link
+              href="/app/search"
+              aria-label="Search"
+              className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full transition hover:bg-white/10"
+            >
+              <IconSearch size={20} />
+            </Link>
 
             {/* Ghanti — notification drawer kholta hai; badge asal unread par hi */}
             <button
@@ -237,16 +250,15 @@ export default function PWStudentHeader({
           </div>
         </div>
 
-        {/* ── Sub-header: page title + search ────────────────── */}
-        <div className="bg-white text-gray-900 border-b border-gray-100">
-          <div className="flex items-center gap-3 px-4 lg:px-6 py-2">
-            <h1 className="text-[15px] font-semibold">{pageTitle}</h1>
-            <div className="flex-1" />
-            <Link href="/app/search" aria-label="Search" className="min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-gray-100 rounded-full transition">
-              <IconSearch size={20} />
-            </Link>
+        {/* ── Sub-header: page title (dashboard par hide — uska apna
+            'Study' header card hi single title source hai) ──── */}
+        {!hideTitleBar && (
+          <div className="border-b border-gray-100 bg-white text-gray-900">
+            <div className="flex items-center gap-3 px-4 py-2 lg:px-6">
+              <h1 className="text-[15px] font-semibold">{pageTitle}</h1>
+            </div>
           </div>
-        </div>
+        )}
       </header>
 
       {/* Mobile grouped sidebar drawer */}
