@@ -51,11 +51,15 @@ const MEGA_TILES = [
   { ico: '🍎', label: 'CTET' },
 ];
 
-/** Extra homepage anchors kept in the mobile drawer so nothing from the old nav is lost. */
+/** Marketing links mobile drawer me — ye content GitHub Pages
+ * marketing site par hai (platform root '/#…' anchors redirect ke
+ * baad kahin nahi pahunchte the). Results/Scholarship ke asal
+ * marketing pages hain; FAQ marketing home par hi hai (wahan alag
+ * anchor id nahi hai). */
 const DRAWER_EXTRA = [
-  { href: '/#results', label: 'Results' },
-  { href: '/#scholarship', label: 'Scholarship' },
-  { href: '/#faq', label: 'FAQ' },
+  { href: 'https://dm2123.github.io/shiva/results.html', label: 'Results' },
+  { href: 'https://dm2123.github.io/shiva/scholarship.html', label: 'Scholarship' },
+  { href: 'https://dm2123.github.io/shiva/', label: 'FAQ' },
 ];
 
 export default function ShivaNav() {

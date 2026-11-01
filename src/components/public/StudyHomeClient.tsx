@@ -1,25 +1,32 @@
 'use client';
 
 /**
- * StudyHomeClient — landing ka naya dark "study home" block.
+ * StudyHomeClient — student study home ka dark block (dashboard /app
+ * ke neeche mount hota hai).
  *
  * Layout pattern (user ke bheje screenshots se): near-black panel,
  * violet accent, rounded-2xl cards —
- *   • "Study Material" exam-category grid (graduation-cap tiles)
+ *   • Quick actions row (student app ke asal routes: Community,
+ *     Downloads, Tests, DPP, Library, Bookmarks, My Courses)
+ *   • "Study Material" exam-category grid (graduation-cap tiles) —
+ *     tiles FIXED list nahi hain: sirf wohi exams jinke asal courses
+ *     ya batches data me maujood hain
  *   • Batches search bar (submit → /batches?q=…, type karne par
  *     neeche ke courses live filter hote hain)
- *   • All Batches / Favorites tabs (Favorites = visitor ke apne
- *     browser me save hue asal pasandeeda courses, localStorage)
  *   • Exam ke hisaab se course carousels + "View All →"
  *   • Browse by Teachers (asal educator data; photo na ho to
  *     initials wala placeholder — kisi aur ki photo kabhi nahi)
+ *
+ * FAVORITES NOTE: platform ka bookmarks system sirf content ke liye
+ * hai (lecture/note/DPP/PYQ) — course-level favorites kahin wired
+ * nahi hain, isliye yahan koi Favorites toggle NAHI hai.
  *
  * HONEST-DATA RULE: sirf asal Course/Educator fields render hote hain.
  * Koi count, price, teacher ya status invent nahi hota; data na ho
  * to honest empty state dikhta hai.
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { deriveExamCategory } from './CourseCard';
 
@@ -41,7 +48,6 @@ export type StudyTeacher = {
   subjects: string[];
 };
 
-const FAV_KEY = 'shiva-fav-courses-v1';
 const VIOLET = '#6d28d9';
 const VIOLET_SOFT = '#c4b5fd';
 
@@ -83,51 +89,44 @@ export function CapIcon({ size = 40, color = '#8b5cf6' }: { size?: number; color
   );
 }
 
-/* SHIVA ke apne exam goals — tile label ke saath batches listing ka asal filter */
-const STUDY_TILES: { label: string; href: string }[] = [
-  { label: 'SSC', href: '/batches?exam=SSC' },
-  { label: 'Railway', href: '/batches?exam=Railway' },
-  { label: 'Banking', href: '/batches?exam=Banking' },
-  { label: 'Defence', href: '/batches?exam=Defence' },
-  { label: 'Teaching', href: '/batches?exam=Teaching' },
-  { label: 'UPSC', href: '/batches?exam=UPSC' },
-  { label: 'State Exams', href: '/courses' },
+/* Tile pradarshan ka kram — tile sirf tab banta hai jab label asal
+   course categories ya batch exams me maujood ho (neeche computed). */
+const TILE_ORDER = [
+  'SSC',
+  'Railway',
+  'Banking',
+  'Defence',
+  'Teaching',
+  'UPSC',
+  'NEET',
+  'JEE',
+  'State Exams',
+  'Foundation',
+];
+
+/* Quick actions — student app ke asal maujood routes hi hain.
+   Koi dead button nahi: har tile ek live page par jata hai. */
+const QUICK_ACTIONS: { label: string; href: string; icon: string }[] = [
+  { label: 'Community', href: '/app/community', icon: '💬' },
+  { label: 'Downloads', href: '/app/offline-downloads', icon: '⬇️' },
+  { label: 'Tests', href: '/app/tests', icon: '📝' },
+  { label: 'DPP Practice', href: '/app/dpp', icon: '🎯' },
+  { label: 'Library', href: '/app/library', icon: '📚' },
+  { label: 'Bookmarks', href: '/app/bookmarks', icon: '🔖' },
+  { label: 'My Courses', href: '/app/my-courses', icon: '🎓' },
 ];
 
 export default function StudyHomeClient({
   courses,
   teachers,
+  batchExams,
 }: {
   courses: StudyCourse[];
   teachers: StudyTeacher[];
+  /** Asal batches se derive hue exam labels (server se). */
+  batchExams: string[];
 }) {
-  const [tab, setTab] = useState<'all' | 'fav'>('all');
   const [query, setQuery] = useState('');
-  const [favorites, setFavorites] = useState<string[]>([]);
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(FAV_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) setFavorites(parsed.filter((x) => typeof x === 'string'));
-      }
-    } catch {
-      /* storage uplabdh nahi — favorites khaali rahenge */
-    }
-  }, []);
-
-  const toggleFav = (id: string) => {
-    setFavorites((prev) => {
-      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
-      try {
-        localStorage.setItem(FAV_KEY, JSON.stringify(next));
-      } catch {
-        /* ignore */
-      }
-      return next;
-    });
-  };
 
   const teacherNameById = useMemo(() => {
     const map = new Map<string, string>();
@@ -167,16 +166,28 @@ export default function StudyHomeClient({
     });
   }, [visible]);
 
-  const favCourses = useMemo(
-    () => courses.filter((c) => favorites.includes(c.id)),
-    [courses, favorites],
-  );
+  /* Study Material tiles — sirf asal data wale exams:
+     course categories (title/slug se derive) ∪ batch exams (server).
+     Batch wala exam /batches?exam=… par, sirf-course wala /courses par. */
+  const tiles = useMemo(() => {
+    const courseLabels = new Set<string>();
+    for (const c of courses) {
+      const cat = deriveExamCategory(c);
+      if (cat) courseLabels.add(cat.label);
+    }
+    const batchSet = new Set(batchExams);
+    return TILE_ORDER.filter((label) => courseLabels.has(label) || batchSet.has(label)).map(
+      (label) => ({
+        label,
+        href: batchSet.has(label) ? `/batches?exam=${encodeURIComponent(label)}` : '/courses',
+      }),
+    );
+  }, [courses, batchExams]);
 
   const renderCard = (course: StudyCourse) => {
     const isFree = (Number(course.price) || 0) <= 0;
     const cat = deriveExamCategory(course);
     const teacherName = course.educatorId ? teacherNameById.get(course.educatorId) : undefined;
-    const isFav = favorites.includes(course.id);
     return (
       <article
         key={course.id}
@@ -211,21 +222,6 @@ export default function StudyHomeClient({
             </span>
           )}
         </Link>
-        <button
-          type="button"
-          onClick={() => toggleFav(course.id)}
-          aria-pressed={isFav}
-          aria-label={isFav ? `${course.title} ko favorites se hatao` : `${course.title} ko favorites me jodo`}
-          className={`absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border backdrop-blur transition-colors ${
-            isFav
-              ? 'border-rose-400/50 bg-rose-500/20 text-rose-400'
-              : 'border-white/15 bg-black/45 text-white hover:text-rose-300'
-          }`}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill={isFav ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" aria-hidden="true">
-            <path d="M12 20.7C6.4 17 3 13.6 3 9.9 3 7.2 5 5 7.7 5c1.7 0 3.3.9 4.3 2.3C13 5.9 14.6 5 16.3 5 19 5 21 7.2 21 9.9c0 3.7-3.4 7.1-9 10.8Z" />
-          </svg>
-        </button>
         <div className="flex flex-1 flex-col gap-1.5 p-4">
           <Link href={`/courses/${course.slug}`}>
             <h3 className="line-clamp-2 text-[15px] font-bold leading-snug text-white">{course.title}</h3>
@@ -283,6 +279,23 @@ export default function StudyHomeClient({
             </button>
           </form>
 
+          {/* Quick actions — student app ke asal routes */}
+          <nav aria-label="Quick actions" className="mb-7">
+            <ul className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {QUICK_ACTIONS.map((action) => (
+                <li key={action.href} className="shrink-0">
+                  <Link
+                    href={action.href}
+                    className="flex items-center gap-2 rounded-full border border-white/10 bg-[#12121a] px-4 py-2.5 text-[13px] font-bold text-slate-200 transition-colors hover:border-[#6d28d9]/60 hover:text-white"
+                  >
+                    <span aria-hidden="true">{action.icon}</span>
+                    {action.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
           {/* Panel header */}
           <div className="mb-5 flex items-center justify-between gap-3">
             <h2 className="flex items-center gap-2.5 text-lg font-extrabold sm:text-xl">
@@ -296,80 +309,37 @@ export default function StudyHomeClient({
             <span className="text-xs font-semibold text-slate-500">Exam ke hisaab se chuno</span>
           </div>
 
-          {/* Category tiles — SHIVA ke apne exam goals */}
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {STUDY_TILES.map((tile) => (
+          {/* Category tiles — sirf asal data me maujood exams.
+              Ek bhi exam derive na ho to grid hi nahi banta. */}
+          {tiles.length > 0 && (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {tiles.map((tile) => (
+                <Link
+                  key={tile.label}
+                  href={tile.href}
+                  className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-[#12121a] px-3 py-6 text-center transition-colors hover:border-[#6d28d9]/60 hover:bg-[#17171f]"
+                  aria-label={`${tile.label} exam ke batches aur courses`}
+                >
+                  <CapIcon size={42} />
+                  <span className="text-[15px] font-bold leading-tight">{tile.label}</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500">Exam</span>
+                </Link>
+              ))}
               <Link
-                key={tile.label}
-                href={tile.href}
-                className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-[#12121a] px-3 py-6 text-center transition-colors hover:border-[#6d28d9]/60 hover:bg-[#17171f]"
-                aria-label={`${tile.label} exam ke batches aur courses`}
+                href="/courses"
+                className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#6d28d9]/50 bg-[#6d28d9]/10 px-3 py-6 text-center transition-colors hover:bg-[#6d28d9]/20"
+                aria-label="Saare courses dekho"
               >
-                <CapIcon size={42} />
-                <span className="text-[15px] font-bold leading-tight">{tile.label}</span>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-500">Exam</span>
+                <span className="text-2xl font-black" style={{ color: VIOLET_SOFT }} aria-hidden="true">→</span>
+                <span className="text-[15px] font-bold leading-tight">Saare Courses</span>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400">View All</span>
               </Link>
-            ))}
-            <Link
-              href="/courses"
-              className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-[#6d28d9]/50 bg-[#6d28d9]/10 px-3 py-6 text-center transition-colors hover:bg-[#6d28d9]/20"
-              aria-label="Saare courses dekho"
-            >
-              <span className="text-2xl font-black" style={{ color: VIOLET_SOFT }} aria-hidden="true">→</span>
-              <span className="text-[15px] font-bold leading-tight">Saare Courses</span>
-              <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400">View All</span>
-            </Link>
-          </div>
+            </div>
+          )}
         </div>
 
-        {/* ---------- Tabs: All Batches / Favorites ---------- */}
-        <div className="mt-8 flex gap-2" role="tablist" aria-label="Course views">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === 'all'}
-            onClick={() => setTab('all')}
-            className={`rounded-xl px-6 py-3 text-sm font-extrabold transition-colors ${
-              tab === 'all' ? 'text-white shadow-lg shadow-[#6d28d9]/30' : 'border border-white/10 bg-[#12121a] text-slate-300 hover:text-white'
-            }`}
-            style={tab === 'all' ? { background: VIOLET } : undefined}
-          >
-            All Batches
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === 'fav'}
-            onClick={() => setTab('fav')}
-            className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-extrabold transition-colors ${
-              tab === 'fav' ? 'text-white shadow-lg shadow-[#6d28d9]/30' : 'border border-white/10 bg-[#12121a] text-slate-300 hover:text-white'
-            }`}
-            style={tab === 'fav' ? { background: VIOLET } : undefined}
-          >
-            <span aria-hidden="true">♥</span> Favorites
-            {favorites.length > 0 && (
-              <span className="rounded-full bg-black/30 px-2 py-0.5 text-[11px] font-bold">{favorites.length}</span>
-            )}
-          </button>
-        </div>
-
-        {/* ---------- Content ---------- */}
-        {tab === 'fav' ? (
-          favCourses.length === 0 ? (
-            <div className="mt-6 rounded-3xl border border-dashed border-white/15 bg-[#0d0d13] px-6 py-12 text-center">
-              <div className="mb-3 text-4xl opacity-40" aria-hidden="true">♥</div>
-              <h3 className="mb-2 text-base font-bold">Abhi koi favorite course nahi hai</h3>
-              <p className="mx-auto max-w-md text-sm leading-relaxed text-slate-400">
-                Kisi course card par ♥ dabao — woh yahan tumhare browser me save ho jayega,
-                taaki tum use baad me aasaani se dhoondh sako.
-              </p>
-            </div>
-          ) : (
-            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 [&>article]:w-full">
-              {favCourses.map(renderCard)}
-            </div>
-          )
-        ) : courses.length === 0 ? (
+        {/* ---------- Content: exam groups / search results ---------- */}
+        {courses.length === 0 ? (
           <div className="mt-6 rounded-3xl border border-dashed border-white/15 bg-[#0d0d13] px-6 py-12 text-center">
             <div className="mb-3 text-4xl opacity-40" aria-hidden="true">📚</div>
             <h3 className="mb-2 text-base font-bold">Courses jald aa rahe hain</h3>

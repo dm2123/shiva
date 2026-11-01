@@ -57,13 +57,16 @@ export default async function DoubtsPage() {
   return (
     <div className="space-y-6 pb-8">
       {/* ── Hero header (PW-style) ─────────────────────────── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-700 p-6 md:p-8 text-white">
+      <div
+        className="relative overflow-hidden rounded-3xl p-6 md:p-8 text-white"
+        style={{ background: 'linear-gradient(120deg, #2a1650 0%, #4c1d95 55%, #6d28d9 100%)' }}
+      >
         <div
-          className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/10 blur-2xl"
+          className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-[#f5b942]/15 blur-3xl"
           aria-hidden="true"
         />
         <div
-          className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-violet-400/20 blur-2xl"
+          className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-white/10 blur-3xl"
           aria-hidden="true"
         />
         <div className="relative">
@@ -73,7 +76,7 @@ export default async function DoubtsPage() {
             </div>
             <div>
               <h1 className="text-xl md:text-2xl font-black tracking-tight">Doubts</h1>
-              <p className="text-[13px] text-indigo-100 mt-0.5">
+              <p className="text-[13px] text-violet-200 mt-0.5">
                 Ask anything — your educator will answer here
               </p>
             </div>
@@ -90,7 +93,7 @@ export default async function DoubtsPage() {
                 key={s.label}
                 className="rounded-2xl bg-white/10 border border-white/15 backdrop-blur-sm p-3 md:p-4"
               >
-                <div className="flex items-center gap-1.5 text-indigo-100">
+                <div className="flex items-center gap-1.5 text-violet-200">
                   {s.icon}
                   <p className="text-[10px] md:text-[11px] font-semibold uppercase tracking-wider">
                     {s.label}
@@ -150,13 +153,14 @@ export default async function DoubtsPage() {
                 <article key={d.id} className="student-card p-5 overflow-hidden">
                   {/* Status strip */}
                   <div
-                    className={`h-1 -mx-5 -mt-5 mb-4 ${
-                      isResolved
-                        ? 'bg-gradient-to-r from-emerald-400 to-emerald-500'
+                    className="h-1 -mx-5 -mt-5 mb-4"
+                    style={{
+                      background: isResolved
+                        ? 'var(--student-success)'
                         : isOpen
-                          ? 'bg-gradient-to-r from-amber-400 to-orange-400'
-                          : 'bg-gradient-to-r from-slate-300 to-slate-400'
-                    }`}
+                          ? 'var(--student-warning)'
+                          : 'var(--student-border-strong)',
+                    }}
                     aria-hidden="true"
                   />
                   <div className="flex items-start justify-between gap-3">
@@ -168,13 +172,19 @@ export default async function DoubtsPage() {
                       </div>
                       <div className="flex items-center gap-2 flex-wrap mt-2">
                         <span
-                          className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full border ${
-                            isResolved
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full border border-[var(--student-border)]"
+                          style={{
+                            background: isResolved
+                              ? 'var(--student-success-light)'
                               : isOpen
-                                ? 'bg-amber-50 text-amber-700 border-amber-200'
-                                : 'bg-slate-100 text-slate-600 border-slate-200'
-                          }`}
+                                ? 'var(--student-warning-light)'
+                                : 'var(--student-surface-hover)',
+                            color: isResolved
+                              ? 'var(--student-success)'
+                              : isOpen
+                                ? 'var(--student-warning)'
+                                : 'var(--student-text-faint)',
+                          }}
                         >
                           {isResolved ? (
                             <IconCheckCircle size={11} />
@@ -203,8 +213,11 @@ export default async function DoubtsPage() {
                   </p>
 
                   {isResolved && d.teacherResponse ? (
-                    <div className="mt-4 rounded-2xl bg-emerald-50/70 border border-emerald-100 p-4">
-                      <p className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 uppercase tracking-wider mb-2">
+                    <div
+                      className="mt-4 rounded-2xl border border-[var(--student-border)] p-4"
+                      style={{ background: 'var(--student-success-light)' }}
+                    >
+                      <p className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[var(--student-success)] uppercase tracking-wider mb-2">
                         <IconCheckCircle size={13} />
                         Educator&apos;s answer
                         {d.teacherName ? ` · ${d.teacherName}` : ''}
@@ -215,9 +228,12 @@ export default async function DoubtsPage() {
                     </div>
                   ) : (
                     isOpen && (
-                      <div className="mt-4 rounded-2xl bg-amber-50/70 border border-amber-100 px-4 py-3 flex items-center gap-2.5">
-                        <IconClock size={15} className="text-amber-600 flex-shrink-0" />
-                        <p className="text-[12px] text-amber-800 leading-relaxed">
+                      <div
+                        className="mt-4 rounded-2xl border border-[var(--student-border)] px-4 py-3 flex items-center gap-2.5"
+                        style={{ background: 'var(--student-warning-light)' }}
+                      >
+                        <IconClock size={15} className="text-[var(--student-warning)] flex-shrink-0" />
+                        <p className="text-[12px] text-[var(--student-text-secondary)] leading-relaxed">
                           Your educator has been notified and will answer soon.
                         </p>
                       </div>

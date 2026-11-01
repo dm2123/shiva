@@ -36,6 +36,27 @@ function fmtDate(d: any): string {
   }
 }
 
+/** StudyRays-pattern progress ring — sirf asal % par (total > 0 ho tabhi caller lagata hai) */
+function ProgressRing({ pct, size = 46 }: { pct: number; size?: number }) {
+  const stroke = 4;
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  const clamped = Math.min(100, Math.max(0, pct));
+  return (
+    <div className="relative flex-shrink-0" style={{ width: size, height: size }} role="img" aria-label={`${clamped}% complete`}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle cx={size / 2} cy={size / 2} r={r} stroke="rgba(255,255,255,0.28)" strokeWidth={stroke} fill="rgba(10,6,24,0.38)" />
+        <circle
+          cx={size / 2} cy={size / 2} r={r}
+          stroke="#f5b942" strokeWidth={stroke} fill="none" strokeLinecap="round"
+          strokeDasharray={c} strokeDashoffset={c - (c * clamped) / 100}
+        />
+      </svg>
+      <span className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white">{clamped}%</span>
+    </div>
+  );
+}
+
 /** Ek course ki resume/next lecture (asal LectureProgress se; na mile to null) */
 async function lecturePointers(studentId: string, courseId: string) {
   let resumeLecture: { id: string; title: string } | null = null;
@@ -81,7 +102,7 @@ export default async function MyCoursesPage() {
   let myCourses: any[] = [];
   try {
     const [rows]: any = await mysqlPool.query(
-      `SELECT c.id, c.title, c.slug, c.description, c.price, c.status,
+      `SELECT c.id, c.title, c.slug, c.description, c.thumbnailUrl, c.price, c.status,
               e.enrolledAt,
               COUNT(DISTINCT l.id) AS totalLectures,
               COUNT(DISTINCT CASE WHEN lp.isCompleted = 1 THEN l.id END) AS completedLectures,
@@ -101,7 +122,7 @@ export default async function MyCoursesPage() {
   } catch {
     // Fallback: bina progress wali purani query — course list to dikhe
     const [rows]: any = await mysqlPool.query(
-      `SELECT c.id, c.title, c.slug, c.description, c.price, c.status, e.enrolledAt
+      `SELECT c.id, c.title, c.slug, c.description, c.thumbnailUrl, c.price, c.status, e.enrolledAt
          FROM StudentEnrollments e
          JOIN Courses c ON e.courseId = c.id
         WHERE e.studentId = ? AND e.status = 'ACTIVE'
@@ -125,7 +146,7 @@ export default async function MyCoursesPage() {
   let exploreCourses: any[] = [];
   try {
     const [allRows]: any = await mysqlPool.query(
-      `SELECT id, title, slug, description, price FROM Courses WHERE status = 'PUBLISHED' ORDER BY createdAt DESC LIMIT 6`
+      `SELECT id, title, slug, description, thumbnailUrl, price FROM Courses WHERE status = 'PUBLISHED' ORDER BY createdAt DESC LIMIT 6`
     );
     exploreCourses = (allRows || []).filter((c: any) => !enrolledIds.includes(c.id));
   } catch {
@@ -176,7 +197,7 @@ export default async function MyCoursesPage() {
             actionHref="/app/courses"
           />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             {myCourses.map((course) => {
               const total = Number(course.totalLectures) || 0;
               const completed = Number(course.completedLectures) || 0;
@@ -186,18 +207,46 @@ export default async function MyCoursesPage() {
               const continueHref = resume
                 ? `/app/learn/${course.id}?lecture=${resume.id}`
                 : `/app/learn/${course.id}`;
+              // Chip sirf asal progress/enrollment se — koi nakli status nahi
+              const stateChip = done
+                ? { label: 'Completed', cls: 'bg-emerald-500 text-white' }
+                : completed > 0
+                  ? { label: 'In Progress', cls: 'bg-[#f5b942] text-[#2a1650]' }
+                  : { label: 'Enrolled', cls: 'bg-white/25 text-white backdrop-blur-sm' };
               return (
-                <article key={course.id} className="student-card overflow-hidden flex flex-col sm:flex-row group">
-                  {/* Cover */}
-                  <div className={`relative bg-gradient-to-br ${gradientFor(String(course.id))} sm:w-44 flex-shrink-0 min-h-[132px] flex items-center justify-center overflow-hidden`}>
-                    <div className="absolute -left-8 -bottom-8 w-32 h-32 rounded-full bg-white/10" />
-                    <div className="absolute right-3 top-3 w-12 h-12 rounded-full bg-white/10" />
-                    <div className="relative w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white">
-                      <IconLayers size={26} />
-                    </div>
-                    <span className="absolute top-3 left-3 text-[10px] font-black uppercase tracking-wider bg-white/25 backdrop-blur-sm text-white px-2.5 py-1 rounded-full flex items-center gap-1">
-                      <IconCheckCircle size={11} /> Enrolled
+                <article key={course.id} className="student-card overflow-hidden flex flex-col group">
+                  {/* Banner — asal thumbnail ho to wahi, warna brand gradient */}
+                  <div className={`relative bg-gradient-to-br ${gradientFor(String(course.id))} h-40 flex-shrink-0 overflow-hidden`}>
+                    {course.thumbnailUrl ? (
+                      <>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={course.thumbnailUrl}
+                          alt={course.title}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#2a1650]/85 via-[#2a1650]/20 to-transparent" />
+                      </>
+                    ) : (
+                      <>
+                        <div className="absolute -left-8 -bottom-10 w-36 h-36 rounded-full bg-white/10" />
+                        <div className="absolute right-6 top-6 w-16 h-16 rounded-full bg-white/10" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white">
+                            <IconLayers size={26} />
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    <span className={`absolute top-3 left-3 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1 ${stateChip.cls}`}>
+                      <IconCheckCircle size={11} /> {stateChip.label}
                     </span>
+                    {total > 0 && (
+                      <div className="absolute bottom-3 right-3">
+                        <ProgressRing pct={pct} />
+                      </div>
+                    )}
                   </div>
 
                   {/* Body */}
@@ -226,7 +275,7 @@ export default async function MyCoursesPage() {
                       <div className="mt-4">
                         <div className="flex items-center justify-between text-[11px] mb-1.5">
                           <span className="text-[var(--student-text-muted)]">{completed} / {total} lectures</span>
-                          <span className="font-bold text-[#6d28d9]">{pct}%</span>
+                          <span className="font-bold text-[#6d28d9]">{pct}% Complete</span>
                         </div>
                         <div className="h-2 rounded-full bg-[var(--student-surface-hover)] overflow-hidden">
                           <div
@@ -252,12 +301,12 @@ export default async function MyCoursesPage() {
                       </p>
                     )}
 
-                    <div className="mt-auto pt-3 border-t border-[var(--student-border-light)]">
+                    <div className="mt-auto pt-4">
                       <Link
                         href={continueHref}
                         className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#6d28d9] text-white text-[13px] font-bold hover:bg-[#5b21b6] transition-colors"
                       >
-                        <IconPlay size={14} />
+                        {done ? <IconCheckCircle size={14} /> : <IconPlay size={14} />}
                         {done ? 'Dobara dekho' : 'Continue'}
                       </Link>
                     </div>
@@ -284,10 +333,25 @@ export default async function MyCoursesPage() {
                 className="student-card overflow-hidden group"
               >
                 <div className={`relative bg-gradient-to-br ${gradientFor(String(course.id))} h-28 flex items-center justify-center overflow-hidden`}>
-                  <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-white/10" />
-                  <div className="relative w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white group-hover:scale-110 transition-transform">
-                    <IconBookOpen size={24} />
-                  </div>
+                  {course.thumbnailUrl ? (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={course.thumbnailUrl}
+                        alt={course.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#2a1650]/70 via-transparent to-transparent" />
+                    </>
+                  ) : (
+                    <>
+                      <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-white/10" />
+                      <div className="relative w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                        <IconBookOpen size={24} />
+                      </div>
+                    </>
+                  )}
                   <span className="absolute top-3 right-3 text-[10px] font-black uppercase tracking-wider bg-white text-[#6d28d9] px-2.5 py-1 rounded-full">
                     {Number(course.price) > 0 ? `₹${Number(course.price).toLocaleString('en-IN')}` : 'Free'}
                   </span>

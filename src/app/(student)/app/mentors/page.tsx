@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { StudentPageHeader } from '@/components/student/StudentShared';
 import StudentEmptyState from '@/components/student/StudentEmptyState';
 import MentorBooking from '@/components/mentorship/MentorBooking';
 import {
@@ -38,20 +37,21 @@ function MentorCardSkeleton() {
 
 function MentorCard({ mentor, onSelect }: { mentor: Mentor; onSelect: (id: string) => void }) {
   return (
-    <div className="student-card group p-5 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300">
+    <div className="student-card group p-5 hover:-translate-y-1 hover:shadow-xl hover:shadow-violet-900/20 transition-all duration-300">
       <div className="flex items-start gap-4">
         <div className="relative flex-shrink-0">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 via-indigo-500 to-blue-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#6d28d9] via-violet-600 to-[#2a1650] ring-2 ring-[#f5b942]/50 flex items-center justify-center shadow-lg shadow-violet-900/30">
             <span className="text-xl font-black text-white">
               {mentor.name?.charAt(0)?.toUpperCase() || '?'}
             </span>
           </div>
-          <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white" />
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="font-bold text-[var(--student-text)]">{mentor.name}</h3>
           {mentor.specialization && (
-            <p className="text-[12px] font-semibold text-indigo-600 mt-0.5">{mentor.specialization}</p>
+            <span className="inline-block mt-1 rounded-full bg-[var(--student-primary-light)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--student-primary)]">
+              {mentor.specialization}
+            </span>
           )}
           {mentor.bio && (
             <p className="text-[13px] text-[var(--student-text-muted)] mt-1.5 line-clamp-2 leading-relaxed">
@@ -69,11 +69,17 @@ function MentorCard({ mentor, onSelect }: { mentor: Mentor; onSelect: (id: strin
                 {mentor.totalSessions} sessions
               </span>
             )}
+            {mentor.activeStudents > 0 && (
+              <span className="inline-flex items-center gap-1">
+                <IconUsers size={12} />
+                {mentor.activeStudents} students mentored
+              </span>
+            )}
           </div>
         </div>
         <button
           onClick={() => onSelect(mentor.userId)}
-          className="flex-shrink-0 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-[13px] font-bold shadow-md shadow-indigo-500/25 hover:shadow-lg hover:shadow-indigo-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all min-h-[44px]"
+          className="flex-shrink-0 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#6d28d9] to-[#2a1650] text-white text-[13px] font-bold shadow-md shadow-violet-900/30 ring-1 ring-[#f5b942]/40 hover:shadow-lg hover:shadow-violet-900/40 hover:-translate-y-0.5 active:translate-y-0 transition-all min-h-[44px]"
         >
           Book
         </button>
@@ -126,7 +132,7 @@ export default function MentorsPage() {
             setSelectedMentor(null);
             setBooked(false);
           }}
-          className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--student-text-muted)] hover:text-indigo-600 transition-colors min-h-[44px]"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--student-text-muted)] hover:text-violet-600 transition-colors min-h-[44px]"
         >
           <IconArrowLeft size={16} />
           Back to mentors
@@ -140,14 +146,14 @@ export default function MentorsPage() {
             <h2 className="text-xl font-bold text-[var(--student-text)]">Session booked!</h2>
             <p className="text-sm text-[var(--student-text-muted)] mt-2 max-w-sm mx-auto">
               Your mentorship session with <strong>{selectedMentor.name}</strong> is confirmed.
-              Check <Link href="/app/mentors/sessions" className="text-indigo-600 font-semibold hover:underline">My Sessions</Link> for details.
+              Check <Link href="/app/mentors/sessions" className="text-violet-600 font-semibold hover:underline">My Sessions</Link> for details.
             </p>
             <button
               onClick={() => {
                 setSelectedMentor(null);
                 setBooked(false);
               }}
-              className="mt-6 px-6 py-2.5 rounded-xl bg-[var(--student-surface)] border border-[var(--student-border-light)] text-sm font-bold text-[var(--student-text)] hover:border-indigo-300 transition-colors min-h-[44px]"
+              className="mt-6 px-6 py-2.5 rounded-xl bg-[var(--student-surface)] border border-[var(--student-border-light)] text-sm font-bold text-[var(--student-text)] hover:border-violet-300 transition-colors min-h-[44px]"
             >
               Back to mentors
             </button>
@@ -165,11 +171,53 @@ export default function MentorsPage() {
 
   return (
     <div className="space-y-6">
-      <StudentPageHeader
-        title="Mentorship"
-        description="Get 1:1 guidance from experienced teachers — book a personal session."
-        action={{ text: 'My Sessions', href: '/app/mentors/sessions' }}
-      />
+      {/* Hero (PW-style, platform palette) */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#2a1650] via-[#4c1d95] to-[#6d28d9] p-6 sm:p-8 text-white">
+        <div
+          className="pointer-events-none absolute -right-10 -top-10 h-44 w-44 rounded-full bg-white/10 blur-2xl"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute -bottom-16 -left-8 h-44 w-44 rounded-full bg-[#f5b942]/20 blur-2xl"
+          aria-hidden
+        />
+        <div className="relative">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f5b942] px-3 py-1 text-[11px] font-black tracking-widest text-[#2a1650]">
+              🎓 1:1 MENTORSHIP
+            </span>
+            <Link
+              href="/app/mentors/sessions"
+              className="inline-flex items-center gap-2 rounded-xl bg-white/15 px-4 py-2 text-[13px] font-bold text-white backdrop-blur transition hover:bg-white/25 min-h-[40px]"
+            >
+              <IconCalendar size={14} />
+              My Sessions
+            </Link>
+          </div>
+          <h1 className="mt-3 text-2xl font-black sm:text-3xl">Mentorship</h1>
+          <p className="mt-2 max-w-md text-sm leading-relaxed text-white/80">
+            Get 1:1 guidance from experienced teachers — book a personal session.
+          </p>
+          {!loading && mentors.length > 0 && (
+            <div className="mt-5 flex flex-wrap gap-3">
+              <div className="rounded-2xl bg-white/10 border border-white/15 backdrop-blur-sm px-4 py-3">
+                <p className="text-xl font-black leading-none">{mentors.length}</p>
+                <p className="text-[10px] text-violet-100 mt-1 uppercase tracking-wider font-semibold">
+                  Mentors
+                </p>
+              </div>
+              <div className="rounded-2xl bg-white/10 border border-white/15 backdrop-blur-sm px-4 py-3">
+                <p className="text-xl font-black leading-none">
+                  {mentors.reduce((sum, m) => sum + (m.totalSessions || 0), 0)}
+                </p>
+                <p className="text-[10px] text-violet-100 mt-1 uppercase tracking-wider font-semibold">
+                  Sessions held
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
 
       {loading ? (
         <div className="space-y-4">
@@ -204,7 +252,7 @@ export default function MentorsPage() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search mentors by name or subject…"
-                className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-[var(--student-border-light)] bg-white text-sm text-[var(--student-text)] placeholder:text-[var(--student-text-faint)] focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
+                className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-[var(--student-border-light)] bg-[var(--student-surface)] text-sm text-[var(--student-text)] placeholder:text-[var(--student-text-faint)] focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400"
               />
             </div>
           )}

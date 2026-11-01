@@ -100,11 +100,11 @@ const emptyPanelStyle: React.CSSProperties = {
   maxWidth: 620,
   margin: '0 auto',
   textAlign: 'center',
-  background: '#fff',
-  border: '2px dashed #ddd6fe',
+  background: '#12121a',
+  border: '2px dashed #37316b',
   borderRadius: 20,
   padding: '40px 30px',
-  boxShadow: '0 6px 24px rgba(42,22,80,.06)',
+  boxShadow: '0 10px 30px rgba(0,0,0,.45)',
 };
 
 export default async function TeachersPage() {
@@ -117,17 +117,30 @@ export default async function TeachersPage() {
         style={{
           paddingTop: 48,
           paddingBottom: 72,
-          background: 'linear-gradient(180deg,#f5f3ff 0%,#faf9ff 100%)',
+          background: 'linear-gradient(180deg,#171233 0%,#0d0d13 55%)',
         }}
       >
         <div className="wrap">
-          {/* Header — design language: ~32px extra-bold + grey subtitle */}
+          {/* Header — design language: ~32px extra-bold safed + lavender-grey
+              subtitle (dark theme; .sec-head ke light rang inline override) */}
           <div className="sec-head">
-            <span className="kicker">THE SHIVA Faculty</span>
-            <h2>
-              Meet Your <span className="hl">Teachers</span>
+            <span
+              className="kicker"
+              style={{
+                background: 'rgba(109,40,217,.18)',
+                color: '#c4b5fd',
+                border: '1px solid rgba(109,40,217,.45)',
+              }}
+            >
+              THE SHIVA Faculty
+            </span>
+            <h2 style={{ color: '#ffffff' }}>
+              Meet Your{' '}
+              <span className="hl" style={{ color: '#a78bfa' }}>
+                Teachers
+              </span>
             </h2>
-            <p>
+            <p style={{ color: '#a5a0d0' }}>
               Real teachers and educator partners teaching on THE SHIVA. Har profile wahi dikhata
               hai jo asal data me hai — subjects, experience aur unke asal courses. Neeche naam ya
               subject se khojo.
@@ -139,7 +152,7 @@ export default async function TeachersPage() {
                   fontWeight: 800,
                   letterSpacing: 1.2,
                   textTransform: 'uppercase',
-                  color: '#6d28d9',
+                  color: '#f5b942',
                   marginTop: 12,
                 }}
               >
@@ -154,10 +167,10 @@ export default async function TeachersPage() {
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <THEShivaLogo size={52} variant="icon" />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 800, color: '#2a1650', margin: '16px 0 8px' }}>
+              <h3 style={{ fontSize: 18, fontWeight: 800, color: '#ffffff', margin: '16px 0 8px' }}>
                 Teacher profiles load nahi ho paye
               </h3>
-              <p style={{ fontSize: 14.5, color: '#6b7280', lineHeight: 1.65, marginBottom: 22 }}>
+              <p style={{ fontSize: 14.5, color: '#a5a0d0', lineHeight: 1.65, marginBottom: 22 }}>
                 Kuch takneeki dikkat aayi hai. Thodi der baad page dobara kholo — profiles yahin
                 milengi.
               </p>
@@ -172,10 +185,10 @@ export default async function TeachersPage() {
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <THEShivaLogo size={52} variant="icon" />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 800, color: '#2a1650', margin: '16px 0 8px' }}>
+              <h3 style={{ fontSize: 18, fontWeight: 800, color: '#ffffff', margin: '16px 0 8px' }}>
                 Abhi koi teacher profile publish nahi hai
               </h3>
-              <p style={{ fontSize: 14.5, color: '#6b7280', lineHeight: 1.65, marginBottom: 22 }}>
+              <p style={{ fontSize: 14.5, color: '#a5a0d0', lineHeight: 1.65, marginBottom: 22 }}>
                 THE SHIVA par educator profiles jald hi yahan dikhengi. Tab tak hamare published
                 courses dekho aur apni taiyaari shuru karo.
               </p>
@@ -186,7 +199,7 @@ export default async function TeachersPage() {
                 <Link
                   href="/register"
                   className="btn"
-                  style={{ background: '#111111', color: '#fff' }}
+                  style={{ background: '#f5b942', color: '#2a1650' }}
                 >
                   Free Register Karo
                 </Link>
@@ -194,17 +207,38 @@ export default async function TeachersPage() {
             </div>
           )}
 
-          {/* Bottom CTA */}
+          {/* Bottom CTA — dark deep→violet gradient panel (footer/header
+              wali hi dark brand language) */}
           {teachers.length > 0 && (
-            <div className="counsel-strip" style={{ marginTop: 48 }}>
-              <div>
-                <h2>Padhai shuru karne ke liye taiyaar ho?</h2>
-                <p>
+            <div
+              style={{
+                marginTop: 48,
+                background: 'linear-gradient(120deg,#2a1650 0%,#6d28d9 100%)',
+                border: '1px solid rgba(167,139,250,.35)',
+                borderRadius: 24,
+                padding: 36,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 24,
+                flexWrap: 'wrap',
+                boxShadow: '0 18px 44px rgba(0,0,0,.5)',
+              }}
+            >
+              <div style={{ minWidth: 0 }}>
+                <h2 style={{ fontSize: 26, fontWeight: 800, color: '#ffffff', marginBottom: 8 }}>
+                  Padhai shuru karne ke liye taiyaar ho?
+                </h2>
+                <p style={{ color: '#d6ceff', fontSize: 15, lineHeight: 1.65, maxWidth: 560 }}>
                   Inhi teachers ke courses, batches aur live classes THE SHIVA par milte hain — ek
                   hi account se sab kuch.
                 </p>
               </div>
-              <Link href="/register" className="btn btn-primary">
+              <Link
+                href="/register"
+                className="btn"
+                style={{ background: '#f5b942', color: '#2a1650', flexShrink: 0 }}
+              >
                 Get Started →
               </Link>
             </div>

@@ -2,11 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireRole } from '@/lib/rbac';
 import { UserRole } from '@/types/auth';
 import { mysqlPool } from '@/lib/db';
+import { ensureLectureMaterialsSchema } from '@/lib/ensure-lecture-materials-schema';
 import { v4 as uuid } from 'uuid';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireRole(req, UserRole.TEACHER);
+    await ensureLectureMaterialsSchema();
     const [rows]: any = await mysqlPool.query(
       'SELECT * FROM LectureMaterials WHERE lectureId = ? ORDER BY createdAt DESC',
       [params.id]
@@ -21,6 +23,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     await requireRole(req, UserRole.TEACHER);
+    await ensureLectureMaterialsSchema();
     const body = await req.json();
     const { title, fileUrl, fileType } = body;
 

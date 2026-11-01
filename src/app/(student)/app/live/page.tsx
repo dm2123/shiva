@@ -1,4 +1,3 @@
-import { StudentPageHeader } from '@/components/student/StudentShared';
 import StudentEmptyState from '@/components/student/StudentEmptyState';
 import { IconRadio, IconPlay, IconCalendar, IconClock } from '@/components/student/StudentIcons';
 import { getSessionFromHeaders } from '@/lib/rbac-server';
@@ -52,7 +51,7 @@ function StatusBadge({ status }: { status: string }) {
     );
   }
   return (
-    <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#6d28d9]/10 text-[#6d28d9]">
+    <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-[#6d28d9]/10 text-[#6d28d9] dark:text-[#a78bfa]">
       Upcoming
     </span>
   );
@@ -76,12 +75,70 @@ export default async function LiveClassesPage() {
     .sort(byStartAsc);
   const ended = liveClasses.filter((c: any) => c.status === 'ENDED').sort(byStartDesc);
 
+  const nextClass = upcoming[0];
+
   return (
     <div className="space-y-8">
-      <StudentPageHeader
-        title="Live Classes"
-        description="Join real-time sessions with your teachers. Missed one? Catch the recording."
-      />
+      {/* ── Hero band (brand deep-purple, PW-style) ─────────── */}
+      <div
+        className="relative overflow-hidden rounded-3xl p-6 md:p-8 text-white"
+        style={{ background: 'linear-gradient(120deg, #2a1650 0%, #4c1d95 55%, #6d28d9 100%)' }}
+      >
+        <div
+          className="absolute -top-20 -right-16 w-72 h-72 rounded-full bg-[#f5b942]/15 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute -bottom-24 -left-10 w-64 h-64 rounded-full bg-white/10 blur-3xl"
+          aria-hidden="true"
+        />
+        <div className="relative">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center backdrop-blur-sm">
+              <IconRadio size={24} className="text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl md:text-2xl font-black tracking-tight">Live Classes</h1>
+              <p className="text-[13px] text-violet-200 mt-0.5">
+                Join real-time sessions with your teachers. Missed one? Catch the recording.
+              </p>
+            </div>
+          </div>
+
+          {/* Asal status line — sirf wahi jo data me hai */}
+          <div className="flex flex-wrap items-center gap-2.5 mt-6">
+            {liveNow.length > 0 ? (
+              <span className="inline-flex items-center gap-2 rounded-full bg-red-500 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-wider">
+                <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                {liveNow.length} class{liveNow.length > 1 ? 'es' : ''} live now
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3.5 py-1.5 text-xs font-bold">
+                <span className="w-2 h-2 rounded-full bg-violet-300" />
+                Abhi koi class live nahi hai
+              </span>
+            )}
+            {nextClass && (
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3.5 py-1.5 text-xs font-semibold text-violet-100">
+                <IconClock size={13} className="text-[#f5b942]" />
+                Agli class: {nextClass.title}
+                {startsInLabel(nextClass.scheduledStartAt)
+                  ? ` · ${startsInLabel(nextClass.scheduledStartAt)}`
+                  : ` · ${formatDateTime(nextClass.scheduledStartAt)}`}
+              </span>
+            )}
+            {ended.length > 0 && (
+              <Link
+                href="/app/recordings"
+                className="inline-flex items-center gap-2 rounded-full bg-[#f5b942] text-[#2a1650] px-3.5 py-1.5 text-xs font-extrabold hover:opacity-90 transition-opacity"
+              >
+                <IconPlay size={13} />
+                Recordings dekho
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
 
       {liveClasses.length === 0 ? (
         <StudentEmptyState
@@ -96,19 +153,6 @@ export default async function LiveClassesPage() {
         />
       ) : (
         <>
-          {/* Honest live strip — classes hain par is samay koi live nahi */}
-          {liveNow.length === 0 && (
-            <div className="student-card px-5 py-4 flex items-center gap-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-[var(--student-text-faint)] shrink-0" />
-              <p className="text-sm text-[var(--student-text-muted)]">
-                <span className="font-bold text-[var(--student-text)]">Abhi koi live class nahi hai.</span>{' '}
-                {upcoming.length > 0
-                  ? 'Neeche upcoming classes ka asal schedule diya hai — time par Join button yahi milega.'
-                  : 'Nayi class schedule hote hi yahan dikhegi.'}
-              </p>
-            </div>
-          )}
-
           {/* Live Now */}
           {liveNow.length > 0 && (
             <section>
@@ -120,12 +164,16 @@ export default async function LiveClassesPage() {
                 {liveNow.map((lc: any) => (
                   <div
                     key={lc.id}
-                    className="student-card overflow-hidden"
+                    className="student-card overflow-hidden relative"
                     style={{ borderColor: 'rgba(239,68,68,.35)' }}
                   >
+                    <span
+                      className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-red-500 to-[#6d28d9]"
+                      aria-hidden="true"
+                    />
                     <div
-                      className="px-5 pt-5 pb-4"
-                      style={{ background: 'linear-gradient(135deg, rgba(239,68,68,.10), rgba(168,85,247,.10))' }}
+                      className="px-5 pt-5 pb-4 pl-6"
+                      style={{ background: 'linear-gradient(135deg, rgba(239,68,68,.10), rgba(109,40,217,.10))' }}
                     >
                       <div className="flex items-center justify-between mb-3">
                         <StatusBadge status={lc.status} />
@@ -148,7 +196,7 @@ export default async function LiveClassesPage() {
                         </p>
                       )}
                     </div>
-                    <div className="p-5 pt-4">
+                    <div className="p-5 pt-4 pl-6">
                       {lc.description && (
                         <p className="text-sm text-[var(--student-text-muted)] line-clamp-2 mb-4">
                           {lc.description}
@@ -174,7 +222,15 @@ export default async function LiveClassesPage() {
               <h2 className="text-lg font-bold text-[var(--student-text)] mb-4">Upcoming</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {upcoming.map((lc: any) => (
-                  <Link key={lc.id} href={`/app/live/${lc.id}`} className="student-card p-5 block">
+                  <Link
+                    key={lc.id}
+                    href={`/app/live/${lc.id}`}
+                    className="student-card p-5 pl-6 block relative overflow-hidden"
+                  >
+                    <span
+                      className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-[#6d28d9] to-[#2a1650]"
+                      aria-hidden="true"
+                    />
                     <div className="flex items-center justify-between mb-3">
                       <StatusBadge status={lc.status} />
                       {lc.classType && (
@@ -186,12 +242,15 @@ export default async function LiveClassesPage() {
                     <h3 className="text-[15px] font-bold text-[var(--student-text)] leading-snug mb-2">
                       {lc.title}
                     </h3>
+                    {lc.courseTitle && (
+                      <p className="text-xs text-[var(--student-text-faint)] mb-1.5">{lc.courseTitle}</p>
+                    )}
                     <p className="flex items-center gap-1.5 text-xs text-[var(--student-text-muted)]">
                       <IconCalendar size={13} />
                       {formatDateTime(lc.scheduledStartAt)}
                     </p>
                     {startsInLabel(lc.scheduledStartAt) && (
-                      <p className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-[#f5b942]/15 px-2.5 py-1 text-[11px] font-bold text-[#92600a]">
+                      <p className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#f5b942]/15 px-2.5 py-1 text-[11px] font-bold text-[#92600a] dark:text-[#f5b942]">
                         <IconClock size={11} />
                         {startsInLabel(lc.scheduledStartAt)}
                       </p>
@@ -214,14 +273,22 @@ export default async function LiveClassesPage() {
           {/* Recordings — khatm hui classes; recording sirf tab jab asal URL hai */}
           {ended.length > 0 && (
             <section>
-              <h2 className="text-lg font-bold text-[var(--student-text)] mb-4">Recordings</h2>
+              <h2 className="text-lg font-bold text-[var(--student-text)] mb-4">Past Classes</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {ended.map((lc: any) => (
-                  <Link key={lc.id} href={`/app/live/${lc.id}`} className="student-card p-5 block opacity-90">
+                  <Link
+                    key={lc.id}
+                    href={`/app/live/${lc.id}`}
+                    className="student-card p-5 pl-6 block relative overflow-hidden opacity-90"
+                  >
+                    <span
+                      className="absolute left-0 top-0 bottom-0 w-1.5 bg-[var(--student-border-strong)]"
+                      aria-hidden="true"
+                    />
                     <div className="flex items-center justify-between mb-3">
                       <StatusBadge status={lc.status} />
                       {lc.recordingUrl ? (
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-600">
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                           Recording ready
                         </span>
                       ) : (

@@ -59,6 +59,21 @@ export interface CourseMetaDTO {
   targetAudience?: string | null;
 }
 
+/**
+ * Course se linked asal published test (Tests table, courseId match).
+ * Sirf wohi fields jo record par sach me hain — question count per-test
+ * derive nahi hota (questions chapters se jude hain), isliye yahan nahi hai.
+ */
+export interface CourseTestDTO {
+  id: string;
+  title: string;
+  description?: string;
+  durationMinutes?: number;
+  totalMarks?: number;
+  type?: string;
+  category?: string;
+}
+
 interface Props {
   description?: string;
   subjects: SubjectDTO[];
@@ -69,9 +84,11 @@ interface Props {
   previewHref: string;
   isEnrolled: boolean;
   meta?: CourseMetaDTO;
+  /** Asal published tests (courseId-linked). Khaali ho to Tests tab hi nahi banta. */
+  tests?: CourseTestDTO[];
 }
 
-type TabId = 'features' | 'about' | 'schedule' | 'teachers' | 'free' | 'more';
+type TabId = 'features' | 'about' | 'schedule' | 'tests' | 'teachers' | 'free' | 'more';
 
 const PURPLE = '#6d28d9';
 const PURPLE_DARK = '#2a1650';
@@ -149,6 +166,7 @@ export default function CourseDetailClient({
   previewHref,
   isEnrolled,
   meta,
+  tests = [],
 }: Props) {
   const [activeTab, setActiveTab] = useState<TabId>('features');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -170,6 +188,19 @@ export default function CourseDetailClient({
     }
     return { chapters, lectures, seconds };
   }, [subjects]);
+
+  /* Tabs — Tests tab sirf tab jab course ke asal published tests hon.
+     Khaali ho to tab hi nahi banta (invented section nahi dikhta). */
+  const visibleTabs = useMemo(() => {
+    if (tests.length === 0) return TABS;
+    const idx = TABS.findIndex((t) => t.id === 'schedule');
+    const testsTab: { id: TabId; label: string; icon: string } = {
+      id: 'tests',
+      label: 'Tests',
+      icon: '📝',
+    };
+    return [...TABS.slice(0, idx + 1), testsTab, ...TABS.slice(idx + 1)];
+  }, [tests.length]);
 
   /* -------- More Details: numbered sections, asal data se hi bane -------- */
   const moreSections = useMemo(() => {
@@ -480,7 +511,7 @@ export default function CourseDetailClient({
         }}
         className="cd-tabs"
       >
-        {TABS.map((tab) => {
+        {visibleTabs.map((tab) => {
           const active = activeTab === tab.id;
           return (
             <button
@@ -533,6 +564,20 @@ export default function CourseDetailClient({
                   }}
                 >
                   {totals.lectures}
+                </span>
+              )}
+              {tab.id === 'tests' && tests.length > 0 && (
+                <span
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 800,
+                    background: active ? 'rgba(255,255,255,.22)' : 'rgba(109,40,217,.28)',
+                    color: active ? '#fff' : '#c4b5fd',
+                    padding: '2px 8px',
+                    borderRadius: 999,
+                  }}
+                >
+                  {tests.length}
                 </span>
               )}
             </button>
@@ -1030,6 +1075,188 @@ export default function CourseDetailClient({
                 })}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------- TESTS ------------------------- */}
+      {/* Sirf tab render hota hai jab course ke asal PUBLISHED tests hon
+          (tab bhi tabhi banta hai). Meta sirf record ke asal fields se:
+          duration, total marks, type/category — per-test question count
+          platform par derive nahi hota, isliye dikhaya nahi jata. */}
+      {activeTab === 'tests' && tests.length > 0 && (
+        <div
+          role="tabpanel"
+          className="batch"
+          style={{
+            padding: 26,
+            background: '#0d0d13',
+            border: '1px solid rgba(255,255,255,0.09)',
+            color: '#e4e4e7',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 8,
+              marginBottom: 18,
+            }}
+          >
+            <h2 style={{ ...sectionTitle, color: '#f4f4f5' }}>📝 Course Tests</h2>
+            <span style={{ fontSize: 12.5, color: '#a1a1aa', fontWeight: 600 }}>
+              {tests.length} {tests.length === 1 ? 'test' : 'tests'} · is course se linked
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {tests.map((test) => (
+              <div
+                key={test.id}
+                style={{
+                  background: '#12121a',
+                  border: '1px solid rgba(255,255,255,0.09)',
+                  borderLeft: `4px solid ${PURPLE}`,
+                  borderRadius: 14,
+                  padding: '16px 18px',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    gap: 12,
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <h3 style={{ fontSize: 15.5, fontWeight: 800, color: '#f4f4f5', lineHeight: 1.35 }}>
+                    {test.title}
+                  </h3>
+                  {test.type && (
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 800,
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        background: 'rgba(109,40,217,.25)',
+                        color: '#c4b5fd',
+                        padding: '3px 9px',
+                        borderRadius: 999,
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {test.type}
+                    </span>
+                  )}
+                </div>
+                {test.description && (
+                  <p
+                    style={{
+                      fontSize: 13,
+                      color: '#a1a1aa',
+                      lineHeight: 1.6,
+                      marginTop: 6,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {test.description}
+                  </p>
+                )}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: 8,
+                    marginTop: 12,
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: '#d4d4d8',
+                  }}
+                >
+                  {typeof test.durationMinutes === 'number' && test.durationMinutes > 0 && (
+                    <span
+                      style={{
+                        background: 'rgba(255,255,255,0.06)',
+                        border: '1px solid rgba(255,255,255,0.09)',
+                        padding: '4px 10px',
+                        borderRadius: 999,
+                      }}
+                    >
+                      ⏱️ {test.durationMinutes} min
+                    </span>
+                  )}
+                  {typeof test.totalMarks === 'number' && test.totalMarks > 0 && (
+                    <span
+                      style={{
+                        background: 'rgba(255,255,255,0.06)',
+                        border: '1px solid rgba(255,255,255,0.09)',
+                        padding: '4px 10px',
+                        borderRadius: 999,
+                      }}
+                    >
+                      🎯 {test.totalMarks} marks
+                    </span>
+                  )}
+                  {test.category && (
+                    <span
+                      style={{
+                        background: 'rgba(245,185,66,.14)',
+                        color: GOLD,
+                        border: '1px solid rgba(245,185,66,.25)',
+                        padding: '4px 10px',
+                        borderRadius: 999,
+                      }}
+                    >
+                      {test.category}
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ fontSize: 13, color: '#a1a1aa', lineHeight: 1.6, marginTop: 18 }}>
+            Ye tests student dashboard ke <strong style={{ color: '#e4e4e7' }}>Tests</strong> section
+            me attempt hote hain — enroll karke login karo, phir apna score aur analysis wahan dekho.
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 14 }}>
+            <Link
+              href="/app/tests"
+              style={{
+                display: 'inline-block',
+                background: PURPLE,
+                color: '#fff',
+                fontWeight: 800,
+                fontSize: 13.5,
+                padding: '11px 22px',
+                borderRadius: 999,
+                textDecoration: 'none',
+              }}
+            >
+              Tests Attempt Karo →
+            </Link>
+            <Link
+              href="/test-series"
+              style={{
+                display: 'inline-block',
+                border: '1.5px solid rgba(109,40,217,.6)',
+                color: '#c4b5fd',
+                fontWeight: 700,
+                fontSize: 13.5,
+                padding: '11px 22px',
+                borderRadius: 999,
+                textDecoration: 'none',
+              }}
+            >
+              Test Series Dekho
+            </Link>
           </div>
         </div>
       )}

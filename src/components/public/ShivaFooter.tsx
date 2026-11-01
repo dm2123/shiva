@@ -17,16 +17,26 @@ const SOCIALS = [
  * GLOBAL PUBLIC SHELL — Footer (Workstream 10 + Round 2 Stream E)
  * Brand row + 5 link columns (map pattern: Company / Popular Exams / Products /
  * Free Resources / Legal) + bottom bar with copyright.
- * Only real routes are linked (/courses, /batches, /test-series, /teachers,
- * /about, /contact, /privacy, /terms, homepage anchors) — no invented address / phone /
- * social counts. Popular Exams = platform ke asal exam families, sab /courses par.
- * Class contract preserved: footer, .wrap, .fgrid, .fbot, .flink.
- * WS10 additive classes: .fbrand, .fbot-links. (Grid 5-column R2 CSS me hai.)
+ * Link rule (fleet 2026-11-02): platform routes (/courses, /batches,
+ * /test-series, /teachers, /about, /contact, /privacy, /terms) app ke
+ * apne routes hain — ye the-shiva.onrender.com par serve hote hain.
+ * Marketing content (Results, Scholarship, Free Study Material, FAQ,
+ * Download App) GitHub Pages marketing site par hai:
+ * https://dm2123.github.io/shiva/ (+ results.html / scholarship.html) —
+ * purane '/#…' homepage-anchor links platform root ke redirect ke baad
+ * kahin nahi pahunchte the, isliye woh marketing pages se badle gaye.
+ * 'Book Free Demo' counsellor-callback modal kholta hai (asal demo
+ * request ka yahi flow hai). Koi invented address / phone / social
+ * counts nahi. Popular Exams = platform ke asal exam families, sab
+ * /courses par. Class contract preserved: footer, .wrap, .fgrid,
+ * .fbot, .flink. WS10 additive classes: .fbrand, .fbot-links.
  */
+
+const MARKETING = 'https://dm2123.github.io/shiva/';
 
 const COLUMNS: {
   heading: string;
-  links: ({ label: string; href: string } | { label: string; action: 'callback' })[];
+  links: ({ label: string; href: string; external?: boolean } | { label: string; action: 'callback' })[];
 }[] = [
   {
     heading: 'Company',
@@ -34,7 +44,7 @@ const COLUMNS: {
       { label: 'About Us', href: '/about' },
       { label: 'Contact', href: '/contact' },
       { label: 'Our Faculty', href: '/teachers' },
-      { label: 'Download App', href: '/#app' },
+      { label: 'Download App', href: MARKETING, external: true },
       { label: 'Talk to a Counsellor', action: 'callback' },
     ],
   },
@@ -54,17 +64,17 @@ const COLUMNS: {
       { label: 'Courses', href: '/courses' },
       { label: 'Batches', href: '/batches' },
       { label: 'Test Series', href: '/test-series' },
-      { label: 'Book Free Demo', href: '/#demoCard' },
+      { label: 'Book Free Demo', action: 'callback' },
       { label: 'Student Login', href: '/login' },
     ],
   },
   {
     heading: 'Free Resources',
     links: [
-      { label: 'Free Study Material', href: '/#material' },
-      { label: 'Scholarship', href: '/#scholarship' },
-      { label: 'Results', href: '/#results' },
-      { label: 'FAQ', href: '/#faq' },
+      { label: 'Free Study Material', href: MARKETING, external: true },
+      { label: 'Scholarship', href: `${MARKETING}scholarship.html`, external: true },
+      { label: 'Results', href: `${MARKETING}results.html`, external: true },
+      { label: 'FAQ', href: MARKETING, external: true },
     ],
   },
   {
@@ -83,7 +93,9 @@ export default function ShivaFooter() {
         <Reveal>
           <div className="fbrand">
             <div className="fbrand-main">
-              <h4>THE SHIVA</h4>
+              <h4>
+                THE <span style={{ color: '#f5b942' }}>SHIVA</span>
+              </h4>
               <p className="fbrand-desc">
                 India ka affordable learning platform — SSC, Railway, Banking, Defence aur Teaching exams ke
                 liye.
@@ -116,9 +128,15 @@ export default function ShivaFooter() {
                 <h4>{col.heading}</h4>
                 {col.links.map((l) =>
                   'href' in l ? (
-                    <Link key={l.label} href={l.href}>
-                      {l.label}
-                    </Link>
+                    l.external ? (
+                      <a key={l.label} href={l.href}>
+                        {l.label}
+                      </a>
+                    ) : (
+                      <Link key={l.label} href={l.href}>
+                        {l.label}
+                      </Link>
+                    )
                   ) : (
                     <button key={l.label} type="button" className="flink" onClick={openCallbackModal}>
                       {l.label}

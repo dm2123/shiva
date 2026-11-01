@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getCourseSyllabusTree } from '@/services/academic.service';
 import { getEducatorById } from '@/services/educator.service';
+import { listTestByCourse } from '@/services/test.service';
 import { notFound } from 'next/navigation';
 import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
@@ -9,6 +10,7 @@ import { mysqlPool } from '@/lib/db';
 import type { EducatorProfile } from '@/types/educator';
 import CourseDetailClient, {
   type BatchDTO,
+  type CourseTestDTO,
   type FreeLectureDTO,
   type SubjectDTO,
 } from './CourseDetailClient';
@@ -176,6 +178,33 @@ export default async function PublicCourseDetailPage({ params }: { params: { cou
   const totalSeconds = allLectures.reduce((n, l) => n + (l.durationSeconds || 0), 0);
   const freeLectures: FreeLectureDTO[] = allLectures.filter((l) => l.isPreviewable);
   const totalDurationLabel = formatDuration(totalSeconds);
+
+  /* Course ke asal PUBLISHED tests (Tests.courseId se linked).
+     Best-effort: fetch fail ho ya ek bhi published test na ho to
+     Tests tab client me banta hi nahi — kuch invent nahi hota. */
+  let testsDTO: CourseTestDTO[] = [];
+  try {
+    const testRows = await listTestByCourse(courseTree.id);
+    testsDTO = (testRows || [])
+      .filter((t: any) => t.status === 'PUBLISHED')
+      .map((t: any) => ({
+        id: t.id,
+        title: t.title,
+        description: t.description ?? undefined,
+        durationMinutes:
+          t.durationMinutes != null && !Number.isNaN(Number(t.durationMinutes))
+            ? Number(t.durationMinutes)
+            : undefined,
+        totalMarks:
+          t.totalMarks != null && !Number.isNaN(Number(t.totalMarks))
+            ? Number(t.totalMarks)
+            : undefined,
+        type: typeof t.type === 'string' && t.type ? t.type : undefined,
+        category: typeof t.category === 'string' && t.category ? t.category : undefined,
+      }));
+  } catch {
+    testsDTO = [];
+  }
 
   // Where free-preview / lecture clicks should land.
   const previewHref = isEnrolled
@@ -445,6 +474,7 @@ export default async function PublicCourseDetailPage({ params }: { params: { cou
                 batches={batchesDTO}
                 teachers={teachers}
                 freeLectures={freeLectures}
+                tests={testsDTO}
                 previewHref={previewHref}
                 isEnrolled={isEnrolled}
                 meta={{

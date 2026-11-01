@@ -22,7 +22,7 @@ const CHANNELS = [
     description: 'Stuck on a concept? Get answers from educators.',
     href: '/app/doubts',
     icon: IconHelpCircle,
-    gradient: 'from-indigo-500 to-violet-500',
+    gradient: 'from-[#6d28d9] to-[#2a1650]',
     bg: 'bg-indigo-50',
     text: 'text-indigo-600',
   },
@@ -77,13 +77,13 @@ export default async function CommunityPage() {
   return (
     <div className="space-y-6 pb-8">
       {/* ── Hero header (PW-style) ─────────────────────────── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-600 via-purple-700 to-indigo-800 p-6 md:p-8 text-white">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#2a1650] via-[#4c1d95] to-[#6d28d9] p-6 md:p-8 text-white">
         <div
           className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/10 blur-2xl"
           aria-hidden="true"
         />
         <div
-          className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-fuchsia-400/20 blur-2xl"
+          className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-[#f5b942]/20 blur-2xl"
           aria-hidden="true"
         />
         <div className="relative">
@@ -173,7 +173,7 @@ export default async function CommunityPage() {
               const initial = (c.name || 'S')[0]?.toUpperCase() || 'S';
               return (
                 <div key={c.email} className="student-card p-5 flex items-center gap-4">
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white font-black text-lg flex-shrink-0">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#6d28d9] to-[#2a1650] ring-2 ring-[#f5b942]/40 flex items-center justify-center text-white font-black text-lg flex-shrink-0">
                     {initial}
                   </div>
                   <div className="min-w-0">

@@ -7,10 +7,11 @@
  * naam, subjects, specialties, qualification, tagline. Koi field data
  * me na ho to us par filter chip banta hi nahi.
  *
- * Card pattern (design language): safed rounded-2xl card, halki
- * shadow, upar purple-gradient photo band (asal photo ya original
- * initials-avatar), bold naam, subject, GREY 'X Years Exp' pill
- * (sirf asal experienceYears > 0 par), neeche detail arrow.
+ * Card pattern (design language): DARK rounded-2xl card (#12121a,
+ * violet-dark border), halki dark shadow, upar purple-gradient photo
+ * band (asal photo ya original initials-avatar), bold safed naam,
+ * subject, GREY 'X Years Exp' pill (sirf asal experienceYears > 0
+ * par), neeche detail arrow.
  * Koi fake rating / student-count / experience invent NAHI hota.
  */
 
@@ -64,11 +65,11 @@ function TeacherCard({ teacher }: { teacher: TeacherCardData }) {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        background: '#fff',
-        border: '2px solid #ede9fe',
+        background: '#12121a',
+        border: '2px solid #26224a',
         borderRadius: 16,
         overflow: 'hidden',
-        boxShadow: '0 6px 24px rgba(42,22,80,.08)',
+        boxShadow: '0 10px 30px rgba(0,0,0,.45)',
       }}
     >
       {/* Photo band — asal photo ho to wahi; na ho to purple gradient
@@ -94,7 +95,7 @@ function TeacherCard({ teacher }: { teacher: TeacherCardData }) {
               borderRadius: '50%',
               objectFit: 'cover',
               border: '3px solid rgba(255,255,255,.65)',
-              background: '#ede9fe',
+              background: '#241d4d',
             }}
           />
         ) : (
@@ -127,8 +128,8 @@ function TeacherCard({ teacher }: { teacher: TeacherCardData }) {
               fontWeight: 800,
               letterSpacing: 0.5,
               textTransform: 'uppercase',
-              background: '#ede9fe',
-              color: '#6d28d9',
+              background: '#f5b942',
+              color: '#2a1650',
               padding: '4px 9px',
               borderRadius: 999,
             }}
@@ -149,19 +150,19 @@ function TeacherCard({ teacher }: { teacher: TeacherCardData }) {
           flex: 1,
         }}
       >
-        <h3 style={{ fontSize: 17.5, fontWeight: 800, color: '#2a1650', lineHeight: 1.3 }}>
+        <h3 style={{ fontSize: 17.5, fontWeight: 800, color: '#ffffff', lineHeight: 1.3 }}>
           {teacher.name}
         </h3>
 
         {primarySubject && (
-          <p style={{ fontSize: 13.5, fontWeight: 700, color: '#6d28d9', marginTop: 5 }}>
+          <p style={{ fontSize: 13.5, fontWeight: 700, color: '#a78bfa', marginTop: 5 }}>
             {primarySubject}
             {teacher.subjects.length > 1 ? ` + ${teacher.subjects.length - 1} more subjects` : ''}
           </p>
         )}
 
         {subLine && (
-          <p style={{ fontSize: 13, color: '#6b7280', marginTop: 4, lineHeight: 1.5 }}>{subLine}</p>
+          <p style={{ fontSize: 13, color: '#a5a0d0', marginTop: 4, lineHeight: 1.5 }}>{subLine}</p>
         )}
 
         {/* Grey experience pill — SIRF asal experienceYears par */}
@@ -172,9 +173,9 @@ function TeacherCard({ teacher }: { teacher: TeacherCardData }) {
               marginTop: 11,
               fontSize: 12,
               fontWeight: 700,
-              color: '#4b5563',
-              background: '#f3f4f6',
-              border: '1px solid #e5e7eb',
+              color: '#c4c0e8',
+              background: '#1d1a33',
+              border: '1px solid #37316b',
               padding: '5px 12px',
               borderRadius: 999,
             }}
@@ -187,7 +188,7 @@ function TeacherCard({ teacher }: { teacher: TeacherCardData }) {
           <p
             style={{
               fontSize: 13.5,
-              color: '#6b7280',
+              color: '#a5a0d0',
               lineHeight: 1.6,
               marginTop: 12,
               display: '-webkit-box',
@@ -216,9 +217,9 @@ function TeacherCard({ teacher }: { teacher: TeacherCardData }) {
                 style={{
                   fontSize: 11.5,
                   fontWeight: 700,
-                  color: '#6d28d9',
-                  background: '#f5f3ff',
-                  border: '1px solid #ede9fe',
+                  color: '#c4b5fd',
+                  background: 'rgba(109,40,217,.16)',
+                  border: '1px solid rgba(109,40,217,.38)',
                   padding: '4px 10px',
                   borderRadius: 999,
                 }}
@@ -231,9 +232,9 @@ function TeacherCard({ teacher }: { teacher: TeacherCardData }) {
                 style={{
                   fontSize: 11.5,
                   fontWeight: 700,
-                  color: '#6b7280',
-                  background: '#f9fafb',
-                  border: '1px solid #e5e7eb',
+                  color: '#a5a0d0',
+                  background: '#1d1a33',
+                  border: '1px solid #37316b',
                   padding: '4px 10px',
                   borderRadius: 999,
                 }}
@@ -256,15 +257,15 @@ function TeacherCard({ teacher }: { teacher: TeacherCardData }) {
         >
           {teacher.slug ? (
             <>
-              <span style={{ fontSize: 14, fontWeight: 800, color: '#6d28d9' }}>View Profile</span>
+              <span style={{ fontSize: 14, fontWeight: 800, color: '#a78bfa' }}>View Profile</span>
               <span
                 aria-hidden="true"
                 style={{
                   width: 32,
                   height: 32,
                   borderRadius: '50%',
-                  border: '2px solid #6d28d9',
-                  color: '#6d28d9',
+                  border: '2px solid #8b5cf6',
+                  color: '#a78bfa',
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -277,7 +278,7 @@ function TeacherCard({ teacher }: { teacher: TeacherCardData }) {
               </span>
             </>
           ) : (
-            <span style={{ fontSize: 13.5, fontWeight: 600, color: '#9ca3af' }}>
+            <span style={{ fontSize: 13.5, fontWeight: 600, color: '#6b6690' }}>
               Profile on THE SHIVA
             </span>
           )}
@@ -309,9 +310,9 @@ const chipBase: React.CSSProperties = {
   fontSize: 13.5,
   fontWeight: 700,
   cursor: 'pointer',
-  border: '2px solid #ede9fe',
-  background: '#fff',
-  color: '#4c1d95',
+  border: '2px solid #37316b',
+  background: '#17171f',
+  color: '#c4c0e8',
   whiteSpace: 'nowrap',
   fontFamily: 'inherit',
 };
@@ -387,11 +388,11 @@ export default function TeachersExplorer({ teachers }: { teachers: TeacherCardDa
           style={{
             width: '100%',
             padding: '12px 40px 12px 42px',
-            border: '2px solid #ede9fe',
+            border: '2px solid #37316b',
             borderRadius: 12,
             fontSize: 14.5,
-            color: '#1e1b2e',
-            background: '#fff',
+            color: '#ffffff',
+            background: '#12121a',
             fontFamily: 'inherit',
           }}
         />
@@ -409,8 +410,8 @@ export default function TeachersExplorer({ teachers }: { teachers: TeacherCardDa
               height: 28,
               borderRadius: '50%',
               border: 'none',
-              background: '#ede9fe',
-              color: '#6d28d9',
+              background: '#2a2456',
+              color: '#c4b5fd',
               fontWeight: 800,
               cursor: 'pointer',
               fontFamily: 'inherit',
@@ -460,7 +461,7 @@ export default function TeachersExplorer({ teachers }: { teachers: TeacherCardDa
       <p
         style={{
           fontSize: 13.5,
-          color: '#6b7280',
+          color: '#a5a0d0',
           fontWeight: 600,
           marginBottom: 16,
           textAlign: 'center',
@@ -481,20 +482,20 @@ export default function TeachersExplorer({ teachers }: { teachers: TeacherCardDa
             margin: '8px auto 0',
             textAlign: 'center',
             padding: 40,
-            background: '#fff',
-            border: '2px solid #ede9fe',
+            background: '#12121a',
+            border: '2px solid #26224a',
             borderRadius: 16,
-            boxShadow: '0 6px 24px rgba(42,22,80,.08)',
+            boxShadow: '0 10px 30px rgba(0,0,0,.45)',
           }}
           role="status"
         >
           <div style={{ fontSize: 48, marginBottom: 12, opacity: 0.45 }} aria-hidden="true">
             🔍
           </div>
-          <h3 style={{ fontSize: 19, fontWeight: 800, marginBottom: 8, color: '#2a1650' }}>
+          <h3 style={{ fontSize: 19, fontWeight: 800, marginBottom: 8, color: '#ffffff' }}>
             Is search me koi teacher nahi mila
           </h3>
-          <p style={{ color: '#6b7280', fontSize: 14.5, marginBottom: 20, lineHeight: 1.65 }}>
+          <p style={{ color: '#a5a0d0', fontSize: 14.5, marginBottom: 20, lineHeight: 1.65 }}>
             {query.trim()
               ? `“${query.trim()}” se match karta koi published teacher profile nahi mila. Spelling check karo ya filters saaf karke saare teachers dekho.`
               : 'Chune gaye subject me abhi koi teacher profile nahi hai. All Teachers par saare profiles dekho.'}
@@ -530,7 +531,7 @@ export default function TeachersExplorer({ teachers }: { teachers: TeacherCardDa
             style={{
               background: 'none',
               border: 'none',
-              color: '#6d28d9',
+              color: '#a78bfa',
               fontWeight: 700,
               fontSize: 14,
               cursor: 'pointer',

@@ -55,6 +55,20 @@ function fmt(iso?: string | null): string {
   }
 }
 
+/** Honest relative label from the real scheduled time — no invented data. */
+function startsInLabel(iso?: string | null): string | null {
+  if (!iso) return null;
+  const diffMs = new Date(iso).getTime() - Date.now();
+  if (!Number.isFinite(diffMs)) return null;
+  if (diffMs <= 0) return 'Shuru hone wala hai';
+  const mins = Math.round(diffMs / 60000);
+  if (mins < 60) return `${mins} min me shuru`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ${mins % 60 > 0 ? `${mins % 60}m ` : ''}me shuru`;
+  const days = Math.floor(hours / 24);
+  return `${days} din me shuru`;
+}
+
 interface StudentLiveViewProps {
   liveClass: any;
   studentId: string;
@@ -74,24 +88,60 @@ export default function StudentLiveView({ liveClass, studentId, studentEmail }: 
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <Link
-          href="/app/live"
-          className="inline-flex items-center gap-1 text-xs font-bold text-[var(--student-primary)] mb-2"
-        >
-          <span aria-hidden>←</span> All Live Classes
-        </Link>
-        <h1 className="text-2xl font-extrabold text-[var(--student-text)]">{liveClass.title}</h1>
-        <p className="text-sm text-[var(--student-text-muted)] mt-1 flex items-center gap-2 flex-wrap">
-          {liveClass.courseTitle && <span>{liveClass.courseTitle}</span>}
-          <StatusBadge status={liveClass.status} />
-          {isUpcoming && startLabel && (
-            <span className="inline-flex items-center gap-1 text-xs font-medium">
-              <IconCalendar size={12} /> {startLabel}
-            </span>
+      {/* Header — brand hero band */}
+      <div
+        className="relative overflow-hidden rounded-3xl p-6 md:p-7 text-white"
+        style={{ background: 'linear-gradient(120deg, #2a1650 0%, #4c1d95 55%, #6d28d9 100%)' }}
+      >
+        <div
+          className="absolute -top-20 -right-14 w-64 h-64 rounded-full bg-[#f5b942]/15 blur-3xl"
+          aria-hidden="true"
+        />
+        <div className="relative">
+          <Link
+            href="/app/live"
+            className="inline-flex items-center gap-1 text-xs font-bold text-violet-200 hover:text-white transition-colors"
+          >
+            <span aria-hidden>←</span> All Live Classes
+          </Link>
+          <div className="flex items-start justify-between gap-3 flex-wrap mt-3">
+            <h1 className="text-2xl md:text-[28px] font-black tracking-tight leading-tight">
+              {liveClass.title}
+            </h1>
+            <StatusBadge status={liveClass.status} />
+          </div>
+          {(liveClass.courseTitle || liveClass.classType) && (
+            <p className="text-[13px] text-violet-200 mt-1.5">
+              {[liveClass.courseTitle, liveClass.classType].filter(Boolean).join(' · ')}
+            </p>
           )}
-        </p>
+          <div className="flex flex-wrap items-center gap-2 mt-4">
+            {startLabel && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1.5 text-[11px] font-semibold text-violet-100">
+                <IconCalendar size={12} className="text-[#f5b942]" />
+                {startLabel}
+              </span>
+            )}
+            {endLabel && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1.5 text-[11px] font-semibold text-violet-100">
+                <IconClock size={12} className="text-[#f5b942]" />
+                Ends {endLabel}
+              </span>
+            )}
+            {isUpcoming && startsInLabel(liveClass.scheduledStartAt) && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f5b942] text-[#2a1650] px-3 py-1.5 text-[11px] font-extrabold">
+                <IconClock size={12} />
+                {startsInLabel(liveClass.scheduledStartAt)}
+              </span>
+            )}
+            {isEnded && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1.5 text-[11px] font-semibold text-violet-100">
+                <IconPlay size={12} className="text-[#f5b942]" />
+                {liveClass.recordingUrl ? 'Recording available hai' : 'Recording abhi pending hai'}
+              </span>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Main Content */}

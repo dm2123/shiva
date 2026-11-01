@@ -175,7 +175,7 @@ export default async function ClassroomPage({
   const lectureHref = (id: string) => `/app/learn/${course.id}?lecture=${id}`;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#07070c]">
       <style>{`
         .learn-acc summary::-webkit-details-marker { display: none; }
         .learn-acc summary { list-style: none; cursor: pointer; }
@@ -183,38 +183,38 @@ export default async function ClassroomPage({
         .learn-acc[open] .learn-chev { transform: rotate(180deg); }
       `}</style>
 
-      {/* ── Sticky classroom top bar ─────────────────────────── */}
-      <div className="sticky top-0 z-30 border-b border-violet-100/70 bg-white/95 backdrop-blur">
+      {/* ── Sticky classroom top bar (dark) ──────────────────── */}
+      <div className="sticky top-0 z-30 border-b border-white/10 bg-[#0d0d14]/95 backdrop-blur">
         <div className="mx-auto max-w-[1280px] px-4 py-3">
           <div className="flex items-center gap-3">
             <Link
               href={`/app/courses/${course.id}`}
               aria-label="Back to course"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
             >
               <IconArrowLeft size={16} />
             </Link>
             <div className="min-w-0 flex-1">
-              <h1 className="truncate text-[15px] font-black text-gray-900">{course.title}</h1>
-              <p className="text-[11px] font-medium text-gray-500">
+              <h1 className="truncate text-[15px] font-black text-white">{course.title}</h1>
+              <p className="text-[11px] font-medium text-slate-400">
                 {completedLectures}/{totalLectures} lectures · {progressPct}% complete
               </p>
             </div>
             {Number(effectiveLecture.progress?.positionSeconds || 0) > 30 &&
               !effectiveLecture.progress?.isCompleted && (
-                <span className="hidden md:inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#f5b942]/15 px-3 py-1.5 text-[11px] font-bold text-[#92600a]">
+                <span className="hidden md:inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#f5b942]/15 px-3 py-1.5 text-[11px] font-bold text-[#f5b942]">
                   <IconClock size={12} />
                   Resume · {formatDuration(Number(effectiveLecture.progress.positionSeconds))}
                   {' '}par ruke the
                 </span>
               )}
-            <div className="hidden sm:flex items-center gap-2 rounded-full bg-[#6d28d9]/10 px-3 py-1.5">
-              <IconAward size={14} className="text-[#6d28d9]" />
-              <span className="text-[11px] font-bold text-[#2a1650]">{progressPct}%</span>
+            <div className="hidden sm:flex items-center gap-2 rounded-full bg-[#6d28d9]/20 px-3 py-1.5 ring-1 ring-[#6d28d9]/30">
+              <IconAward size={14} className="text-[#a78bfa]" />
+              <span className="text-[11px] font-bold text-violet-100">{progressPct}%</span>
             </div>
           </div>
           <div
-            className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-gray-100"
+            className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-white/10"
             role="progressbar"
             aria-valuenow={progressPct}
             aria-valuemin={0}
@@ -233,7 +233,7 @@ export default async function ClassroomPage({
         <div className="flex flex-col gap-5 lg:grid lg:grid-cols-[minmax(0,1fr)_370px] lg:items-start">
           {/* ── Player column ─────────────────────────── */}
           <main className="min-w-0">
-            <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
+            <div className="overflow-hidden rounded-[24px] border border-white/10 bg-[#12121a] p-4 shadow-2xl sm:p-5">
               <LecturePlayer
                 courseId={course.id}
                 lecture={{
@@ -253,39 +253,39 @@ export default async function ClassroomPage({
 
             {/* Lecture context strip — description Overview tab me hai,
                 yahan sirf position/status meta rakha hai (duplication nahi) */}
-            <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
-              <span className="rounded-full bg-[#6d28d9]/10 px-3 py-1 text-[11px] font-bold text-[#2a1650]">
+            <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-[#12121a] px-4 py-3 shadow-sm">
+              <span className="rounded-full bg-[#6d28d9]/20 px-3 py-1 text-[11px] font-bold text-violet-200">
                 Lecture {effectiveLecture.number} of {totalLectures}
               </span>
               {effectiveLecture.subjectName && (
-                <span className="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-semibold text-gray-600">
+                <span className="rounded-full bg-white/5 px-3 py-1 text-[11px] font-semibold text-slate-300">
                   {effectiveLecture.subjectName}
                 </span>
               )}
               {effectiveLecture.chapterTitle && (
-                <span className="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-semibold text-gray-600">
+                <span className="rounded-full bg-white/5 px-3 py-1 text-[11px] font-semibold text-slate-300">
                   {effectiveLecture.chapterTitle}
                 </span>
               )}
-              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-gray-500">
+              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-400">
                 <IconClock size={12} />
                 {formatDuration(effectiveLecture.durationSeconds)}
               </span>
               {effectiveLecture.progress?.isCompleted ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700">
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-3 py-1 text-[11px] font-bold text-emerald-300">
                   <IconCheckCircle size={12} /> Completed
                 </span>
               ) : Number(effectiveLecture.progress?.positionSeconds || 0) > 0 ? (
-                <span className="rounded-full bg-[#f5b942]/15 px-3 py-1 text-[11px] font-bold text-[#92600a]">
+                <span className="rounded-full bg-[#f5b942]/15 px-3 py-1 text-[11px] font-bold text-[#f5b942]">
                   In progress
                 </span>
               ) : (
-                <span className="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-bold text-gray-500">
+                <span className="rounded-full bg-white/5 px-3 py-1 text-[11px] font-bold text-slate-400">
                   Not started
                 </span>
               )}
               {inProgressLectures > 0 && (
-                <span className="ml-auto text-[11px] font-medium text-gray-400">
+                <span className="ml-auto text-[11px] font-medium text-slate-500">
                   {inProgressLectures} lecture{inProgressLectures > 1 ? 's' : ''} beech me chhoda hua
                 </span>
               )}
@@ -295,29 +295,29 @@ export default async function ClassroomPage({
             {nextLecture && (
               <Link
                 href={lectureHref(nextLecture.id)}
-                className="group mt-4 flex items-center gap-4 rounded-2xl border border-[#6d28d9]/15 bg-gradient-to-r from-[#6d28d9]/5 to-[#f5b942]/10 p-4 transition-shadow hover:shadow-md"
+                className="group mt-4 flex items-center gap-4 rounded-[24px] border border-[#6d28d9]/30 bg-gradient-to-r from-[#6d28d9]/15 to-[#f5b942]/[0.08] p-4 transition hover:border-[#6d28d9]/50 hover:shadow-[0_0_36px_rgba(109,40,217,0.15)]"
               >
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#2a1650] to-[#6d28d9] text-white shadow">
                   <IconPlay size={18} className="ml-0.5" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#6d28d9]">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#a78bfa]">
                     Up next · Lecture {nextLecture.number}
                   </p>
-                  <p className="truncate text-sm font-bold text-gray-900 group-hover:text-[#6d28d9]">
+                  <p className="truncate text-sm font-bold text-white group-hover:text-[#a78bfa]">
                     {nextLecture.title}
                   </p>
-                  <p className="text-[11px] text-gray-500">{formatDuration(nextLecture.durationSeconds)}</p>
+                  <p className="text-[11px] text-slate-400">{formatDuration(nextLecture.durationSeconds)}</p>
                 </div>
-                <IconArrowLeft size={16} className="rotate-180 text-[#6d28d9] transition-transform group-hover:translate-x-1" />
+                <IconArrowLeft size={16} className="rotate-180 text-[#a78bfa] transition-transform group-hover:translate-x-1" />
               </Link>
             )}
           </main>
 
-          {/* ── Curriculum sidebar ─────────────────────────── */}
+          {/* ── Curriculum sidebar (dark) ──────────────────────── */}
           <aside className="min-w-0 lg:sticky lg:top-32">
-            <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-              <div className="border-b border-gray-100 bg-gradient-to-r from-[#2a1650] to-[#6d28d9] px-5 py-4 text-white">
+            <div className="overflow-hidden rounded-[24px] border border-white/10 bg-[#12121a] shadow-xl">
+              <div className="border-b border-white/10 bg-gradient-to-r from-[#2a1650] to-[#6d28d9] px-5 py-4 text-white">
                 <div className="flex items-center gap-2">
                   <IconList size={16} />
                   <h2 className="text-sm font-black tracking-tight">Course Content</h2>
@@ -336,7 +336,7 @@ export default async function ClassroomPage({
               <div className="max-h-[70vh] overflow-y-auto p-3 custom-scrollbar">
                 {hierarchy.map((subject: any) => (
                   <div key={subject.id} className="mb-4 last:mb-1">
-                    <p className="px-2 pb-2 text-[10px] font-black uppercase tracking-[0.18em] text-gray-400">
+                    <p className="px-2 pb-2 text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">
                       {subject.name}
                     </p>
                     <div className="space-y-2">
@@ -345,26 +345,26 @@ export default async function ClassroomPage({
                           const chapterPct = chapter.lectures.length === 0 ? 0 : Math.round((done / chapter.lectures.length) * 100);
                           const isOpen = chapter.lectures.some((l: any) => l.id === effectiveLecture.id);
                           return (
-                            <details key={chapter.id} open={isOpen} className="learn-acc group rounded-xl border border-gray-100 bg-gray-50/60">
+                            <details key={chapter.id} open={isOpen} className="learn-acc group rounded-xl border border-white/5 bg-white/[0.03]">
                               <summary className="flex items-center gap-2 px-3 py-2.5">
-                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-[11px] font-black text-[#6d28d9] shadow-sm">
+                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#6d28d9]/25 text-[11px] font-black text-violet-100">
                                   {chapterStart.get(chapter.id) ?? ''}
                                 </span>
                                 <span className="min-w-0 flex-1">
-                                  <span className="block truncate text-[12.5px] font-bold text-gray-800">
+                                  <span className="block truncate text-[12.5px] font-bold text-slate-100">
                                     {chapter.title}
                                   </span>
-                                  <span className="block text-[10.5px] font-medium text-gray-400">
+                                  <span className="block text-[10.5px] font-medium text-slate-500">
                                     {done}/{chapter.lectures.length} completed
                                   </span>
-                                  <span className="mt-1 block h-1 overflow-hidden rounded-full bg-gray-200">
+                                  <span className="mt-1 block h-1 overflow-hidden rounded-full bg-white/10">
                                     <span
                                       className="block h-full rounded-full bg-[#6d28d9] transition-all"
                                       style={{ width: `${chapterPct}%` }}
                                     />
                                   </span>
                                 </span>
-                                <IconChevronDown size={15} className="learn-chev shrink-0 text-gray-400" />
+                                <IconChevronDown size={15} className="learn-chev shrink-0 text-slate-500" />
                               </summary>
                               <div className="space-y-1 px-2 pb-2">
                                 {chapter.lectures.map((lecture: any) => {
@@ -386,7 +386,7 @@ export default async function ClassroomPage({
                                       className={`flex items-center gap-2.5 rounded-lg px-2 py-2 transition-colors ${
                                         isActive
                                           ? 'bg-[#6d28d9] text-white shadow'
-                                          : 'text-gray-700 hover:bg-white'
+                                          : 'text-slate-300 hover:bg-white/5'
                                       }`}
                                     >
                                       <span
@@ -394,8 +394,8 @@ export default async function ClassroomPage({
                                           isActive
                                             ? 'bg-white/20 text-white'
                                             : isDone
-                                              ? 'bg-emerald-100 text-emerald-700'
-                                              : 'bg-[#6d28d9]/10 text-[#6d28d9]'
+                                              ? 'bg-emerald-500/15 text-emerald-300'
+                                              : 'bg-[#6d28d9]/15 text-violet-300'
                                         }`}
                                       >
                                         {isDone ? (
@@ -406,19 +406,19 @@ export default async function ClassroomPage({
                                       </span>
                                       <span className="min-w-0 flex-1">
                                         <span className={`block truncate text-[12px] font-semibold ${isActive ? 'text-white' : ''}`}>
-                                          <span className={`mr-1.5 font-black ${isActive ? 'text-violet-200' : 'text-gray-300'}`}>
+                                          <span className={`mr-1.5 font-black ${isActive ? 'text-violet-200' : 'text-slate-600'}`}>
                                             {lec.number}.
                                           </span>
                                           {lec.title}
                                         </span>
-                                        <span className={`block text-[10.5px] ${isActive ? 'text-violet-100' : 'text-gray-400'}`}>
+                                        <span className={`block text-[10.5px] ${isActive ? 'text-violet-100' : 'text-slate-500'}`}>
                                           {formatDuration(lec.durationSeconds)}
                                           {isDone ? ' · Watched ✓' : inProgress ? ` · Resume ${formatDuration(posSec)} · ${watchedPct}% watched` : ''}
                                         </span>
                                         {inProgress && (
-                                          <span className={`mt-1 block h-1 overflow-hidden rounded-full ${isActive ? 'bg-white/25' : 'bg-gray-200'}`}>
+                                          <span className={`mt-1 block h-1 overflow-hidden rounded-full ${isActive ? 'bg-white/25' : 'bg-white/10'}`}>
                                             <span
-                                              className={`block h-full rounded-full ${isActive ? 'bg-[#f5b942]' : 'bg-[#f5b942]'}`}
+                                              className="block h-full rounded-full bg-[#f5b942]"
                                               style={{ width: `${watchedPct}%` }}
                                             />
                                           </span>

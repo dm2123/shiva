@@ -18,42 +18,57 @@ function IconRecording({ size = 40, className }: { size?: number; className?: st
 export default function RecordingsPage() {
   return (
     <div className="space-y-6 md:space-y-8">
-      {/* Shaant header (andar ke pages ka standard) */}
-      <div>
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#6d28d9] to-[#2a1650] flex items-center justify-center text-white flex-shrink-0">
-            <IconRecording size={22} />
+      {/* ── Hero band (brand deep-purple, PW-style) ─────────── */}
+      <div
+        className="relative overflow-hidden rounded-3xl p-6 md:p-8 text-white"
+        style={{ background: 'linear-gradient(120deg, #2a1650 0%, #4c1d95 55%, #6d28d9 100%)' }}
+      >
+        <div
+          className="absolute -top-20 -right-16 w-72 h-72 rounded-full bg-[#f5b942]/15 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute -bottom-24 -left-10 w-64 h-64 rounded-full bg-white/10 blur-3xl"
+          aria-hidden="true"
+        />
+        <div className="relative">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center backdrop-blur-sm">
+              <IconRecording size={24} />
+            </div>
+            <div>
+              <h1 className="text-xl md:text-2xl font-black tracking-tight">Class Recordings</h1>
+              <p className="text-[13px] text-violet-200 mt-0.5">Missed a class? Yahan se dobara dekho.</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-[var(--student-text)] tracking-tight">Class Recordings</h1>
-            <p className="text-sm text-[var(--student-text-muted)] mt-0.5">Missed a class? Yahan se dobara dekho.</p>
+          <p className="text-[13px] text-violet-100/90 mt-4 max-w-xl leading-relaxed">
+            Jo live classes khatm ho chuki hain aur jinki recording asal me upload hui hai,
+            wahi yahan dikhengi — apni speed par dobara dekho, kabhi bhi. Recording taiyaar
+            hone me thoda samay lag sakta hai.
+          </p>
+          <div className="flex flex-wrap gap-2.5 mt-5">
+            <Link
+              href="/app/live"
+              className="inline-flex items-center gap-2 bg-[#f5b942] text-[#2a1650] text-xs font-extrabold px-4 py-2.5 rounded-full hover:opacity-90 transition-opacity"
+            >
+              <IconLive size={15} />
+              Live &amp; Upcoming Classes
+            </Link>
+            <Link
+              href="/app/my-courses"
+              className="inline-flex items-center gap-2 text-white text-xs font-bold px-4 py-2.5 rounded-full border border-white/25 bg-white/10 hover:bg-white/15 transition-colors"
+            >
+              <IconPlay size={15} />
+              My Courses
+            </Link>
           </div>
-        </div>
-        <p className="text-sm text-[var(--student-text-muted)] mt-3 max-w-xl leading-relaxed">
-          Jo live classes khatm ho chuki hain aur jinki recording asal me upload hui hai,
-          wahi yahan dikhengi — apni speed par dobara dekho, kabhi bhi. Recording taiyaar
-          hone me thoda samay lag sakta hai.
-        </p>
-        <div className="flex flex-wrap gap-2.5 mt-4">
-          <Link
-            href="/app/live"
-            className="inline-flex items-center gap-2 bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-full hover:bg-[#2a1650] transition-colors"
-          >
-            <IconLive size={15} />
-            Live &amp; Upcoming Classes
-          </Link>
-          <Link
-            href="/app/my-courses"
-            className="inline-flex items-center gap-2 text-[var(--student-text)] text-xs font-bold px-4 py-2.5 rounded-full border border-[var(--student-border)] hover:bg-[var(--student-surface-hover)] transition-colors"
-          >
-            <IconPlay size={15} />
-            My Courses
-          </Link>
         </div>
       </div>
 
-      {/* Recordings list (data-driven component) */}
-      <SessionRecordings />
+      {/* Recordings list (data-driven component) — card frame taaki page surface par sahi baithe */}
+      <div className="student-card p-5 md:p-6">
+        <SessionRecordings />
+      </div>
     </div>
   );
 }

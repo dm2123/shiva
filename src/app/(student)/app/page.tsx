@@ -2,6 +2,7 @@ import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
+import ShivaStudyHome from '@/components/public/ShivaStudyHome';
 import { listStudentLiveClasses } from '@/services/live-class.service';
 import DashboardClient, {
   type DashboardAnnouncement,
@@ -358,21 +359,31 @@ export default async function DashboardPage() {
   }
 
   return (
-    <DashboardClient
-      userName={userName}
-      userEmail={session.email}
-      goal={goal}
-      enrollments={enrollments}
-      todaysClasses={todaysClasses}
-      nextClass={nextClass}
-      streak={streak}
-      totalXP={totalXP}
-      pendingDoubts={pendingDoubts}
-      doubtSummary={doubtSummary}
-      recentLearning={recentLearning}
-      announcements={announcements}
-      bookmarksCount={bookmarksCount}
-      recommended={recommended}
-    />
+    <div className="bg-[#07070c]">
+      <DashboardClient
+        userName={userName}
+        userEmail={session.email}
+        goal={goal}
+        enrollments={enrollments}
+        todaysClasses={todaysClasses}
+        nextClass={nextClass}
+        streak={streak}
+        totalXP={totalXP}
+        pendingDoubts={pendingDoubts}
+        doubtSummary={doubtSummary}
+        recentLearning={recentLearning}
+        announcements={announcements}
+        bookmarksCount={bookmarksCount}
+        recommended={recommended}
+      />
+      {/* Study home (StudyRays-pattern, sirf asal data): search, quick
+          actions, Study Material tiles, course carousels, teachers.
+          Dashboard ke neeche ek dark panel ke roop me mount hai. */}
+      <div className="mx-auto w-full max-w-[1200px] px-4 pb-24">
+        <div className="overflow-hidden rounded-3xl shadow-xl ring-1 ring-white/10">
+          <ShivaStudyHome />
+        </div>
+      </div>
+    </div>
   );
 }

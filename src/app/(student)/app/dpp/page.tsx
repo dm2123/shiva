@@ -179,7 +179,7 @@ export default function DppPage() {
             </div>
             <button
               onClick={backToList}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium border border-[var(--student-border)] text-[var(--student-text-muted)] hover:bg-white/5"
+              className="px-3 py-1.5 rounded-lg text-xs font-medium border border-[var(--student-border)] text-[var(--student-text-muted)] hover:bg-[var(--student-surface-hover)]"
             >
               Exit
             </button>
@@ -210,7 +210,7 @@ export default function DppPage() {
                   ? 'bg-[#6d28d9] text-white scale-110'
                   : answers[q.id]
                   ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-                  : 'bg-white/10 text-[var(--student-text-muted)] hover:bg-white/20'
+                  : 'bg-[var(--student-surface-hover)] text-[var(--student-text-muted)] hover:bg-[#6d28d9]/15'
               }`}
             >
               {i + 1}
@@ -236,7 +236,7 @@ export default function DppPage() {
                 value={currentAnswer?.answerText || ''}
                 onChange={(e) => handleAnswer(currentQuestion.id, { answerText: e.target.value })}
                 placeholder="Enter your answer"
-                className="w-full px-4 py-3 rounded-xl border border-[var(--student-border)] bg-white/5 text-[var(--student-text)] placeholder:text-[var(--student-text-faint)] focus:outline-none focus:border-[#6d28d9]"
+                className="w-full px-4 py-3 rounded-xl border border-[var(--student-border)] bg-[var(--student-surface)] text-[var(--student-text)] placeholder:text-[var(--student-text-faint)] focus:outline-none focus:border-[#6d28d9]"
               />
             ) : (
               <div className="space-y-3">
@@ -268,7 +268,7 @@ export default function DppPage() {
           <button
             onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))}
             disabled={currentIndex === 0}
-            className="px-5 py-2.5 rounded-xl border border-[var(--student-border)] text-[var(--student-text)] font-medium hover:bg-white/5 disabled:opacity-30"
+            className="px-5 py-2.5 rounded-xl border border-[var(--student-border)] text-[var(--student-text)] font-medium hover:bg-[var(--student-surface-hover)] disabled:opacity-30"
           >
             Previous
           </button>
@@ -338,7 +338,7 @@ export default function DppPage() {
         </div>
         <button
           onClick={backToList}
-          className="w-full py-3 rounded-xl border border-[var(--student-border)] text-[var(--student-text)] font-semibold hover:bg-white/5"
+          className="w-full py-3 rounded-xl border border-[var(--student-border)] text-[var(--student-text)] font-semibold hover:bg-[var(--student-surface-hover)]"
         >
           Back to DPP List
         </button>

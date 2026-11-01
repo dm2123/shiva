@@ -153,6 +153,7 @@ export default function FormulaSheetsPage() {
   const [error, setError] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [query, setQuery] = useState('');
+  const [subject, setSubject] = useState('');
 
   useEffect(() => {
     fetch('/api/student/formula-sheets')
@@ -168,16 +169,24 @@ export default function FormulaSheetsPage() {
       });
   }, []);
 
+  /* Subject chips — sirf asal loaded sheets ke subjects se bante hain */
+  const subjects = useMemo(
+    () => Array.from(new Set(sheets.map((s) => s.subjectName).filter(Boolean) as string[])),
+    [sheets]
+  );
+
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return sheets;
-    return sheets.filter(
-      (s) =>
+    return sheets.filter((s) => {
+      if (subject && s.subjectName !== subject) return false;
+      if (!q) return true;
+      return (
         s.title.toLowerCase().includes(q) ||
         s.subjectName?.toLowerCase().includes(q) ||
         s.chapterName?.toLowerCase().includes(q)
-    );
-  }, [sheets, query]);
+      );
+    });
+  }, [sheets, query, subject]);
 
   const totalFormulas = useMemo(
     () => sheets.reduce((n, s) => n + (s.content || []).reduce((m, sec) => m + (sec.formulas?.length || 0), 0), 0),
@@ -223,6 +232,30 @@ export default function FormulaSheetsPage() {
         </div>
       </div>
 
+      {/* Subject filter — asal data se bane chips */}
+      {!loading && !error && subjects.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="tablist" aria-label="Subject filter">
+          {['', ...subjects].map((sub) => {
+            const active = subject === sub;
+            return (
+              <button
+                key={sub || 'all'}
+                role="tab"
+                aria-selected={active}
+                onClick={() => setSubject(sub)}
+                className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${
+                  active
+                    ? 'bg-[#6d28d9] text-white border-transparent shadow-md shadow-[#6d28d9]/25'
+                    : 'bg-[var(--student-surface)] text-[var(--student-text-muted)] border-[var(--student-border)] hover:border-[#6d28d9] hover:text-[#6d28d9]'
+                }`}
+              >
+                {sub || 'All Subjects'}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {/* List */}
       {loading ? (
         <StudentLoadingState rows={4} />
@@ -237,14 +270,16 @@ export default function FormulaSheetsPage() {
       ) : visible.length === 0 ? (
         <StudentEmptyState
           icon={<IconFormulaBig size={28} />}
-          title={query ? 'Kuch nahi mila' : 'Sheets taiyaar ho rahi hain'}
+          title={query || subject ? 'Kuch nahi mila' : 'Sheets taiyaar ho rahi hain'}
           description={
             query
               ? `"${query}" se matching koi sheet nahi mili. Kuch aur search karo.`
-              : 'Hamari team har chapter ke liye formula sheets bana rahi hai. Tab tak e-books se padhai jaari rakho.'
+              : subject
+                ? `${subject} ke liye abhi koi sheet nahi mili. Dusra subject choose karo.`
+                : 'Hamari team har chapter ke liye formula sheets bana rahi hai. Tab tak e-books se padhai jaari rakho.'
           }
-          actionText={query ? undefined : 'Open e-Books'}
-          actionHref={query ? undefined : '/app/ebooks'}
+          actionText={query || subject ? undefined : 'Open e-Books'}
+          actionHref={query || subject ? undefined : '/app/ebooks'}
         />
       ) : (
         <div className="space-y-3 md:space-y-4 max-w-4xl">

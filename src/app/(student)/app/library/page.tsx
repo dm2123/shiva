@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  IconArrowLeft, IconArrowRight, IconBook, IconBookOpen, IconClock,
-  IconFileText, IconPlay, IconTarget, IconZap,
+  IconArrowLeft, IconArrowRight, IconBook, IconBookOpen, IconClipboard, IconClock,
+  IconFileText, IconLayers, IconPlay, IconSearch, IconTarget, IconX, IconZap,
 } from '@/components/student/StudentIcons';
 import { IconLibrary } from '@/components/student/ShivaIcons';
 
@@ -115,8 +115,17 @@ function SkeletonRow() {
   );
 }
 
+function NoMatchNote() {
+  return (
+    <p className="student-card p-4 text-xs text-[var(--student-text-muted)] leading-relaxed">
+      Is search me is section me kuch nahi mila — dusra keyword try karo.
+    </p>
+  );
+}
+
 export default function LibraryPage() {
   const [xp, setXp] = useState<number | null>(null);
+  const [query, setQuery] = useState('');
   const [sheets, setSheets] = useState<Sheet[] | null>(null);
   const [pyqs, setPyqs] = useState<PyqExam[] | null>(null);
   const [lectures, setLectures] = useState<Lecture[] | null>(null);
@@ -162,32 +171,116 @@ export default function LibraryPage() {
       .catch(() => setQb({ total: 0, distribution: [] }));
   }, []);
 
+  /* ── Hub search: asal fetched data par hi filter (koi nakli index nahi) ── */
+  const searching = query.trim().length > 0;
+  const q = query.trim().toLowerCase();
+  const inQ = (s?: string | null) => (s || '').toLowerCase().includes(q);
+  const fSheets = sheets ? sheets.filter((s) => inQ(s.title) || inQ(s.subjectName) || inQ(s.chapterName)) : null;
+  const fPyqs = pyqs ? pyqs.filter((p) => inQ(p.title) || inQ(p.examName) || inQ(p.subject)) : null;
+  const fLectures = lectures ? lectures.filter((l) => inQ(l.title) || inQ(l.courseTitle) || inQ(l.subject) || inQ(l.chapter)) : null;
+  const fBooks = books ? books.filter((b) => inQ(b.title) || inQ(b.author) || inQ(b.category)) : null;
+
+  /* ── Category tiles — counts sirf tab jab asal data load ho aur > 0 ho ── */
+  const TILES: { href: string; label: string; text: string; Icon: typeof IconBook; grad: string; count?: number | null }[] = [
+    { href: '/app/formula-sheets', label: 'Formula Sheets', text: 'Chapter-wise quick revision notes', Icon: IconFileText, grad: 'from-amber-500 to-rose-500', count: sheets?.length },
+    { href: '/app/pyq', label: 'PYQ Papers', text: 'Pichhle saalon ke asli exam papers', Icon: IconClipboard, grad: 'from-blue-500 to-violet-600', count: pyqs?.length },
+    { href: '/app/practice', label: 'Practice', text: 'Chapter-wise practice aur daily DPP', Icon: IconTarget, grad: 'from-emerald-500 to-teal-600' },
+    { href: '/app/courses', label: 'Free Lectures', text: 'Free courses aur preview lectures', Icon: IconPlay, grad: 'from-[#6d28d9] to-[#2a1650]', count: lectures?.length },
+    { href: '/app/question-bank', label: 'Question Bank', text: 'Difficulty-wise curated questions', Icon: IconLayers, grad: 'from-teal-500 to-emerald-600', count: qb?.total },
+    { href: '/app/ebooks', label: 'e-Books', text: 'Textbooks, notes aur reference books', Icon: IconBook, grad: 'from-fuchsia-500 to-purple-600', count: books?.length },
+    { href: '/app/ncert', label: 'NCERT Solutions', text: 'Class-wise chapter solutions', Icon: IconBookOpen, grad: 'from-sky-500 to-blue-600' },
+  ];
+
   return (
     <div className="space-y-10">
-      {/* ── Header: back arrow + title + XP chip ── */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <Link
-          href="/app"
-          aria-label="Back to dashboard"
-          className="w-10 h-10 rounded-full border border-[var(--student-border)] bg-[var(--student-surface)] flex items-center justify-center text-[var(--student-text)] hover:border-[#6d28d9] hover:text-[#6d28d9] transition-colors flex-shrink-0"
-        >
-          <IconArrowLeft size={17} />
-        </Link>
-        <div className="flex-1 min-w-0">
-          <h1 className="text-2xl md:text-3xl font-bold text-[var(--student-text)] tracking-tight">Library</h1>
-          <p className="text-sm text-[var(--student-text-muted)] mt-0.5">
-            Saara free study material ek jagah — notes, PYQ, practice, lectures aur books.
-          </p>
+      {/* ── Hero: title + XP chip + hub search ── */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#2a1650] via-[#4c1d95] to-[#6d28d9] p-6 md:p-8 text-white">
+        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
+        <div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-[#f5b942]/20 blur-2xl" aria-hidden="true" />
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 flex-wrap">
+            <Link
+              href="/app"
+              aria-label="Back to dashboard"
+              className="w-10 h-10 rounded-full border border-white/25 bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors flex-shrink-0"
+            >
+              <IconArrowLeft size={17} />
+            </Link>
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f5b942]">Study Library</p>
+              <h1 className="text-2xl md:text-3xl font-black tracking-tight mt-0.5">Library</h1>
+              <p className="text-sm text-violet-100/90 mt-1">
+                Saara free study material ek jagah — notes, PYQ, practice, lectures aur books.
+              </p>
+            </div>
+            {xp !== null && (
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#f5b942] text-[#2a1650] text-sm font-black flex-shrink-0 shadow-md shadow-black/20">
+                <IconZap size={15} />
+                {xp} XP
+              </span>
+            )}
+          </div>
+          <div className="mt-6 max-w-xl">
+            <div className="flex items-center gap-2 bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20 focus-within:border-white/50 transition-colors">
+              <IconSearch size={18} className="text-violet-100 shrink-0" />
+              <input
+                type="text"
+                placeholder="Search notes, papers, lectures, books..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="flex-1 bg-transparent text-white placeholder:text-violet-200/70 text-sm focus:outline-none"
+                aria-label="Search library"
+              />
+              {searching && (
+                <button
+                  onClick={() => setQuery('')}
+                  aria-label="Search saaf karo"
+                  className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white hover:bg-white/35 transition-colors shrink-0"
+                >
+                  <IconX size={12} />
+                </button>
+              )}
+            </div>
+            {searching && (
+              <p className="text-xs text-violet-100/80 mt-2.5 font-medium">
+                &ldquo;{query.trim()}&rdquo; ke liye library results —
+                {(fSheets?.length || 0) + (fPyqs?.length || 0) + (fLectures?.length || 0) + (fBooks?.length || 0)} items mile
+              </p>
+            )}
+          </div>
         </div>
-        {xp !== null && (
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#f5b942]/15 border border-[#f5b942]/40 text-[#92600a] dark:text-[#f5b942] text-sm font-bold flex-shrink-0">
-            <IconZap size={15} />
-            {xp} XP
-          </span>
-        )}
       </div>
 
+      {/* ── Category tiles (search ke time navigation chhupa do) ── */}
+      {!searching && (
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
+          {TILES.map((tile) => (
+            <Link
+              key={tile.href + tile.label}
+              href={tile.href}
+              className="student-card group p-4 md:p-5 flex flex-col gap-3 hover:border-[#6d28d9] hover:shadow-lg hover:-translate-y-0.5 transition-all"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <span className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${tile.grad} text-white flex items-center justify-center shadow-md shrink-0`}>
+                  <tile.Icon size={20} />
+                </span>
+                {typeof tile.count === 'number' && tile.count > 0 && (
+                  <span className="text-[10px] font-black px-2 py-1 rounded-full bg-[#6d28d9]/10 text-[#6d28d9]">
+                    {tile.count} items
+                  </span>
+                )}
+              </div>
+              <span>
+                <span className="block text-sm font-bold text-[var(--student-text)] leading-snug">{tile.label}</span>
+                <span className="block text-[11px] text-[var(--student-text-muted)] leading-relaxed mt-0.5">{tile.text}</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+      )}
+
       {/* ── Category tabs (anchor navigation) ── */}
+      {!searching && (
       <nav className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Library categories">
         {TABS.map((tab) => (
           <a
@@ -199,6 +292,7 @@ export default function LibraryPage() {
           </a>
         ))}
       </nav>
+      )}
 
       {/* ── Short Notes & Formula Sheets ── */}
       <SectionShell
@@ -216,9 +310,11 @@ export default function LibraryPage() {
             title="Formula Sheets kholo"
             text="Chapter-wise formula sheets aur short notes yahan milenge — naye sheets jald aa rahe hain."
           />
+        ) : fSheets !== null && fSheets.length === 0 ? (
+          <NoMatchNote />
         ) : (
           <RowScroller>
-            {sheets.slice(0, 8).map((sheet) => {
+            {(fSheets ?? sheets).slice(0, 8).map((sheet) => {
               const formulaCount = (sheet.content || []).reduce((n, s) => n + (s.formulas?.length || 0), 0);
               return (
                 <article key={sheet.id} className="student-card overflow-hidden min-w-[240px] max-w-[240px] snap-start flex-shrink-0 flex flex-col hover:border-[#6d28d9] hover:shadow-lg transition-all group">
@@ -264,9 +360,11 @@ export default function LibraryPage() {
             title="PYQ Papers kholo"
             text="Previous year ke papers year-wise aur subject-wise yahan milenge — naye papers jald aa rahe hain."
           />
+        ) : fPyqs !== null && fPyqs.length === 0 ? (
+          <NoMatchNote />
         ) : (
           <RowScroller>
-            {pyqs.slice(0, 8).map((exam) => (
+            {(fPyqs ?? pyqs).slice(0, 8).map((exam) => (
               <article key={exam.id} className="student-card overflow-hidden min-w-[240px] max-w-[240px] snap-start flex-shrink-0 flex flex-col hover:border-[#6d28d9] hover:shadow-lg transition-all group">
                 <div className="h-24 bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 flex items-center justify-center text-white relative overflow-hidden">
                   <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
@@ -299,6 +397,7 @@ export default function LibraryPage() {
       </SectionShell>
 
       {/* ── Practice Papers ── */}
+      {!searching && (
       <SectionShell
         id="practice"
         title="Chapterwise Practice Papers"
@@ -320,6 +419,7 @@ export default function LibraryPage() {
           />
         </div>
       </SectionShell>
+      )}
 
       {/* ── Free Lectures ── */}
       <SectionShell
@@ -337,9 +437,11 @@ export default function LibraryPage() {
             title="Courses kholo"
             text="Free lectures courses ke andar milenge — free course choose karke padhai shuru karo."
           />
+        ) : fLectures !== null && fLectures.length === 0 ? (
+          <NoMatchNote />
         ) : (
           <RowScroller>
-            {lectures.slice(0, 10).map((lec) => (
+            {(fLectures ?? lectures).slice(0, 10).map((lec) => (
               <article key={lec.id} className="student-card overflow-hidden min-w-[260px] max-w-[260px] snap-start flex-shrink-0 flex flex-col hover:border-[#6d28d9] hover:shadow-lg transition-all group">
                 <div className={`h-24 bg-gradient-to-br ${coverFor(lec.id)} flex items-center justify-center text-white relative overflow-hidden`}>
                   <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
@@ -377,6 +479,7 @@ export default function LibraryPage() {
       </SectionShell>
 
       {/* ── Question Bank ── */}
+      {!searching && (
       <SectionShell
         id="question-bank"
         title="Free Question Bank"
@@ -429,6 +532,7 @@ export default function LibraryPage() {
           </div>
         )}
       </SectionShell>
+      )}
 
       {/* ── e-Books ── */}
       <SectionShell
@@ -446,9 +550,11 @@ export default function LibraryPage() {
             title="e-Books kholo"
             text="Digital books aur notes yahan milenge — library me naya material jald aa raha hai."
           />
+        ) : fBooks !== null && fBooks.length === 0 ? (
+          <NoMatchNote />
         ) : (
           <RowScroller>
-            {books.slice(0, 8).map((book) => (
+            {(fBooks ?? books).slice(0, 8).map((book) => (
               <article key={book.id} className="student-card overflow-hidden min-w-[240px] max-w-[240px] snap-start flex-shrink-0 flex flex-col hover:border-[#6d28d9] hover:shadow-lg transition-all group">
                 <div className={`h-24 bg-gradient-to-br ${coverFor(book.id)} flex items-center justify-center text-white relative overflow-hidden`}>
                   <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
@@ -483,6 +589,7 @@ export default function LibraryPage() {
       </SectionShell>
 
       {/* ── NCERT ── */}
+      {!searching && (
       <SectionShell
         id="ncert"
         title="NCERT Solutions"
@@ -496,6 +603,7 @@ export default function LibraryPage() {
           text="Apni class aur subject choose karo — chapter-wise solutions ek jagah milenge."
         />
       </SectionShell>
+      )}
 
       {/* ── Bottom note ── */}
       <div className="student-card p-5 flex items-center gap-4">

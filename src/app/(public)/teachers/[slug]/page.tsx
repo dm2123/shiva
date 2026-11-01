@@ -125,14 +125,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 /* ------------------------------------------------------------------ */
-/*  Shared light-theme styles — safed rounded-2xl card, halki shadow  */
+/*  Shared dark-theme styles — #12121a rounded-2xl card, violet-dark  */
+/*  border, gehri shadow (public dark standard ke saath)              */
 /* ------------------------------------------------------------------ */
 
-const whiteCard: React.CSSProperties = {
-  background: '#fff',
-  border: '2px solid #ede9fe',
+const darkCard: React.CSSProperties = {
+  background: '#12121a',
+  border: '2px solid #26224a',
   borderRadius: 16,
-  boxShadow: '0 6px 24px rgba(42,22,80,.08)',
+  boxShadow: '0 10px 30px rgba(0,0,0,.45)',
 };
 
 const greyPill: React.CSSProperties = {
@@ -141,9 +142,9 @@ const greyPill: React.CSSProperties = {
   gap: 6,
   fontSize: 12.5,
   fontWeight: 700,
-  color: '#4b5563',
-  background: '#f3f4f6',
-  border: '1px solid #e5e7eb',
+  color: '#c4c0e8',
+  background: '#1d1a33',
+  border: '1px solid #37316b',
   padding: '6px 13px',
   borderRadius: 999,
 };
@@ -151,9 +152,9 @@ const greyPill: React.CSSProperties = {
 const subjectChip: React.CSSProperties = {
   fontSize: 12.5,
   fontWeight: 700,
-  color: '#6d28d9',
-  background: '#f5f3ff',
-  border: '1px solid #ede9fe',
+  color: '#c4b5fd',
+  background: 'rgba(109,40,217,.16)',
+  border: '1px solid rgba(109,40,217,.38)',
   padding: '5px 12px',
   borderRadius: 999,
 };
@@ -161,7 +162,7 @@ const subjectChip: React.CSSProperties = {
 const sectionTitle: React.CSSProperties = {
   fontSize: 21,
   fontWeight: 800,
-  color: '#2a1650',
+  color: '#ffffff',
   marginBottom: 16,
   lineHeight: 1.3,
 };
@@ -202,33 +203,33 @@ export default async function EducatorDetailPage({ params }: PageProps) {
         style={{
           paddingTop: 36,
           paddingBottom: 72,
-          background: 'linear-gradient(180deg,#f5f3ff 0%,#faf9ff 100%)',
+          background: 'linear-gradient(180deg,#171233 0%,#0d0d13 55%)',
         }}
       >
         <div className="wrap" style={{ maxWidth: 1080 }}>
-          {/* Breadcrumb — chhota grey */}
-          <nav style={{ marginBottom: 22, fontSize: 13.5, color: '#6b7280' }} aria-label="Breadcrumb">
+          {/* Breadcrumb — chhota lavender-grey */}
+          <nav style={{ marginBottom: 22, fontSize: 13.5, color: '#8b87b0' }} aria-label="Breadcrumb">
             <ol style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8, listStyle: 'none', padding: 0, margin: 0 }}>
               <li>
-                <Link href="/" style={{ color: '#6b7280' }}>
+                <Link href="/" style={{ color: '#8b87b0' }}>
                   Home
                 </Link>
               </li>
               <li aria-hidden="true">/</li>
               <li>
-                <Link href="/teachers" style={{ color: '#6b7280' }}>
+                <Link href="/teachers" style={{ color: '#8b87b0' }}>
                   Teachers
                 </Link>
               </li>
               <li aria-hidden="true">/</li>
-              <li style={{ color: '#2a1650', fontWeight: 700 }} aria-current="page">
+              <li style={{ color: '#ffffff', fontWeight: 700 }} aria-current="page">
                 {name}
               </li>
             </ol>
           </nav>
 
           {/* ── Header — safed card, photo band pattern ──────────── */}
-          <header style={{ ...whiteCard, overflow: 'hidden', marginBottom: 26 }}>
+          <header style={{ ...darkCard, overflow: 'hidden', marginBottom: 26 }}>
             <div
               style={{
                 background: 'linear-gradient(135deg,#2a1650 0%,#6d28d9 100%)',
@@ -257,8 +258,8 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                       height: 132,
                       borderRadius: 20,
                       objectFit: 'cover',
-                      border: '3px solid #ede9fe',
-                      background: '#f5f3ff',
+                      border: '3px solid #37316b',
+                      background: '#241d4d',
                     }}
                   />
                 ) : (
@@ -285,7 +286,7 @@ export default async function EducatorDetailPage({ params }: PageProps) {
               {/* Identity */}
               <div style={{ flex: '1 1 320px', minWidth: 0 }}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-                  <h1 style={{ fontSize: 32, fontWeight: 800, color: '#2a1650', lineHeight: 1.2 }}>
+                  <h1 style={{ fontSize: 32, fontWeight: 800, color: '#ffffff', lineHeight: 1.2 }}>
                     {name}
                   </h1>
                   {educator.verified ? (
@@ -295,8 +296,8 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                         fontWeight: 800,
                         letterSpacing: 0.5,
                         textTransform: 'uppercase',
-                        background: '#ede9fe',
-                        color: '#6d28d9',
+                        background: '#f5b942',
+                        color: '#2a1650',
                         padding: '5px 11px',
                         borderRadius: 999,
                       }}
@@ -307,7 +308,7 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                 </div>
 
                 {(tagline || qualification) && (
-                  <p style={{ fontSize: 16.5, fontWeight: 700, color: '#6d28d9', marginBottom: 12 }}>
+                  <p style={{ fontSize: 16.5, fontWeight: 700, color: '#a78bfa', marginBottom: 12 }}>
                     {tagline || qualification}
                   </p>
                 )}
@@ -356,9 +357,9 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                           borderRadius: 10,
                           fontWeight: 700,
                           fontSize: 13.5,
-                          background: '#fff',
-                          border: '2px solid #ede9fe',
-                          color: '#4c1d95',
+                          background: '#17171f',
+                          border: '2px solid #37316b',
+                          color: '#e9e4ff',
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: 7,
@@ -381,16 +382,16 @@ export default async function EducatorDetailPage({ params }: PageProps) {
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 26, minWidth: 0 }}>
               {/* About */}
-              <section style={{ ...whiteCard, padding: '26px 28px' }} aria-labelledby="about-heading">
+              <section style={{ ...darkCard, padding: '26px 28px' }} aria-labelledby="about-heading">
                 <h2 id="about-heading" style={sectionTitle}>
                   About {name}
                 </h2>
                 {about ? (
-                  <p style={{ fontSize: 15.5, color: '#374151', lineHeight: 1.75, whiteSpace: 'pre-line' }}>
+                  <p style={{ fontSize: 15.5, color: '#c4c0e8', lineHeight: 1.75, whiteSpace: 'pre-line' }}>
                     {about}
                   </p>
                 ) : (
-                  <p style={{ fontSize: 14.5, color: '#6b7280', lineHeight: 1.7 }}>
+                  <p style={{ fontSize: 14.5, color: '#a5a0d0', lineHeight: 1.7 }}>
                     Is educator ne abhi apna detailed parichay (bio) nahi joda hai. Neeche unke
                     subjects aur courses se unki teaching samjhi ja sakti hai — jaise hi bio update
                     hoga, woh yahin dikhega.
@@ -404,20 +405,20 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                         fontWeight: 800,
                         letterSpacing: 1,
                         textTransform: 'uppercase',
-                        color: '#9ca3af',
+                        color: '#8b87b0',
                         marginBottom: 5,
                       }}
                     >
                       Qualification
                     </p>
-                    <p style={{ fontSize: 14.5, color: '#374151' }}>{qualification}</p>
+                    <p style={{ fontSize: 14.5, color: '#e9e4ff' }}>{qualification}</p>
                   </div>
                 )}
               </section>
 
               {/* Specialties */}
               {specialties.length > 0 && (
-                <section style={{ ...whiteCard, padding: '26px 28px' }} aria-labelledby="specialties-heading">
+                <section style={{ ...darkCard, padding: '26px 28px' }} aria-labelledby="specialties-heading">
                   <h2 id="specialties-heading" style={sectionTitle}>
                     Teaching Specialties
                   </h2>
@@ -433,7 +434,7 @@ export default async function EducatorDetailPage({ params }: PageProps) {
 
               {/* Subjects (full list) */}
               {subjects.length > 0 && (
-                <section style={{ ...whiteCard, padding: '26px 28px' }} aria-labelledby="subjects-heading">
+                <section style={{ ...darkCard, padding: '26px 28px' }} aria-labelledby="subjects-heading">
                   <h2 id="subjects-heading" style={sectionTitle}>
                     Subjects Taught
                   </h2>
@@ -444,9 +445,9 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                         style={{
                           padding: '12px 16px',
                           borderRadius: 12,
-                          background: '#faf9ff',
-                          border: '1px solid #ede9fe',
-                          color: '#2a1650',
+                          background: '#17171f',
+                          border: '1px solid #26224a',
+                          color: '#ffffff',
                           fontWeight: 700,
                           fontSize: 14,
                         }}
@@ -460,7 +461,7 @@ export default async function EducatorDetailPage({ params }: PageProps) {
 
               {/* Exam categories */}
               {examCategories.length > 0 && (
-                <section style={{ ...whiteCard, padding: '26px 28px' }} aria-labelledby="exams-heading">
+                <section style={{ ...darkCard, padding: '26px 28px' }} aria-labelledby="exams-heading">
                   <h2 id="exams-heading" style={sectionTitle}>
                     Exam Categories
                   </h2>
@@ -488,13 +489,13 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                 >
                   <h2
                     id="teacher-courses-heading"
-                    style={{ fontSize: 24, fontWeight: 800, color: '#2a1650', lineHeight: 1.25 }}
+                    style={{ fontSize: 24, fontWeight: 800, color: '#ffffff', lineHeight: 1.25 }}
                   >
                     Courses by {name}
                   </h2>
                   <Link
                     href="/courses"
-                    style={{ fontSize: 14, fontWeight: 800, color: '#6d28d9', flexShrink: 0 }}
+                    style={{ fontSize: 14, fontWeight: 800, color: '#a78bfa', flexShrink: 0 }}
                   >
                     All courses →
                   </Link>
@@ -512,7 +513,7 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                       return (
                         <article
                           key={course.id}
-                          style={{ ...whiteCard, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+                          style={{ ...darkCard, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
                         >
                           {course.thumbnailUrl ? (
                             // eslint-disable-next-line @next/next/no-img-element
@@ -544,7 +545,7 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                               style={{
                                 fontSize: 16.5,
                                 fontWeight: 800,
-                                color: '#2a1650',
+                                color: '#ffffff',
                                 lineHeight: 1.35,
                                 display: '-webkit-box',
                                 WebkitLineClamp: 2,
@@ -558,7 +559,7 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                               <p
                                 style={{
                                   fontSize: 14,
-                                  color: '#6b7280',
+                                  color: '#a5a0d0',
                                   lineHeight: 1.6,
                                   marginTop: 8,
                                   display: '-webkit-box',
@@ -599,16 +600,16 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                             >
                               {isFree ? (
                                 <>
-                                  <b style={{ fontSize: 20, color: '#059669' }}>Free</b>
-                                  <span style={{ fontSize: 12.5, color: '#6b7280', fontWeight: 600 }}>
+                                  <b style={{ fontSize: 20, color: '#34d399' }}>Free</b>
+                                  <span style={{ fontSize: 12.5, color: '#a5a0d0', fontWeight: 600 }}>
                                     Poora access, koi fee nahi
                                   </span>
                                 </>
                               ) : (
                                 <>
-                                  <b style={{ fontSize: 20, color: '#2a1650' }}>{formatINR(price)}</b>
+                                  <b style={{ fontSize: 20, color: '#ffffff' }}>{formatINR(price)}</b>
                                   {hasMrp && (
-                                    <s style={{ fontSize: 14, color: '#9ca3af', fontWeight: 600 }}>
+                                    <s style={{ fontSize: 14, color: '#8b87b0', fontWeight: 600 }}>
                                       {formatINR(mrp)}
                                     </s>
                                   )}
@@ -617,8 +618,8 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                                       style={{
                                         fontSize: 11.5,
                                         fontWeight: 800,
-                                        color: '#047857',
-                                        background: '#d1fae5',
+                                        color: '#34d399',
+                                        background: 'rgba(52,211,153,.15)',
                                         padding: '3px 9px',
                                         borderRadius: 999,
                                       }}
@@ -638,8 +639,8 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                                   flex: 1,
                                   display: 'inline-block',
                                   textAlign: 'center',
-                                  background: '#111111',
-                                  color: '#fff',
+                                  background: '#f5b942',
+                                  color: '#2a1650',
                                   padding: '12px 18px',
                                   borderRadius: 12,
                                   fontWeight: 800,
@@ -661,8 +662,8 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                                   display: 'inline-flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
-                                  background: '#fff',
-                                  color: '#6d28d9',
+                                  background: 'transparent',
+                                  color: '#a78bfa',
                                   border: '2px solid #6d28d9',
                                   borderRadius: 12,
                                   fontWeight: 900,
@@ -679,11 +680,11 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                     })}
                   </div>
                 ) : (
-                  <div style={{ ...whiteCard, padding: '30px 28px', textAlign: 'center' }}>
-                    <p style={{ fontSize: 16, fontWeight: 800, color: '#2a1650', marginBottom: 8 }}>
+                  <div style={{ ...darkCard, padding: '30px 28px', textAlign: 'center' }}>
+                    <p style={{ fontSize: 16, fontWeight: 800, color: '#ffffff', marginBottom: 8 }}>
                       Abhi is teacher ka koi published course nahi hai
                     </p>
-                    <p style={{ fontSize: 14.5, color: '#6b7280', lineHeight: 1.65, marginBottom: 20 }}>
+                    <p style={{ fontSize: 14.5, color: '#a5a0d0', lineHeight: 1.65, marginBottom: 20 }}>
                       Jaise hi {name} ka course publish hoga, woh yahin dikhega. Tab tak baaki
                       courses dekho.
                     </p>
@@ -698,8 +699,8 @@ export default async function EducatorDetailPage({ params }: PageProps) {
             {/* Sidebar */}
             <aside style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
               {hasSidebarContact && (
-                <div style={{ ...whiteCard, padding: 24 }}>
-                  <h3 style={{ fontSize: 16.5, fontWeight: 800, color: '#2a1650', marginBottom: 16 }}>
+                <div style={{ ...darkCard, padding: 24 }}>
+                  <h3 style={{ fontSize: 16.5, fontWeight: 800, color: '#ffffff', marginBottom: 16 }}>
                     Contact
                   </h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 16, fontSize: 14 }}>
@@ -711,7 +712,7 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                             fontWeight: 800,
                             letterSpacing: 1,
                             textTransform: 'uppercase',
-                            color: '#9ca3af',
+                            color: '#8b87b0',
                             marginBottom: 4,
                           }}
                         >
@@ -719,7 +720,7 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                         </p>
                         <a
                           href={`mailto:${educator.email}`}
-                          style={{ color: '#6d28d9', fontWeight: 700, wordBreak: 'break-all' }}
+                          style={{ color: '#a78bfa', fontWeight: 700, wordBreak: 'break-all' }}
                         >
                           {educator.email}
                         </a>
@@ -733,7 +734,7 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                             fontWeight: 800,
                             letterSpacing: 1,
                             textTransform: 'uppercase',
-                            color: '#9ca3af',
+                            color: '#8b87b0',
                             marginBottom: 4,
                           }}
                         >
@@ -743,7 +744,7 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                           href={educator.website}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ color: '#6d28d9', fontWeight: 700, wordBreak: 'break-all' }}
+                          style={{ color: '#a78bfa', fontWeight: 700, wordBreak: 'break-all' }}
                         >
                           {String(educator.website).replace(/^https?:\/\//, '')}
                         </a>
@@ -753,8 +754,8 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                 </div>
               )}
 
-              <div style={{ ...whiteCard, padding: 24 }}>
-                <h3 style={{ fontSize: 16.5, fontWeight: 800, color: '#2a1650', marginBottom: 14 }}>
+              <div style={{ ...darkCard, padding: 24 }}>
+                <h3 style={{ fontSize: 16.5, fontWeight: 800, color: '#ffffff', marginBottom: 14 }}>
                   Explore THE SHIVA
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -763,11 +764,11 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                     style={{
                       padding: '12px 16px',
                       borderRadius: 12,
-                      background: '#faf9ff',
-                      border: '1px solid #ede9fe',
+                      background: '#17171f',
+                      border: '1px solid #26224a',
                       fontSize: 14,
                       fontWeight: 700,
-                      color: '#2a1650',
+                      color: '#ffffff',
                     }}
                   >
                     ← Sabhi Teachers
@@ -777,11 +778,11 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                     style={{
                       padding: '12px 16px',
                       borderRadius: 12,
-                      background: '#faf9ff',
-                      border: '1px solid #ede9fe',
+                      background: '#17171f',
+                      border: '1px solid #26224a',
                       fontSize: 14,
                       fontWeight: 700,
-                      color: '#2a1650',
+                      color: '#ffffff',
                     }}
                   >
                     Courses Dekho
@@ -796,17 +797,17 @@ export default async function EducatorDetailPage({ params }: PageProps) {
                 style={{
                   padding: 24,
                   borderRadius: 16,
-                  border: '2px solid #ede9fe',
-                  background: 'linear-gradient(135deg,#f5f3ff 0%,#fff 100%)',
+                  border: '2px solid #26224a',
+                  background: 'linear-gradient(135deg,#1e0f3d 0%,#12121a 100%)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
                   <THEShivaLogo size={36} variant="icon" />
-                  <p style={{ fontSize: 14.5, fontWeight: 800, color: '#2a1650' }}>
+                  <p style={{ fontSize: 14.5, fontWeight: 800, color: '#ffffff' }}>
                     THE SHIVA par padh rahe ho
                   </p>
                 </div>
-                <p style={{ fontSize: 13, color: '#6b7280', lineHeight: 1.65 }}>
+                <p style={{ fontSize: 13, color: '#a5a0d0', lineHeight: 1.65 }}>
                   {name} THE SHIVA platform par teaching karte hain. Enroll karke inke courses,
                   batches aur live classes ek hi jagah milte hain.
                 </p>

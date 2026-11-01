@@ -101,7 +101,9 @@ export default async function TestDetailPage({ params }: { params: { testId: str
         )}
       </div>
 
-      <div className="student-card p-8">
+      <div className="student-card overflow-hidden">
+        <div className="h-1.5 bg-gradient-to-r from-[#2a1650] via-[#6d28d9] to-[#f5b942]" />
+        <div className="p-6 md:p-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
           {[
             { label: 'Questions', value: String(totalQuestions) },
@@ -165,6 +167,7 @@ export default async function TestDetailPage({ params }: { params: { testId: str
             <IconArrowLeft size={14} />
             All Tests
           </Link>
+        </div>
         </div>
       </div>
 

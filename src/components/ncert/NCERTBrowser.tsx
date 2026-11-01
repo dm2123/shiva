@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { IconArrowLeft, IconArrowRight, IconBookOpen } from '@/components/student/StudentIcons';
 
 interface NCERTChapter {
   id: string;
@@ -15,6 +16,46 @@ interface NCERTChapter {
 interface NCERTBrowserProps {
   classLevel?: string;
   subject?: string;
+}
+
+function BackPill({ href, label }: { href: string; label: string }) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-[var(--student-border)] bg-[var(--student-surface)] text-xs font-bold text-[var(--student-text-secondary)] hover:border-[#6d28d9] hover:text-[#6d28d9] transition-colors"
+    >
+      <IconArrowLeft size={13} />
+      {label}
+    </Link>
+  );
+}
+
+function BrowserSkeleton() {
+  return (
+    <div className="space-y-4" aria-label="Loading NCERT content">
+      <div className="skeleton h-6 w-48" />
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="student-card p-5 space-y-3">
+            <div className="skeleton h-10 w-10 rounded-xl" />
+            <div className="skeleton h-4 w-3/4" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function BrowserEmpty({ text }: { text: string }) {
+  return (
+    <div className="student-card p-8 text-center space-y-3">
+      <div className="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-[#6d28d9] to-[#2a1650] text-white flex items-center justify-center shadow-md shadow-[#6d28d9]/25">
+        <IconBookOpen size={26} />
+      </div>
+      <p className="text-sm font-bold text-[var(--student-text)]">Abhi yahan content available nahi hai</p>
+      <p className="text-xs text-[var(--student-text-muted)] leading-relaxed max-w-sm mx-auto">{text}</p>
+    </div>
+  );
 }
 
 export default function NCERTBrowser({ classLevel, subject }: NCERTBrowserProps) {
@@ -48,22 +89,33 @@ export default function NCERTBrowser({ classLevel, subject }: NCERTBrowserProps)
   }, [classLevel, subject]);
 
   if (loading) {
-    return <div className="text-center py-8 text-slate-500">Loading...</div>;
+    return <BrowserSkeleton />;
   }
 
-  // Show classes
+  // ── Classes ──
   if (!classLevel) {
+    if (classes.length === 0) {
+      return <BrowserEmpty text="NCERT solutions abhi library me add ho rahe hain. Tab tak e-Books aur formula sheets se padhai jaari rakho." />;
+    }
     return (
       <div className="space-y-4">
-        <h2 className="text-lg font-bold text-slate-900 dark:text-white">Select Class</h2>
-        <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
-          {classes.map(cls => (
+        <h2 className="text-base md:text-lg font-bold text-[var(--student-text)] tracking-tight">Apni class chuno</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">
+          {classes.map((cls) => (
             <Link
               key={cls}
               href={`/app/ncert/${cls}`}
-              className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 text-center hover:shadow-lg transition-shadow"
+              className="student-card group relative overflow-hidden p-5 hover:border-[#6d28d9] hover:shadow-lg hover:-translate-y-0.5 transition-all"
             >
-              <p className="text-2xl font-bold text-indigo-600">Class {cls}</p>
+              <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-[#6d28d9]/10 blur-lg" aria-hidden="true" />
+              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#6d28d9]">Class</p>
+              <p className="text-3xl md:text-4xl font-black bg-gradient-to-br from-[#6d28d9] to-[#2a1650] bg-clip-text text-transparent mt-1">
+                {cls}
+              </p>
+              <span className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-[var(--student-text-muted)] group-hover:text-[#6d28d9] group-hover:gap-2 transition-all">
+                Subjects dekho
+                <IconArrowRight size={12} />
+              </span>
             </Link>
           ))}
         </div>
@@ -71,54 +123,79 @@ export default function NCERTBrowser({ classLevel, subject }: NCERTBrowserProps)
     );
   }
 
-  // Show subjects
+  // ── Subjects ──
   if (!subject) {
     return (
       <div className="space-y-4">
-        <Link href="/app/ncert" className="text-indigo-600 hover:underline text-sm">
-          ← All Classes
-        </Link>
-        <h2 className="text-lg font-bold text-slate-900 dark:text-white">Class {classLevel} — Subjects</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {subjects.map(sub => (
-            <Link
-              key={sub}
-              href={`/app/ncert/${classLevel}/${sub}`}
-              className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 hover:shadow-lg transition-shadow"
-            >
-              <p className="font-bold text-slate-900 dark:text-white">{sub}</p>
-            </Link>
-          ))}
-        </div>
+        <BackPill href="/app/ncert" label="All Classes" />
+        <h2 className="text-base md:text-lg font-bold text-[var(--student-text)] tracking-tight">
+          Class {classLevel} — Subjects
+        </h2>
+        {subjects.length === 0 ? (
+          <BrowserEmpty text={`Class ${classLevel} ke liye abhi koi subject add nahi hua hai. NCERT material jald aa raha hai.`} />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+            {subjects.map((sub) => (
+              <Link
+                key={sub}
+                href={`/app/ncert/${classLevel}/${sub}`}
+                className="student-card group p-5 flex items-center gap-4 hover:border-[#6d28d9] hover:shadow-lg hover:-translate-y-0.5 transition-all"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#6d28d9] to-[#2a1650] text-white flex items-center justify-center shrink-0 shadow-md shadow-[#6d28d9]/25">
+                  <IconBookOpen size={22} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-[var(--student-text)] leading-snug">{sub}</p>
+                  <p className="text-[11px] text-[var(--student-text-faint)] font-medium mt-0.5">Chapter-wise solutions</p>
+                </div>
+                <IconArrowRight size={15} className="text-[#6d28d9] group-hover:translate-x-0.5 transition-transform shrink-0" />
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     );
   }
 
-  // Show chapters
+  // ── Chapters ──
   return (
     <div className="space-y-4">
-      <Link href={`/app/ncert/${classLevel}`} className="text-indigo-600 hover:underline text-sm">
-        ← Back to Subjects
-      </Link>
-      <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-        Class {classLevel} — {subject}
-      </h2>
-      <div className="space-y-3">
-        {chapters.map(ch => (
-          <Link
-            key={ch.id}
-            href={`/app/ncert/${classLevel}/${subject}/${ch.chapterNumber}`}
-            className="block bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-sm font-bold text-indigo-600">
+      <BackPill href={`/app/ncert/${classLevel}`} label="Back to Subjects" />
+      <div>
+        <h2 className="text-base md:text-lg font-bold text-[var(--student-text)] tracking-tight">
+          Class {classLevel} — {subject}
+        </h2>
+        {chapters.length > 0 && (
+          <p className="text-xs text-[var(--student-text-faint)] font-medium mt-1">
+            {chapters.length} {chapters.length === 1 ? 'chapter' : 'chapters'} • kisi bhi chapter par tap karke solution padho
+          </p>
+        )}
+      </div>
+      {chapters.length === 0 ? (
+        <BrowserEmpty text={`${subject} ke liye abhi chapters add nahi hue hain. Solutions jald aa rahe hain.`} />
+      ) : (
+        <div className="space-y-3">
+          {chapters.map((ch) => (
+            <Link
+              key={ch.id}
+              href={`/app/ncert/${classLevel}/${subject}/${ch.chapterNumber}`}
+              className="student-card group flex items-center gap-4 p-4 hover:border-[#6d28d9] hover:shadow-lg transition-all relative overflow-hidden"
+            >
+              <span className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#6d28d9] to-[#2a1650]" aria-hidden="true" />
+              <span className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#6d28d9] to-[#2a1650] text-white flex items-center justify-center text-sm font-black shrink-0 shadow-md shadow-[#6d28d9]/25 ml-1">
                 {ch.chapterNumber}
               </span>
-              <span className="font-medium text-slate-900 dark:text-white">{ch.chapterTitle}</span>
-            </div>
-          </Link>
-        ))}
-      </div>
+              <span className="flex-1 min-w-0">
+                <span className="block text-sm font-bold text-[var(--student-text)] leading-snug">{ch.chapterTitle}</span>
+                <span className="block text-[11px] text-[var(--student-text-faint)] font-medium mt-0.5">
+                  Chapter {ch.chapterNumber} • Solution ke saath
+                </span>
+              </span>
+              <IconArrowRight size={15} className="text-[#6d28d9] group-hover:translate-x-0.5 transition-transform shrink-0" />
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

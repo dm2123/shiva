@@ -132,34 +132,34 @@ export default async function PublicTestSeriesPage() {
   const practiceCount = items.filter((t) => t.kind === 'practice').length;
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* ── Hero — safed page, halka pastel purple tint, bada H1 ── */}
+    <div className="min-h-screen" style={{ background: '#0d0d13' }}>
+      {/* ── Hero — dark deep-violet tint, bada H1 ── */}
       <section
-        style={{ background: 'linear-gradient(180deg,#f5f3ff 0%,#ffffff 100%)' }}
+        style={{ background: 'linear-gradient(180deg,#171233 0%,#0d0d13 100%)' }}
         className="px-6 pb-14 pt-14"
       >
         <div className="mx-auto max-w-7xl">
           {/* Breadcrumb */}
-          <nav aria-label="Breadcrumb" className="mb-6 text-[13px] font-medium text-slate-400">
-            <Link href="/" className="hover:text-[#6d28d9]">
+          <nav aria-label="Breadcrumb" className="mb-6 text-[13px] font-medium text-[#8b87b0]">
+            <Link href="/" className="hover:text-[#a78bfa]">
               Home
             </Link>
             <span className="mx-2" aria-hidden="true">
               /
             </span>
-            <span className="font-semibold text-slate-600" aria-current="page">
+            <span className="font-semibold text-[#e9e4ff]" aria-current="page">
               Test Series
             </span>
           </nav>
 
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-block rounded-full bg-[#ede9fe] px-4 py-1.5 text-[13px] font-bold uppercase tracking-wider text-[#6d28d9]">
+            <span className="inline-block rounded-full border border-[rgba(109,40,217,.45)] bg-[rgba(109,40,217,.16)] px-4 py-1.5 text-[13px] font-bold uppercase tracking-wider text-[#c4b5fd]">
               Test Series · THE SHIVA
             </span>
-            <h1 className="mt-5 text-[42px] font-black leading-[1.12] text-[#2a1650] md:text-[52px]">
-              Taiyaari ko <span className="text-[#6d28d9]">Number</span> me Aanko
+            <h1 className="mt-5 text-[42px] font-black leading-[1.12] text-white md:text-[52px]">
+              Taiyaari ko <span className="text-[#a78bfa]">Number</span> me Aanko
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-500 md:text-[17px]">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-[#a5a0d0] md:text-[17px]">
               SSC, Railway, Banking, Defence aur Teaching exams ke liye asal pattern par
               bane Mock Tests, PYQ aur Practice Tests — timer ke saath do, detailed
               analysis se sudharo, aur leaderboard par apni rank dekho.
@@ -167,13 +167,13 @@ export default async function PublicTestSeriesPage() {
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/register"
-                className="inline-block rounded-full bg-[#111111] px-8 py-3.5 text-sm font-extrabold text-white shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5 hover:bg-black"
+                className="inline-block rounded-full bg-[#f5b942] px-8 py-3.5 text-sm font-extrabold text-[#2a1650] shadow-xl shadow-[#f5b942]/20 transition-all hover:-translate-y-0.5 hover:bg-[#e5a91f]"
               >
                 Register Free →
               </Link>
               <Link
                 href="/app/tests"
-                className="inline-block rounded-full border-2 border-[#6d28d9] bg-white px-8 py-3.5 text-sm font-extrabold text-[#6d28d9] transition-all hover:-translate-y-0.5 hover:bg-[#f5f3ff]"
+                className="inline-block rounded-full border-2 border-[#8b5cf6] bg-transparent px-8 py-3.5 text-sm font-extrabold text-[#c4b5fd] transition-all hover:-translate-y-0.5 hover:bg-[rgba(109,40,217,.15)]"
               >
                 Tests Dekho
               </Link>
@@ -182,26 +182,26 @@ export default async function PublicTestSeriesPage() {
             {/* Real counts — sirf asal published data se; data na ho to kuch nahi */}
             {items.length > 0 && (
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3 text-[13px] font-semibold">
-                <span className="rounded-full border border-[#ede9fe] bg-white px-4 py-2 text-slate-600 shadow-sm">
-                  Kul published tests: <span className="font-extrabold text-[#2a1650]">{items.length}</span>
+                <span className="rounded-full border border-[#37316b] bg-[#17171f] px-4 py-2 text-[#c4c0e8]">
+                  Kul published tests: <span className="font-extrabold text-white">{items.length}</span>
                 </span>
                 {mockCount > 0 && (
-                  <span className="rounded-full border border-violet-200 bg-violet-50 px-4 py-2 text-[#6d28d9]">
+                  <span className="rounded-full border border-[rgba(109,40,217,.45)] bg-[rgba(109,40,217,.16)] px-4 py-2 text-[#c4b5fd]">
                     Mock: {mockCount}
                   </span>
                 )}
                 {pyqCount > 0 && (
-                  <span className="rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sky-700">
+                  <span className="rounded-full border border-[rgba(56,189,248,.35)] bg-[rgba(56,189,248,.12)] px-4 py-2 text-[#7dd3fc]">
                     PYQ: {pyqCount}
                   </span>
                 )}
                 {practiceCount > 0 && (
-                  <span className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-emerald-700">
+                  <span className="rounded-full border border-[rgba(52,211,153,.35)] bg-[rgba(52,211,153,.12)] px-4 py-2 text-[#6ee7b7]">
                     Practice: {practiceCount}
                   </span>
                 )}
                 {categories.length > 0 && (
-                  <span className="rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-orange-700">
+                  <span className="rounded-full border border-[rgba(251,146,60,.35)] bg-[rgba(251,146,60,.12)] px-4 py-2 text-[#fdba74]">
                     {categories.length} exam categories
                   </span>
                 )}
@@ -213,7 +213,7 @@ export default async function PublicTestSeriesPage() {
 
       {/* ── Promo carousel — hero ke baad, body sections se pehle ── */}
       <section className="px-6 pb-4 pt-10">
-        <div className="mx-auto max-w-7xl overflow-hidden rounded-3xl shadow-[0_12px_32px_rgba(42,22,80,0.14)]">
+        <div className="mx-auto max-w-7xl overflow-hidden rounded-3xl shadow-[0_18px_44px_rgba(0,0,0,0.55)]">
           <ShivaPromoCarousel />
         </div>
       </section>
@@ -228,18 +228,18 @@ export default async function PublicTestSeriesPage() {
       {/* ── Bottom CTA ── */}
       <section className="px-6 pb-20">
         <div className="mx-auto max-w-7xl">
-          <div className="rounded-3xl bg-gradient-to-br from-[#2a1650] to-[#6d28d9] p-8 text-center md:p-12">
+          <div className="rounded-3xl border border-[rgba(167,139,250,.35)] bg-gradient-to-br from-[#2a1650] to-[#6d28d9] p-8 text-center shadow-[0_18px_44px_rgba(0,0,0,0.5)] md:p-12">
             <h2 className="text-2xl font-extrabold text-white md:text-[28px]">
               Aaj hi apna pehla test do
             </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-300 md:text-[15px]">
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-[#d6ceff] md:text-[15px]">
               Free register karo, apne exam ka course chuno aur pehle mock se apni asal
               sthiti jaano — bina andaze ke, pure data ke saath.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/register"
-                className="inline-block rounded-full bg-[#111111] px-8 py-3.5 text-sm font-extrabold text-white shadow-xl shadow-black/30 transition-all hover:-translate-y-0.5 hover:bg-black"
+                className="inline-block rounded-full bg-[#f5b942] px-8 py-3.5 text-sm font-extrabold text-[#2a1650] shadow-xl shadow-black/30 transition-all hover:-translate-y-0.5 hover:bg-[#e5a91f]"
               >
                 Register Free →
               </Link>

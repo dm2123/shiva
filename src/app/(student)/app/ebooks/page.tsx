@@ -80,6 +80,8 @@ interface Book {
   difficulty?: string;
   pageCount?: number;
   fileSizeMB?: number;
+  fileUrl?: string;
+  coverUrl?: string;
   downloadCount?: number;
   subjectName?: string;
   isFree?: boolean;
@@ -125,14 +127,14 @@ export default function EBooksPage() {
   return (
     <div className="space-y-6 md:space-y-8">
       {/* Hero banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 p-6 md:p-10 text-white">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#2a1650] via-[#4c1d95] to-[#6d28d9] p-6 md:p-10 text-white">
         <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
-        <div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-fuchsia-400/20 blur-2xl" aria-hidden="true" />
+        <div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-[#f5b942]/20 blur-2xl" aria-hidden="true" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-6">
           <div className="flex-1">
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-indigo-200 mb-2">Study Library</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#f5b942] mb-2">Study Library</p>
             <h1 className="text-2xl md:text-4xl font-black tracking-tight">e-Books &amp; Notes</h1>
-            <p className="text-sm md:text-base text-indigo-100/90 mt-2 max-w-lg leading-relaxed">
+            <p className="text-sm md:text-base text-violet-100/90 mt-2 max-w-lg leading-relaxed">
               Textbooks, short notes aur formula sheets — sab kuch ek jagah, kabhi bhi padho.
             </p>
           </div>
@@ -143,13 +145,13 @@ export default function EBooksPage() {
         {/* Search */}
         <div className="relative z-10 mt-6 max-w-xl">
           <div className="flex items-center gap-2 bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20 focus-within:border-white/50 transition-colors">
-            <IconSearch size={18} className="text-indigo-100 shrink-0" />
+            <IconSearch size={18} className="text-violet-100 shrink-0" />
             <input
               type="text"
               placeholder="Search books, notes, authors..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="flex-1 bg-transparent text-white placeholder:text-indigo-200/70 text-sm focus:outline-none"
+              className="flex-1 bg-transparent text-white placeholder:text-violet-200/70 text-sm focus:outline-none"
               aria-label="Search books"
             />
           </div>
@@ -234,16 +236,29 @@ export default function EBooksPage() {
                 key={book.id}
                 className="student-card overflow-hidden group hover:-translate-y-1 transition-all duration-300"
               >
-                {/* Cover */}
+                {/* Cover — asal cover image ho to wahi, warna gradient art */}
                 <div className={`relative h-44 bg-gradient-to-br ${coverFor(book.id)} flex items-center justify-center overflow-hidden`}>
-                  <div className="absolute inset-0 opacity-20" aria-hidden="true"
-                    style={{ backgroundImage: 'radial-gradient(circle at 20% 30%, white 1.5px, transparent 1.5px), radial-gradient(circle at 80% 70%, white 1.5px, transparent 1.5px)', backgroundSize: '42px 42px' }} />
-                  <div className="relative text-white/95 flex flex-col items-center gap-2 group-hover:scale-110 transition-transform duration-300">
-                    <IconBook size={44} />
-                    {book.pageCount ? (
-                      <span className="text-[11px] font-bold bg-black/25 px-2.5 py-1 rounded-full">{book.pageCount} pages</span>
-                    ) : null}
-                  </div>
+                  {book.coverUrl ? (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={book.coverUrl} alt={book.title} className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/10" aria-hidden="true" />
+                      {book.pageCount ? (
+                        <span className="absolute bottom-3 right-3 text-[11px] font-bold bg-black/45 text-white px-2.5 py-1 rounded-full">{book.pageCount} pages</span>
+                      ) : null}
+                    </>
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 opacity-20" aria-hidden="true"
+                        style={{ backgroundImage: 'radial-gradient(circle at 20% 30%, white 1.5px, transparent 1.5px), radial-gradient(circle at 80% 70%, white 1.5px, transparent 1.5px)', backgroundSize: '42px 42px' }} />
+                      <div className="relative text-white/95 flex flex-col items-center gap-2 group-hover:scale-110 transition-transform duration-300">
+                        <IconBook size={44} />
+                        {book.pageCount ? (
+                          <span className="text-[11px] font-bold bg-black/25 px-2.5 py-1 rounded-full">{book.pageCount} pages</span>
+                        ) : null}
+                      </div>
+                    </>
+                  )}
                   <div className="absolute top-3 left-3 flex gap-1.5">
                     {book.isFree ? (
                       <span className="bg-emerald-400 text-emerald-950 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wide">Free</span>
@@ -273,26 +288,59 @@ export default function EBooksPage() {
                       <span className="inline-flex items-center gap-1"><IconDownload size={12} />{book.downloadCount}</span>
                     )}
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-4 space-y-2.5">
                     {book.userCompleted ? (
-                      <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-500/10 rounded-xl px-3 py-2.5">
-                        <IconCheck size={14} />
-                        Completed
-                      </div>
+                      <>
+                        <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-500/10 rounded-xl px-3 py-2.5">
+                          <IconCheck size={14} />
+                          Completed
+                        </div>
+                        {book.fileUrl && (
+                          <a
+                            href={book.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block w-full text-center py-2.5 rounded-xl border border-[var(--student-primary)] text-[var(--student-primary)] text-xs font-bold hover:bg-[var(--student-primary)] hover:text-white transition-all"
+                          >
+                            Dobara Padho
+                          </a>
+                        )}
+                      </>
                     ) : progress > 0 ? (
-                      <div>
-                        <div className="flex justify-between text-[11px] font-semibold text-[var(--student-text-muted)] mb-1.5">
-                          <span>Continue reading</span>
-                          <span>{progress}%</span>
+                      <>
+                        <div>
+                          <div className="flex justify-between text-[11px] font-semibold text-[var(--student-text-muted)] mb-1.5">
+                            <span>Continue reading</span>
+                            <span>{progress}%</span>
+                          </div>
+                          <div className="h-2 bg-[var(--student-surface-hover)] rounded-full overflow-hidden">
+                            <div className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full transition-all" style={{ width: `${progress}%` }} />
+                          </div>
                         </div>
-                        <div className="h-2 bg-[var(--student-surface-hover)] rounded-full overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full transition-all" style={{ width: `${progress}%` }} />
-                        </div>
-                      </div>
-                    ) : (
-                      <button className="w-full py-2.5 rounded-xl bg-[var(--student-primary-light)] text-[var(--student-primary)] text-xs font-bold hover:bg-[var(--student-primary)] hover:text-white transition-all">
+                        {book.fileUrl && (
+                          <a
+                            href={book.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block w-full text-center py-2.5 rounded-xl bg-[var(--student-primary)] text-white text-xs font-bold hover:opacity-90 transition-all"
+                          >
+                            Continue Reading
+                          </a>
+                        )}
+                      </>
+                    ) : book.fileUrl ? (
+                      <a
+                        href={book.fileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full text-center py-2.5 rounded-xl bg-[var(--student-primary-light)] text-[var(--student-primary)] text-xs font-bold hover:bg-[var(--student-primary)] hover:text-white transition-all"
+                      >
                         Start Reading
-                      </button>
+                      </a>
+                    ) : (
+                      <p className="w-full text-center py-2.5 rounded-xl bg-[var(--student-surface-hover)] text-[var(--student-text-faint)] text-xs font-bold">
+                        File jald aa raha hai
+                      </p>
                     )}
                   </div>
                 </div>

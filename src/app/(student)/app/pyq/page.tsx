@@ -143,13 +143,13 @@ export default function PyqPage() {
     return (
       <div className="space-y-6">
         <div className="student-card p-8 text-center space-y-4">
-          <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-white text-3xl font-bold">
+          <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-[#6d28d9] to-[#2a1650] flex items-center justify-center text-white text-3xl font-bold">
             {pct}%
           </div>
           <h2 className="text-xl font-bold text-[var(--student-text)]">{activeExam.title}</h2>
           <div className="grid grid-cols-3 gap-4 text-center">
-            <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20">
-              <div className="text-2xl font-bold text-blue-600">{result.score}</div>
+            <div className="p-3 rounded-xl bg-violet-50 dark:bg-violet-900/20">
+              <div className="text-2xl font-bold text-[#6d28d9]">{result.score}</div>
               <div className="text-xs text-[var(--student-text-muted)]">Score</div>
             </div>
             <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/20">
@@ -164,7 +164,7 @@ export default function PyqPage() {
         </div>
         <button
           onClick={() => { setActiveExam(null); setResult(null); setSubmitted(false); }}
-          className="w-full py-3 rounded-xl border border-[var(--student-border)] text-[var(--student-text)] font-semibold hover:bg-white/5"
+          className="w-full py-3 rounded-xl border border-[var(--student-border)] text-[var(--student-text)] font-semibold hover:bg-[var(--student-surface-hover)]"
         >
           Back to PYQ List
         </button>
@@ -191,10 +191,24 @@ export default function PyqPage() {
             </div>
             <button
               onClick={() => { setActiveExam(null); setQuestions([]); }}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium border border-[var(--student-border)] text-[var(--student-text-muted)] hover:bg-white/5"
+              className="px-3 py-1.5 rounded-lg text-xs font-medium border border-[var(--student-border)] text-[var(--student-text-muted)] hover:bg-[var(--student-surface-hover)]"
             >
               Exit
             </button>
+          </div>
+        </div>
+
+        {/* Progress — asal session data (answered count) se */}
+        <div>
+          <div className="flex items-center justify-between text-[11px] font-semibold text-[var(--student-text-muted)]">
+            <span>{answeredCount}/{questions.length} answered</span>
+            <span>{questions.length > 0 ? Math.round((answeredCount / questions.length) * 100) : 0}% complete</span>
+          </div>
+          <div className="h-2 rounded-full bg-[var(--student-surface-hover)] mt-1.5 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-[#6d28d9] to-[#f5b942] transition-all"
+              style={{ width: `${questions.length > 0 ? (answeredCount / questions.length) * 100 : 0}%` }}
+            />
           </div>
         </div>
 
@@ -205,10 +219,10 @@ export default function PyqPage() {
               onClick={() => setCurrentIndex(i)}
               className={`w-9 h-9 rounded-lg text-xs font-bold flex-shrink-0 transition-all ${
                 i === currentIndex
-                  ? 'bg-blue-500 text-white scale-110'
+                  ? 'bg-[#6d28d9] text-white scale-110'
                   : answers[q.id]
                   ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-                  : 'bg-white/10 text-[var(--student-text-muted)] hover:bg-white/20'
+                  : 'bg-[var(--student-surface-hover)] text-[var(--student-text-muted)] hover:bg-[#6d28d9]/15'
               }`}
             >
               {i + 1}
@@ -219,7 +233,7 @@ export default function PyqPage() {
         {currentQuestion && (
           <div className="student-card p-6 space-y-5">
             <div className="flex items-start gap-3">
-              <span className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center text-sm font-bold">
+              <span className="flex-shrink-0 w-8 h-8 rounded-lg bg-[#6d28d9]/10 text-[#6d28d9] flex items-center justify-center text-sm font-bold">
                 {currentIndex + 1}
               </span>
               <div className="flex-1">
@@ -234,7 +248,7 @@ export default function PyqPage() {
                 value={currentAnswer?.answerText || ''}
                 onChange={(e) => handleAnswer(currentQuestion.id, { answerText: e.target.value })}
                 placeholder="Enter your answer"
-                className="w-full px-4 py-3 rounded-xl border border-[var(--student-border)] bg-white/5 text-[var(--student-text)] placeholder:text-[var(--student-text-faint)] focus:outline-none focus:border-blue-500"
+                className="w-full px-4 py-3 rounded-xl border border-[var(--student-border)] bg-white/5 text-[var(--student-text)] placeholder:text-[var(--student-text-faint)] focus:outline-none focus:border-[#6d28d9]"
               />
             ) : (
               <div className="space-y-3">
@@ -243,8 +257,8 @@ export default function PyqPage() {
                     key={opt.id}
                     className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${
                       currentAnswer?.selectedOptionId === opt.id
-                        ? 'border-blue-500 bg-blue-500/5'
-                        : 'border-[var(--student-border)] hover:border-blue-500/50'
+                        ? 'border-[#6d28d9] bg-[#6d28d9]/5'
+                        : 'border-[var(--student-border)] hover:border-[#6d28d9]/50'
                     }`}
                   >
                     <input
@@ -252,7 +266,7 @@ export default function PyqPage() {
                       name={`q-${currentQuestion.id}`}
                       checked={currentAnswer?.selectedOptionId === opt.id}
                       onChange={() => handleAnswer(currentQuestion.id, { selectedOptionId: opt.id })}
-                      className="accent-blue-500"
+                      className="accent-[#6d28d9]"
                     />
                     <span className="text-sm text-[var(--student-text)]">{opt.text}</span>
                   </label>
@@ -266,7 +280,7 @@ export default function PyqPage() {
           <button
             onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))}
             disabled={currentIndex === 0}
-            className="px-5 py-2.5 rounded-xl border border-[var(--student-border)] text-[var(--student-text)] font-medium hover:bg-white/5 disabled:opacity-30"
+            className="px-5 py-2.5 rounded-xl border border-[var(--student-border)] text-[var(--student-text)] font-medium hover:bg-[var(--student-surface-hover)] disabled:opacity-30"
           >
             Previous
           </button>
@@ -282,7 +296,7 @@ export default function PyqPage() {
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-50"
+              className="px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700 disabled:opacity-50"
             >
               {submitting ? 'Submitting...' : 'Submit Exam'}
             </button>
@@ -364,7 +378,7 @@ export default function PyqPage() {
       ) : exams.length === 0 ? (
         <div className="space-y-6">
           <div className="relative flex flex-col items-center justify-center p-12 md:p-16 text-center rounded-3xl border border-dashed border-[var(--student-border)] bg-gradient-to-b from-[var(--student-surface)] to-transparent overflow-hidden">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-6 shadow-lg shadow-blue-500/20">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#6d28d9] to-[#2a1650] flex items-center justify-center mb-6 shadow-lg shadow-[#6d28d9]/20">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
@@ -377,7 +391,7 @@ export default function PyqPage() {
           </div>
           <div className="student-card p-6 md:p-8">
             <div className="flex flex-col md:flex-row md:items-center gap-5">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#6d28d9] to-[#2a1650] flex items-center justify-center flex-shrink-0">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
@@ -417,27 +431,27 @@ export default function PyqPage() {
             <button
               key={exam.id}
               onClick={() => startExam(exam)}
-              className="student-card overflow-hidden flex flex-col text-left hover:border-blue-400 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group"
+              className="student-card overflow-hidden flex flex-col text-left hover:border-[#6d28d9] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group"
             >
-              <div className="h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500" />
+              <div className="h-1.5 bg-gradient-to-r from-[#2a1650] via-[#6d28d9] to-[#f5b942]" />
               <div className="p-5 md:p-6 flex flex-col gap-4 flex-1">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-500/20">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#6d28d9] to-[#2a1650] flex items-center justify-center flex-shrink-0 shadow-md shadow-[#6d28d9]/20">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </div>
                   {exam.year && (
-                    <span className="text-[11px] font-black px-3 py-1.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 tracking-wide">
+                    <span className="text-[11px] font-black px-3 py-1.5 rounded-full bg-[#6d28d9]/10 text-[#6d28d9] tracking-wide">
                       {exam.year}
                     </span>
                   )}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-[var(--student-text)] leading-snug group-hover:text-blue-600 transition-colors">{exam.title}</h3>
+                  <h3 className="font-bold text-[var(--student-text)] leading-snug group-hover:text-[#6d28d9] transition-colors">{exam.title}</h3>
                   <div className="flex items-center gap-2 mt-2 flex-wrap">
                     {exam.examName && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 uppercase tracking-wider">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300 uppercase tracking-wider">
                         {exam.examName}
                       </span>
                     )}
@@ -459,7 +473,7 @@ export default function PyqPage() {
                     <p className="text-[10px] text-[var(--student-text-faint)]">Time</p>
                   </div>
                 </div>
-                <div className="inline-flex items-center gap-1.5 text-sm font-bold text-blue-600">
+                <div className="inline-flex items-center gap-1.5 text-sm font-bold text-[#6d28d9]">
                   Start Paper
                   <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5-5 5M6 12h12" />
