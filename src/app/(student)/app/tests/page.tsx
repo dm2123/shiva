@@ -4,6 +4,7 @@ import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { mysqlPool } from '@/lib/db';
 import { hasTestTypeColumns } from '@/lib/ensure-test-schema';
 import StudentEmptyState from '@/components/student/StudentEmptyState';
+import { deriveExamCategory, type ExamCategory } from '@/lib/exam-category';
 import {
   IconClipboard, IconArrowRight, IconClock, IconTarget,
   IconCheckCircle, IconPlay, IconTrendingUp, IconPieChart,
@@ -14,6 +15,14 @@ export const revalidate = 0;
 
 /* ------------------------------------------------------------------ */
 /* THE SHIVA — Tests list (student)                                    */
+/* Upar PW tarz ka dark banner (T1): heading student ke asal goal      */
+/* (StudentProfiles.targetExam) se — "Test Series for <Exam> Exams";    */
+/* goal na ho to sirf "Test Series". Subtitle imaandaar hai (tests      */
+/* enrolled courses ke saath shamil hain — koi pass product nahi hai,   */
+/* isliye pass wala daava NAHI). PW par stats strip nahi hai — hatayi.  */
+/* Banner ke neeche exam chips (T2): asal tests ke courses se           */
+/* deriveExamCategory() se bane exams hi; selected = kaala pill,        */
+/* click par ?exam= se asal filter. Category sections neeche bane hain. */
 /* PW Test Series card anatomy (bade cards): pastel thumbnail tile     */
 /* (upar-left chhota type badge) → bold title → meta line              */
 /* `N Mins • N Marks • N Questions` (asal fields hi) → buttons row:    */
@@ -110,7 +119,11 @@ type AttemptState =
   | { kind: 'in-progress'; attemptId: string }
   | { kind: 'completed'; bestScore: number; attemptCount: number; lastAttemptId: string };
 
-export default async function TestsListPage() {
+export default async function TestsListPage({
+  searchParams,
+}: {
+  searchParams?: { exam?: string | string[] };
+}) {
   const session = await getSessionFromHeaders(headers());
   if (!session) return null;
 
@@ -134,7 +147,7 @@ export default async function TestsListPage() {
 
   const [rows]: any = await mysqlPool.query(
     `SELECT t.id, t.title, t.description, t.durationMinutes, t.totalMarks, t.passingMarks, t.status${optionalCols},
-            c.title AS courseTitle,
+            c.title AS courseTitle, c.slug AS courseSlug,
             (SELECT COUNT(*) FROM Questions q
                JOIN Chapters ch ON q.chapterId = ch.id
                JOIN Subjects s ON ch.subjectId = s.id
@@ -148,6 +161,22 @@ export default async function TestsListPage() {
   );
 
   const tests = rows || [];
+
+  // Banner heading (T1) — student ke asal goal (StudentProfiles.
+  // targetExam, free-text) se. deriveExamCategory se saaf exam-naam
+  // nikalo ("SSC CGL 2026" → "SSC"); match na mile to asal text hi.
+  let targetExam = '';
+  try {
+    const [profileRows]: any = await mysqlPool.query(
+      'SELECT targetExam FROM StudentProfiles WHERE userId = ? LIMIT 1',
+      [session.userId]
+    );
+    targetExam = String(profileRows?.[0]?.targetExam || '').trim();
+  } catch { /* goal best-effort — banner aam roop me banega */ }
+  const goalExam = targetExam ? deriveExamCategory({ title: targetExam }) : null;
+  const bannerTitle = targetExam
+    ? `Test Series for ${goalExam?.label || targetExam} Exams`
+    : 'Test Series';
 
   // Is student ke asal attempts — per-test state (Not Attempted /
   // In Progress / Completed + best score) sirf isi data se banta hai.
@@ -182,9 +211,33 @@ export default async function TestsListPage() {
     }
   } catch { /* attempt state best-effort — list bina state ke bhi chalegi */ }
 
-  // Category sections me group karo
+  // ── Exam chips (T2) — asal tests ke courses se derived categories.
+  // Sirf woh exams chip bante hain jinke asal tests is student ke paas
+  // hain; jiska course koi category na de, woh test sirf "All" me
+  // dikhta hai (chip invent nahi hoti).
+  const examByTestId = new Map<string, ExamCategory>();
+  const examMap = new Map<string, { cat: ExamCategory; count: number; first: number }>();
+  tests.forEach((t: any, i: number) => {
+    const cat = deriveExamCategory({ title: t.courseTitle, slug: t.courseSlug });
+    if (!cat) return;
+    examByTestId.set(t.id, cat);
+    const entry = examMap.get(cat.id);
+    if (entry) entry.count += 1;
+    else examMap.set(cat.id, { cat, count: 1, first: i });
+  });
+  const examChips = Array.from(examMap.values()).sort(
+    (a, b) => b.count - a.count || a.first - b.first
+  );
+  const examParam = Array.isArray(searchParams?.exam) ? searchParams.exam[0] : searchParams?.exam;
+  const selectedExam =
+    examParam && examMap.has(examParam) ? examMap.get(examParam)!.cat : null;
+  const visibleTests = selectedExam
+    ? tests.filter((t: any) => examByTestId.get(t.id)?.id === selectedExam.id)
+    : tests;
+
+  // Category sections me group karo (filter ke baad bachi list par)
   const sectionMap = new Map<string, { def: SectionDef; tests: any[] }>();
-  for (const t of tests) {
+  for (const t of visibleTests) {
     const def = bucketOf(t);
     const entry = sectionMap.get(def.key) || { def, tests: [] };
     entry.tests.push(t);
@@ -196,48 +249,35 @@ export default async function TestsListPage() {
     return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
   });
 
-  const totalQuestions = tests.reduce((sum: number, t: any) => sum + Number(t.questionCount || 0), 0);
-  const completedCount = tests.filter((t: any) => stateByTest.get(t.id)?.kind === 'completed').length;
-  const inProgressCount = tests.filter((t: any) => stateByTest.get(t.id)?.kind === 'in-progress').length;
-
-  const stats = [
-    { label: 'Available Tests', value: tests.length, icon: <IconClipboard size={17} /> },
-    { label: 'Completed', value: completedCount, icon: <IconCheckCircle size={17} /> },
-    { label: 'In Progress', value: inProgressCount, icon: <IconClock size={17} /> },
-    { label: 'Total Questions', value: totalQuestions, icon: <IconTarget size={17} /> },
-  ];
-
   return (
     <div className="space-y-7">
-      {/* Header */}
-      <div>
-        <h1 className="text-[22px] font-extrabold tracking-tight text-gray-900 md:text-2xl">
-          Test Series
-        </h1>
-        <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-gray-500">
-          Mock Tests, PYQ aur Practice — category-wise. Har test tumhari taiyaari ka asli
-          aaina hai.
-        </p>
-      </div>
-
-      {/* Stats — ek compact strip (asal ginti hi) */}
-      {tests.length > 0 && (
-        <div className={`${CARD} grid grid-cols-2 gap-x-4 gap-y-4 p-4 lg:grid-cols-4`}>
-          {stats.map((s) => (
-            <div key={s.label} className="flex items-center gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#6d28d9]/10 text-[#6d28d9]">
-                {s.icon}
-              </span>
-              <span className="min-w-0">
-                <span className="block text-lg font-extrabold leading-tight text-gray-900">{s.value}</span>
-                <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400">
-                  {s.label}
-                </span>
-              </span>
-            </div>
-          ))}
+      {/* ── Dark banner (T1, PW tarz) — heading asal goal se, subtitle
+             imaandaar: tests enrolled courses ke saath shamil hain,
+             koi pass product nahi hai isliye pass ka daava nahi. ── */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#150b2e] via-[#241145] to-[#3a1470] px-5 py-6 text-white sm:px-7 sm:py-8">
+        <div
+          className="pointer-events-none absolute -right-10 -top-14 h-44 w-44 rounded-full bg-white/5"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute -bottom-16 right-24 h-36 w-36 rounded-full bg-[#6d28d9]/25"
+          aria-hidden="true"
+        />
+        <div className="relative flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <h1 className="text-[24px] font-extrabold leading-tight tracking-tight md:text-[30px]">
+              {bannerTitle}
+            </h1>
+            <p className="mt-1.5 max-w-xl text-[13px] leading-relaxed text-white/75">
+              Mock Tests, PYQ aur Practice — ye saare tests tumhare enrolled courses ke
+              saath shamil hain, alag se kuch kharidna nahi hai.
+            </p>
+          </div>
+          <span className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-white sm:flex" aria-hidden="true">
+            <IconClipboard size={24} />
+          </span>
         </div>
-      )}
+      </div>
 
       {tests.length === 0 ? (
         <StudentEmptyState
@@ -252,21 +292,39 @@ export default async function TestsListPage() {
         />
       ) : (
         <div className="space-y-8">
-          {/* Category chips (anchor navigation) */}
-          {sections.length > 1 && (
-            <nav className="flex flex-wrap gap-2" aria-label="Test categories">
-              {sections.map(({ def, tests: list }) => (
-                <a
-                  key={def.key}
-                  href={`#tests-${def.key}`}
-                  className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-[13px] font-semibold text-gray-600 transition hover:border-[#6d28d9] hover:text-[#6d28d9]"
-                >
-                  {def.title}
-                  <span className="rounded-full bg-[#6d28d9]/10 px-1.5 py-0.5 text-[11px] font-bold text-[#6d28d9]">
-                    {list.length}
-                  </span>
-                </a>
-              ))}
+          {/* Exam chips (T2) — asal filter (?exam=), selected = kaala
+              pill + safed text; chips sirf un exams ke jinke asal
+              tests hain. Category grouping neeche sections me hai. */}
+          {examChips.length > 0 && (
+            <nav className="flex flex-wrap gap-2" aria-label="Exam filter">
+              <Link
+                href="/app/tests"
+                aria-current={!selectedExam ? 'page' : undefined}
+                className={`inline-flex items-center rounded-full border px-4 py-2 text-[13px] font-semibold transition ${
+                  !selectedExam
+                    ? 'border-gray-900 bg-gray-900 text-white'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-900 hover:text-gray-900'
+                }`}
+              >
+                All Tests
+              </Link>
+              {examChips.map(({ cat }) => {
+                const active = selectedExam?.id === cat.id;
+                return (
+                  <Link
+                    key={cat.id}
+                    href={`/app/tests?exam=${cat.id}`}
+                    aria-current={active ? 'page' : undefined}
+                    className={`inline-flex items-center rounded-full border px-4 py-2 text-[13px] font-semibold transition ${
+                      active
+                        ? 'border-gray-900 bg-gray-900 text-white'
+                        : 'border-gray-200 bg-white text-gray-600 hover:border-gray-900 hover:text-gray-900'
+                    }`}
+                  >
+                    {cat.label}
+                  </Link>
+                );
+              })}
             </nav>
           )}
 
