@@ -2,25 +2,19 @@
 
 // ============================================================
 // THE SHIVA — Student dashboard client shell
-// Server page (page.tsx) saara asal data (enrollments +
-// progress, aaj ki classes, streak/XP, recommended courses)
-// DB se laata hai aur yahan deta hai; asal Study-Home UI
-// PWDashboard component me hai (doosri jagah se bhi reuse
-// ho sake isliye presentation wahan rakhi hai).
+// Server page (page.tsx) sirf wahi asal data DB se laata hai
+// jo v2 dashboard ke sections ko chahiye (enrollments,
+// doubts ginti, recent learning, asal free course) aur
+// yahan deta hai; UI PWDashboard component me hai.
 // ============================================================
 
 import PWDashboard, { type PWDashboardProps } from '@/components/student/PWDashboard';
 
 export type {
   DashboardEnrollment,
-  DashboardLiveClass,
-  DashboardWeekDay,
-  DashboardStreak,
-  DashboardDoubt,
   DashboardDoubtSummary,
   DashboardRecentLearning,
-  DashboardAnnouncement,
-  RecommendedCourse,
+  DashboardPromoCourse,
   PWDashboardProps,
 } from '@/components/student/PWDashboard';
 

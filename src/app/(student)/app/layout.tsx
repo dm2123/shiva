@@ -88,7 +88,7 @@ export default async function StudentLayout({ children }: { children: ReactNode 
   // upar patti (header) + baaya grouped sidebar (desktop) + content
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-gray-50 lg:flex">
+      <div className="min-h-screen bg-[#f4f5f7] lg:flex">
         <StudentSidebar />
         <div className="flex-1 min-w-0 flex flex-col min-h-screen">
           <StudentHeaderWrapper
