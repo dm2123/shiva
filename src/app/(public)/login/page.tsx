@@ -321,7 +321,7 @@ export default function StudentLoginPage() {
         <div style={{ position: 'relative', width: '100%', maxWidth: 960 }}>
           {/* Back to marketing site */}
           <a
-            href="/"
+            href="https://dm2123.github.io/shiva/"
             style={{
               display: 'inline-flex',
               alignItems: 'center',

@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
       <div className="max-w-md w-full bg-slate-900 p-8 rounded-3xl shadow-2xl border border-red-900/50">
         {/* Back to marketing site */}
         <a
-          href="/"
+          href="https://dm2123.github.io/shiva/"
           className="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#c4b5fd] no-underline hover:underline"
         >
           ← Back

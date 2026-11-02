@@ -1,13 +1,826 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>THE SHIVA — SSC, Railway, Banking Exam Preparation</title>
-<meta http-equiv="refresh" content="0; url=https://the-shiva.onrender.com/">
-<script>window.location.replace("https://the-shiva.onrender.com/");</script>
+<meta name="description" content="THE SHIVA — Bharat ka affordable learning platform. SSC, Railway, Banking, Defence exams ki taiyaari free courses ke saath.">
+<meta property="og:title" content="THE SHIVA — Your Dream Exams. Our Mission.">
+<meta property="og:description" content="Free courses se shuru karo — SSC, Railway, Banking exam preparation.">
+<meta property="og:image" content="https://dm2123.github.io/shiva/images/hero-student.png">
+<meta property="og:url" content="https://dm2123.github.io/shiva/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="THE SHIVA — Your Dream Exams. Our Mission.">
+<meta name="twitter:description" content="Free courses se shuru karo — SSC, Railway, Banking exam preparation.">
+<meta name="twitter:image" content="https://dm2123.github.io/shiva/images/hero-student.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#2a1650;--brand:#6d28d9;--brand-dark:#4c1d95;--gold:#f5b942;--gold-dark:#d97706;--ink:#1e1b2e;--muted:#6b7280;--bg:#faf9ff;--card:#fff;--line:#ede9fe;--green:#059669}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,BlinkMacSystemFont,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;height:auto}
+.wrap{max-width:1140px;margin:0 auto;padding:0 20px}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+/* HEADER */
+header{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #f0f0f0;box-shadow:0 2px 12px rgba(42,22,80,.06)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1200px;margin:0 auto;padding:10px 16px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:19px;color:var(--deep)}
+.logo img{width:42px;height:42px;border-radius:50%;object-fit:cover}
+.nav-links{display:flex;gap:24px;font-weight:600;font-size:15px;color:#374151}
+.nav-links a{padding:6px 2px;border-bottom:2px solid transparent;transition:.2s}
+.nav-links a:hover{color:var(--brand);border-color:var(--gold)}
+.btn-login{background:var(--deep);color:#fff;padding:11px 24px;border-radius:10px;font-weight:700;font-size:15px;white-space:nowrap;transition:.2s}
+.btn-login:hover{background:var(--brand-dark);transform:translateY(-1px)}
+.hamburger{display:none;background:none;border:none;font-size:26px;cursor:pointer;color:var(--deep);line-height:1}
+.mmenu{display:none;position:fixed;inset:0;background:#fff;z-index:200;padding:20px;overflow:auto}
+.mmenu.open{display:block}
+.mmenu a.mlink{display:block;padding:14px 0;border-bottom:1px solid #f0f0f0;font-size:17px;font-weight:600;color:var(--ink)}
+/* BUTTONS */
+.btn{display:inline-block;padding:12px 24px;border-radius:12px;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:.2s;text-align:center}
+.btn-brand{background:var(--brand);color:#fff}.btn-brand:hover{background:var(--brand-dark);transform:translateY(-1px)}
+.btn-gold{background:var(--gold);color:#2a1650}.btn-gold:hover{background:var(--gold-dark);color:#fff;transform:translateY(-1px)}
+.btn-ghost{background:#fff;color:var(--brand);border:2px solid var(--line)}.btn-ghost:hover{border-color:var(--brand)}
+.btn-block{display:block;width:100%}
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--deep) 0%,var(--brand-dark) 55%,var(--brand) 100%);color:#fff;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-70px;top:-70px;width:240px;height:240px;border-radius:50%;background:rgba(245,185,66,.16)}
+.hero-in{max-width:1140px;margin:0 auto;padding:44px 20px 48px;position:relative;z-index:2;display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center}
+.kicker{display:inline-block;background:var(--gold);color:#2a1650;font-size:12.5px;font-weight:800;padding:6px 14px;border-radius:999px;margin-bottom:14px;letter-spacing:.4px}
+.hero h1{font-size:40px;font-weight:900;line-height:1.16;margin-bottom:12px}
+.hero h1 .gold{color:var(--gold)}
+.hero p.sub{font-size:16.5px;opacity:.93;max-width:520px;margin-bottom:18px}
+.hero ul{list-style:none;margin-bottom:20px}
+.hero ul li{font-size:15px;padding:4px 0}
+.hero ul li::before{content:"✓ ";color:var(--gold);font-weight:900}
+.price-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.price-old{font-size:19px;color:rgba(255,255,255,.55);text-decoration:line-through}
+.price-new{font-size:26px;font-weight:900;color:var(--gold)}
+.hero-card{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.22);border-radius:20px;padding:22px;backdrop-filter:blur(4px)}
+.hero-card .chat{background:#fff;color:var(--ink);font-size:13px;padding:9px 13px;border-radius:14px 14px 14px 4px;margin-bottom:14px;box-shadow:0 4px 14px rgba(0,0,0,.18);display:inline-block}
+.hero-card .duo{display:flex;gap:18px;justify-content:center}
+.hero-card .person{text-align:center}
+.hero-card .person img{width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px dashed var(--gold);padding:3px;background:rgba(255,255,255,.12)}
+.hero-card .person span{display:block;font-size:12.5px;margin-top:8px;opacity:.92;font-weight:600}
+/* SECTIONS */
+section{padding:56px 0}
+.sec-head{text-align:center;margin-bottom:34px}
+.sec-head .kick{display:inline-block;background:#ede9fe;color:var(--brand-dark);font-weight:700;font-size:12.5px;padding:6px 16px;border-radius:999px;margin-bottom:10px;text-transform:uppercase;letter-spacing:1.2px}
+.sec-head h2{font-size:30px;font-weight:800;color:var(--deep)}
+.sec-head p{color:var(--muted);max-width:620px;margin:8px auto 0;font-size:15.5px}
+/* TRUST STRIP */
+.trust-strip{background:#fff;border-bottom:1px solid #f3f0ff}
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:26px 0}
+.tstat{text-align:center;padding:16px 10px;border:1px solid #f3f4f6;border-radius:16px;background:#fff;box-shadow:0 4px 16px rgba(42,22,80,.05)}
+.tstat .ic{font-size:26px;margin-bottom:6px}
+.tstat b{display:block;font-size:15px}
+.tstat span{font-size:12.5px;color:var(--muted)}
+/* CATEGORIES */
+.cat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.cat-card{background:var(--card);border:2px solid var(--line);border-left:5px solid var(--brand);border-radius:18px;padding:22px;display:flex;justify-content:space-between;align-items:center;gap:12px;transition:.25s}
+.cat-card:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(109,40,217,.13);border-color:var(--brand)}
+.cat-card h3{font-size:20px;margin-bottom:10px;color:var(--deep)}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.pills span{font-size:12px;border:1.5px solid #e5e7eb;background:#f9fafb;padding:5px 13px;border-radius:99px;color:#4b5563;font-weight:600}
+.explore{color:var(--brand);font-weight:700;font-size:14.5px}
+.explore::after{content:" →"}
+.cat-ill{font-size:46px;flex-shrink:0}
+/* BATCH CARDS */
+.batch-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.batch{background:var(--card);border:2px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;transition:.25s}
+.batch:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(109,40,217,.14)}
+.batch .banner{padding:20px;color:#fff;position:relative}
+.batch .tag{display:inline-block;font-size:11px;font-weight:800;padding:4px 11px;border-radius:99px;margin-bottom:8px}
+.batch h3{font-size:19px;font-weight:900}
+.batch .banner p{font-size:13.5px;opacity:.92}
+.batch .body{padding:18px 20px;flex:1;display:flex;flex-direction:column}
+.batch .feats{font-size:13px;color:#4b5563;margin-bottom:14px}
+.batch .row{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.price-big{font-size:25px;font-weight:900;color:var(--green)}
+.price-note{font-size:14px;color:#9ca3af}
+/* WHY */
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.feat-card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:24px 20px;transition:.25s}
+.feat-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(109,40,217,.11);border-color:var(--brand)}
+.feat-card .ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:12px;background:#f5f3ff}
+.feat-card b{display:block;font-size:16px;margin-bottom:5px;color:var(--deep)}
+.feat-card p{font-size:14px;color:var(--muted)}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:8px}
+.pcard{border-radius:16px;padding:24px 14px;text-align:center;transition:.2s}
+.pcard:hover{transform:scale(1.03)}
+.pcard b{font-size:23px;display:block;color:var(--deep)}
+.pcard span{font-size:13px;color:#4b5563}
+/* RESULTS / RESOURCES */
+.honest-box{background:#f5f3ff;border:2px dashed var(--brand);border-radius:18px;padding:34px 22px;text-align:center;color:var(--muted);font-size:15px}
+.honest-box b{color:var(--deep)}
+.res-scroll{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.res-card{border-radius:16px;padding:22px}
+.res-card h3{font-size:17px;margin-bottom:7px;color:var(--deep)}
+.res-card p{font-size:13.5px;color:#4b5563;margin-bottom:12px}
+.res-card .big{font-size:38px;text-align:center;margin:10px 0}
+/* FAQ */
+.faq{max-width:780px;margin:0 auto}
+.faq-item{background:var(--card);border:2px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
+.faq-q{width:100%;background:none;border:none;text-align:left;padding:17px 20px;font:inherit;font-weight:700;font-size:15.5px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--ink)}
+.faq-q::after{content:"+";font-size:24px;color:var(--brand);font-weight:800;flex-shrink:0}
+.faq-item.open .faq-q::after{content:"−"}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:14.5px;color:var(--muted)}
+.faq-a div{padding:0 20px 17px}
+/* APP CTA + COUNSEL */
+.app-cta{background:linear-gradient(135deg,var(--deep),var(--brand-dark));border-radius:24px;padding:38px 26px;color:#fff;display:grid;grid-template-columns:1fr auto;gap:26px;align-items:center}
+.app-cta h2{font-size:26px;margin-bottom:10px}
+.app-cta ul{list-style:none;margin-bottom:18px}
+.app-cta li{font-size:14.5px;padding:4px 0}
+.app-cta li::before{content:"✓ ";color:var(--gold);font-weight:900}
+.stores{display:flex;gap:10px;flex-wrap:wrap}
+.stores div{background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.35);color:#fff;padding:10px 18px;border-radius:10px;font-size:13.5px;font-weight:700;cursor:pointer}
+.app-cta img{width:150px;border-radius:20px;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.counsel-strip{margin:8px 0 0;background:linear-gradient(135deg,var(--brand),var(--brand-dark));border-radius:20px;padding:30px 22px;text-align:center;color:#fff}
+.counsel-strip h2{font-size:21px;margin-bottom:6px}
+.counsel-strip p{font-size:14.5px;opacity:.93;margin-bottom:16px}
+/* FOOTER */
+footer{background:var(--deep);color:#b9b3d9;padding:44px 0 26px;margin-top:56px}
+.fgrid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:28px;margin-bottom:26px}
+.fgrid h4{color:#fff;margin-bottom:12px;font-size:15px}
+.fgrid a{display:block;padding:4px 0;font-size:13.5px;color:#b9b3d9}
+.fgrid a:hover{color:var(--gold)}
+.fbot{border-top:1px solid rgba(255,255,255,.14);padding-top:16px;font-size:12.5px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+/* FLOAT / POPUP / STICKY */
+.fab{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:16px;background:var(--brand);color:#fff;border:none;font-size:26px;box-shadow:0 8px 24px rgba(109,40,217,.4);z-index:90;cursor:pointer}
+.cpopup{display:none;position:fixed;bottom:90px;right:16px;width:min(320px,calc(100vw - 32px));background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.22);z-index:200;overflow:hidden}
+.cpopup.open{display:block}
+.cpopup .hd{background:linear-gradient(135deg,var(--brand-dark),var(--brand));color:#fff;padding:16px;position:relative}
+.cpopup input{width:100%;padding:11px;border:2px solid var(--line);border-radius:9px;margin-bottom:10px;font-size:14px;font:inherit}
+.sticky-cta{display:none}
+.note-inline{font-size:12.5px;font-weight:600;margin-top:10px}
+@media(max-width:900px){
+.nav-links{display:none}.hamburger{display:block}
+.hero-in{grid-template-columns:1fr;padding:34px 20px 38px}
+.hero h1{font-size:31px}
+.trust-grid{grid-template-columns:1fr 1fr}
+.cat-grid,.batch-grid,.res-scroll{grid-template-columns:1fr}
+.why-grid,.pgrid{grid-template-columns:1fr 1fr}
+.app-cta{grid-template-columns:1fr;text-align:center}
+.app-cta img{margin:0 auto}
+.app-cta ul{text-align:left;max-width:300px;margin:0 auto 18px}
+.fgrid{grid-template-columns:1fr 1fr}
+section{padding:42px 0}
+.sticky-cta{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:150;background:#fff;border-top:1px solid #f0f0f0;box-shadow:0 -4px 20px rgba(0,0,0,.09);padding:10px 12px calc(10px + env(safe-area-inset-bottom));gap:10px}
+.sticky-cta a,.sticky-cta button{flex:1;text-align:center;padding:13px 8px;border-radius:10px;font-weight:800;font-size:14px;border:none;cursor:pointer;font-family:inherit}
+.sticky-cta .sc-free{background:var(--gold);color:#2a1650}
+.sticky-cta .sc-cb{background:#ede9fe;color:var(--brand)}
+.fab{bottom:88px}
+body{padding-bottom:74px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* ===== DESIGN PASS — premium polish (sirf SHIVA tokens: deep purple + gold) ===== */
+.hero::before,.page-hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(245,185,66,.22) 1.6px,transparent 1.8px);background-size:24px 24px;opacity:.45;pointer-events:none}
+.sec-head h2{font-size:30px;letter-spacing:-.3px}
+.sec-head h2::after{content:"";display:block;width:58px;height:4px;border-radius:99px;background:linear-gradient(90deg,var(--brand),var(--gold));margin:12px auto 0}
+.btn{box-shadow:0 4px 14px rgba(42,22,80,.12)}
+.btn-gold{box-shadow:0 6px 18px rgba(245,185,66,.35)}
+.btn-brand{box-shadow:0 6px 18px rgba(109,40,217,.28)}
+.btn-login{box-shadow:0 4px 14px rgba(42,22,80,.18)}
+.card .banner,.course .banner,.batch .banner{position:relative;overflow:hidden}
+.card .banner::after,.course .banner::after,.batch .banner::after{content:"";position:absolute;right:-26px;top:-26px;width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,.16);pointer-events:none}
+.card .banner::before,.course .banner::before,.batch .banner::before{content:"";position:absolute;right:36px;bottom:-32px;width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.10);pointer-events:none}
+.price b.free{background:#dcfce7;padding:3px 14px;border-radius:99px}
+.price-big{background:#dcfce7;padding:2px 14px;border-radius:99px}
+.feat-card .ico{box-shadow:inset 0 0 0 2px #ede9fe}
+.feat-card,.step{box-shadow:0 4px 16px rgba(42,22,80,.05)}
+.honest-box{position:relative;overflow:hidden;background:linear-gradient(180deg,#f5f3ff,#ffffff)}
+.wave-div{line-height:0}
+.exam-strip{background:linear-gradient(90deg,var(--gold),#ffd97a,var(--gold));color:#2a1650;box-shadow:0 4px 16px rgba(42,22,80,.10)}
+.exam-strip .in{display:flex;white-space:nowrap;overflow-x:auto;scrollbar-width:none;padding:11px 16px;align-items:center}
+.exam-strip .in::-webkit-scrollbar{display:none}
+.exam-strip span{font-size:13px;font-weight:800;letter-spacing:1.6px;padding:0 13px}
+.exam-strip i{color:var(--brand);font-style:normal;font-size:11px}
+@media(min-width:900px){.exam-strip .in{justify-content:center}}
+.faq-q{min-height:52px}
+.chip{min-height:42px}
+
+.cat-card{box-shadow:0 4px 16px rgba(42,22,80,.05)}
+.cat-ill{filter:drop-shadow(0 4px 8px rgba(42,22,80,.18))}
+.hero-card{box-shadow:0 20px 44px rgba(0,0,0,.25)}
+.app-cta{position:relative;overflow:hidden}
+.app-cta::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(245,185,66,.20) 1.6px,transparent 1.8px);background-size:24px 24px;opacity:.4;pointer-events:none}
+.tstat{box-shadow:0 4px 16px rgba(42,22,80,.05)}
+
+@media(max-width:900px){
+.sec-head h2{font-size:25px}
+.exam-strip span{font-size:12px;padding:0 10px;letter-spacing:1.2px}
+.sticky-cta a,.sticky-cta button{min-height:48px;display:flex;align-items:center;justify-content:center}
+.card .banner,.course .banner,.batch .banner{font-size:16.5px}
+}
+
+/* ===== R2-F DESIGN ALIGNMENT (design map) — price pattern + design language ===== */
+:root{--black:#111827;--green-dark:#065f46;--green-bg:#dcfce7;--green-line:#a7f3d0}
+/* Buttons: har jagah khoob gol (pill), ekroop */
+.btn,.btn-login,.chip{border-radius:999px!important}
+.btn-login{border-radius:999px!important}
+.counsel-strip button,.counsel-strip a{border-radius:999px!important}
+.sticky-cta a,.sticky-cta button{border-radius:999px!important}
+.cpopup button{border-radius:999px}
+/* Kharid / Register = KAALA solid; jaankari CTA = purple (btn-brand); gold sirf premium strip/badge par */
+.btn-black,.btn-buy{background:var(--black)!important;color:#fff!important;border:2px solid var(--black)!important;box-shadow:0 8px 20px rgba(17,24,39,.22)!important}
+.btn-black:hover,.btn-buy:hover{background:#000!important;border-color:#000!important;transform:translateY(-1px)}
+.btn-brand{background:var(--brand)!important;color:#fff!important;border:2px solid var(--brand)!important}
+.btn-brand:hover{background:var(--brand-dark)!important;border-color:var(--brand-dark)!important}
+/* Sticky bottom CTA bhi wahi niyam: Free Course (register) = kaala, Counsellor (jaankari) = halka purple */
+.sticky-cta .sc-free{background:var(--black)!important;color:#fff!important}
+.sticky-cta .sc-cb{background:#ede9fe!important;color:var(--brand)!important}
+/* Headings: public scale — hero bahut bada extra-bold, section ~32px extra-bold + grey subtitle, khoob whitespace */
+.hero h1{font-size:52px!important;font-weight:900!important;letter-spacing:-.5px}
+.page-hero h1{font-size:44px!important;font-weight:900!important;letter-spacing:-.5px}
+.page-hero{padding:52px 0 56px!important}
+.sec-head h2{font-size:32px!important;font-weight:900!important}
+.sec-head p{font-size:15.5px}
+section{padding:60px 0}
+/* Cards: safed, rounded-2xl, halki shadow (section ka pastel tint background par safed card) */
+.course,.card,.batch,.feat-card,.step,.cat-card,.tstat,.faq-item{background:#fff!important;border-radius:20px!important;box-shadow:0 6px 24px rgba(42,22,80,.06)!important}
+.res-card{border-radius:20px!important;box-shadow:0 6px 24px rgba(42,22,80,.06)!important}
+.honest-box{border-radius:20px!important}
+/* PRICE PATTERN — har jagah ek: [bold current] [grey kata MRP] [green chip] -> theek neeche solid CTA */
+.price,.price-row{display:flex!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important}
+.price b:not(.soon),.price-big,.price-new{font-size:26px!important;font-weight:900!important;letter-spacing:-.3px}
+.price b.free,.price-big{color:var(--green)!important;background:var(--green-bg);padding:3px 14px;border-radius:999px}
+.hero .price-new{color:var(--gold)!important;background:none;padding:0}
+.price s,.price .mrp,.price-old{color:#9ca3af!important;text-decoration:line-through!important;font-weight:600;font-size:17px}
+.hero .price-old{color:rgba(255,255,255,.55)!important}
+.off-chip{display:inline-flex;align-items:center;background:var(--green-bg);color:var(--green-dark);font-size:12px;font-weight:800;padding:4px 11px;border-radius:999px;border:1px solid var(--green-line);letter-spacing:.2px;white-space:nowrap;line-height:1.4}
+/* Batch card (index): price row ke theek neeche full-width CTA */
+.batch .row{flex-direction:column!important;align-items:stretch!important;gap:12px!important}
+.batch .row .price{margin:0!important}
+.batch .row .btn{width:100%}
+/* Gold sirf premium strip par: exam-strip + hero kicker/badge (buttons par gold nahi) */
+@media(max-width:900px){
+.hero h1{font-size:36px!important}
+.page-hero h1{font-size:32px!important}
+.sec-head h2{font-size:26px!important}
+section{padding:44px 0}
+}
+
+/* ===== R3 PAGES UPGRADE — header mega-dropdown, circular category strip, bada footer ===== */
+.nav-cta{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.btn-register{background:var(--brand);color:#fff;padding:11px 20px;border-radius:999px;font-weight:700;font-size:15px;white-space:nowrap;transition:.2s;box-shadow:0 6px 18px rgba(109,40,217,.28)}
+.btn-register:hover{background:var(--brand-dark);transform:translateY(-1px)}
+.mega-wrap{position:relative}
+.mega-trigger{background:#fff;color:var(--brand-dark);border:2px solid var(--brand);padding:9px 18px;border-radius:999px;font-weight:800;font-size:14.5px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:.2s}
+.mega-trigger:hover,.mega-wrap:focus-within .mega-trigger{background:#f5f3ff}
+.mega-caret{font-size:11px;margin-left:2px}
+.mega-panel{display:none;position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);width:min(700px,94vw);background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 60px rgba(42,22,80,.18);padding:20px;grid-template-columns:210px 1fr;gap:22px;z-index:130;text-align:left}
+.mega-wrap:hover .mega-panel,.mega-wrap:focus-within .mega-panel{display:grid}
+.mega-head{font-size:11.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.mega-cat{display:block;padding:9px 11px;border-radius:12px}
+.mega-cat:hover{background:#f5f3ff}
+.mega-cat-name{display:block;font-weight:800;font-size:14.5px;color:var(--deep)}
+.mega-cat-desc{display:block;font-size:12px;color:var(--muted)}
+.mega-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mega-tile{display:flex;align-items:center;gap:8px;padding:10px;border:1.5px solid #f0eefc;border-radius:14px;font-size:13px;font-weight:700;color:var(--ink)}
+.mega-tile:hover{border-color:var(--brand);background:#faf9ff}
+.mega-tile-ico{font-size:19px}
+.mega-foot{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid #f3f0ff}
+.mega-foot a{font-size:13px;font-weight:800;color:var(--brand)}
+@media(max-width:1100px){.mega-wrap{display:none}}
+/* Circular category tiles strip (homepage, hero se pehle) */
+.cat-strip-wrap{background:#fff;border-bottom:1px solid #f3f0ff;padding:20px 0 8px}
+.cat-strip{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;max-width:1140px;margin:0 auto;padding:0 16px}
+.cat-tile{display:flex;flex-direction:column;align-items:center;gap:7px;width:96px;text-align:center;padding:6px 2px;border-radius:16px;transition:.2s}
+.cat-tile:hover{transform:translateY(-3px)}
+.cat-tile .circ{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--line);background:#f5f3ff;color:var(--brand)}
+.cat-tile:hover .circ{border-color:var(--brand);box-shadow:0 10px 22px rgba(109,40,217,.16)}
+.cat-tile .circ svg{width:30px;height:30px}
+.cat-tile b{font-size:13.5px;color:var(--deep);line-height:1.25}
+.cat-tile span{font-size:11px;color:var(--muted);line-height:1.3}
+/* Breadcrumb (sub-pages) */
+.crumb{font-size:12.5px;color:rgba(255,255,255,.72);margin-bottom:12px;position:relative;z-index:2;font-weight:600}
+.crumb a{color:#fff}
+.crumb a:hover{color:var(--gold)}
+/* Bada footer: brand row + 5 columns */
+.fbrand{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:flex-start;margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,.12)}
+.fbrand .fbrand-desc{font-size:13.5px;max-width:420px;margin-top:8px}
+.fbrand-help{font-size:13.5px}
+.fgrid5{grid-template-columns:repeat(5,1fr)!important}
+.exam-pills{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}
+.exam-pills a{font-size:13px;font-weight:700;border:1.5px solid var(--line);background:#fff;padding:8px 16px;border-radius:999px;color:var(--brand-dark)}
+.exam-pills a:hover{border-color:var(--brand);background:#f5f3ff}
+@media(max-width:900px){.fgrid5{grid-template-columns:1fr 1fr!important}.cat-tile{width:84px}}
+
+/* PROMO BANNER (top band) */
+.promo-banner{background:linear-gradient(120deg,#1c0b3d 0%,var(--brand-dark,#3b1470) 55%,var(--brand,#6d28d9) 100%);color:#fff;position:relative;overflow:hidden;border-bottom:3px solid var(--gold,#f5b942)}
+.promo-banner::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(245,185,66,.25) 1.6px,transparent 1.8px);background-size:24px 24px;opacity:.4;pointer-events:none}
+.promo-in{max-width:1140px;margin:0 auto;padding:16px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;position:relative;z-index:2}
+.promo-txt{flex:1;min-width:250px}
+.promo-kicker{display:inline-block;background:var(--gold,#f5b942);color:#2a1650;font-size:11px;font-weight:900;letter-spacing:1.4px;padding:4px 11px;border-radius:999px;margin-bottom:6px}
+.promo-txt h2{font-size:21px;font-weight:900;line-height:1.2;margin:0 0 4px}
+.promo-txt p{font-size:13.5px;opacity:.92;margin:0}
+.promo-ticks{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px}
+.promo-ticks span{font-size:12.5px;font-weight:700}
+.promo-ticks span::before{content:"\2713  ";color:var(--gold,#f5b942);font-weight:900}
+.promo-cta{background:var(--gold,#f5b942);color:#2a1650;font-weight:900;font-size:15px;padding:12px 26px;border-radius:999px;text-decoration:none;white-space:nowrap;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+@media(max-width:640px){.promo-txt h2{font-size:18px}.promo-cta{width:100%;text-align:center}}
+
+/* ===== R4 — PW-LEVEL REDESIGN (fleet 2026-11-02): typography, hero search, featured course, depth ===== */
+::selection{background:var(--gold);color:#2a1650}
+body{font-family:'Plus Jakarta Sans','Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,.logo{font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif}
+header{box-shadow:0 6px 24px rgba(42,22,80,.08)}
+.logo img{box-shadow:0 0 0 2px var(--line)}
+.btn{letter-spacing:.1px}
+.btn:active{transform:translateY(0) scale(.99)}
+/* HERO SEARCH — PW pattern (homepage) */
+.hero-search{display:flex;background:#fff;border-radius:999px;padding:6px;box-shadow:0 18px 40px rgba(12,4,32,.35);max-width:560px;margin:22px 0 14px;border:2px solid rgba(245,185,66,.55);position:relative;z-index:3}
+.hero-search input{flex:1;border:none;outline:none;font:inherit;font-size:15.5px;padding:10px 18px;color:var(--ink);background:transparent;min-width:0}
+.hero-search input::placeholder{color:#9ca3af}
+.hero-search button{background:var(--gold);color:#2a1650;border:none;font:inherit;font-weight:900;font-size:15px;padding:12px 26px;border-radius:999px;cursor:pointer;white-space:nowrap;transition:.2s}
+.hero-search button:hover{background:var(--gold-dark);color:#fff}
+.pop-search{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13px;margin-bottom:20px;position:relative;z-index:3}
+.pop-search .lbl{opacity:.85;font-weight:700}
+.pop-search a{background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.35);color:#fff;padding:7px 15px;border-radius:999px;font-weight:700;transition:.2s}
+.pop-search a:hover{background:rgba(245,185,66,.25);border-color:var(--gold)}
+/* FEATURED COURSE — wide card (homepage batches section) */
+.feat-batch{grid-column:1/-1}
+.feat-body{display:grid;grid-template-columns:1.25fr .75fr}
+.feat-main{padding:20px}
+.feat-desc{font-size:14.5px;color:#4b5563;margin-bottom:12px}
+.topic-chips{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 14px}
+.topic-chips span{font-size:12.5px;font-weight:700;background:#f5f3ff;border:1.5px solid var(--line);color:var(--brand-dark);padding:6px 13px;border-radius:999px}
+.feat-side{background:#faf9ff;border-left:2px dashed var(--line);padding:20px;display:flex;flex-direction:column;gap:9px}
+.feat-side .inc{font-size:13.5px;color:#4b5563;display:flex;gap:8px;align-items:flex-start}
+.feat-side .inc::before{content:"\2713";color:var(--green);font-weight:900}
+.feat-side .price{margin-top:auto}
+/* TEACHERS TEASER (homepage) */
+.teaser-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.teaser-card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:24px 20px;text-align:center;box-shadow:0 6px 24px rgba(42,22,80,.06);transition:.25s}
+.teaser-card:hover{transform:translateY(-3px);border-color:var(--brand)}
+.teaser-card .tico{width:60px;height:60px;margin:0 auto 12px;border-radius:50%;background:linear-gradient(135deg,#f5f3ff,#ede9fe);display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:inset 0 0 0 2px #ede9fe}
+.teaser-card b{display:block;font-size:16px;color:var(--deep);margin-bottom:4px}
+.teaser-card p{font-size:13.5px;color:var(--muted)}
+/* SCHOLARSHIP STRIP (homepage) */
+.scholar-strip{background:linear-gradient(120deg,#fff7e0,#ffedb8);border:2px solid var(--gold);border-radius:20px;padding:28px;display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;box-shadow:0 10px 30px rgba(245,185,66,.25)}
+.scholar-strip .sic{font-size:44px}
+.scholar-strip h3{font-size:21px;color:var(--deep);margin-bottom:4px}
+.scholar-strip p{font-size:14.5px;color:#6b5a1e}
+/* COURSES PAGE — live search */
+.course-search{display:flex;background:#fff;border:2px solid var(--line);border-radius:999px;padding:5px;max-width:560px;margin:0 auto 20px;box-shadow:0 6px 20px rgba(42,22,80,.06);align-items:center}
+.course-search .sic{padding:0 4px 0 16px;font-size:17px}
+.course-search input{flex:1;border:none;outline:none;font:inherit;font-size:15px;padding:9px 6px;color:var(--ink);min-width:0;background:transparent}
+/* Depth polish — saari cards */
+.course:hover,.card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(109,40,217,.14)!important}
+.chip{transition:.2s}
+.chip:hover{border-color:var(--brand);color:var(--brand-dark)}
+.fgrid a{transition:.15s}
+.fgrid a:hover{transform:translateX(3px)}
+@media(max-width:900px){
+.feat-body{grid-template-columns:1fr}
+.feat-side{border-left:none;border-top:2px dashed var(--line)}
+.teaser-grid{grid-template-columns:1fr 1fr}
+.scholar-strip{grid-template-columns:1fr;text-align:center}
+.scholar-strip .btn{justify-self:center}
+.hero-search button{padding:12px 18px}
+}
+@media(max-width:520px){
+.hero-search input{font-size:14px;padding:10px 12px}
+.teaser-grid{grid-template-columns:1fr}
+}
+
+/* ===== WAVE-5 — PW PUBLIC SYSTEM (header/footer/typography sab pages par ek) ===== */
+html{scroll-padding-top:88px}
+.nav{min-height:68px}
+.logo-mark{width:40px;height:40px;border-radius:11px;display:block;flex-shrink:0}
+.btn-login{background:transparent!important;color:var(--brand-dark)!important;box-shadow:none!important;padding:11px 14px!important}
+.btn-login:hover{background:#f5f3ff!important;transform:none!important}
+/* FAQ — compact rows */
+.faq-item{margin-bottom:9px!important}
+.faq-q{padding:13px 18px!important;min-height:0!important;font-size:15px!important}
+.faq-a div{padding:0 18px 13px!important}
+/* Honest box — bada dashed dabba nahi, compact designed card */
+.honest-box{max-width:780px;margin-left:auto;margin-right:auto;background:#fff!important;border:1.5px solid var(--line)!important;padding:28px 24px!important;box-shadow:0 8px 28px rgba(42,22,80,.06);font-size:14.5px}
+.honest-box .big-ic{font-size:0;margin-bottom:8px;color:var(--brand)}
+.honest-box .big-ic svg{width:38px;height:38px}
+/* Feature card icons — ek system */
+.feat-card .ico{color:var(--brand-dark)}
+.feat-card .ico svg{width:26px;height:26px}
+.cs-ic{display:inline-flex;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.16);align-items:center;justify-content:center;margin-bottom:10px;color:#fff}
+.cs-ic svg{width:26px;height:26px}
+/* FAB — chhota, content/footer ko na dhake */
+.fab{width:50px!important;height:50px!important;border-radius:50%!important;font-size:20px;bottom:22px!important;right:22px!important;display:flex;align-items:center;justify-content:center;padding:0}
+.fab svg{width:24px;height:24px}
+@media(max-width:900px){.fab{bottom:94px!important;right:14px!important;width:48px!important;height:48px!important}}
+/* B5 — PW batch card anatomy (index + batches) */
+.b5{background:#fff;border:1.5px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 6px 24px rgba(42,22,80,.06);transition:.25s}
+.b5:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(109,40,217,.14)}
+.b5-banner{position:relative;aspect-ratio:16/9;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;overflow:hidden}
+.b5-banner::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.14);pointer-events:none}
+.b5-banner::before{content:"";position:absolute;left:-24px;bottom:-40px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.09);pointer-events:none}
+.b5-tag{position:absolute;top:14px;left:14px;font-size:11px;font-weight:800;padding:4px 11px;border-radius:99px;background:#fff;color:#059669;z-index:2;letter-spacing:.3px}
+.b5-tag.soon{background:rgba(255,255,255,.25);color:#fff}
+.b5-btitle{font-size:25px;font-weight:900;line-height:1.14;letter-spacing:-.3px;position:relative;z-index:2}
+.b5-bsub{font-size:13.5px;opacity:.93;position:relative;z-index:2;margin-top:3px}
+.b5-eye{position:absolute;right:14px;bottom:14px;width:38px;height:38px;border-radius:11px;border:1.5px solid rgba(255,255,255,.55);color:#fff;display:flex;align-items:center;justify-content:center;z-index:2;background:rgba(255,255,255,.08)}
+.b5-eye svg{width:18px;height:18px}
+.b5-body{padding:18px 20px 20px;display:flex;flex-direction:column;flex:1}
+.b5-body .pills{margin-bottom:2px}
+.b5-body h3{font-size:18px;font-weight:800;color:var(--deep);margin:6px 0 4px;line-height:1.3}
+.b5-aud{font-size:13.5px;color:var(--muted)}
+.b5-feats{list-style:none;margin:10px 0 2px}
+.b5-feats li{font-size:13.5px;color:#374151;padding:3px 0}
+.b5-feats li::before{content:"\2713 ";color:var(--green);font-weight:800}
+.b5-body .price{margin-top:auto;padding-top:12px}
+.b5-wide{grid-column:1/-1}
+@media(min-width:901px){.b5-wide .b5-banner{aspect-ratio:21/9}}
+/* FOOTER — PW style SAFED footer, dark text */
+footer.ft5{background:#fff;color:#4b5563;border-top:1px solid #eceaf6;padding:50px 0 26px;margin-top:0}
+.ft5-top{display:flex;justify-content:space-between;gap:28px;flex-wrap:wrap;padding-bottom:24px;margin-bottom:24px;border-bottom:1px solid #f0eefc}
+.ft5-logoimg{width:88px;height:88px;object-fit:cover;border-radius:16px;border:1px solid #f0eefc;display:block}
+.ft5-desc{font-size:13.5px;color:#6b7280;max-width:400px;margin-top:12px;line-height:1.65}
+.ft5-social{display:flex;gap:10px;margin-top:16px}
+.ft5-social button{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:#faf9ff;color:var(--brand);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;padding:0}
+.ft5-social button:hover{border-color:var(--brand);background:#f5f3ff;transform:translateY(-2px)}
+.ft5-social svg{width:18px;height:18px}
+.ft5-note{font-size:12px;color:#9ca3af;margin-top:10px}
+.ft5-help{font-size:14px;color:#374151}
+.ft5-help b{display:block;color:var(--deep);font-size:15px;margin-bottom:6px}
+.ft5-help a{color:var(--brand);font-weight:700}
+.ft5-cb{display:inline-block;margin-top:10px;background:#ede9fe;color:var(--brand-dark);border:none;font:inherit;font-weight:700;font-size:13.5px;padding:9px 16px;border-radius:999px;cursor:pointer}
+.ft5-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:26px;margin-bottom:24px}
+.ft5-grid h4{color:var(--deep);font-size:14.5px;margin-bottom:12px}
+.ft5-grid a{display:block;padding:4px 0;font-size:13.5px;color:#4b5563}
+.ft5-grid a:hover{color:var(--brand)}
+.ft5-bot{border-top:1px solid #f0eefc;padding-top:16px;font-size:12.5px;color:#9ca3af;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media(max-width:900px){.ft5-grid{grid-template-columns:1fr 1fr}}
+
+/* ===== WAVE-5 INDEX — PW homepage grammar ===== */
+.hero5{background:linear-gradient(180deg,#f4f1ff 0%,#faf9ff 62%,#ffffff 100%);position:relative;overflow:hidden}
+.hero5-in{max-width:1140px;margin:0 auto;padding:54px 20px 4px;display:grid;grid-template-columns:1.12fr .88fr;gap:36px;align-items:center;position:relative;z-index:2}
+.hero5-kick{display:inline-block;background:#ede9fe;color:var(--brand-dark);font-weight:800;font-size:12px;letter-spacing:1.1px;padding:7px 15px;border-radius:999px;margin-bottom:16px}
+.hero5 h1{font-size:54px;font-weight:900;line-height:1.08;letter-spacing:-.8px;color:var(--deep)}
+.hero5 h1 .v{color:var(--brand)}
+.hero5-sub{font-size:16.5px;color:#4b5563;max-width:540px;margin-top:14px}
+.hero5 .hero-search{border:2px solid var(--line);box-shadow:0 12px 30px rgba(42,22,80,.10);margin:22px 0 12px;max-width:560px}
+.hero5 .hero-search button{background:var(--brand);color:#fff}
+.hero5 .hero-search button:hover{background:var(--brand-dark);color:#fff}
+.hero5 .pop-search{margin-bottom:4px}
+.hero5 .pop-search .lbl{color:#6b7280;opacity:1}
+.hero5 .pop-search a{background:#fff;border:1.5px solid var(--line);color:var(--brand-dark)}
+.hero5 .pop-search a:hover{border-color:var(--brand);background:#f5f3ff}
+.hero5-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.hero5-price{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;font-size:13.5px;color:#6b7280}
+.hero5-price b{font-size:23px;font-weight:900;color:var(--green);background:var(--green-bg);padding:2px 14px;border-radius:999px}
+.hero5-price s{color:#9ca3af;font-weight:600;font-size:16px}
+.hero5-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;border-top:1px solid #e9e5fb;margin-top:36px;padding:20px 0 30px;text-align:center}
+.hero5-stats b{display:block;font-size:19px;font-weight:900;color:var(--deep)}
+.hero5-stats span{font-size:12.5px;color:var(--muted)}
+.hv-card{background:#fff;border:1.5px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 24px 50px rgba(42,22,80,.16)}
+.hv-banner{background:linear-gradient(120deg,#059669,#10b981);color:#fff;padding:22px;position:relative;overflow:hidden}
+.hv-banner::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.14)}
+.hv-tag{display:inline-block;font-size:11px;font-weight:800;padding:4px 11px;border-radius:99px;background:#fff;color:#059669;letter-spacing:.3px}
+.hv-title{font-size:29px;font-weight:900;line-height:1.13;letter-spacing:-.3px;margin-top:12px}
+.hv-sub{font-size:13.5px;opacity:.93;margin-top:4px}
+.hv-body{padding:18px 20px 20px}
+.hv-topics{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.hv-topics span{font-size:12px;font-weight:700;background:#f5f3ff;border:1.5px solid var(--line);color:var(--brand-dark);padding:5px 11px;border-radius:999px}
+.cat-strip{flex-wrap:nowrap!important;overflow-x:auto;justify-content:flex-start!important;padding-bottom:12px;scrollbar-width:none}
+.cat-strip::-webkit-scrollbar{display:none}
+@media(min-width:1180px){.cat-strip{justify-content:center!important}}
+.cat5-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cat5{display:flex;align-items:center;gap:14px;background:var(--t);border:1.5px solid transparent;border-radius:18px;padding:16px 18px;transition:.2s}
+.cat5:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(42,22,80,.10)}
+.cat5-ic{width:52px;height:52px;border-radius:16px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(42,22,80,.08)}
+.cat5-ic svg{width:27px;height:27px}
+.cat5-tx{flex:1;min-width:0}
+.cat5-tx b{display:block;font-size:17px;color:var(--deep);line-height:1.25}
+.cat5-tx span{font-size:12.5px;color:#6b7280;font-weight:600}
+.cat5-go{font-size:13.5px;font-weight:800;color:var(--brand);white-space:nowrap}
+.cat5-wide{grid-column:1/-1}
+.res5{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.res5-card{border-radius:20px;padding:22px;background:#fff;border:1.5px solid var(--line);box-shadow:0 6px 24px rgba(42,22,80,.06)}
+.res5-ic{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.res5-ic svg{width:25px;height:25px}
+.res5-card h3{font-size:16.5px;margin-bottom:6px;color:var(--deep)}
+.res5-card p{font-size:13.5px;color:var(--muted);margin-bottom:14px}
+.result5{max-width:680px;margin:0 auto;background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:28px 26px;text-align:center;box-shadow:0 8px 28px rgba(42,22,80,.06)}
+.teaser-card .tico{color:var(--brand-dark)}
+.teaser-card .tico svg{width:28px;height:28px}
+.scholar-strip .sic{font-size:0;color:#b45309}
+.scholar-strip .sic svg{width:46px;height:46px}
+.phone5{justify-self:center;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.28);border-radius:24px;padding:16px;line-height:0}
+.phone5 img{width:128px;height:auto;border-radius:14px;display:block;box-shadow:0 10px 26px rgba(0,0,0,.3)}
+.stores div{background:#111827!important;border:1.5px solid #111827!important;border-radius:12px!important}
+@media(max-width:900px){
+.hero5-in{grid-template-columns:1fr;padding-top:38px}
+.hero5 h1{font-size:37px}
+.hero5-stats{grid-template-columns:1fr 1fr}
+.cat5-grid{grid-template-columns:1fr 1fr}
+.res5{grid-template-columns:1fr}
+.phone5{margin:0 auto}
+}
+@media(max-width:520px){.cat5-grid{grid-template-columns:1fr}}
+
+</style>
 </head>
 <body>
-<p>Page naye pate par chala gaya hai — turant le ja rahe hain. Na khule to <a href="https://the-shiva.onrender.com/">yahan click karo</a>.</p>
+<header><div class="nav">
+<div style="display:flex;align-items:center;gap:12px">
+<button class="hamburger" aria-label="Menu kholo" onclick="document.getElementById('mmenu').classList.add('open')">☰</button>
+<a href="index.html" class="logo"><img src="favicon.svg" alt="THE SHIVA logo" class="logo-mark" width="40" height="40">THE SHIVA</a>
+</div>
+
+<div class="mega-wrap">
+<button type="button" class="mega-trigger" aria-haspopup="true">All Courses <span class="mega-caret" aria-hidden="true">▾</span></button>
+<div class="mega-panel" role="menu" aria-label="All Courses — exam categories">
+<div>
+<p class="mega-head">Exam Categories</p>
+<a class="mega-cat" href="https://the-shiva.onrender.com/courses"><span class="mega-cat-name">SSC Exams</span><span class="mega-cat-desc">CGL · CHSL · MTS · GD</span></a>
+<a class="mega-cat" href="https://the-shiva.onrender.com/courses"><span class="mega-cat-name">Railway Exams</span><span class="mega-cat-desc">NTPC · Group D · ALP</span></a>
+<a class="mega-cat" href="https://the-shiva.onrender.com/courses"><span class="mega-cat-name">Banking Exams</span><span class="mega-cat-desc">IBPS · SBI PO / Clerk</span></a>
+<a class="mega-cat" href="https://the-shiva.onrender.com/courses"><span class="mega-cat-name">Defence Exams</span><span class="mega-cat-desc">Agniveer · NDA · CDS</span></a>
+<a class="mega-cat" href="https://the-shiva.onrender.com/courses"><span class="mega-cat-name">Teaching Exams</span><span class="mega-cat-desc">CTET · UPTET · STET</span></a>
+<a class="mega-cat" href="https://the-shiva.onrender.com/courses"><span class="mega-cat-name">State Exams</span><span class="mega-cat-desc">UPSSSC · Lekhpal · Police</span></a>
+</div>
+<div>
+<p class="mega-head">Popular Exams</p>
+<div class="mega-tiles">
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">SSC CGL</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">SSC CHSL</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">RRB NTPC</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">Railway Group D</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">IBPS PO</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">SBI Clerk</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">Agniveer</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">NDA</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">CTET</a>
+</div>
+<div class="mega-foot"><a href="https://the-shiva.onrender.com/batches">All Batches →</a><a href="https://the-shiva.onrender.com/teachers">Our Faculty →</a><a href="https://the-shiva.onrender.com/courses">View All Courses →</a></div>
+</div>
+</div>
+</div>
+<nav class="nav-links">
+<a href="index.html">Home</a><a href="courses.html">Courses</a><a href="batches.html">Batches</a><a href="faculty.html">Faculty</a><a href="results.html">Results</a><a href="scholarship.html">Scholarship</a>
+</nav>
+<div class="nav-cta"><a href="https://the-shiva.onrender.com/login" class="btn-login">Login</a><a href="https://the-shiva.onrender.com/register" class="btn-register">Register</a></div>
+</div></header>
+<div class="mmenu" id="mmenu">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+<span style="font-weight:900;font-size:20px;display:flex;align-items:center;gap:8px"><img src="favicon.svg" alt="" style="width:32px;height:32px;border-radius:9px"> THE SHIVA</span>
+<button aria-label="Menu band karo" onclick="document.getElementById('mmenu').classList.remove('open')" style="font-size:24px;background:none;border:none;cursor:pointer">✕</button>
+</div>
+<a class="mlink" href="index.html">Home</a>
+<a class="mlink" href="courses.html">Courses</a>
+<a class="mlink" href="batches.html">Batches</a>
+<a class="mlink" href="faculty.html">Faculty</a>
+<a class="mlink" href="results.html">Results</a>
+<a class="mlink" href="scholarship.html">Scholarship</a>
+<p style="font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:18px 0 4px">Exam Categories</p>
+<a class="mlink" href="https://the-shiva.onrender.com/courses">SSC Exams</a>
+<a class="mlink" href="https://the-shiva.onrender.com/courses">Railway Exams</a>
+<a class="mlink" href="https://the-shiva.onrender.com/courses">Banking Exams</a>
+<a class="mlink" href="https://the-shiva.onrender.com/courses">Defence Exams</a>
+<a class="mlink" href="https://the-shiva.onrender.com/courses">Teaching Exams</a>
+<a class="mlink" href="https://the-shiva.onrender.com/courses">State Exams</a>
+<a class="mlink" href="https://the-shiva.onrender.com/contact">Contact</a>
+<a href="https://the-shiva.onrender.com/login" style="display:block;background:var(--deep);color:#fff;text-align:center;padding:16px;border-radius:12px;margin-top:24px;font-weight:700">Login</a>
+<a href="https://the-shiva.onrender.com/register" style="display:block;background:var(--brand);color:#fff;text-align:center;padding:16px;border-radius:12px;margin-top:10px;font-weight:700">Register — Join Free</a>
+</div>
+
+<!-- HERO — PW pattern: halka hero, bada extra-bold H1 (violet accent), search, trust stats -->
+<div class="hero5"><div class="hero5-in">
+<div class="hero5-main">
+<span class="hero5-kick">SSC • RAILWAY • BANKING • DEFENCE • TEACHING</span>
+<h1>Your Dream Exams,<br><span class="v">Our Mission.</span></h1>
+<p class="hero5-sub">Sarkari exams ki taiyaari — structured video lectures, practice tests aur doubt support ke saath. Shuruaat bilkul free Aptitude Foundation course se karo.</p>
+<form class="hero-search" action="https://the-shiva.onrender.com/batches" method="get" role="search">
+<input type="search" name="q" placeholder="Search batches, courses, exams…" aria-label="Batches aur courses search karo">
+<button type="submit">Search</button>
+</form>
+<div class="pop-search"><span class="lbl">Popular:</span><a href="https://the-shiva.onrender.com/courses">SSC CGL</a><a href="https://the-shiva.onrender.com/courses">Railway NTPC</a><a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free">Aptitude Foundation</a><a href="https://the-shiva.onrender.com/batches">Live Batches</a></div>
+<div class="hero5-cta"><a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" class="btn btn-black" style="font-size:16px;padding:14px 30px">Free Course Se Shuru Karo →</a><a href="batches.html" class="btn btn-ghost" style="font-size:16px;padding:13px 26px">Batches Dekho</a></div>
+<div class="hero5-price"><b>FREE</b><s>₹999</s><span class="off-chip">100% OFF</span><span>Aptitude Foundation Course ke liye</span></div>
+</div>
+<aside class="hv-card" aria-label="Aptitude Foundation — Free Course">
+<div class="hv-banner"><span class="hv-tag">LIVE • 100% FREE</span><div class="hv-title">APTITUDE FOUNDATION</div><div class="hv-sub">Complete Free Course • Har Exam Ki Neev</div></div>
+<div class="hv-body">
+<div class="hv-topics"><span>Number System</span><span>Percentage</span><span>Ratio &amp; Proportion</span><span>Average</span><span>Time &amp; Work</span><span>Interest</span><span>Data Interpretation</span></div>
+<div class="price"><b class="free">FREE</b><s>₹999</s><span class="off-chip">100% OFF</span></div>
+<a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" class="btn btn-black btn-block">Register Now →</a>
+</div>
+</aside>
+</div>
+<div class="wrap"><div class="hero5-stats">
+<div><b>6</b><span>Published Courses</span></div>
+<div><b>100% Free</b><span>Starter Course</span></div>
+<div><b>Hindi + English</b><span>Bilingual Content</span></div>
+<div><b>24×7</b><span>Kabhi Bhi Padho</span></div>
+</div></div>
+</div>
+
+<div class="exam-strip" aria-hidden="true"><div class="in"><span>SSC</span><i>✦</i><span>RAILWAY</span><i>✦</i><span>BANKING</span><i>✦</i><span>DEFENCE</span><i>✦</i><span>TEACHING</span><i>✦</i><span>FOUNDATION</span></div></div>
+
+<!-- CATEGORY SHORTCUTS — hero ke baad (PW pattern) -->
+<div class="cat-strip-wrap"><div class="cat-strip" role="navigation" aria-label="Exam categories">
+<a class="cat-tile" href="https://the-shiva.onrender.com/courses"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5L12 4l9 5.5M4.5 9.5V18M9.5 9.5V18M14.5 9.5V18M19.5 9.5V18M2.5 20.5h19"/></svg></span><b>SSC</b><span>CGL · CHSL · MTS</span></a>
+<a class="cat-tile" href="https://the-shiva.onrender.com/courses"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="13" rx="2.5"/><path d="M5 10.5h14M9 20.5l-1.5-4M15 20.5l1.5-4"/><circle cx="9" cy="13.8" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="13.8" r="1" fill="currentColor" stroke="none"/></svg></span><b>Railway</b><span>NTPC · Group D</span></a>
+<a class="cat-tile" href="https://the-shiva.onrender.com/courses"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6.5" rx="7.5" ry="3"/><path d="M4.5 6.5v11c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-11M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></svg></span><b>Banking</b><span>PO · Clerk · SO</span></a>
+<a class="cat-tile" href="https://the-shiva.onrender.com/courses"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3v5.5c0 4.5-3.2 7.7-7.5 9.5-4.3-1.8-7.5-5-7.5-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span><b>Defence</b><span>NDA · CDS · Agniveer</span></a>
+<a class="cat-tile" href="https://the-shiva.onrender.com/courses"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></span><b>Teaching</b><span>CTET · UPTET · STET</span></a>
+<a class="cat-tile" href="https://the-shiva.onrender.com/courses"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.4-6.5-10.4A6.5 6.5 0 0 1 12 4a6.5 6.5 0 0 1 6.5 6.6C18.5 15.6 12 21 12 21z"/><circle cx="12" cy="10.4" r="2.3"/></svg></span><b>State Exams</b><span>UPSSSC · Lekhpal</span></a>
+</div></div>
+
+<!-- CATEGORIES -->
+<section><div class="wrap">
+<div class="sec-head"><span class="kick">Explore</span><h2>Exam Categories</h2><p>Apna exam chuno aur taiyaari shuru karo</p></div>
+<div class="cat5-grid">
+<a class="cat5" style="--t:#fef3c7" href="courses.html"><span class="cat5-ic" style="color:#b45309"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5L12 4l9 5.5M4.5 9.5V18M9.5 9.5V18M14.5 9.5V18M19.5 9.5V18M2.5 20.5h19"/></svg></span><span class="cat5-tx"><b>SSC</b><span>CGL · CHSL · MTS · GD</span></span><span class="cat5-go">Explore →</span></a>
+<a class="cat5" style="--t:#ede9fe" href="courses.html"><span class="cat5-ic" style="color:#6d28d9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="13" rx="2.5"/><path d="M5 10.5h14M9 20.5l-1.5-4M15 20.5l1.5-4"/><circle cx="9" cy="13.8" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="13.8" r="1" fill="currentColor" stroke="none"/></svg></span><span class="cat5-tx"><b>Railway</b><span>NTPC · Group D · ALP</span></span><span class="cat5-go">Explore →</span></a>
+<a class="cat5" style="--t:#dbeafe" href="courses.html"><span class="cat5-ic" style="color:#1d4ed8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6.5" rx="7.5" ry="3"/><path d="M4.5 6.5v11c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-11M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></svg></span><span class="cat5-tx"><b>Banking</b><span>PO · Clerk · SO</span></span><span class="cat5-go">Explore →</span></a>
+<a class="cat5" style="--t:#dcfce7" href="courses.html"><span class="cat5-ic" style="color:#15803d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3v5.5c0 4.5-3.2 7.7-7.5 9.5-4.3-1.8-7.5-5-7.5-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span><span class="cat5-tx"><b>Defence</b><span>NDA · CDS · AFCAT</span></span><span class="cat5-go">Explore →</span></a>
+<a class="cat5" style="--t:#fce7f3" href="courses.html"><span class="cat5-ic" style="color:#be185d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></span><span class="cat5-tx"><b>Teaching</b><span>CTET · STET · UPTET</span></span><span class="cat5-go">Explore →</span></a>
+<a class="cat5" style="--t:#e0f2fe" href="courses.html"><span class="cat5-ic" style="color:#0369a1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.4-6.5-10.4A6.5 6.5 0 0 1 12 4a6.5 6.5 0 0 1 6.5 6.6C18.5 15.6 12 21 12 21z"/><circle cx="12" cy="10.4" r="2.3"/></svg></span><span class="cat5-tx"><b>State Exams</b><span>UPSSSC · Lekhpal · Police</span></span><span class="cat5-go">Explore →</span></a>
+<a class="cat5 cat5-wide" style="--t:#fef9c3" href="https://the-shiva.onrender.com/courses/aptitude-foundation-free"><span class="cat5-ic" style="color:#a16207"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span><span class="cat5-tx"><b>Foundation — Aptitude Ki Neev</b><span>Maths · Reasoning · Har exam ki shuruaat yahin se</span></span><span class="off-chip">100% FREE</span><span class="cat5-go">Free Course →</span></a>
+</div>
+</div></section>
+
+<!-- FEATURED BATCHES -->
+<section style="background:#fff;border-top:1px solid #f3f0ff;border-bottom:1px solid #f3f0ff"><div class="wrap">
+<div class="sec-head"><span class="kick">Batches</span><h2>Live &amp; Upcoming Batches</h2><p>Ek free batch live hai — baaki jald launch ho rahe hain</p></div>
+<div class="batch-grid">
+<div class="b5 b5-wide">
+<div class="b5-banner" style="background:linear-gradient(120deg,#059669,#10b981)"><span class="b5-tag">FEATURED • LIVE • 100% FREE</span><div class="b5-btitle">APTITUDE FOUNDATION — FREE COURSE</div><div class="b5-bsub">8 Weeks • Har Exam Ki Neev • Recorded Lectures</div><a class="b5-eye" href="courses.html" aria-label="Course details dekho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div class="b5-body">
+<div class="pills"><span>Hindi + English</span><span>SSC • Railway • Banking</span><span>Beginner Friendly</span></div>
+<h3>Aptitude Foundation — Free Course</h3>
+<p class="b5-aud">Number System se Data Interpretation tak — har competitive exam (SSC, Railway, Banking) ki maths neev, topic-by-topic video lectures ke saath. Yehi THE SHIVA ka live flagship course hai.</p>
+<div class="topic-chips"><span>Number System</span><span>Percentage</span><span>Ratio &amp; Proportion</span><span>Average</span><span>Time, Speed &amp; Distance</span><span>Time &amp; Work</span><span>Interest</span><span>Data Interpretation</span></div>
+<ul class="b5-feats"><li>Complete video lectures — topic by topic</li><li>Practice questions har topic par</li><li>Doubt solving support</li><li>Completion certificate</li></ul>
+<div class="price"><b class="free">FREE</b><s>₹999</s><span class="off-chip">100% OFF</span></div>
+<a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" class="btn btn-black btn-block">Register Now →</a>
+</div></div>
+<div class="b5">
+<div class="b5-banner" style="background:linear-gradient(120deg,var(--brand),#8b5cf6)"><span class="b5-tag soon">COMING SOON</span><div class="b5-btitle">SSC RANKER BATCH</div><div class="b5-bsub">Complete CGL Preparation</div><a class="b5-eye" href="batches.html" aria-label="Batch details dekho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div class="b5-body">
+<div class="pills"><span>SSC CGL</span><span>Live Classes</span></div>
+<h3>SSC Ranker Batch</h3>
+<p class="b5-aud">Quant, Reasoning, English aur General Awareness — SSC CGL ki complete taiyaari.</p>
+<ul class="b5-feats"><li>Live classes (launch par)</li><li>Mock tests &amp; PYQs</li><li>Doubt solving sessions</li></ul>
+<div class="price"><b class="soon">Launching Soon</b></div>
+<button class="btn btn-ghost btn-block" onclick="notifyBatch(this)">Notify Me</button>
+</div></div>
+<div class="b5">
+<div class="b5-banner" style="background:linear-gradient(120deg,#b45309,var(--gold))"><span class="b5-tag soon">COMING SOON</span><div class="b5-btitle">RAILWAY NTPC BATCH</div><div class="b5-bsub">NTPC • Group D • ALP</div><a class="b5-eye" href="batches.html" aria-label="Batch details dekho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div class="b5-body">
+<div class="pills"><span>Railway</span><span>NTPC • Group D</span></div>
+<h3>Railway NTPC Batch</h3>
+<p class="b5-aud">Railway NTPC ki full taiyaari — video lectures, practice tests aur study material ke saath.</p>
+<ul class="b5-feats"><li>Video lectures (launch par)</li><li>Practice tests</li><li>Study material</li></ul>
+<div class="price"><b class="soon">Launching Soon</b></div>
+<button class="btn btn-ghost btn-block" onclick="notifyBatch(this)">Notify Me</button>
+</div></div>
+</div>
+<p style="text-align:center;margin-top:20px"><a href="batches.html" class="explore">Saare batches dekho</a></p>
+</div></section>
+
+<!-- SCHOLARSHIP STRIP -->
+<section style="padding-top:44px"><div class="wrap">
+<div class="scholar-strip">
+<div class="sic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L2.5 8.5 12 13l9.5-4.5z"/><path d="M6 10.8V15c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.2M21.5 8.5V14"/></svg></div>
+<div><h3>Scholarship Program — Jald Aa Raha Hai</h3><p>Deserving students ke liye aarthik madad ka program design ho raha hai — koi jhoothi rakam ya date nahi, details pakki hote hi yahin milegi. Tab tak 100% free course sabke liye live hai.</p></div>
+<a href="scholarship.html" class="btn btn-black">Scholarship Jaano →</a>
+</div>
+</div></section>
+
+<!-- WHY SHIVA -->
+<section><div class="wrap">
+<div class="sec-head"><span class="kick">Kyun THE SHIVA?</span><h2>A Platform You Can Trust</h2><p>Honest commitment, no false promises — jo hai, wahi dikhate hain</p></div>
+<div class="why-grid">
+<div class="feat-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5z" fill="currentColor" stroke="none"/></svg></div><b>Structured Lectures</b><p>Har topic step-by-step video lectures me — basics se exam level tak.</p></div>
+<div class="feat-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M9 12l2 2 4-4.5"/></svg></div><b>Practice &amp; Tests</b><p>Topic-wise practice questions aur exam-pattern mock tests.</p></div>
+<div class="feat-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H4l2.3-2.9A8 8 0 1 1 21 12z"/><path d="M12 8v.2M12 11.5c0 1.5-2 1.6-2 3" stroke-width="1.9"/></svg></div><b>Doubt Support</b><p>Atke hue sawalon ke liye doubt solving support sessions.</p></div>
+<div class="feat-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5C7 16.5 3.5 13.2 3.5 9.3A4.6 4.6 0 0 1 12 6.7a4.6 4.6 0 0 1 8.5 2.6c0 3.9-3.5 7.2-8.5 11.2z"/></svg></div><b>Sabke Liye Affordable</b><p>Shuruaat 100% free course se — paisa kabhi padhai ki rukawat nahi.</p></div>
+</div>
+</div></section>
+
+<!-- TEACHERS TEASER (honest — koi nakli naam/photo nahi) -->
+<section style="background:#fff;border-top:1px solid #f3f0ff"><div class="wrap">
+<div class="sec-head"><span class="kick">Faculty</span><h2>Subject Experts Ke Saath Padho</h2><p>THE SHIVA ka faculty panel verified profiles ke saath ban raha hai — har teacher ki asli profile <a href="faculty.html" style="color:var(--brand);font-weight:700">Faculty page</a> par milegi. Abhi ye subjects padhaye jate hain:</p></div>
+<div class="teaser-grid">
+<div class="teaser-card"><div class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 5H7l6.5 7L7 19h10.5"/></svg></div><b>Quantitative Aptitude</b><p>Maths ki neev — basics se exam-level shortcuts tak</p></div>
+<div class="teaser-card"><div class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3.4"/><circle cx="16" cy="16" r="3.4"/><path d="M10.4 10.4l3.2 3.2"/></svg></div><b>Reasoning</b><p>Pattern-based solving — analogy, series, puzzles</p></div>
+<div class="teaser-card"><div class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></div><b>English</b><p>Grammar, vocabulary aur comprehension practice</p></div>
+<div class="teaser-card"><div class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.3 3.8 5.2 3.8 8.5s-1.3 6.2-3.8 8.5c-2.5-2.3-3.8-5.2-3.8-8.5S9.5 5.8 12 3.5z"/></svg></div><b>General Awareness</b><p>History, Polity, Geography, Science, Current Affairs</p></div>
+</div>
+<p style="text-align:center;margin-top:22px"><a href="https://the-shiva.onrender.com/teachers" class="btn btn-brand">Platform Par Teachers Dekho →</a></p>
+</div></section>
+
+<!-- RESULTS (honest) -->
+<section style="background:#fff;border-top:1px solid #f3f0ff"><div class="wrap">
+<div class="sec-head"><span class="kick">Results</span><h2>Results — Sach Ke Saath</h2><p>Hum nakli toppers ya bade-bade daave nahi dikhate</p></div>
+<div class="result5">
+<span class="cs-ic" style="background:#f5f3ff;color:var(--brand)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 4h9v4.5a4.5 4.5 0 0 1-9 0z"/><path d="M7.5 5.5H4.8a2.7 2.7 0 0 0 2.9 3.7M16.5 5.5h2.7a2.7 2.7 0 0 1-2.9 3.7M12 13v3.5M8.5 20h7M12 16.5V20"/></svg></span>
+<h3 style="font-size:20px;color:var(--deep);margin-bottom:8px">Pehla Batch Chal Raha Hai</h3>
+<p style="font-size:14.5px;color:var(--muted)">Hamara pehla batch chal raha hai — students ki <b style="color:var(--deep)">asli</b> success stories yahin publish hongi, results aate hi.<br><b style="color:var(--deep)">Your name could be next — mehnat se.</b></p>
+<a href="results.html" class="explore" style="display:inline-block;margin-top:12px">Results page dekho</a>
+</div>
+</div></section>
+
+<!-- STUDY RESOURCES -->
+<section><div class="wrap">
+<div class="sec-head"><span class="kick">Resources</span><h2>Study Resources</h2><p>Free learning material — dheere-dheere aur jud raha hai</p></div>
+<div class="res5">
+<div class="res5-card"><div class="res5-ic" style="background:#ede9fe;color:var(--brand-dark)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></div><h3>Previous Year Papers</h3><p>SSC, Railway, Banking ke pichle saalon ke papers with solutions</p><a class="btn btn-ghost" style="padding:9px 20px;font-size:13.5px" href="https://the-shiva.onrender.com/app/pyq">Explore</a></div>
+<div class="res5-card"><div class="res5-ic" style="background:#fef3c7;color:#b45309"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 5H7l6.5 7L7 19h10.5"/></svg></div><h3>Formula Sheets</h3><p>Quick revision ke liye important formulas ek jagah</p><a class="btn btn-ghost" style="padding:9px 20px;font-size:13.5px" href="https://the-shiva.onrender.com/app/formula-sheets">Explore</a></div>
+<div class="res5-card"><div class="res5-ic" style="background:#f5f3ff;color:var(--brand)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></div><h3>Mock Tests</h3><p>Exam pattern par based practice mock tests</p><a class="btn btn-ghost" style="padding:9px 20px;font-size:13.5px" href="https://the-shiva.onrender.com/test-series">Explore</a></div>
+</div>
+</div></section>
+
+<!-- APP CTA -->
+<section><div class="wrap">
+<div class="app-cta">
+<div>
+<h2>THE SHIVA App — Jald Aa Raha Hai!</h2>
+<ul><li>Video lectures kabhi bhi, kahin bhi</li><li>Apni progress track karo</li><li>Practice questions on the go</li></ul>
+<div class="stores"><div onclick="appSoon(this)">Google Play · Jald Aa Raha Hai</div><div onclick="appSoon(this)">App Store · Jald Aa Raha Hai</div></div>
+<p style="font-size:13px;opacity:.85;margin-top:12px">Tab tak website par hi saari padhai available hai.</p>
+</div>
+<div class="phone5"><img src="images/app-phone.png" alt="THE SHIVA App preview" loading="lazy"></div>
+</div>
+<div class="counsel-strip">
+<span class="cs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="2.8" y="13" width="4.2" height="6.5" rx="2"/><rect x="17" y="13" width="4.2" height="6.5" rx="2"/><path d="M19.5 19.5c0 1.7-1.6 2.5-4 2.5h-2"/></svg></span>
+<h2>Abhi bhi confused ho?</h2>
+<p>Hamare counsellor se FREE me baat karo — sahi exam, sahi batch, sahi plan — ya <a href="https://the-shiva.onrender.com/contact" style="color:#fff;text-decoration:underline;font-weight:700">Contact page</a> par message bhejo.</p>
+<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+<button onclick="openCpopup()" style="background:#fff;color:var(--brand);font-weight:700;padding:12px 22px;border-radius:12px;border:none;font-size:15px;cursor:pointer">Counsellor se baat karo</button>
+<a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" style="background:rgba(255,255,255,.16);color:#fff;font-weight:700;padding:11px 22px;border-radius:12px;font-size:15px;border:1.5px solid rgba(255,255,255,.6)">Free Course</a>
+</div>
+</div>
+</div></section>
+
+<!-- FAQ -->
+<section style="background:#fff;border-top:1px solid #f3f0ff"><div class="wrap">
+<div class="sec-head"><span class="kick">FAQ</span><h2>Aksar Poochhe Jane Wale Sawal</h2></div>
+<div class="faq">
+<div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">THE SHIVA par kaun se exams ki taiyaari hoti hai?</button><div class="faq-a"><div>SSC (CGL, CHSL, MTS), Railway (NTPC, Group D, ALP), Banking (PO, Clerk), Defence aur Teaching exams ke liye courses aur batches bante hain. Live course abhi Aptitude Foundation hai, jo sabhi exams ke kaam aata hai.</div></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Kya sach me koi course free hai?</button><div class="faq-a"><div>Haan — Aptitude Foundation course 100% free hai. Login karke seedha enroll karo, koi hidden charge nahi hai.</div></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Padhai kaise shuru karun?</button><div class="faq-a"><div>Upar diye Free Course button se course page par jao, account banao (Login / Register) aur pehla lecture aaj hi dekho. Confusion ho to counsellor se free me baat karo.</div></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Naye batches kab launch honge?</button><div class="faq-a"><div>SSC Ranker Batch jald launch ho raha hai. Batches page par "Notify Me" dabao — launch ki khabar sabse pehle milegi.</div></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Scholarship bhi milti hai kya?</button><div class="faq-a"><div>Scholarship program abhi design ho raha hai. Tab tak free course hi sabse badi madad hai — details ke liye <a href="scholarship.html" style="color:var(--brand);font-weight:700">Scholarship page</a> dekho.</div></div></div>
+</div>
+</div></section>
+
+<footer class="ft5"><div class="wrap">
+<div class="ft5-top">
+<div>
+<img src="logo.jpeg" alt="THE SHIVA — Learning Platform" class="ft5-logoimg">
+<p class="ft5-desc">Dream • Prepare • Achieve<br>Bharat ka affordable learning platform — SSC, Railway, Banking, Defence, Teaching aur State exams ke liye.</p>
+<div class="ft5-social" id="socRow"><button type="button" onclick="socSoon5(this)" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8.2V6.8c0-.8.5-1 .9-1H17V2.5h-2.9C11.2 2.5 10 4.4 10 6.5v1.7H7.5V12H10v9.5h4V12h2.7l.4-3.8z"/></svg></button><button type="button" onclick="socSoon5(this)" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg></button><button type="button" onclick="socSoon5(this)" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 3.5h3.4l4.3 5.9 5-5.9h3.8l-6.9 8.1 7.2 8.9h-3.4l-4.7-6.4-5.5 6.4H3.4l7.4-8.6z"/></svg></button><button type="button" onclick="socSoon5(this)" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 8.2c-.2-1.4-1-2.2-2.4-2.4C16.5 5.5 12 5.5 12 5.5s-4.5 0-6.6.3C4 6 3.2 6.8 3 8.2 2.7 10.3 2.7 13.8 3 15.8c.2 1.4 1 2.2 2.4 2.4 2.1.3 6.6.3 6.6.3s4.5 0 6.6-.3c1.4-.2 2.2-1 2.4-2.4.3-2 .3-5.5 0-7.6zM10 15.3V8.7l5.2 3.3z"/></svg></button></div>
+<p class="ft5-note">Social pages jald launch honge — koi nakli link nahi.</p>
+</div>
+<div class="ft5-help"><b>Sawaal hai?</b><a href="https://the-shiva.onrender.com/contact">Contact page par message bhejo →</a><br><button type="button" class="ft5-cb" onclick="openCpopup()">Talk to a Counsellor</button></div>
+</div>
+<div class="ft5-grid">
+<div><h4>Company</h4><a href="https://the-shiva.onrender.com/about">About Us</a><a href="https://the-shiva.onrender.com/contact">Contact</a><a href="https://the-shiva.onrender.com/teachers">Our Faculty</a><a href="faculty.html">Faculty Page</a><a href="https://the-shiva.onrender.com/login">Student Login</a></div>
+<div><h4>Popular Exams</h4><a href="https://the-shiva.onrender.com/courses">SSC Exams</a><a href="https://the-shiva.onrender.com/courses">Railway Exams</a><a href="https://the-shiva.onrender.com/courses">Banking Exams</a><a href="https://the-shiva.onrender.com/courses">Defence Exams</a><a href="https://the-shiva.onrender.com/courses">Teaching Exams</a><a href="https://the-shiva.onrender.com/courses">State Exams</a></div>
+<div><h4>Products</h4><a href="https://the-shiva.onrender.com/courses">Courses</a><a href="https://the-shiva.onrender.com/batches">Batches</a><a href="https://the-shiva.onrender.com/app/tests">Test Series</a><a href="batches.html">Live Batches</a><a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free">Free Aptitude Course</a></div>
+<div><h4>Free Resources</h4><a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free">Free Course</a><a href="index.html">Study Resources</a><a href="results.html">Results</a><a href="scholarship.html">Scholarship</a><a href="courses.html">Saare Courses</a></div>
+<div><h4>Legal</h4><a href="https://the-shiva.onrender.com/privacy">Privacy Policy</a><a href="https://the-shiva.onrender.com/terms">Terms of Service</a><a href="https://the-shiva.onrender.com/contact">Contact</a><a href="https://the-shiva.onrender.com/register">Register</a></div>
+</div>
+<div class="ft5-bot"><span>© 2026 THE SHIVA. All rights reserved.</span><span>Dream • Prepare • Achieve</span></div>
+</div></footer>
+<script>
+function socSoon5(el){var box=el.parentElement;if(box.dataset.done)return;box.dataset.done="1";var d=document.createElement("div");d.style.cssText="font-size:12.5px;color:#6b7280;margin-top:10px;font-weight:600";d.textContent="Social pages jald launch honge — tab tak free Aptitude course se jud jao!";box.parentElement.appendChild(d)}
+</script>
+
+<div class="sticky-cta">
+<a class="sc-free" href="https://the-shiva.onrender.com/courses/aptitude-foundation-free">Free Course</a>
+<button class="sc-cb" onclick="openCpopup()">Counsellor</button>
+</div>
+<button class="fab" aria-label="Counsellor se baat karo" onclick="openCpopup()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="2.8" y="13" width="4.2" height="6.5" rx="2"/><rect x="17" y="13" width="4.2" height="6.5" rx="2"/><path d="M19.5 19.5c0 1.7-1.6 2.5-4 2.5h-2"/></svg></button>
+<div class="cpopup" id="cpopup">
+<div class="hd"><b>Talk to Counsellor</b><p style="font-size:12px;opacity:.85">Free guidance ke liye number do</p>
+<button onclick="closeCpopup()" aria-label="Band karo" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,.2);color:#fff;border:none;width:26px;height:26px;border-radius:50%;cursor:pointer">✕</button></div>
+<div style="padding:16px">
+<input id="cpName" placeholder="Your Name" autocomplete="name">
+<input id="cpPhone" placeholder="Mobile Number" maxlength="10" inputmode="numeric" autocomplete="tel">
+<button onclick="submitCallback()" style="width:100%;background:var(--brand);color:#fff;padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointer">Request Callback →</button>
+<p id="cpErr" style="display:none;color:#dc2626;font-size:13px;margin-top:8px">⚠️ Sahi naam aur 10-digit mobile number bharo</p>
+<p id="cpMsg" style="display:none;color:var(--green);font-size:13px;margin-top:8px">✅ Request mil gayi! Counsellor team jald sampark karegi — tab tak <a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" style="color:var(--green);font-weight:700">free Aptitude course</a> shuru karo.</p>
+</div></div>
+<script>
+function openCpopup(){document.getElementById('cpopup').classList.add('open')}
+function closeCpopup(){document.getElementById('cpopup').classList.remove('open')}
+function submitCallback(){var n=document.getElementById('cpName').value.trim(),p=document.getElementById('cpPhone').value.trim();if(n&&/^[6-9]\d{9}$/.test(p)){document.getElementById('cpErr').style.display='none';document.getElementById('cpMsg').style.display='block'}else{document.getElementById('cpErr').style.display='block';document.getElementById('cpMsg').style.display='none'}}
+function toggleFaq(btn){var item=btn.parentElement,a=item.querySelector('.faq-a'),open=item.classList.contains('open');document.querySelectorAll('.faq-item.open').forEach(function(i){i.classList.remove('open');i.querySelector('.faq-a').style.maxHeight=null});if(!open){item.classList.add('open');a.style.maxHeight=a.scrollHeight+'px'}}
+function notifyBatch(el){if(el.dataset.done)return;el.dataset.done="1";var d=document.createElement("div");d.className="note-inline";d.style.color="var(--brand)";d.innerHTML="⏳ Batch jald launch ho raha hai — tab tak <a href=\"https://the-shiva.onrender.com/courses/aptitude-foundation-free\" style=\"color:var(--brand);font-weight:700\">free Aptitude course</a> se taiyaari shuru karo!";el.parentNode.appendChild(d)}
+function resSoon(el){if(el.dataset.done)return;el.dataset.done="1";var d=document.createElement("div");d.className="note-inline";d.style.color="var(--ink)";d.textContent="📚 Free material jald aa raha hai — tab tak free Aptitude course try karo!";el.parentNode.appendChild(d)}
+function socSoon(el){var box=document.getElementById('socRow');if(box.dataset.done)return;box.dataset.done="1";var d=document.createElement("div");d.style.cssText="font-size:12.5px;color:#b9b3d9;margin-top:10px;font-weight:600";d.innerHTML="📲 Social pages jald launch honge — tab tak <a href=\"https://the-shiva.onrender.com/courses/aptitude-foundation-free\" style=\"color:var(--gold);font-weight:700\">free Aptitude course</a> se jud jao!";box.parentNode.appendChild(d)}
+function appSoon(el){var box=el.parentNode;if(box.dataset.done)return;box.dataset.done="1";var d=document.createElement("div");d.style.cssText="font-size:12.5px;color:var(--gold);margin-top:10px;font-weight:600";d.innerHTML="📱 App jald launch ho raha hai — tab tak website par <a href=\"https://the-shiva.onrender.com/courses/aptitude-foundation-free\" style=\"color:var(--gold);font-weight:700\">free Aptitude course</a> se padho!";box.parentNode.insertBefore(d,box.nextSibling)}
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){document.getElementById("mmenu").classList.remove("open");closeCpopup()}});
+</script>
 </body>
 </html>
