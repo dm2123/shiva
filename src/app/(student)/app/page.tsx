@@ -2,6 +2,7 @@ import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { mysqlPool } from '@/lib/db';
+import { deriveExamCategory } from '@/lib/exam-category';
 import DashboardClient, {
   type DashboardDoubtSummary,
   type DashboardEnrollment,
@@ -19,12 +20,56 @@ function toISO(v: any): string | null {
   return isNaN(d.getTime()) ? null : d.toISOString();
 }
 
+// ── Goal-priority matching ───────────────────────────────
+// StudentProfiles.targetExam free-text hai (jaise "SSC CGL 2026"),
+// isliye goal ko keyword groups me toda jata hai — wahi exam
+// tokens jo exam-category.ts course categories ke liye use
+// karta hai (SSC/Railway/Banking/Defence/Teaching/UPSC ke
+// alawa NEET/JEE bhi, kyunki goal free-text me aa sakte hain).
+const GOAL_KEYWORD_GROUPS: string[][] = [
+  ['ssc', 'cgl', 'chsl', 'mts', 'steno'],
+  ['railway', 'ntpc', 'rrb', 'group d'],
+  ['bank', 'banking', 'ibps', 'sbi'],
+  ['defence', 'defense', 'nda', 'cds', 'afcat', 'agniveer', 'army', 'navy', 'air force'],
+  ['teaching', 'teacher', 'ctet', 'uptet', 'tet', 'dsssb', 'kvs'],
+  ['upsc', 'ias', 'civil service'],
+  ['neet'],
+  ['jee'],
+];
+
+function containsToken(text: string, token: string): boolean {
+  const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`\\b${escaped}\\b`, 'i').test(text);
+}
+
+/** Goal text se woh saare tokens jinke group ka koi token goal me mile. */
+function goalTokens(targetExam: string): string[] {
+  const tokens = new Set<string>();
+  for (const group of GOAL_KEYWORD_GROUPS) {
+    if (group.some((t) => containsToken(targetExam, t))) {
+      group.forEach((t) => tokens.add(t));
+    }
+  }
+  return [...tokens];
+}
+
+/** Course goal se match karta hai agar goal ka koi token course ke
+ *  derived exam category (label/id) ya title/slug me mile. */
+function courseMatchesGoal(course: DashboardPromoCourse, tokens: string[]): boolean {
+  if (tokens.length === 0) return false;
+  const category = deriveExamCategory(course);
+  const haystack = `${course.title || ''} ${course.slug || ''} ${category?.label || ''} ${category?.id || ''}`;
+  return tokens.some((t) => containsToken(haystack, t));
+}
+
 // ── Page ─────────────────────────────────────────────────────
 // Dashboard v2 (PW 'Study' page ki exact sanrachna) ko sirf
 // ye asal data chahiye: enrollments (My Batches ginti +
 // validity alert), doubts ginti (My Doubts tile), recent
-// learning (Recent Learning tile) aur asal published free
-// course (promo strip). Iske alawa koi query nahi chalti.
+// learning (Recent Learning tile), asal published free
+// course (promo strip) aur student ka goal (targetExam —
+// promo ke kram ko goal-priority dene ke liye). Iske alawa
+// koi query nahi chalti.
 
 export default async function DashboardPage() {
   const session = await getSessionFromHeaders(headers());
@@ -120,22 +165,47 @@ export default async function DashboardPage() {
     }));
   } catch { /* asal activity na mile to tile imaandaar default sub-line dikhayega */ }
 
+  // Student ka asal goal — promo courses ke kram ko goal-priority
+  // dene ke liye (PW dashboard goal ke hisaab se badalta hai).
+  // Goal na mile to promo ka kram bilkul purana hi rahega.
+  let targetExam: string | null = null;
+  try {
+    const [rows]: any = await mysqlPool.query(
+      'SELECT targetExam FROM StudentProfiles WHERE userId = ? LIMIT 1',
+      [userId]
+    );
+    const t = rows?.[0]?.targetExam;
+    targetExam = typeof t === 'string' && t.trim() ? t.trim() : null;
+  } catch { /* goal na mile to promo kram default hi rahega */ }
+
   // Promo carousel — asal PUBLISHED free courses (Aptitude Foundation
   // ho to wahi pehle), zyada se zyada 3; koi free course publish na
-  // ho to carousel hi nahi dikhega.
+  // ho to carousel hi nahi dikhega. Goal set ho to pehle zyada
+  // candidates (12) laakar goal-match wale PEHLE rakhe jate hain —
+  // koi course chhupaya nahi jata, sirf kram badalta hai; carousel
+  // ki 3-wali seema pehle se hi thi.
   let promoCourses: DashboardPromoCourse[] = [];
   try {
     const [rows]: any = await mysqlPool.query(
       `SELECT id, title, slug FROM Courses
         WHERE status = 'PUBLISHED' AND COALESCE(price, 0) = 0
         ORDER BY (title LIKE '%Aptitude Foundation%') DESC, createdAt DESC
-        LIMIT 3`
+        LIMIT 12`
     );
-    promoCourses = (rows || []).map((r: any) => ({
+    const all: DashboardPromoCourse[] = (rows || []).map((r: any) => ({
       id: String(r.id),
       title: r.title,
       slug: r.slug || null,
     }));
+    const tokens = targetExam ? goalTokens(targetExam) : [];
+    const ordered =
+      tokens.length > 0
+        ? [
+            ...all.filter((c) => courseMatchesGoal(c, tokens)),
+            ...all.filter((c) => !courseMatchesGoal(c, tokens)),
+          ]
+        : all;
+    promoCourses = ordered.slice(0, 3);
   } catch { /* course data na mile to promo carousel nahi dikhega */ }
 
   // Header-row chips — asal streak (DailyStreaks) aur XP (StudentXP),

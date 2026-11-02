@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 import {
   IconSSC, IconRailway, IconBanking, IconDefence, IconTeaching, IconCheck,
 } from '@/components/student/ShivaIcons';
@@ -72,10 +72,86 @@ const EXAMS = [
   },
 ];
 
+/**
+ * StudentProfiles.targetExam free-text hai (profile form me student
+ * "SSC CGL" jaisa kuch bhi likh sakta hai) — is page ke kisi exam
+ * card se asal match yahin se hota hai; koi match na mile to koi
+ * card preselect nahi hota (nakli selected state nahi dikhega).
+ */
+function examIdForTargetExam(targetExam: string): string | null {
+  const t = targetExam.toLowerCase();
+  if (/\bssc\b|cgl|chsl|\bmts\b|steno/.test(t)) return 'ssc';
+  if (/railway|ntpc|\brrb\b|group[\s-]?d/.test(t)) return 'railway';
+  if (/bank|ibps|\bsbi\b/.test(t)) return 'banking';
+  if (/defence|defense|\bnda\b|\bcds\b|afcat|agniveer/.test(t)) return 'defence';
+  if (/ctet|uptet|\btet\b|teach|dsssb|\bkvs\b/.test(t)) return 'teaching';
+  return null;
+}
+
 function GoalsContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const activeExam = searchParams.get('exam');
   const active = EXAMS.find((e) => e.id === activeExam);
+
+  // ── Asal goal state (StudentProfiles.targetExam) ──────────
+  // Load: GET /api/student/profile (profile page wala hi route/pattern).
+  // Set:  PUT /api/student/profile { targetExam: <exam label> } —
+  //       wahi API jo ProfileEditForm use karta hai.
+  const [goalExamId, setGoalExamId] = useState<string | null>(null);
+  const [goalRaw, setGoalRaw] = useState<string | null>(null);
+  const [goalLoading, setGoalLoading] = useState(true);
+  const [savingId, setSavingId] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/student/profile');
+        const json = await res.json();
+        const t = json?.data?.targetExam;
+        if (!cancelled && typeof t === 'string' && t.trim()) {
+          setGoalRaw(t.trim());
+          setGoalExamId(examIdForTargetExam(t));
+        }
+      } catch {
+        /* goal load na ho to koi preselect nahi — selection phir bhi chalega */
+      } finally {
+        if (!cancelled) setGoalLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function setGoal(exam: (typeof EXAMS)[number]) {
+    setSavingId(exam.id);
+    setSaveError(null);
+    try {
+      const res = await fetch('/api/student/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ targetExam: exam.label }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        const detail = data?.error?.details?.[0]?.message;
+        throw new Error(detail || data?.error?.message || 'Goal save nahi ho paya. Dobara try karo.');
+      }
+      setGoalRaw(exam.label);
+      setGoalExamId(exam.id);
+      // Header ki goal pill (server-rendered layout) bhi turant update ho
+      router.refresh();
+    } catch (err: any) {
+      setSaveError(err?.message || 'Goal save nahi ho paya. Dobara try karo.');
+    } finally {
+      setSavingId(null);
+    }
+  }
+
+  const goalExam = EXAMS.find((e) => e.id === goalExamId) || null;
 
   return (
     <div className="max-w-[1200px] mx-auto px-4 py-4 space-y-5 pb-20">
@@ -87,25 +163,83 @@ function GoalsContent() {
         </p>
       </section>
 
-      {/* Exam grid */}
+      {/* Asal goal confirmation — sirf tab jab asal goal set/load ho */}
+      {!goalLoading && goalRaw && (
+        <section className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3">
+          <span className="flex items-center gap-1.5 text-[13px] font-bold text-violet-800">
+            <IconCheck size={15} />
+            Tumhara goal: {goalExam ? goalExam.label : goalRaw}
+          </span>
+          <span className="text-[12px] text-violet-600">
+            Dashboard par is goal ke courses pehle dikhenge.
+          </span>
+          <Link
+            href="/app"
+            className="ml-auto text-[13px] font-bold text-violet-700 underline underline-offset-2 hover:text-violet-900"
+          >
+            Dashboard dekho →
+          </Link>
+        </section>
+      )}
+      {goalLoading && (
+        <p className="text-[12px] font-medium text-gray-400">Tumhara goal load ho raha hai…</p>
+      )}
+      {saveError && (
+        <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-[13px] font-semibold text-red-600">
+          {saveError}
+        </p>
+      )}
+
+      {/* Exam grid — card click = batches preview (?exam=), button = asal goal set */}
       <section className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {EXAMS.map((e) => {
           const isActive = activeExam === e.id;
+          const isGoal = goalExamId === e.id;
+          const isSaving = savingId === e.id;
           return (
-            <Link
+            <div
               key={e.id}
-              href={`/app/goals?exam=${e.id}`}
-              className={`${e.bg} ${isActive ? `ring-2 ring-offset-2 ring-indigo-500 ${e.border} border` : 'border border-transparent'} rounded-2xl p-4 flex flex-col items-center gap-2 hover:shadow-md transition`}
+              className={`${e.bg} ${
+                isGoal
+                  ? 'ring-2 ring-offset-2 ring-violet-600 border ' + e.border
+                  : isActive
+                    ? 'ring-2 ring-offset-2 ring-indigo-300 border ' + e.border
+                    : 'border border-transparent'
+              } rounded-2xl p-4 flex flex-col items-center gap-2 hover:shadow-md transition`}
             >
-              <e.Icon size={36} className={e.iconColor} />
-              <span className="text-sm font-bold text-gray-800">{e.label}</span>
-              <span className="text-[11px] text-gray-500 text-center leading-tight">{e.desc}</span>
-              {isActive && (
-                <span className="flex items-center gap-1 text-[11px] font-bold text-indigo-600">
-                  <IconCheck size={14} /> Selected
+              <Link
+                href={`/app/goals?exam=${e.id}`}
+                className="flex w-full flex-col items-center gap-2"
+                aria-label={`${e.label} ke batches dekho`}
+              >
+                <e.Icon size={36} className={e.iconColor} />
+                <span className="text-sm font-bold text-gray-800">{e.label}</span>
+                <span className="text-[11px] text-gray-500 text-center leading-tight">{e.desc}</span>
+              </Link>
+              {isGoal && (
+                <span className="flex items-center gap-1 text-[11px] font-bold text-violet-700">
+                  <IconCheck size={14} /> Mera Goal
                 </span>
               )}
-            </Link>
+              {isGoal ? (
+                <button
+                  type="button"
+                  disabled
+                  className="mt-1 inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-violet-600 px-3 py-2 text-[12px] font-bold text-white opacity-90"
+                >
+                  <IconCheck size={13} /> Goal set hai
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setGoal(e)}
+                  disabled={savingId !== null}
+                  className="mt-1 w-full rounded-full border border-violet-600 bg-white px-3 py-2 text-[12px] font-bold text-violet-700 transition hover:bg-violet-600 hover:text-white disabled:opacity-50"
+                >
+                  {isSaving ? 'Save ho raha hai…' : 'Ye mera goal hai'}
+                </button>
+              )}
+            </div>
           );
         })}
       </section>

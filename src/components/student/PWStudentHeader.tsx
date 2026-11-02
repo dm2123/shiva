@@ -170,20 +170,24 @@ export default function PWStudentHeader({
               </span>
             </Link>
 
-            {/* Goal pill — asal StudentProfiles.targetExam ka plain label
-                (PW ka cohort pill pattern; ye switcher NAHI hai, sirf
-                student ka asal target exam dikhata hai). Goal na ho to
-                set karne ka link. */}
+            {/* Goal pill — asal StudentProfiles.targetExam ka label,
+                PW ke cohort pill ki tarah ek SWITCHER hai: goal set
+                ho ya na ho, pill hamesha /app/goals par jata hai
+                jahan student apna goal chun/badla sakta hai. */}
             {goal ? (
-              <span
-                className="flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5 text-sm font-medium shrink-0 ml-1"
-                aria-label={`Target exam: ${goal}`}
+              <Link
+                href="/app/goals"
+                className="flex items-center gap-2 bg-white/10 hover:bg-white/15 rounded-full px-3 py-1.5 text-sm font-medium transition shrink-0 ml-1"
+                aria-label={`Target exam: ${goal} — goal badlo`}
               >
                 <span className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-xs">
                   🎯
                 </span>
                 <span className="max-w-[110px] sm:max-w-[140px] truncate">{goal}</span>
-              </span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="hidden sm:block">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </Link>
             ) : (
               <Link
                 href="/app/goals"
