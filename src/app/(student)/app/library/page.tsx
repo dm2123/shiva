@@ -9,28 +9,35 @@ import {
 import { IconChevronLeft, IconChevronRight } from '@/components/student/ShivaIcons';
 
 /**
- * THE SHIVA — Student Library (PW Library page ki 1:1 anatomy).
+ * THE SHIVA — Student Library (PW Library page ki anatomy).
  *
  * Structure (PW jaisa): bada 'Library' title → text-tabs (active par
- * violet bold + violet underline) → har category ka ek bada safed card
- * (radius 16): header me icon + naam bold + daayen 'View All' violet
- * link; andar horizontal scroll row ke item cards.
- *   - Document cards (Notes / eBooks / PYQ papers): baayen designed
- *     thumbnail tile, title, meta, date, asal chips (PDF/format +
- *     language), 'View Now' outline button (asal fileUrl par) +
- *     download icon button (sirf asal file ho tabhi).
- *   - Test cards (PYQ attempts): difficulty pill (asal ho to), title,
- *     meta `N Questions • N Marks`, halka-violet full-width
- *     'Attempt Now' button asal route par.
+ * violet bold + violet underline) — PW ke tab naam/kram par:
+ * Exam Zone | Learning Zone | Ranker's Zone | Top Lectures. Sections
+ * seedha page par hain (koi bada safed wrapper card nahi) — har
+ * section ka header row (icon + title + daayen 'View All' violet
+ * link) aur neeche horizontal scroll row ke item cards.
+ *   - Exam Zone → PYQ papers, asal `examName` se group karke har
+ *     exam ka alag section ('<Exam> - PYP PDFs'); PDF wale papers
+ *     document card, bina-PDF wale attempt-test card (asal variant).
+ *   - Learning Zone → Formula Sheets + eBooks + Question Bank —
+ *     teeno isi zone ke sections (purani categories ka data kahin
+ *     khoya nahi; Question Bank ka apna page sidebar me pehle se hai).
+ *   - Ranker's Zone → SHIVA ke paas iske liye koi data source hai
+ *     hi nahi — isliye sirf imaandaar khaali state, nakli ranker /
+ *     topper content bilkul nahi.
+ *   - Top Lectures → Free Lectures (published courses ke
+ *     preview/free lectures — sabse bhara asal data yahi hai).
  * Har section apne asal student API se data laata hai. Jo data nahi
- * hai woh invent nahi hota — khaali category ke card ke andar
- * imaandaar chhota note aata hai.
+ * hai woh invent nahi hota — khaali section me imaandaar chhota
+ * note aata hai.
  *
  * Notes aur Formula Sheets ka asal data ek hi source (FormulaSheets)
  * se aata hai, isliye PW ke 'Short Notes and Mindmaps' wale combined
- * tab ki tarah yahan bhi ek hi tab hai — same items do tabs me
- * dohrana duplication hota. Practice / DPP / NCERT sidebar me apne
- * pages par hain, isliye Library me dohre section nahi hain.
+ * section ki tarah yahan bhi ek hi section hai — same items do
+ * sections me dohrana duplication hota. Practice / DPP / NCERT
+ * sidebar me apne pages par hain, isliye Library me dohre section
+ * nahi hain.
  */
 
 interface Sheet {
@@ -89,23 +96,22 @@ function fmtFromUrl(u?: string | null): string {
 }
 
 const TABS = [
-  { id: 'notes', label: 'Short Notes & Formulas' },
-  { id: 'pyq', label: 'PYQs' },
-  { id: 'lectures', label: 'Free Lectures' },
-  { id: 'ebooks', label: 'eBooks' },
-  { id: 'question-bank', label: 'Question Bank' },
+  { id: 'exam-zone', label: 'Exam Zone' },
+  { id: 'learning-zone', label: 'Learning Zone' },
+  { id: 'rankers-zone', label: "Ranker's Zone" },
+  { id: 'top-lectures', label: 'Top Lectures' },
 ] as const;
 type TabId = (typeof TABS)[number]['id'];
 
-/* ── Bada safed category card (PW anatomy) ─────────────────── */
-function CategoryCard({
+/* ── Section header + content, seedha page par (bada safed wrapper NAHI) ── */
+function SectionBlock({
   icon, title, viewAllHref, children,
 }: {
   icon: React.ReactNode; title: string; viewAllHref: string; children: React.ReactNode;
 }) {
   return (
-    <section className="min-w-0 rounded-2xl border border-gray-200 bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-6">
-      <div className="mb-5 flex items-center gap-2.5">
+    <section className="min-w-0">
+      <div className="mb-4 flex items-center gap-2.5">
         <span className="flex shrink-0 items-center justify-center text-[#6d28d9]">{icon}</span>
         <h2 className="min-w-0 flex-1 truncate text-[18px] font-bold leading-snug text-gray-900">{title}</h2>
         <Link
@@ -326,9 +332,79 @@ function EmptyNote({ text, href, cta }: { text: string; href: string; cta: strin
   );
 }
 
+/* ── PYQ papers ko asal examName se group karna (L2) ──────────
+   Exam-naam wale groups pehle (zyada papers wala pehle, phir
+   varnamala kram); bina examName wale papers aakhir me ek saamanya
+   'PYP PDFs' section me — koi exam naam invent NAHI hota. */
+function groupPyqsByExam(list: PyqExam[]): { examName: string | null; exams: PyqExam[] }[] {
+  const map = new Map<string, PyqExam[]>();
+  for (const e of list) {
+    const key = (e.examName || '').trim();
+    const arr = map.get(key);
+    if (arr) arr.push(e);
+    else map.set(key, [e]);
+  }
+  return [...map.entries()]
+    .map(([k, exams]) => ({ examName: k || null, exams }))
+    .sort((a, b) => {
+      if (a.examName === null) return 1;
+      if (b.examName === null) return -1;
+      return b.exams.length - a.exams.length || a.examName.localeCompare(b.examName);
+    });
+}
+
+/* ── Ek exam ka PYQ section ('<Exam> - PYP PDFs') ───────────── */
+function PyqExamSection({ examName, exams }: { examName: string | null; exams: PyqExam[] }) {
+  return (
+    <SectionBlock
+      icon={<IconClipboard size={21} />}
+      title={examName ? `${examName} - PYP PDFs` : 'PYP PDFs'}
+      viewAllHref="/app/pyq"
+    >
+      <CardRow>
+        {exams.slice(0, 10).map((exam) => {
+          const title = [exam.examName, exam.year].filter(Boolean).join(' ') || 'Previous Year Paper';
+          const meta = [exam.subject, exam.shift].filter(Boolean).join(' • ');
+          return exam.pdfUrl ? (
+            <DocCard
+              key={exam.id}
+              thumb={
+                <div className="relative flex w-[104px] shrink-0 items-center justify-center self-stretch bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 text-white">
+                  <IconFileText size={32} />
+                  {exam.year ? (
+                    <span className="absolute right-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[9.5px] font-black text-indigo-700">
+                      {exam.year}
+                    </span>
+                  ) : null}
+                </div>
+              }
+              title={title}
+              meta={meta || 'Previous Year Paper'}
+              format="PDF"
+              viewHref={exam.pdfUrl}
+              viewExternal
+              downloadUrl={exam.pdfUrl}
+            />
+          ) : (
+            <TestCard
+              key={exam.id}
+              title={title}
+              meta={meta}
+              questions={exam.totalQuestions}
+              marks={exam.totalMarks}
+              minutes={exam.durationMinutes}
+              attemptHref="/app/pyq"
+            />
+          );
+        })}
+      </CardRow>
+    </SectionBlock>
+  );
+}
+
 export default function LibraryPage() {
   const [query, setQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<TabId>('notes');
+  const [activeTab, setActiveTab] = useState<TabId>('exam-zone');
   const [sheets, setSheets] = useState<Sheet[] | null>(null);
   const [pyqs, setPyqs] = useState<PyqExam[] | null>(null);
   const [lectures, setLectures] = useState<Lecture[] | null>(null);
@@ -390,11 +466,35 @@ export default function LibraryPage() {
     (d) => d.difficulty != null && String(d.difficulty).trim() !== ''
   );
 
-  const showTab = (id: TabId) => searching || activeTab === id;
+  const showZone = (id: TabId) => searching || activeTab === id;
 
-  /* ── Category cards (tab/search dono me wahi anatomy) ── */
-  const notesCard = (
-    <CategoryCard icon={<IconFileText size={21} />} title="Formula Sheets" viewAllHref="/app/formula-sheets">
+  /* ── Exam Zone: PYQ exam-wise sections ── */
+  const pyqList = searching ? fPyqs : pyqs;
+  const examZone = (
+    <>
+      {pyqs === null ? (
+        <SkeletonRow />
+      ) : pyqs.length === 0 ? (
+        <EmptyNote
+          text="Abhi koi PYQ paper uplabdh nahi hai — naye papers jald judenge."
+          href="/app/pyq"
+          cta="PYQ page dekho"
+        />
+      ) : pyqList !== null && pyqList.length === 0 ? (
+        <EmptyNote text="Is search me koi paper nahi mila — dusra keyword try karo." href="/app/pyq" cta="Saare papers dekho" />
+      ) : (
+        <div className="space-y-8">
+          {groupPyqsByExam(pyqList ?? []).map((g) => (
+            <PyqExamSection key={g.examName ?? '__none__'} examName={g.examName} exams={g.exams} />
+          ))}
+        </div>
+      )}
+    </>
+  );
+
+  /* ── Learning Zone sections ── */
+  const notesSection = (
+    <SectionBlock icon={<IconFileText size={21} />} title="Formula Sheets" viewAllHref="/app/formula-sheets">
       {sheets === null ? (
         <SkeletonRow />
       ) : sheets.length === 0 ? (
@@ -433,87 +533,11 @@ export default function LibraryPage() {
           })}
         </CardRow>
       )}
-    </CategoryCard>
+    </SectionBlock>
   );
 
-  const pyqCard = (
-    <CategoryCard icon={<IconClipboard size={21} />} title="Previous Year Papers" viewAllHref="/app/pyq">
-      {pyqs === null ? (
-        <SkeletonRow />
-      ) : pyqs.length === 0 ? (
-        <EmptyNote
-          text="Abhi koi PYQ paper uplabdh nahi hai — naye papers jald judenge."
-          href="/app/pyq"
-          cta="PYQ page dekho"
-        />
-      ) : fPyqs !== null && fPyqs.length === 0 ? (
-        <EmptyNote text="Is search me koi paper nahi mila — dusra keyword try karo." href="/app/pyq" cta="Saare papers dekho" />
-      ) : (
-        <CardRow>
-          {(fPyqs ?? pyqs).slice(0, 10).map((exam) => {
-            const title = [exam.examName, exam.year].filter(Boolean).join(' ') || 'Previous Year Paper';
-            const meta = [exam.subject, exam.shift].filter(Boolean).join(' • ');
-            return exam.pdfUrl ? (
-              <DocCard
-                key={exam.id}
-                thumb={
-                  <div className="relative flex w-[104px] shrink-0 items-center justify-center self-stretch bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 text-white">
-                    <IconFileText size={32} />
-                    {exam.year ? (
-                      <span className="absolute right-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[9.5px] font-black text-indigo-700">
-                        {exam.year}
-                      </span>
-                    ) : null}
-                  </div>
-                }
-                title={title}
-                meta={meta || 'Previous Year Paper'}
-                format="PDF"
-                viewHref={exam.pdfUrl}
-                viewExternal
-                downloadUrl={exam.pdfUrl}
-              />
-            ) : (
-              <TestCard
-                key={exam.id}
-                title={title}
-                meta={meta}
-                questions={exam.totalQuestions}
-                marks={exam.totalMarks}
-                minutes={exam.durationMinutes}
-                attemptHref="/app/pyq"
-              />
-            );
-          })}
-        </CardRow>
-      )}
-    </CategoryCard>
-  );
-
-  const lecturesCard = (
-    <CategoryCard icon={<IconPlay size={21} />} title="Free Lectures" viewAllHref="/app/courses">
-      {lectures === null ? (
-        <SkeletonRow />
-      ) : lectures.length === 0 ? (
-        <EmptyNote
-          text="Abhi koi free lecture uplabdh nahi hai — free courses se padhai shuru karo."
-          href="/app/courses"
-          cta="Courses dekho"
-        />
-      ) : fLectures !== null && fLectures.length === 0 ? (
-        <EmptyNote text="Is search me koi lecture nahi mila — dusra keyword try karo." href="/app/courses" cta="Saare courses dekho" />
-      ) : (
-        <CardRow>
-          {(fLectures ?? lectures).slice(0, 10).map((lec) => (
-            <LectureCard key={lec.id} lec={lec} />
-          ))}
-        </CardRow>
-      )}
-    </CategoryCard>
-  );
-
-  const ebooksCard = (
-    <CategoryCard icon={<IconBook size={21} />} title="eBooks" viewAllHref="/app/ebooks">
+  const ebooksSection = (
+    <SectionBlock icon={<IconBook size={21} />} title="eBooks" viewAllHref="/app/ebooks">
       {books === null ? (
         <SkeletonRow />
       ) : books.length === 0 ? (
@@ -560,11 +584,11 @@ export default function LibraryPage() {
           ))}
         </CardRow>
       )}
-    </CategoryCard>
+    </SectionBlock>
   );
 
-  const qbCard = (
-    <CategoryCard icon={<IconTarget size={21} />} title="Question Bank" viewAllHref="/app/question-bank">
+  const qbSection = (
+    <SectionBlock icon={<IconTarget size={21} />} title="Question Bank" viewAllHref="/app/question-bank">
       {qb === null ? (
         <SkeletonRow />
       ) : qb.total === 0 ? (
@@ -599,7 +623,56 @@ export default function LibraryPage() {
           </Link>
         </div>
       )}
-    </CategoryCard>
+    </SectionBlock>
+  );
+
+  /* Learning Zone: sections ek ke neeche ek; search me QB chhupta
+     hai (uska item-wise search data hi nahi — pehle jaisa vyavhaar). */
+  const learningHasMatch =
+    (fSheets === null || fSheets.length > 0) || (fBooks === null || fBooks.length > 0);
+  const learningZone = (
+    <div className="space-y-8">
+      {(!searching || fSheets === null || fSheets.length > 0) && notesSection}
+      {(!searching || fBooks === null || fBooks.length > 0) && ebooksSection}
+      {!searching && qbSection}
+    </div>
+  );
+
+  /* ── Ranker's Zone: koi data source NAHI — imaandaar khaali state ── */
+  const rankersZone = (
+    <div className="rounded-xl bg-gray-50 px-4 py-8 text-center">
+      <p className="text-[14px] font-semibold text-gray-700">
+        Ranker&apos;s Zone me abhi koi content uplabdh nahi hai
+      </p>
+      <p className="mx-auto mt-1 max-w-md text-[13px] leading-relaxed text-gray-500">
+        Topper notes aur rank-holder material ke liye hamare paas abhi asal content nahi hai —
+        jaise hi taiyaar hoga, yahin dikhega. Tab tak Exam Zone aur Learning Zone ka asal
+        study material uplabdh hai.
+      </p>
+    </div>
+  );
+
+  /* ── Top Lectures section ── */
+  const lecturesSection = (
+    <SectionBlock icon={<IconPlay size={21} />} title="Free Lectures" viewAllHref="/app/courses">
+      {lectures === null ? (
+        <SkeletonRow />
+      ) : lectures.length === 0 ? (
+        <EmptyNote
+          text="Abhi koi free lecture uplabdh nahi hai — free courses se padhai shuru karo."
+          href="/app/courses"
+          cta="Courses dekho"
+        />
+      ) : fLectures !== null && fLectures.length === 0 ? (
+        <EmptyNote text="Is search me koi lecture nahi mila — dusra keyword try karo." href="/app/courses" cta="Saare courses dekho" />
+      ) : (
+        <CardRow>
+          {(fLectures ?? lectures).slice(0, 10).map((lec) => (
+            <LectureCard key={lec.id} lec={lec} />
+          ))}
+        </CardRow>
+      )}
+    </SectionBlock>
   );
 
   return (
@@ -666,12 +739,11 @@ export default function LibraryPage() {
         </nav>
       )}
 
-      {/* ── Category cards ── */}
-      {showTab('notes') && (searching ? fSheets === null || fSheets.length > 0 : true) && notesCard}
-      {showTab('pyq') && (searching ? fPyqs === null || fPyqs.length > 0 : true) && pyqCard}
-      {showTab('lectures') && (searching ? fLectures === null || fLectures.length > 0 : true) && lecturesCard}
-      {showTab('ebooks') && (searching ? fBooks === null || fBooks.length > 0 : true) && ebooksCard}
-      {showTab('question-bank') && !searching && qbCard}
+      {/* ── Zones (sections seedha page par — koi bada safed wrapper nahi) ── */}
+      {showZone('exam-zone') && (searching ? fPyqs === null || fPyqs.length > 0 : true) && examZone}
+      {showZone('learning-zone') && (searching ? learningHasMatch : true) && learningZone}
+      {showZone('rankers-zone') && !searching && rankersZone}
+      {showZone('top-lectures') && (searching ? fLectures === null || fLectures.length > 0 : true) && lecturesSection}
 
       {searching && matchCount === 0 && sheets !== null && pyqs !== null && lectures !== null && books !== null && (
         <section className="rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-[0_1px_3px_rgba(16,24,40,0.06)]">
