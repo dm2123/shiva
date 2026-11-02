@@ -57,9 +57,9 @@ const MEGA_TILES = [
  * marketing pages hain; FAQ marketing home par hi hai (wahan alag
  * anchor id nahi hai). */
 const DRAWER_EXTRA = [
-  { href: 'https://dm2123.github.io/shiva/results.html', label: 'Results' },
-  { href: 'https://dm2123.github.io/shiva/scholarship.html', label: 'Scholarship' },
-  { href: 'https://dm2123.github.io/shiva/', label: 'FAQ' },
+  { href: '/results', label: 'Results' },
+  { href: '/scholarship', label: 'Scholarship' },
+  { href: '/', label: 'FAQ' },
 ];
 
 export default function ShivaNav() {

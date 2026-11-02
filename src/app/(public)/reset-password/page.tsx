@@ -249,7 +249,7 @@ function ResetPasswordForm() {
         <div style={{ position: 'relative', width: '100%', maxWidth: 960 }}>
           {/* Back to marketing site */}
           <a
-            href="https://dm2123.github.io/shiva/"
+            href="/"
             style={{
               display: 'inline-flex',
               alignItems: 'center',

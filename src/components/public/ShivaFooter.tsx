@@ -32,7 +32,7 @@ const SOCIALS = [
  * .fbot, .flink. WS10 additive classes: .fbrand, .fbot-links.
  */
 
-const MARKETING = 'https://dm2123.github.io/shiva/';
+// Marketing ab isi app ke JSX routes par hai ('/', '/scholarship', '/results') — purana GitHub Pages MARKETING constant hata diya (2026-11-02 JSX conversion).
 
 const COLUMNS: {
   heading: string;
@@ -44,7 +44,7 @@ const COLUMNS: {
       { label: 'About Us', href: '/about' },
       { label: 'Contact', href: '/contact' },
       { label: 'Our Faculty', href: '/teachers' },
-      { label: 'Download App', href: MARKETING, external: true },
+      { label: 'Download App', href: '/' },
       { label: 'Talk to a Counsellor', action: 'callback' },
     ],
   },
@@ -71,10 +71,10 @@ const COLUMNS: {
   {
     heading: 'Free Resources',
     links: [
-      { label: 'Free Study Material', href: MARKETING, external: true },
-      { label: 'Scholarship', href: `${MARKETING}scholarship.html`, external: true },
-      { label: 'Results', href: `${MARKETING}results.html`, external: true },
-      { label: 'FAQ', href: MARKETING, external: true },
+      { label: 'Free Study Material', href: '/' },
+      { label: 'Scholarship', href: '/scholarship' },
+      { label: 'Results', href: '/results' },
+      { label: 'FAQ', href: '/' },
     ],
   },
   {

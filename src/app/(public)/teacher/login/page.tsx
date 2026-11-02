@@ -38,7 +38,7 @@ export default function TeacherLoginPage() {
     <div className="max-w-md mx-auto my-12 bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-slate-200/80">
       {/* Back to marketing site */}
       <a
-        href="https://dm2123.github.io/shiva/"
+        href="/"
         className="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#6d28d9] no-underline hover:underline"
       >
         ← Back
