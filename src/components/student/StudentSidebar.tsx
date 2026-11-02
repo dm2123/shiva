@@ -97,19 +97,13 @@ export function StudentSidebarNav({ onNavigate }: { onNavigate?: () => void }) {
                   href={item.href}
                   onClick={onNavigate}
                   aria-current={active ? 'page' : undefined}
-                  className={`relative flex items-center gap-3.5 px-6 py-3 text-[15px] transition-colors ${
+                  className={`mx-3 flex items-center gap-3.5 rounded-full px-4 py-3 text-[15px] transition-colors ${
                     active
-                      ? 'bg-[#e7e2fc] text-[#6d28d9] font-semibold'
-                      : 'text-[#333333] font-medium hover:bg-gray-50'
+                      ? 'bg-[#121216] font-bold text-white shadow-sm'
+                      : 'font-medium text-[#333333] hover:bg-gray-50'
                   }`}
                 >
-                  {active && (
-                    <span
-                      className="absolute left-0 top-0 bottom-0 w-[4px] bg-[#6d28d9]"
-                      aria-hidden="true"
-                    />
-                  )}
-                  <ItemIcon size={20} className={active ? 'text-[#6d28d9]' : 'text-gray-500'} />
+                  <ItemIcon size={20} className={active ? 'text-white' : 'text-gray-500'} />
                   <span className="truncate">{item.name}</span>
                 </Link>
               );

@@ -11,10 +11,12 @@
 //   Header row: 'Study' bada title (baayen) + streak/XP chips
 //   (daayen, halki pill me) → (asal ho to) validity alert →
 //   My Learning card (3 pastel tiles) → Boost Your Learning
-//   card (6 pastel tiles, 3×2) → safed card ke andar promo
-//   carousel (sirf asal free courses) → Quick Access CARD
-//   (title andar, PDF Bank + Bookmarks outlined sub-cards) →
-//   brand line. Iske alawa /app par KOI section nahi hai.
+//   card (6 pastel tiles, 3×2) → Quick Access CARD (title
+//   andar, PDF Bank + Bookmarks outlined sub-cards) → uske
+//   BAAD safed card ke andar promo carousel (sirf asal free
+//   courses — PW LIVE me bhi banner Quick Access ke baad
+//   aata hai, 2 Nov live compare se pakka) → brand line.
+//   Iske alawa /app par KOI section nahi hai.
 // PW par greeting line nahi hoti — yahan bhi nahi. Chips top
 // bar me dashboard par nahi dikhte (wahan duplication hota
 // tha); ve isi header row me hain, bilkul PW ki tarah.
@@ -219,13 +221,16 @@ export default function PWDashboard({
         ? `Kul ${doubtSummary.total} doubts poochhe`
         : 'Doubts aur unke jawab';
 
+  // Rang PW LIVE dashboard ke position-pattern par (2 Nov live
+  // compare): 1 pink, 2 mint, 3 yellow, 4 sky, 5 peach, 6 lavender.
+  // Tiles ka kram/titles/links bilkul wahi — sirf rang badle hain.
   const BOOST_TILES = [
-    { label: 'Library', sub: 'Notes, eBooks aur sheets', Icon: IconLibrary, href: '/app/library', bg: 'bg-[#e7f0ff]', iconColor: 'text-blue-600' },
-    { label: 'Doubt Poocho', sub: 'Sawal poochho, jawab pao', Icon: IconDoubts, href: '/app/doubts', bg: 'bg-[#ffe8d1]', iconColor: 'text-orange-600' },
+    { label: 'Library', sub: 'Notes, eBooks aur sheets', Icon: IconLibrary, href: '/app/library', bg: 'bg-[#ffe3ee]', iconColor: 'text-pink-600' },
+    { label: 'Doubt Poocho', sub: 'Sawal poochho, jawab pao', Icon: IconDoubts, href: '/app/doubts', bg: 'bg-[#dcf5e3]', iconColor: 'text-emerald-600' },
     { label: 'Mentors', sub: 'Mentor se sahi guidance', Icon: IconUsers, href: '/app/mentors', bg: 'bg-[#fdf0c2]', iconColor: 'text-amber-600' },
-    { label: 'Study Plan', sub: 'Apni taiyaari plan karo', Icon: IconCalendar, href: '/app/study-plan', bg: 'bg-[#ece7ff]', iconColor: 'text-violet-600' },
-    { label: 'Question Bank', sub: 'Topic-wise sawal', Icon: IconTarget, href: '/app/question-bank', bg: 'bg-[#ffe3ee]', iconColor: 'text-pink-600' },
-    { label: 'DPP', sub: 'Roz ke practice problems', Icon: IconAssignment, href: '/app/dpp', bg: 'bg-[#dcf5e3]', iconColor: 'text-emerald-600' },
+    { label: 'Study Plan', sub: 'Apni taiyaari plan karo', Icon: IconCalendar, href: '/app/study-plan', bg: 'bg-[#e7f0ff]', iconColor: 'text-blue-600' },
+    { label: 'Question Bank', sub: 'Topic-wise sawal', Icon: IconTarget, href: '/app/question-bank', bg: 'bg-[#ffe8d1]', iconColor: 'text-orange-600' },
+    { label: 'DPP', sub: 'Roz ke practice problems', Icon: IconAssignment, href: '/app/dpp', bg: 'bg-[#ece7ff]', iconColor: 'text-violet-600' },
   ];
 
   return (
@@ -328,7 +333,48 @@ export default function PWDashboard({
         </div>
       </section>
 
-      {/* ── 5. Promo carousel — safed card ke andar, sirf asal
+      {/* ── 5. Quick Access — safed card, title andar ──────── */}
+      <section className={CARD} aria-label="Quick Access">
+        <h2 className={SECTION_TITLE}>Quick Access</h2>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 sm:gap-4">
+          <Link
+            href="/app/library"
+            className="flex items-center gap-3.5 rounded-xl border border-gray-200 bg-white p-5 transition hover:border-violet-300 hover:shadow-sm"
+          >
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-[#6d28d9]">
+              <IconBook size={22} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[15px] font-bold leading-snug text-gray-900">PDF Bank</span>
+              <span className="mt-0.5 block text-[12.5px] leading-snug text-gray-500">
+                Notes, sheets aur PDFs ek jagah
+              </span>
+            </span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-gray-300" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </Link>
+          <Link
+            href="/app/bookmarks"
+            className="flex items-center gap-3.5 rounded-xl border border-gray-200 bg-white p-5 transition hover:border-violet-300 hover:shadow-sm"
+          >
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-[#6d28d9]">
+              <IconBookmark size={22} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[15px] font-bold leading-snug text-gray-900">Bookmarks</span>
+              <span className="mt-0.5 block text-[12.5px] leading-snug text-gray-500">
+                Save kiye hue sawal aur lectures
+              </span>
+            </span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-gray-300" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </Link>
+        </div>
+      </section>
+
+      {/* ── 6. Promo carousel — safed card ke andar, sirf asal
              published free courses ─────────────────────────── */}
       {promo && (
         <section className={CARD} aria-label="Free courses">
@@ -382,47 +428,6 @@ export default function PWDashboard({
           )}
         </section>
       )}
-
-      {/* ── 6. Quick Access — safed card, title andar ──────── */}
-      <section className={CARD} aria-label="Quick Access">
-        <h2 className={SECTION_TITLE}>Quick Access</h2>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 sm:gap-4">
-          <Link
-            href="/app/library"
-            className="flex items-center gap-3.5 rounded-xl border border-gray-200 bg-white p-5 transition hover:border-violet-300 hover:shadow-sm"
-          >
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-[#6d28d9]">
-              <IconBook size={22} />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-[15px] font-bold leading-snug text-gray-900">PDF Bank</span>
-              <span className="mt-0.5 block text-[12.5px] leading-snug text-gray-500">
-                Notes, sheets aur PDFs ek jagah
-              </span>
-            </span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-gray-300" aria-hidden="true">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </Link>
-          <Link
-            href="/app/bookmarks"
-            className="flex items-center gap-3.5 rounded-xl border border-gray-200 bg-white p-5 transition hover:border-violet-300 hover:shadow-sm"
-          >
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-[#6d28d9]">
-              <IconBookmark size={22} />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-[15px] font-bold leading-snug text-gray-900">Bookmarks</span>
-              <span className="mt-0.5 block text-[12.5px] leading-snug text-gray-500">
-                Save kiye hue sawal aur lectures
-              </span>
-            </span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-gray-300" aria-hidden="true">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </Link>
-        </div>
-      </section>
 
       {/* ── 7. Band karne wali brand line ──────────────────── */}
       <p className="pt-1 text-center text-[12px] font-medium text-gray-400">

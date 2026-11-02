@@ -132,6 +132,8 @@ export default function PWStudentHeader({
   }, [notifOpen]);
 
   const initial = (userName || userEmail || 'S').charAt(0).toUpperCase();
+  // PW pattern: top bar me avatar ke saath "Hi, <pehla naam>"
+  const firstName = (userName || '').trim().split(/\s+/)[0] || userName;
 
   return (
     <>
@@ -238,8 +240,8 @@ export default function PWStudentHeader({
                 <span className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-[#6d28d9] flex items-center justify-center font-bold text-sm shrink-0">
                   {initial}
                 </span>
-                <span className="hidden md:block max-w-[120px] truncate text-sm font-semibold text-left">
-                  {userName}
+                <span className="hidden md:block max-w-[150px] truncate text-sm font-semibold text-left">
+                  Hi, {firstName}
                 </span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="hidden md:block">
                   <polyline points="6 9 12 15 18 9" />
