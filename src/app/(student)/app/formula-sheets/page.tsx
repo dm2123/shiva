@@ -196,14 +196,14 @@ export default function FormulaSheetsPage() {
   return (
     <div className="space-y-6 md:space-y-8">
       {/* Hero */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 p-6 md:p-10 text-white">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#2a1650] via-[#4c1d95] to-[#6d28d9] p-6 md:p-10 text-white">
         <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
-        <div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-yellow-300/20 blur-2xl" aria-hidden="true" />
+        <div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-[#f5b942]/20 blur-2xl" aria-hidden="true" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-6">
           <div className="flex-1">
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-amber-100 mb-2">Quick Revision</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#f5b942] mb-2">Quick Revision</p>
             <h1 className="text-2xl md:text-4xl font-black tracking-tight">Formula Sheets</h1>
-            <p className="text-sm md:text-base text-orange-50/90 mt-2 max-w-lg leading-relaxed">
+            <p className="text-sm md:text-base text-violet-100/90 mt-2 max-w-lg leading-relaxed">
               Exam se pehle 5 minute me poora chapter revise karo — saare important formulas ek jagah.
             </p>
             {!loading && !error && totalFormulas > 0 && (
@@ -219,13 +219,13 @@ export default function FormulaSheetsPage() {
         </div>
         <div className="relative z-10 mt-6 max-w-xl">
           <div className="flex items-center gap-2 bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20 focus-within:border-white/50 transition-colors">
-            <IconSearch size={18} className="text-orange-100 shrink-0" />
+            <IconSearch size={18} className="text-violet-100 shrink-0" />
             <input
               type="text"
               placeholder="Search by chapter, subject..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="flex-1 bg-transparent text-white placeholder:text-orange-100/70 text-sm focus:outline-none"
+              className="flex-1 bg-transparent text-white placeholder:text-violet-200/70 text-sm focus:outline-none"
               aria-label="Search formula sheets"
             />
           </div>

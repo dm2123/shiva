@@ -65,10 +65,9 @@ export default function RecordingsPage() {
         </div>
       </div>
 
-      {/* Recordings list (data-driven component) — card frame taaki page surface par sahi baithe */}
-      <div className="student-card p-5 md:p-6">
-        <SessionRecordings />
-      </div>
+      {/* Recordings list (data-driven component) — apne cards ke saath
+          seedha page surface par; card-ke-andar-card nahi */}
+      <SessionRecordings />
     </div>
   );
 }

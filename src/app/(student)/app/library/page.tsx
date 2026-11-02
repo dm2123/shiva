@@ -54,7 +54,7 @@ function SectionShell({
   id: string; title: string; blurb: string; viewAllHref: string; children: React.ReactNode;
 }) {
   return (
-    <section id={`library-${id}`} className="space-y-4 scroll-mt-28">
+    <section id={`library-${id}`} className="space-y-4 scroll-mt-28 min-w-0">
       <div className="flex items-end justify-between gap-4">
         <div>
           <h2 className="text-lg md:text-xl font-bold text-[var(--student-text)] tracking-tight">{title}</h2>
@@ -75,7 +75,7 @@ function SectionShell({
 
 function RowScroller({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div className="flex w-full max-w-full gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {children}
     </div>
   );
@@ -85,7 +85,7 @@ function LinkCard({ href, icon, title, text }: { href: string; icon: React.React
   return (
     <Link
       href={href}
-      className="student-card p-5 md:p-6 flex items-center gap-4 hover:border-[#6d28d9] hover:shadow-lg transition-all group w-full"
+      className="student-card p-4 md:p-5 flex items-center gap-4 hover:border-[#6d28d9] hover:shadow-lg transition-all group w-full"
     >
       <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#6d28d9] to-[#2a1650] flex items-center justify-center flex-shrink-0 text-white shadow-md shadow-[#6d28d9]/20">
         {icon}
@@ -126,6 +126,7 @@ function NoMatchNote() {
 export default function LibraryPage() {
   const [xp, setXp] = useState<number | null>(null);
   const [query, setQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('notes');
   const [sheets, setSheets] = useState<Sheet[] | null>(null);
   const [pyqs, setPyqs] = useState<PyqExam[] | null>(null);
   const [lectures, setLectures] = useState<Lecture[] | null>(null);
@@ -191,8 +192,17 @@ export default function LibraryPage() {
     { href: '/app/ncert', label: 'NCERT Solutions', text: 'Class-wise chapter solutions', Icon: IconBookOpen, grad: 'from-sky-500 to-blue-600' },
   ];
 
+  /* QB difficulty chips — asal difficulty wale hi groups dikhte hain.
+     Jankari: API ka difficultyDistribution un questions ko bhi group
+     karta hai jinki difficulty NULL hai; String(null) + CSS uppercase
+     milkar screen par raw 'NULL · 10' chhapta tha. Null/empty groups
+     yahan filter ho jate hain — sirf asal values dikhte hain. */
+  const qbDist = (qb?.distribution || []).filter(
+    (d) => d.difficulty != null && String(d.difficulty).trim() !== ''
+  );
+
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 min-w-0">
       {/* ── Hero: title + XP chip + hub search ── */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#2a1650] via-[#4c1d95] to-[#6d28d9] p-6 md:p-8 text-white">
         <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
@@ -279,18 +289,31 @@ export default function LibraryPage() {
         </div>
       )}
 
-      {/* ── Category tabs (anchor navigation) ── */}
+      {/* ── Category tabs (PW-style strip: bold active + violet underline) ── */}
       {!searching && (
-      <nav className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Library categories">
-        {TABS.map((tab) => (
-          <a
-            key={tab.id}
-            href={`#library-${tab.id}`}
-            className="px-4 py-2 rounded-full border border-[var(--student-border)] bg-[var(--student-surface)] text-sm font-semibold text-[var(--student-text-secondary)] hover:border-[#6d28d9] hover:text-[#6d28d9] transition-colors whitespace-nowrap"
-          >
-            {tab.label}
-          </a>
-        ))}
+      <nav className="flex gap-5 md:gap-7 overflow-x-auto border-b border-[var(--student-border)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Library categories">
+        {TABS.map((tab) => {
+          const active = activeTab === tab.id;
+          return (
+            <a
+              key={tab.id}
+              href={`#library-${tab.id}`}
+              onClick={() => setActiveTab(tab.id)}
+              aria-current={active ? 'true' : undefined}
+              className={`relative whitespace-nowrap pb-2.5 text-sm transition-colors ${
+                active
+                  ? 'font-bold text-[#6d28d9]'
+                  : 'font-semibold text-[var(--student-text-muted)] hover:text-[var(--student-text)]'
+              }`}
+            >
+              {tab.label}
+              <span
+                className={`absolute inset-x-0 -bottom-px h-[2.5px] rounded-full ${active ? 'bg-[#6d28d9]' : 'bg-transparent'}`}
+                aria-hidden="true"
+              />
+            </a>
+          );
+        })}
       </nav>
       )}
 
@@ -442,7 +465,7 @@ export default function LibraryPage() {
         ) : (
           <RowScroller>
             {(fLectures ?? lectures).slice(0, 10).map((lec) => (
-              <article key={lec.id} className="student-card overflow-hidden min-w-[260px] max-w-[260px] snap-start flex-shrink-0 flex flex-col hover:border-[#6d28d9] hover:shadow-lg transition-all group">
+              <article key={lec.id} className="student-card overflow-hidden min-w-[280px] max-w-[280px] snap-start flex-shrink-0 flex flex-col hover:border-[#6d28d9] hover:shadow-lg transition-all group">
                 <div className={`h-24 bg-gradient-to-br ${coverFor(lec.id)} flex items-center justify-center text-white relative overflow-hidden`}>
                   <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
                   <span className="w-12 h-12 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
@@ -505,9 +528,9 @@ export default function LibraryPage() {
                 <p className="text-sm font-bold text-[var(--student-text)]">
                   {qb.total} questions available
                 </p>
-                {qb.distribution.length > 0 && (
+                {qbDist.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mt-2">
-                    {qb.distribution.map((d) => (
+                    {qbDist.map((d) => (
                       <span
                         key={d.difficulty}
                         className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[var(--student-surface-hover)] text-[var(--student-text-secondary)] uppercase tracking-wider"

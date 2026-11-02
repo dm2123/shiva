@@ -71,6 +71,9 @@ export default async function ProfilePage() {
   const s = stats?.[0] || {};
   const displayName = profile?.name || session.email?.split('@')[0] || 'Student';
   const initial = displayName[0]?.toUpperCase() || 'S';
+  // Friendly short ID — poora raw UUID kabhi screen par nahi dikhta.
+  // UUID ke pehle 8 hex characters se bana stable short code.
+  const shortStudentId = `SHV-${String(session.userId).replace(/-/g, '').slice(0, 8).toUpperCase()}`;
   const memberSince = new Date(session.createdAt || profile?.enrolledAt || Date.now()).toLocaleDateString('en-IN', {
     day: 'numeric', month: 'long', year: 'numeric',
   });
@@ -130,7 +133,7 @@ export default async function ProfilePage() {
     { label: 'Email Address', value: session.email, chip: 'verified' },
     ...(profile?.phone ? [{ label: 'Mobile Number', value: String(profile.phone) }] : []),
     { label: 'Member Since', value: memberSince },
-    { label: 'Student ID', value: session.userId, mono: true },
+    { label: 'Student ID', value: shortStudentId, mono: true },
   ];
 
   return (
@@ -219,6 +222,9 @@ export default async function ProfilePage() {
         </p>
       </section>
 
+      {/* ── Personal + Academic Details — PW grammar: bade screen par
+          side-by-side cards, mobile par stack ── */}
+      <div className="grid gap-6 lg:grid-cols-2 items-start">
       {/* ── Personal Details ── */}
       <section>
         <div className="flex items-center gap-2.5 mb-3">
@@ -230,7 +236,7 @@ export default async function ProfilePage() {
             <div key={row.label} className="p-4 flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--student-text-faint)]">{row.label}</p>
-                <p className={`text-sm font-semibold text-[var(--student-text)] mt-0.5 ${row.mono ? 'font-mono break-all' : 'truncate'}`}>
+                <p className={`text-sm font-semibold text-[var(--student-text)] mt-0.5 ${row.mono ? 'font-mono tracking-wide' : 'truncate'}`}>
                   {row.value}
                 </p>
               </div>
@@ -298,6 +304,7 @@ export default async function ProfilePage() {
           </Link>
         </div>
       </section>
+      </div>
 
       {/* ── Quick links ── */}
       <section>

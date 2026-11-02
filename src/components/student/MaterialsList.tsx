@@ -52,9 +52,9 @@ export default function MaterialsList({ lectureId }: MaterialsListProps) {
   };
 
   return (
-    <div className="mt-4 rounded-[24px] border border-white/10 bg-[#12121a] p-4 shadow-sm sm:p-5">
-      <h3 className="text-sm font-bold text-white mb-3">
-        Study Materials <span className="text-slate-500 font-semibold">· Notes & DPP</span>
+    <div className="mt-4 rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+      <h3 className="text-sm font-bold text-slate-900 mb-3">
+        Study Materials <span className="text-slate-400 font-semibold">· Notes & DPP</span>
       </h3>
       <div className="space-y-2">
         {materials.map(m => (
@@ -63,17 +63,17 @@ export default function MaterialsList({ lectureId }: MaterialsListProps) {
             href={m.fileUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 p-3 rounded-xl border border-white/5 bg-white/[0.03] hover:bg-white/[0.07] hover:border-[#6d28d9]/40 transition-colors"
+            className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-violet-50 hover:border-[#6d28d9]/40 transition-colors"
           >
             <span className="text-xl">{fileTypeIcon(m.fileType)}</span>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-slate-100 truncate">{m.title}</p>
+              <p className="text-sm font-medium text-slate-800 truncate">{m.title}</p>
               <p className="text-xs text-slate-500">
                 {m.category === 'DPP' ? 'DPP' : m.category === 'NOTE' ? 'Notes' : m.fileType}
                 {' · '}{m.fileType}
               </p>
             </div>
-            <span className="text-xs text-[#a78bfa] font-bold">Download</span>
+            <span className="text-xs text-[#6d28d9] font-bold">Download</span>
           </a>
         ))}
       </div>

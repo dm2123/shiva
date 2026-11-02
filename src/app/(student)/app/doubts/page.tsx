@@ -133,7 +133,7 @@ export default async function DoubtsPage() {
           </div>
 
           {doubts.length === 0 ? (
-            <div className="student-card p-10 md:p-14 text-center border-dashed">
+            <div className="student-card p-8 md:p-10 text-center border-dashed">
               <div className="w-16 h-16 rounded-2xl bg-[var(--student-primary-light)] flex items-center justify-center mx-auto mb-5">
                 <IconHelpCircle size={28} className="text-[var(--student-primary)]" />
               </div>

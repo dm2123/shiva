@@ -23,8 +23,8 @@ const CHANNELS = [
     href: '/app/doubts',
     icon: IconHelpCircle,
     gradient: 'from-[#6d28d9] to-[#2a1650]',
-    bg: 'bg-indigo-50',
-    text: 'text-indigo-600',
+    bg: 'bg-[#6d28d9]/10',
+    text: 'text-[#6d28d9]',
   },
   {
     title: 'Announcements',

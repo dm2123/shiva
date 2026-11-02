@@ -2,7 +2,6 @@ import { headers } from 'next/headers';
 import Link from 'next/link';
 import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { mysqlPool } from '@/lib/db';
-import { StudentPageHeader, StudentSection } from '@/components/student/StudentShared';
 import {
   IconUsers, IconPlay, IconArrowRight,
   IconBookOpen, IconClock, IconZap, IconTarget,
@@ -29,6 +28,11 @@ const COMING_SOON = [
   },
 ];
 
+/* v2 (PW grammar, light) tokens — dashboard wale hi */
+const SECTION_TITLE = 'text-[17px] font-bold leading-snug text-gray-900';
+const CARD =
+  'rounded-xl border border-gray-200 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]';
+
 export default async function BatchesPage() {
   const session = await getSessionFromHeaders(headers());
   if (!session) return null;
@@ -36,7 +40,7 @@ export default async function BatchesPage() {
   // Real enrolled batches for this student
   const [rows]: any = await mysqlPool.query(
     `SELECT b.id, b.name, b.status, b.startDate, b.endDate,
-            c.id AS courseId, c.title AS courseTitle,
+            c.id AS courseId, c.title AS courseTitle, c.thumbnailUrl AS courseThumbnail,
             tp.name AS teacherName
        FROM StudentEnrollments e
        JOIN Batches b ON e.batchId = b.id
@@ -57,6 +61,7 @@ export default async function BatchesPage() {
     endDate: b.endDate ? new Date(b.endDate).toISOString() : null,
     courseId: String(b.courseId),
     courseTitle: b.courseTitle,
+    courseThumbnail: b.courseThumbnail ?? null,
     teacherName: b.teacherName ?? null,
   }));
 
@@ -68,111 +73,136 @@ export default async function BatchesPage() {
   const aptitudeCourse: any = courseRows?.[0] || null;
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-6 pb-24 space-y-10">
-      <StudentPageHeader
-        title="My Batches"
-        description="Your enrolled batches, schedules and mentors — everything in one place."
-        action={batches.length > 0 ? { text: 'Explore Courses', href: '/app/courses' } : undefined}
-      />
+    <main className="mx-auto w-full max-w-[72rem] space-y-5 px-4 py-5 pb-10">
+      {/* ── Page header — title + asal count line ─────────── */}
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-[22px] font-extrabold leading-tight text-gray-900">My Batches</h1>
+          <p className="mt-1 text-[13px] leading-relaxed text-gray-500">
+            {batches.length > 0
+              ? `${batches.length} ${batches.length === 1 ? 'batch' : 'batches'} joined — schedule aur mentors, sab ek jagah.`
+              : 'Tumhare enrolled batches, unke schedule aur mentors yahan dikhenge.'}
+          </p>
+        </div>
+        {batches.length > 0 && (
+          <Link
+            href="/app/courses"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-gray-300 bg-white px-4 py-2 text-[12.5px] font-bold text-gray-700 transition hover:border-violet-300 hover:text-[#6d28d9]"
+          >
+            Explore Courses
+            <IconArrowRight size={13} />
+          </Link>
+        )}
+      </div>
 
       {/* ── Enrolled batches ─────────────────────────────── */}
-      <StudentSection
-        title="Enrolled Batches"
-        subtitle={`${batches.length} active`}
-      >
+      <section aria-label="Enrolled Batches">
+        <div className="mb-3 flex flex-wrap items-center gap-2.5">
+          <h2 className={SECTION_TITLE}>Enrolled Batches</h2>
+          <span className="rounded-full bg-violet-50 px-2.5 py-0.5 text-[11.5px] font-bold text-[#6d28d9]">
+            {batches.length} joined
+          </span>
+        </div>
         {batches.length === 0 ? (
-          <div className="student-card p-8 md:p-10 text-center">
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-[#6d28d9]/10 flex items-center justify-center text-[#6d28d9] mb-4">
-              <IconUsers size={30} />
+          /* Compact designed empty state — PW 'No batches available' pattern:
+             bold title + ek gray line + CTA; lamba khaali dabba nahi */
+          <div className={`flex flex-col items-center gap-4 px-5 py-6 text-center sm:flex-row sm:text-left ${CARD}`}>
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-[#6d28d9]">
+              <IconUsers size={24} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <h3 className="text-[15px] font-bold text-gray-900">No batch assigned yet</h3>
+              <p className="mt-1 text-[13px] leading-relaxed text-gray-500">
+                Tum abhi kisi batch ka hissa nahi ho. Kisi course me enroll karte hi tumhara batch
+                yahan apne aap dikhega — schedule aur mentor ke saath.
+              </p>
             </div>
-            <h3 className="text-base font-bold text-[var(--student-text)]">No batch assigned yet</h3>
-            <p className="text-sm text-[var(--student-text-muted)] mt-2 max-w-md mx-auto leading-relaxed">
-              You are not part of any batch right now. Enroll in a course below to get started —
-              your batch will appear here automatically.
-            </p>
             <Link
               href="/app/courses"
-              className="inline-flex items-center gap-2 mt-5 px-6 py-3 rounded-xl bg-[#6d28d9] text-white text-sm font-bold hover:bg-[#5b21b6] transition-colors"
+              className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#6d28d9] px-5 py-2.5 text-[13px] font-bold text-white transition hover:bg-[#5b21b6]"
             >
-              <IconBookOpen size={16} />
+              <IconBookOpen size={15} />
               Browse Courses
-              <IconArrowRight size={14} />
             </Link>
           </div>
         ) : (
           <BatchesClient batches={batchData} />
         )}
-      </StudentSection>
+      </section>
 
       {/* ── Start learning: real free course ───────────────── */}
       {aptitudeCourse && (
-        <StudentSection
-          title="Start Learning Today"
-          subtitle="Free course · Enroll anytime"
-        >
+        <section aria-label="Start Learning Today">
+          <div className="mb-3 flex flex-wrap items-center gap-2.5">
+            <h2 className={SECTION_TITLE}>Start Learning Today</h2>
+            <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11.5px] font-bold text-emerald-600">
+              Free course · Enroll anytime
+            </span>
+          </div>
           <Link
             href={`/app/courses/${aptitudeCourse.id}`}
-            className="student-card overflow-hidden flex flex-col sm:flex-row group"
+            className={`group flex flex-col overflow-hidden sm:flex-row ${CARD}`}
           >
-            <div className="relative bg-gradient-to-br from-[#f5b942] via-amber-500 to-orange-600 sm:w-56 flex-shrink-0 min-h-[140px] flex items-center justify-center overflow-hidden">
-              <div className="absolute -left-8 -bottom-8 w-36 h-36 rounded-full bg-white/10" />
-              <div className="absolute right-4 top-4 w-14 h-14 rounded-full bg-white/10" />
+            <div className="relative flex min-h-[132px] shrink-0 items-center justify-center overflow-hidden bg-gradient-to-br from-[#f5b942] via-amber-500 to-orange-600 sm:w-60">
+              <div className="absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-white/10" />
+              <div className="absolute right-4 top-4 h-14 w-14 rounded-full bg-white/10" />
               <span className="relative text-white"><IconBookOpen size={44} /></span>
-              <span className="absolute top-3 left-3 text-[10px] font-black uppercase tracking-wider bg-white text-orange-600 px-2.5 py-1 rounded-full">
+              <span className="absolute left-3 top-3 rounded-full bg-white px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-orange-600">
                 100% Free
               </span>
             </div>
-            <div className="p-5 flex-1">
-              <h3 className="text-[16px] font-bold text-[var(--student-text)] group-hover:text-[#6d28d9] transition-colors leading-snug">
+            <div className="min-w-0 flex-1 p-5">
+              <h3 className="text-[16px] font-bold leading-snug text-gray-900 transition-colors group-hover:text-[#6d28d9]">
                 {aptitudeCourse.title}
               </h3>
               {aptitudeCourse.description && (
-                <p className="text-[13px] text-[var(--student-text-muted)] mt-1.5 line-clamp-2 leading-relaxed">
+                <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-gray-500">
                   {aptitudeCourse.description}
                 </p>
               )}
-              <div className="flex items-center gap-4 mt-3 text-[12px] text-[var(--student-text-faint)]">
+              <div className="mt-3 flex items-center gap-4 text-[12px] text-gray-400">
                 <span className="flex items-center gap-1.5"><IconClock size={13} /> Self-paced</span>
                 <span className="flex items-center gap-1.5"><IconPlay size={13} /> Video lessons</span>
               </div>
-              <span className="inline-flex items-center gap-1.5 mt-4 text-[13px] font-bold text-[#6d28d9]">
+              <span className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-bold text-[#6d28d9]">
                 View course <IconArrowRight size={14} />
               </span>
             </div>
           </Link>
-        </StudentSection>
+        </section>
       )}
 
       {/* ── Coming soon (honest) ───────────────────────────── */}
-      <StudentSection
-        title="Coming Soon"
-        subtitle="New batches in the making"
-      >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      <section aria-label="Coming Soon">
+        <div className="mb-3 flex flex-wrap items-center gap-2.5">
+          <h2 className={SECTION_TITLE}>Coming Soon</h2>
+          <span className="text-[12.5px] text-gray-400">New batches in the making</span>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {COMING_SOON.map((c) => (
-            <div key={c.id} className="student-card overflow-hidden opacity-95">
-              <div className={`relative bg-gradient-to-br ${c.gradient} px-5 py-5 text-white overflow-hidden`}>
-                <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-white/10" />
+            <div key={c.id} className={`overflow-hidden ${CARD}`}>
+              <div className={`relative overflow-hidden bg-gradient-to-br px-5 py-5 text-white ${c.gradient}`}>
+                <div className="absolute -right-6 -top-6 h-28 w-28 rounded-full bg-white/10" />
                 <div className="relative flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 text-white">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/20 text-white backdrop-blur-sm">
                     {c.icon}
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <h3 className="text-[15px] font-bold leading-snug">{c.title}</h3>
-                    <p className="text-[11px] text-white/80 uppercase tracking-wider mt-0.5">{c.target}</p>
+                    <p className="mt-0.5 text-[11px] uppercase tracking-wider text-white/80">{c.target}</p>
                   </div>
                 </div>
-                <span className="absolute top-3 right-3 text-[10px] font-black uppercase tracking-wider bg-white/25 backdrop-blur-sm text-white px-2.5 py-1 rounded-full">
+                <span className="absolute right-3 top-3 rounded-full bg-white/25 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-white backdrop-blur-sm">
                   Coming Soon
                 </span>
               </div>
-              <div className="p-5 flex items-center justify-between gap-3">
-                <p className="text-[12px] text-[var(--student-text-muted)] leading-relaxed">
+              <div className="flex items-center justify-between gap-3 p-4">
+                <p className="text-[12px] leading-relaxed text-gray-500">
                   We are preparing this batch. Talk to a counsellor to get notified at launch.
                 </p>
                 <Link
                   href="/app/counsellor"
-                  className="flex-shrink-0 inline-flex items-center gap-1.5 text-[12px] font-bold text-[#6d28d9] hover:text-[#5b21b6]"
+                  className="inline-flex shrink-0 items-center gap-1.5 text-[12px] font-bold text-[#6d28d9] hover:text-[#5b21b6]"
                 >
                   Notify me <IconArrowRight size={13} />
                 </Link>
@@ -180,7 +210,7 @@ export default async function BatchesPage() {
             </div>
           ))}
         </div>
-      </StudentSection>
-    </div>
+      </section>
+    </main>
   );
 }

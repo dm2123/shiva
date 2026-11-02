@@ -1,4 +1,5 @@
 import { getCourseSyllabusTree } from '@/services/academic.service';
+import { listTestByCourse } from '@/services/test.service';
 import { isStudentEnrolledInCourseDb } from '@/lib/db';
 import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
@@ -32,6 +33,51 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
   const lectures = chapters.flatMap((c: any) => c.lectures || []);
   const price = Number(courseTree.price || 0);
   const isFree = price === 0;
+  // Medium sirf tab dikhta hai jab course record me asal language hai —
+  // pehle "Hinglish" hardcoded tha (har course par jhooth bolta tha).
+  const language: string | null =
+    typeof (courseTree as any).language === 'string' && (courseTree as any).language.trim()
+      ? (courseTree as any).language.trim()
+      : null;
+  const validityMonths: number | null =
+    typeof (courseTree as any).validityMonths === 'number' && (courseTree as any).validityMonths > 0
+      ? (courseTree as any).validityMonths
+      : null;
+
+  /* Course ke asal PUBLISHED tests — Tests tab sirf tabhi banta hai jab
+     kam se kam ek published test sach me linked ho. Best-effort fetch:
+     fail ho jaye to tab hi nahi dikhega, kuch invent nahi hoga. */
+  let courseTests: {
+    id: string;
+    title: string;
+    description?: string;
+    durationMinutes?: number;
+    totalMarks?: number;
+    type?: string;
+    category?: string;
+  }[] = [];
+  try {
+    const testRows = await listTestByCourse(courseTree.id);
+    courseTests = (testRows || [])
+      .filter((t: any) => t.status === 'PUBLISHED')
+      .map((t: any) => ({
+        id: t.id,
+        title: t.title,
+        description: t.description ?? undefined,
+        durationMinutes:
+          t.durationMinutes != null && !Number.isNaN(Number(t.durationMinutes))
+            ? Number(t.durationMinutes)
+            : undefined,
+        totalMarks:
+          t.totalMarks != null && !Number.isNaN(Number(t.totalMarks))
+            ? Number(t.totalMarks)
+            : undefined,
+        type: typeof t.type === 'string' && t.type ? t.type : undefined,
+        category: typeof t.category === 'string' && t.category ? t.category : undefined,
+      }));
+  } catch {
+    courseTests = [];
+  }
 
   // "What you'll learn" — derived honestly from real syllabus data only
   const learnBullets: string[] = subjects.slice(0, 6).map(
@@ -41,7 +87,7 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
   return (
     <div className="pb-24 lg:pb-10">
       {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#312e81] via-[#4f46e5] to-[#7c3aed] p-6 sm:p-8 text-white">
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#2a1650] via-[#4c1d95] to-[#6d28d9] p-6 sm:p-8 text-white">
         {/* decorative shapes */}
         <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/10 blur-2xl" />
         <div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-fuchsia-400/20 blur-2xl" />
@@ -59,9 +105,11 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
                 ₹{price.toLocaleString('en-IN')}
               </span>
             )}
-            <span className="rounded-full bg-white/15 px-3.5 py-1.5 text-[11px] font-bold text-white backdrop-blur">
-              Hinglish
-            </span>
+            {language && (
+              <span className="rounded-full bg-white/15 px-3.5 py-1.5 text-[11px] font-bold text-white backdrop-blur">
+                {language}
+              </span>
+            )}
             <span className="rounded-full bg-white/15 px-3.5 py-1.5 text-[11px] font-bold text-white backdrop-blur">
               Self-paced
             </span>
@@ -96,7 +144,7 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
             {isEnrolled ? (
               <Link
                 href={`/app/learn/${courseTree.id}`}
-                className="inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-sm font-black text-[#4338ca] shadow-xl transition hover:scale-[1.02]"
+                className="inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-sm font-black text-[#6d28d9] shadow-xl transition hover:scale-[1.02]"
               >
                 <IconPlay size={16} />
                 Continue Learning
@@ -107,7 +155,7 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
                 <input type="hidden" name="courseId" value={courseTree.id} />
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-sm font-black text-[#4338ca] shadow-xl transition hover:scale-[1.02]"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-white px-8 py-3.5 text-sm font-black text-[#6d28d9] shadow-xl transition hover:scale-[1.02]"
                 >
                   <IconZap size={16} />
                   {isFree ? 'Enroll Free — Abhi Shuru Karo' : `Enroll Now · ₹${price.toLocaleString('en-IN')}`}
@@ -176,7 +224,11 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
                 </span>
               )}
             </div>
-            <CourseCurriculum subjects={subjects} />
+            <CourseCurriculum
+              subjects={subjects}
+              courseId={courseTree.id}
+              tests={courseTests}
+            />
           </section>
 
           {/* ── Why this course (honest, no fake claims) ───── */}
@@ -186,9 +238,21 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
             </h2>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               {[
-                { icon: <IconAward size={20} className="text-amber-500" />, title: '100% Free', desc: 'Poora course bina kisi charge ke' },
+                {
+                  icon: <IconAward size={20} className="text-amber-500" />,
+                  title: isFree ? '100% Free' : 'Simple Pricing',
+                  desc: isFree
+                    ? 'Poora course bina kisi charge ke'
+                    : `Sirf ₹${price.toLocaleString('en-IN')} — jo dikhta hai, wahi lagta hai`,
+                },
                 { icon: <IconClock size={20} className="text-[var(--student-primary)]" />, title: 'Self-paced', desc: 'Apni speed se, kabhi bhi padho' },
-                { icon: <IconCheckCircle size={20} className="text-emerald-500" />, title: 'Lifetime access', desc: 'Ek baar enroll, hamesha access' },
+                {
+                  icon: <IconCheckCircle size={20} className="text-emerald-500" />,
+                  title: validityMonths ? `${validityMonths} Mahine Access` : 'Dashboard Access',
+                  desc: validityMonths
+                    ? 'Enroll ke baad poori validity tak saara content khula rahega'
+                    : 'Student dashboard se kabhi bhi, kahin bhi padho',
+                },
               ].map((f) => (
                 <div key={f.title} className="text-center sm:text-left">
                   <div className="mx-auto mb-2.5 flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--student-background)] sm:mx-0">
@@ -209,7 +273,7 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
         {/* ── Sidebar (desktop) ────────────────────────────── */}
         <aside className="hidden lg:block">
           <div className="sticky top-4 overflow-hidden rounded-2xl border border-[var(--student-border)] bg-[var(--student-surface)]">
-            <div className="bg-gradient-to-br from-[#312e81] to-[#7c3aed] p-5 text-white">
+            <div className="bg-gradient-to-br from-[#2a1650] to-[#6d28d9] p-5 text-white">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur">
                 <IconBook size={24} />
               </div>
@@ -223,7 +287,10 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
                 { icon: <IconBook size={14} className="text-[var(--student-primary)]" />, label: 'Subjects', value: String(subjects.length) },
                 { icon: <IconPlay size={14} className="text-violet-500" />, label: 'Chapters', value: String(chapters.length) },
                 { icon: <IconZap size={14} className="text-amber-500" />, label: 'Lectures', value: String(lectures.length) },
-                { icon: <IconTarget size={14} className="text-emerald-600" />, label: 'Language', value: 'Hinglish' },
+                // Language row sirf asal record value par — hardcoded nahi
+                ...(language
+                  ? [{ icon: <IconTarget size={14} className="text-emerald-600" />, label: 'Language', value: language }]
+                  : []),
               ].map((s) => (
                 <div key={s.label} className="flex items-center justify-between">
                   <span className="flex items-center gap-2 text-xs text-[var(--student-text-muted)]">{s.icon} {s.label}</span>

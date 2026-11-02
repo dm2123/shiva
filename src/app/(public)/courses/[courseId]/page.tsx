@@ -303,6 +303,385 @@ export default async function PublicCourseDetailPage({ params }: { params: { cou
     );
   };
 
+  /* ---------- Hero band ka andar wala hissa (server-rendered) ----------
+     PW grammar: violet band + H1 + meta, aur band ke neeche tab bar.
+     Band ka frame (gradient + tab bar) CourseDetailClient banata hai;
+     ye JSX usi band ke andar header prop ke roop me jata hai. */
+  const heroContent = (
+    <div
+      style={{ display: 'grid', gridTemplateColumns: courseTree.thumbnailUrl ? '1.6fr .9fr' : '1fr', gap: 0 }}
+      className="cd-hero-grid"
+    >
+      <div style={{ padding: '34px 32px' }}>
+        <span
+          style={{
+            display: 'inline-block',
+            fontSize: 11,
+            fontWeight: 800,
+            textTransform: 'uppercase',
+            letterSpacing: 1.5,
+            background: 'rgba(245,185,66,.18)',
+            border: `1px solid ${GOLD}`,
+            color: GOLD,
+            padding: '6px 14px',
+            borderRadius: 999,
+            marginBottom: 14,
+          }}
+        >
+          📖 THE SHIVA Course
+        </span>
+        <h1 style={{ fontSize: 'clamp(32px, 4.2vw, 44px)', fontWeight: 900, marginBottom: 12, lineHeight: 1.18, letterSpacing: -0.5, color: '#fff' }}>
+          {courseTree.title}
+        </h1>
+        {courseTree.description && (
+          <p
+            style={{
+              fontSize: 15,
+              opacity: 0.92,
+              lineHeight: 1.7,
+              maxWidth: 620,
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}
+          >
+            {courseTree.description}
+          </p>
+        )}
+
+        {/* Teacher line — real educator only */}
+        {educator && (
+          <Link
+            href={`/teachers/${educator.slug}`}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginTop: 16, color: '#fff' }}
+          >
+            {educator.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={educator.logoUrl}
+                alt={educator.displayName}
+                style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover', border: `2px solid ${GOLD}` }}
+              />
+            ) : (
+              <span
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: '50%',
+                  background: GOLD,
+                  color: PURPLE_DARK,
+                  fontWeight: 900,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 16,
+                }}
+              >
+                {(educator.displayName || 'T')[0].toUpperCase()}
+              </span>
+            )}
+            <span style={{ fontSize: 14 }}>
+              <span style={{ opacity: 0.8 }}>Padhane wale: </span>
+              <strong>{educator.displayName}</strong>
+              {educator.verified && <span style={{ color: GOLD, fontWeight: 800 }}> ✓</span>}
+              {educator.tagline && (
+                <span style={{ display: 'block', fontSize: 12.5, opacity: 0.85 }}>{educator.tagline}</span>
+              )}
+            </span>
+          </Link>
+        )}
+
+        {/* Meta row — every item below exists only with real data */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 22px', marginTop: 22, fontSize: 13.5 }}>
+          {rating !== null && (
+            <span>⭐ <strong>{rating.toFixed(1)}</strong>{ratingCount !== null ? ` (${ratingCount.toLocaleString('en-IN')} ratings)` : ''}</span>
+          )}
+          {enrolledCount !== null && (
+            <span>👥 <strong>{enrolledCount.toLocaleString('en-IN')}</strong> students enrolled</span>
+          )}
+          {lectureCount > 0 && <span>🎬 <strong>{lectureCount}</strong> lectures</span>}
+          {totalDurationLabel && <span>⏱️ Kul <strong>{totalDurationLabel}</strong> content</span>}
+          {language && <span>🗣️ Language: <strong>{language}</strong></span>}
+          {validityLabel && <span>📅 <strong>{validityLabel}</strong></span>}
+          {freeLectures.length > 0 && (
+            <span style={{ color: GOLD, fontWeight: 700 }}>🎁 {freeLectures.length} free demo lectures</span>
+          )}
+          {nextBatch && (
+            <span>
+              🗓️ Batch: <strong>{nextBatch.name}</strong>
+              {nextBatch.startDate
+                ? ` · ${new Date(nextBatch.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} se`
+                : ''}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {courseTree.thumbnailUrl && (
+        <div style={{ position: 'relative', minHeight: 220 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={courseTree.thumbnailUrl}
+            alt={courseTree.title}
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </div>
+      )}
+    </div>
+  );
+
+  /* ---------- Right rail (server-rendered) ----------
+     PW grammar: sticky purchase/enroll card right rail me rehta hai.
+     Grid ki dusri column ke roop me CourseDetailClient ise render
+     karta hai (rail prop). */
+  const railContent = (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }} className="cd-sidebar">
+      {/* Sticky enroll / price card — PW pattern:
+          safed card, ONLINE ribbon, banner, title, language pill,
+          bold rang-daar price + grey kata MRP + halki-green discount
+          chip, aur poora KAALA solid CTA. Saare price elements
+          sirf asal record data par hi render hote hain. */}
+      <div
+        style={{
+          background: '#fff',
+          color: 'var(--ink)',
+          border: '1px solid var(--line)',
+          borderRadius: 20,
+          boxShadow: '0 16px 40px rgba(42,22,80,.14)',
+          position: 'sticky',
+          top: 84,
+          overflow: 'hidden',
+        }}
+      >
+        <div style={{ position: 'relative' }}>
+          {courseTree.thumbnailUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={courseTree.thumbnailUrl}
+              alt=""
+              style={{ width: '100%', height: 150, objectFit: 'cover', display: 'block' }}
+            />
+          )}
+          <span
+            style={{
+              position: 'absolute',
+              top: 12,
+              left: 12,
+              fontSize: 10.5,
+              fontWeight: 800,
+              letterSpacing: 1.2,
+              background: PURPLE_DARK,
+              color: '#fff',
+              padding: '5px 11px',
+              borderRadius: 999,
+            }}
+          >
+            ONLINE
+          </span>
+        </div>
+        <div style={{ padding: 22 }}>
+          <h2
+            style={{
+              fontSize: 16.5,
+              fontWeight: 800,
+              color: PURPLE_DARK,
+              lineHeight: 1.4,
+              marginBottom: 8,
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}
+          >
+            {courseTree.title}
+          </h2>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
+            {language && (
+              <span
+                style={{
+                  fontSize: 11.5,
+                  fontWeight: 700,
+                  color: '#4b5563',
+                  border: '1.5px solid var(--line)',
+                  padding: '4px 11px',
+                  borderRadius: 999,
+                }}
+              >
+                🗣️ {language}
+              </span>
+            )}
+            {validityLabel && (
+              <span
+                style={{
+                  fontSize: 11.5,
+                  fontWeight: 700,
+                  color: '#4b5563',
+                  border: '1.5px solid var(--line)',
+                  padding: '4px 11px',
+                  borderRadius: 999,
+                }}
+              >
+                📅 {validityLabel}
+              </span>
+            )}
+          </div>
+
+          <span style={{ fontSize: 11.5, color: 'var(--muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1.2, display: 'block', marginBottom: 6 }}>
+            Course Fee
+          </span>
+          <div style={{ marginBottom: 18 }}>{priceBlock()}</div>
+
+          <Link
+            href={ctaHref}
+            style={{
+              display: 'block',
+              width: '100%',
+              textAlign: 'center',
+              padding: '14px',
+              fontSize: 16,
+              fontWeight: 800,
+              background: '#111111',
+              color: '#fff',
+              borderRadius: 12,
+              textDecoration: 'none',
+            }}
+          >
+            {ctaLabel}
+          </Link>
+          <p style={{ fontSize: 12.5, color: 'var(--muted)', marginTop: 12, textAlign: 'center', lineHeight: 1.6 }}>
+            {session?.role === 'STUDENT' && isEnrolled
+              ? '✅ Tum enrolled ho — padhai jaari rakho!'
+              : priceValue === null
+                ? 'Login karke course ki poori jankari aur enrollment dekho.'
+                : isFree
+                  ? 'Free registration — koi payment nahi lagega.'
+                  : '📱 Login karke enroll karo'}
+          </p>
+
+          {/* Includes — real counts only, green check sirf asal par */}
+          {(lectureCount > 0 || freeLectures.length > 0 || batchesDTO.length > 0 || validityLabel || language) && (
+            <div style={{ borderTop: '1px solid var(--line)', marginTop: 18, paddingTop: 16 }}>
+              <p style={{ fontSize: 12, fontWeight: 800, letterSpacing: 1, textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 10 }}>
+                Is course me shamil hai
+              </p>
+              <ul style={{ listStyle: 'none', margin: 0, padding: 0, fontSize: 13.5, lineHeight: 1.5, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {lectureCount > 0 && (
+                  <li style={{ display: 'flex', gap: 8 }}><span style={{ color: '#059669', fontWeight: 900 }}>✓</span><span>{lectureCount} recorded lectures{totalDurationLabel ? ` (${totalDurationLabel})` : ''}</span></li>
+                )}
+                {chapterCount > 0 && (
+                  <li style={{ display: 'flex', gap: 8 }}><span style={{ color: '#059669', fontWeight: 900 }}>✓</span><span>{subjectsDTO.length} subjects · {chapterCount} chapters</span></li>
+                )}
+                {freeLectures.length > 0 && (
+                  <li style={{ display: 'flex', gap: 8 }}><span style={{ color: '#059669', fontWeight: 900 }}>✓</span><span>{freeLectures.length} free demo lectures</span></li>
+                )}
+                {batchesDTO.length > 0 && (
+                  <li style={{ display: 'flex', gap: 8 }}><span style={{ color: '#059669', fontWeight: 900 }}>✓</span><span>{batchesDTO.length} batch option{batchesDTO.length === 1 ? '' : 's'}</span></li>
+                )}
+                {language && (
+                  <li style={{ display: 'flex', gap: 8 }}><span style={{ color: '#059669', fontWeight: 900 }}>✓</span><span>Language: {language}</span></li>
+                )}
+                {validityLabel && (
+                  <li style={{ display: 'flex', gap: 8 }}><span style={{ color: '#059669', fontWeight: 900 }}>✓</span><span>{validityLabel}</span></li>
+                )}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Ye course kiske liye hai — asal targetAudience field pehle,
+          na ho to derived points */}
+      {(targetAudienceLines.length > 0 || audiencePoints.length > 0) && (
+        <div className="batch" style={{ padding: 22 }}>
+          <h3 style={{ fontSize: 15, fontWeight: 800, color: PURPLE_DARK, marginBottom: 12 }}>
+            🎯 Ye course kiske liye hai?
+          </h3>
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 9 }}>
+            {targetAudienceLines.map((line) => (
+              <li key={line} style={{ fontSize: 13.5, color: '#374151', display: 'flex', gap: 8, lineHeight: 1.55 }}>
+                <span style={{ color: '#059669', fontWeight: 900 }}>✓</span>
+                <span>{line}</span>
+              </li>
+            ))}
+            {targetAudienceLines.length === 0 &&
+              audiencePoints.map((point) => (
+                <li key={point} style={{ fontSize: 13.5, color: '#374151', display: 'flex', gap: 8, lineHeight: 1.55 }}>
+                  <span style={{ color: '#059669', fontWeight: 900 }}>✓</span>
+                  <span>Jo {point}</span>
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Educator mini-card */}
+      {educator && (
+        <div className="batch" style={{ padding: 20 }}>
+          <h3 style={{ fontSize: 14, fontWeight: 800, color: PURPLE_DARK, marginBottom: 12 }}>
+            👨‍🏫 Educator
+          </h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {educator.logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={educator.logoUrl}
+                alt={educator.displayName}
+                style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
+              />
+            ) : (
+              <div
+                style={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg,#2a1650,#6d28d9)',
+                  color: '#fff',
+                  fontSize: 20,
+                  fontWeight: 800,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                {(educator.displayName || 'E')[0].toUpperCase()}
+              </div>
+            )}
+            <div style={{ minWidth: 0 }}>
+              <b style={{ fontSize: 15 }}>{educator.displayName}</b>
+              {educator.verified && (
+                <span style={{ fontSize: 10, fontWeight: 800, color: '#166534', marginLeft: 6 }}>✓ VERIFIED</span>
+              )}
+              {educator.tagline && (
+                <p style={{ fontSize: 13, color: 'var(--brand)', fontWeight: 600 }}>{educator.tagline}</p>
+              )}
+              <Link href={`/teachers/${educator.slug}`} style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--brand)' }}>
+                Profile dekho →
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Quality note */}
+      <div
+        style={{
+          padding: 20,
+          borderRadius: 16,
+          background: 'linear-gradient(135deg,#fef3c7,#fde68a)',
+          border: '2px solid #fcd34d',
+        }}
+      >
+        <p style={{ fontSize: 13, color: '#92400e', lineHeight: 1.7 }}>
+          <strong style={{ display: 'block', marginBottom: 4, fontSize: 14 }}>🏆 THE SHIVA Quality</strong>
+          Har course quality-checked hai — verified educators, structured syllabus, aur jo
+          content dikhaya gaya hai wahi milta hai.
+        </p>
+      </div>
+    </div>
+  );
+
   return (
     <div className="shiva-landing">
       <section style={{ paddingTop: 32, paddingBottom: 72 }}>
@@ -330,407 +709,27 @@ export default async function PublicCourseDetailPage({ params }: { params: { cou
             <span aria-current="page" style={{ color: '#e4e4e7', fontWeight: 600 }}>{courseTree.title}</span>
           </nav>
 
-          {/* ================= HERO ================= */}
-          <div
-            style={{
-              background: `linear-gradient(120deg, ${PURPLE_DARK} 0%, #4c1d95 55%, #6d28d9 100%)`,
-              color: '#fff',
-              borderRadius: 22,
-              boxShadow: '0 18px 44px rgba(42,22,80,.35)',
-              overflow: 'hidden',
-              marginBottom: 26,
+          {/* Band (hero + tabs) aur neeche grid (panels + sticky rail)
+              CourseDetailClient render karta hai — PW batch-overview
+              grammar: violet band, uske andar tab bar, right rail me
+              sticky purchase card. */}
+          <CourseDetailClient
+            header={heroContent}
+            rail={railContent}
+            description={courseTree.description}
+            subjects={subjectsDTO}
+            batches={batchesDTO}
+            teachers={teachers}
+            freeLectures={freeLectures}
+            tests={testsDTO}
+            previewHref={previewHref}
+            isEnrolled={isEnrolled}
+            meta={{
+              language,
+              validityLabel,
+              targetAudience: targetAudienceLines.length > 0 ? raw.targetAudience : null,
             }}
-          >
-            <div
-              style={{ display: 'grid', gridTemplateColumns: courseTree.thumbnailUrl ? '1.6fr .9fr' : '1fr', gap: 0 }}
-              className="cd-hero-grid"
-            >
-              <div style={{ padding: '34px 32px' }}>
-                <span
-                  style={{
-                    display: 'inline-block',
-                    fontSize: 11,
-                    fontWeight: 800,
-                    textTransform: 'uppercase',
-                    letterSpacing: 1.5,
-                    background: 'rgba(245,185,66,.18)',
-                    border: `1px solid ${GOLD}`,
-                    color: GOLD,
-                    padding: '6px 14px',
-                    borderRadius: 999,
-                    marginBottom: 14,
-                  }}
-                >
-                  📖 THE SHIVA Course
-                </span>
-                <h1 style={{ fontSize: 'clamp(32px, 4.2vw, 44px)', fontWeight: 900, marginBottom: 12, lineHeight: 1.18, letterSpacing: -0.5, color: '#fff' }}>
-                  {courseTree.title}
-                </h1>
-                {courseTree.description && (
-                  <p
-                    style={{
-                      fontSize: 15,
-                      opacity: 0.92,
-                      lineHeight: 1.7,
-                      maxWidth: 620,
-                      display: '-webkit-box',
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {courseTree.description}
-                  </p>
-                )}
-
-                {/* Teacher line — real educator only */}
-                {educator && (
-                  <Link
-                    href={`/teachers/${educator.slug}`}
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginTop: 16, color: '#fff' }}
-                  >
-                    {educator.logoUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={educator.logoUrl}
-                        alt={educator.displayName}
-                        style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover', border: `2px solid ${GOLD}` }}
-                      />
-                    ) : (
-                      <span
-                        style={{
-                          width: 38,
-                          height: 38,
-                          borderRadius: '50%',
-                          background: GOLD,
-                          color: PURPLE_DARK,
-                          fontWeight: 900,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: 16,
-                        }}
-                      >
-                        {(educator.displayName || 'T')[0].toUpperCase()}
-                      </span>
-                    )}
-                    <span style={{ fontSize: 14 }}>
-                      <span style={{ opacity: 0.8 }}>Padhane wale: </span>
-                      <strong>{educator.displayName}</strong>
-                      {educator.verified && <span style={{ color: GOLD, fontWeight: 800 }}> ✓</span>}
-                      {educator.tagline && (
-                        <span style={{ display: 'block', fontSize: 12.5, opacity: 0.85 }}>{educator.tagline}</span>
-                      )}
-                    </span>
-                  </Link>
-                )}
-
-                {/* Meta row — every item below exists only with real data */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 22px', marginTop: 22, fontSize: 13.5 }}>
-                  {rating !== null && (
-                    <span>⭐ <strong>{rating.toFixed(1)}</strong>{ratingCount !== null ? ` (${ratingCount.toLocaleString('en-IN')} ratings)` : ''}</span>
-                  )}
-                  {enrolledCount !== null && (
-                    <span>👥 <strong>{enrolledCount.toLocaleString('en-IN')}</strong> students enrolled</span>
-                  )}
-                  {lectureCount > 0 && <span>🎬 <strong>{lectureCount}</strong> lectures</span>}
-                  {totalDurationLabel && <span>⏱️ Kul <strong>{totalDurationLabel}</strong> content</span>}
-                  {language && <span>🗣️ Language: <strong>{language}</strong></span>}
-                  {validityLabel && <span>📅 <strong>{validityLabel}</strong></span>}
-                  {freeLectures.length > 0 && (
-                    <span style={{ color: GOLD, fontWeight: 700 }}>🎁 {freeLectures.length} free demo lectures</span>
-                  )}
-                  {nextBatch && (
-                    <span>
-                      🗓️ Batch: <strong>{nextBatch.name}</strong>
-                      {nextBatch.startDate
-                        ? ` · ${new Date(nextBatch.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} se`
-                        : ''}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {courseTree.thumbnailUrl && (
-                <div style={{ position: 'relative', minHeight: 220 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={courseTree.thumbnailUrl}
-                    alt={courseTree.title}
-                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* ================= MAIN + STICKY CARD ================= */}
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 28, alignItems: 'start' }} className="course-detail-grid">
-            {/* Main column — tabbed content */}
-            <div style={{ minWidth: 0 }}>
-              <CourseDetailClient
-                description={courseTree.description}
-                subjects={subjectsDTO}
-                batches={batchesDTO}
-                teachers={teachers}
-                freeLectures={freeLectures}
-                tests={testsDTO}
-                previewHref={previewHref}
-                isEnrolled={isEnrolled}
-                meta={{
-                  language,
-                  validityLabel,
-                  targetAudience: targetAudienceLines.length > 0 ? raw.targetAudience : null,
-                }}
-              />
-            </div>
-
-            {/* Sidebar */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }} className="cd-sidebar">
-              {/* Sticky enroll / price card — map pattern:
-                  safed card, ONLINE ribbon, banner, title, language pill,
-                  bold rang-daar price + grey kata MRP + halki-green discount
-                  chip, aur poora KAALA solid CTA. Saare price elements
-                  sirf asal record data par hi render hote hain. */}
-              <div
-                style={{
-                  background: '#fff',
-                  color: 'var(--ink)',
-                  border: '1px solid var(--line)',
-                  borderRadius: 20,
-                  boxShadow: '0 16px 40px rgba(42,22,80,.14)',
-                  position: 'sticky',
-                  top: 84,
-                  overflow: 'hidden',
-                }}
-              >
-                <div style={{ position: 'relative' }}>
-                  {courseTree.thumbnailUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={courseTree.thumbnailUrl}
-                      alt=""
-                      style={{ width: '100%', height: 150, objectFit: 'cover', display: 'block' }}
-                    />
-                  )}
-                  <span
-                    style={{
-                      position: 'absolute',
-                      top: 12,
-                      left: 12,
-                      fontSize: 10.5,
-                      fontWeight: 800,
-                      letterSpacing: 1.2,
-                      background: PURPLE_DARK,
-                      color: '#fff',
-                      padding: '5px 11px',
-                      borderRadius: 999,
-                    }}
-                  >
-                    ONLINE
-                  </span>
-                </div>
-                <div style={{ padding: 22 }}>
-                  <h2
-                    style={{
-                      fontSize: 16.5,
-                      fontWeight: 800,
-                      color: PURPLE_DARK,
-                      lineHeight: 1.4,
-                      marginBottom: 8,
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    {courseTree.title}
-                  </h2>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
-                    {language && (
-                      <span
-                        style={{
-                          fontSize: 11.5,
-                          fontWeight: 700,
-                          color: '#4b5563',
-                          border: '1.5px solid var(--line)',
-                          padding: '4px 11px',
-                          borderRadius: 999,
-                        }}
-                      >
-                        🗣️ {language}
-                      </span>
-                    )}
-                    {validityLabel && (
-                      <span
-                        style={{
-                          fontSize: 11.5,
-                          fontWeight: 700,
-                          color: '#4b5563',
-                          border: '1.5px solid var(--line)',
-                          padding: '4px 11px',
-                          borderRadius: 999,
-                        }}
-                      >
-                        📅 {validityLabel}
-                      </span>
-                    )}
-                  </div>
-
-                  <span style={{ fontSize: 11.5, color: 'var(--muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1.2, display: 'block', marginBottom: 6 }}>
-                    Course Fee
-                  </span>
-                  <div style={{ marginBottom: 18 }}>{priceBlock()}</div>
-
-                  <Link
-                    href={ctaHref}
-                    style={{
-                      display: 'block',
-                      width: '100%',
-                      textAlign: 'center',
-                      padding: '14px',
-                      fontSize: 16,
-                      fontWeight: 800,
-                      background: '#111111',
-                      color: '#fff',
-                      borderRadius: 12,
-                      textDecoration: 'none',
-                    }}
-                  >
-                    {ctaLabel}
-                  </Link>
-                  <p style={{ fontSize: 12.5, color: 'var(--muted)', marginTop: 12, textAlign: 'center', lineHeight: 1.6 }}>
-                    {session?.role === 'STUDENT' && isEnrolled
-                      ? '✅ Tum enrolled ho — padhai jaari rakho!'
-                      : priceValue === null
-                        ? 'Login karke course ki poori jankari aur enrollment dekho.'
-                        : isFree
-                          ? 'Free registration — koi payment nahi lagega.'
-                          : '📱 Login karke enroll karo'}
-                  </p>
-
-                  {/* Includes — real counts only, green check sirf asal par */}
-                  {(lectureCount > 0 || freeLectures.length > 0 || batchesDTO.length > 0 || validityLabel || language) && (
-                    <div style={{ borderTop: '1px solid var(--line)', marginTop: 18, paddingTop: 16 }}>
-                      <p style={{ fontSize: 12, fontWeight: 800, letterSpacing: 1, textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 10 }}>
-                        Is course me shamil hai
-                      </p>
-                      <ul style={{ listStyle: 'none', margin: 0, padding: 0, fontSize: 13.5, lineHeight: 1.5, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                        {lectureCount > 0 && (
-                          <li style={{ display: 'flex', gap: 8 }}><span style={{ color: '#059669', fontWeight: 900 }}>✓</span><span>{lectureCount} recorded lectures{totalDurationLabel ? ` (${totalDurationLabel})` : ''}</span></li>
-                        )}
-                        {chapterCount > 0 && (
-                          <li style={{ display: 'flex', gap: 8 }}><span style={{ color: '#059669', fontWeight: 900 }}>✓</span><span>{subjectsDTO.length} subjects · {chapterCount} chapters</span></li>
-                        )}
-                        {freeLectures.length > 0 && (
-                          <li style={{ display: 'flex', gap: 8 }}><span style={{ color: '#059669', fontWeight: 900 }}>✓</span><span>{freeLectures.length} free demo lectures</span></li>
-                        )}
-                        {batchesDTO.length > 0 && (
-                          <li style={{ display: 'flex', gap: 8 }}><span style={{ color: '#059669', fontWeight: 900 }}>✓</span><span>{batchesDTO.length} batch option{batchesDTO.length === 1 ? '' : 's'}</span></li>
-                        )}
-                        {language && (
-                          <li style={{ display: 'flex', gap: 8 }}><span style={{ color: '#059669', fontWeight: 900 }}>✓</span><span>Language: {language}</span></li>
-                        )}
-                        {validityLabel && (
-                          <li style={{ display: 'flex', gap: 8 }}><span style={{ color: '#059669', fontWeight: 900 }}>✓</span><span>{validityLabel}</span></li>
-                        )}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Ye course kiske liye hai — asal targetAudience field pehle,
-                  na ho to derived points */}
-              {(targetAudienceLines.length > 0 || audiencePoints.length > 0) && (
-                <div className="batch" style={{ padding: 22 }}>
-                  <h3 style={{ fontSize: 15, fontWeight: 800, color: PURPLE_DARK, marginBottom: 12 }}>
-                    🎯 Ye course kiske liye hai?
-                  </h3>
-                  <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 9 }}>
-                    {targetAudienceLines.map((line) => (
-                      <li key={line} style={{ fontSize: 13.5, color: '#374151', display: 'flex', gap: 8, lineHeight: 1.55 }}>
-                        <span style={{ color: '#059669', fontWeight: 900 }}>✓</span>
-                        <span>{line}</span>
-                      </li>
-                    ))}
-                    {targetAudienceLines.length === 0 &&
-                      audiencePoints.map((point) => (
-                        <li key={point} style={{ fontSize: 13.5, color: '#374151', display: 'flex', gap: 8, lineHeight: 1.55 }}>
-                          <span style={{ color: '#059669', fontWeight: 900 }}>✓</span>
-                          <span>Jo {point}</span>
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* Educator mini-card */}
-              {educator && (
-                <div className="batch" style={{ padding: 20 }}>
-                  <h3 style={{ fontSize: 14, fontWeight: 800, color: PURPLE_DARK, marginBottom: 12 }}>
-                    👨‍🏫 Educator
-                  </h3>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    {educator.logoUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={educator.logoUrl}
-                        alt={educator.displayName}
-                        style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
-                      />
-                    ) : (
-                      <div
-                        style={{
-                          width: 52,
-                          height: 52,
-                          borderRadius: '50%',
-                          background: 'linear-gradient(135deg,#2a1650,#6d28d9)',
-                          color: '#fff',
-                          fontSize: 20,
-                          fontWeight: 800,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                        }}
-                      >
-                        {(educator.displayName || 'E')[0].toUpperCase()}
-                      </div>
-                    )}
-                    <div style={{ minWidth: 0 }}>
-                      <b style={{ fontSize: 15 }}>{educator.displayName}</b>
-                      {educator.verified && (
-                        <span style={{ fontSize: 10, fontWeight: 800, color: '#166534', marginLeft: 6 }}>✓ VERIFIED</span>
-                      )}
-                      {educator.tagline && (
-                        <p style={{ fontSize: 13, color: 'var(--brand)', fontWeight: 600 }}>{educator.tagline}</p>
-                      )}
-                      <Link href={`/teachers/${educator.slug}`} style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--brand)' }}>
-                        Profile dekho →
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Quality note */}
-              <div
-                style={{
-                  padding: 20,
-                  borderRadius: 16,
-                  background: 'linear-gradient(135deg,#fef3c7,#fde68a)',
-                  border: '2px solid #fcd34d',
-                }}
-              >
-                <p style={{ fontSize: 13, color: '#92400e', lineHeight: 1.7 }}>
-                  <strong style={{ display: 'block', marginBottom: 4, fontSize: 14 }}>🏆 THE SHIVA Quality</strong>
-                  Har course quality-checked hai — verified educators, structured syllabus, aur jo
-                  content dikhaya gaya hai wahi milta hai.
-                </p>
-              </div>
-            </div>
-          </div>
+          />
         </div>
       </section>
 

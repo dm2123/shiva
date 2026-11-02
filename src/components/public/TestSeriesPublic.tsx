@@ -100,18 +100,18 @@ function QuickLinks() {
         <Link
           key={q.title}
           href={q.href}
-          className="group flex items-start gap-4 rounded-2xl border border-[#26224a] bg-[#12121a] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-[#6d28d9]/60 hover:shadow-[0_18px_44px_rgba(0,0,0,0.6)]"
+          className="group flex items-start gap-3.5 rounded-2xl border border-[#26224a] bg-[#12121a] p-4 shadow-[0_10px_30px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-[#6d28d9]/60 hover:shadow-[0_18px_44px_rgba(0,0,0,0.6)]"
         >
           <span
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-[22px]"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[19px]"
             style={{ background: q.tint }}
             aria-hidden="true"
           >
             {q.icon}
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-[15.5px] font-extrabold text-white">{q.title}</span>
-            <span className="mt-1 block text-[13px] leading-relaxed text-[#a5a0d0]">{q.sub}</span>
+            <span className="block text-[15px] font-extrabold text-white">{q.title}</span>
+            <span className="mt-0.5 line-clamp-2 block text-[12.5px] leading-relaxed text-[#a5a0d0]">{q.sub}</span>
           </span>
           <span
             className="mt-1 shrink-0 text-xl font-black leading-none text-[#a78bfa] transition-transform group-hover:translate-x-0.5"
@@ -146,7 +146,7 @@ function ExamCategories({
   };
 
   return (
-    <section aria-label="Exam categories" className="mt-16">
+    <section aria-label="Exam categories" className="mt-12">
       <div className="mb-8 text-center">
         <span className="inline-block rounded-full border border-[rgba(109,40,217,.45)] bg-[rgba(109,40,217,.16)] px-4 py-1.5 text-[13px] font-bold uppercase tracking-wider text-[#c4b5fd]">
           Exam Categories
@@ -172,7 +172,7 @@ function ExamCategories({
                 onSelect(isActive ? null : cat.id);
                 jumpToTests();
               }}
-              className={`rounded-2xl border-2 bg-[#12121a] p-5 text-left shadow-[0_10px_30px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 ${
+              className={`rounded-2xl border-2 bg-[#12121a] p-4 text-left shadow-[0_10px_30px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 ${
                 isActive
                   ? 'border-[#6d28d9] shadow-[0_16px_40px_rgba(109,40,217,0.35)]'
                   : 'border-[#26224a] hover:border-[#6d28d9]/60'
@@ -219,7 +219,7 @@ function TestCard({ test }: { test: PublicTestItem }) {
       {/* Top strip — deep purple → violet, gold edge (brand gradient) */}
       <div className="h-1.5 w-full bg-gradient-to-r from-[#2a1650] via-[#6d28d9] to-[#f5b942]" aria-hidden="true" />
 
-      <div className="flex flex-1 flex-col gap-4 p-6">
+      <div className="flex flex-1 flex-col gap-3 p-5">
         {/* Tags: narangi exam tag + kind chip + asal category text */}
         <div className="flex flex-wrap items-center gap-2">
           {test.examLabel && (
@@ -240,7 +240,7 @@ function TestCard({ test }: { test: PublicTestItem }) {
         </div>
 
         <div className="space-y-1.5">
-          <h3 className="text-lg font-bold leading-snug text-white">{test.title}</h3>
+          <h3 className="text-[16px] font-bold leading-snug text-white">{test.title}</h3>
           {test.description && (
             <p className="line-clamp-2 text-[13px] leading-relaxed text-[#a5a0d0]">
               {test.description}
@@ -303,10 +303,6 @@ function TestCard({ test }: { test: PublicTestItem }) {
             </Link>
           )}
         </div>
-        <p className="-mt-1 text-[11.5px] leading-relaxed text-[#6b6690]">
-          Test dene ke liye login/register aur us course me enrollment chahiye — bilkul
-          asal exam ki tarah, bina taiyaari ke number nahi milte.
-        </p>
       </div>
     </article>
   );
@@ -351,7 +347,7 @@ function PublishedTests({
   );
 
   return (
-    <section id="published-tests" aria-label="Published tests" className="mt-16 scroll-mt-24">
+    <section id="published-tests" aria-label="Published tests" className="mt-12 scroll-mt-24">
       <div className="mb-8 text-center">
         <span className="inline-block rounded-full border border-[rgba(109,40,217,.45)] bg-[rgba(109,40,217,.16)] px-4 py-1.5 text-[13px] font-bold uppercase tracking-wider text-[#c4b5fd]">
           Published Tests
@@ -427,11 +423,15 @@ function PublishedTests({
             {filtered.length} test{filtered.length === 1 ? '' : 's'} dikh rahe hain
             {tests.length !== filtered.length ? ` · kul ${tests.length} published` : ''}
           </p>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {filtered.map((test) => (
               <TestCard key={test.id} test={test} />
             ))}
           </div>
+          <p className="mt-5 text-center text-[12px] leading-relaxed text-[#6b6690]">
+            Test dene ke liye login/register aur us course me enrollment chahiye — bilkul
+            asal exam ki tarah, bina taiyaari ke number nahi milte.
+          </p>
         </>
       )}
     </section>
@@ -498,7 +498,7 @@ const PREP_STEPS = [
 
 function WhyTestSeries() {
   return (
-    <section aria-label="Test series kyun" className="mt-20">
+    <section aria-label="Test series kyun" className="mt-14">
       <div className="mb-8 text-center">
         <span className="inline-block rounded-full border border-[rgba(109,40,217,.45)] bg-[rgba(109,40,217,.16)] px-4 py-1.5 text-[13px] font-bold uppercase tracking-wider text-[#c4b5fd]">
           Why Test Series?
@@ -516,23 +516,23 @@ function WhyTestSeries() {
         {WHY_CARDS.map((c) => (
           <div
             key={c.title}
-            className="rounded-2xl border border-[#26224a] bg-[#12121a] p-6 shadow-[0_10px_30px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-[#6d28d9]/60 hover:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
+            className="rounded-2xl border border-[#26224a] bg-[#12121a] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-[#6d28d9]/60 hover:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
           >
             <span
-              className="flex h-12 w-12 items-center justify-center rounded-full text-[22px]"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-[20px]"
               style={{ background: c.tint }}
               aria-hidden="true"
             >
               {c.icon}
             </span>
-            <h3 className="mt-4 text-base font-extrabold text-white">{c.title}</h3>
-            <p className="mt-1.5 text-[13.5px] leading-relaxed text-[#a5a0d0]">{c.text}</p>
+            <h3 className="mt-3 text-[15px] font-extrabold text-white">{c.title}</h3>
+            <p className="mt-1 text-[13px] leading-relaxed text-[#a5a0d0]">{c.text}</p>
           </div>
         ))}
       </div>
 
       {/* Taiyaari ka sahi kram — numbered list */}
-      <div className="mt-10 rounded-2xl border border-[#26224a] bg-[#12121a] p-6 md:p-8">
+      <div className="mt-8 rounded-2xl border border-[#26224a] bg-[#12121a] p-5 md:p-6">
         <h3 className="text-center text-lg font-extrabold text-white">
           Taiyaari ka Sahi Kram
         </h3>
@@ -589,7 +589,7 @@ function FaqAccordion() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section aria-label="Aksar poochhe jaane wale sawaal" className="mt-20">
+    <section aria-label="Aksar poochhe jaane wale sawaal" className="mt-14">
       <div className="mb-8 text-center">
         <span className="inline-block rounded-full border border-[rgba(109,40,217,.45)] bg-[rgba(109,40,217,.16)] px-4 py-1.5 text-[13px] font-bold uppercase tracking-wider text-[#c4b5fd]">
           FAQ
@@ -614,8 +614,8 @@ function FaqAccordion() {
                 onClick={() => setOpen(isOpen ? null : i)}
                 aria-expanded={isOpen}
                 aria-controls={`ts-faq-a-${i}`}
-                className="flex w-full items-center justify-between gap-4 px-6 text-left"
-                style={{ paddingTop: 18, paddingBottom: 18 }}
+                className="flex w-full items-center justify-between gap-4 px-5 text-left"
+                style={{ paddingTop: 14, paddingBottom: 14 }}
               >
                 <span className="text-[15.5px] font-bold text-white">{f.q}</span>
                 <span className="shrink-0 text-2xl font-extrabold leading-none text-[#a78bfa]" aria-hidden="true">
@@ -623,7 +623,7 @@ function FaqAccordion() {
                 </span>
               </button>
               {isOpen && (
-                <div id={`ts-faq-a-${i}`} className="px-6 pb-5 text-[14.5px] leading-relaxed text-[#a5a0d0]">
+                <div id={`ts-faq-a-${i}`} className="px-5 pb-4 text-[14px] leading-relaxed text-[#a5a0d0]">
                   {f.a}
                 </div>
               )}
@@ -659,7 +659,7 @@ export default function TestSeriesPublic({
       ) : (
         /* Honest empty state — abhi ek bhi test publish nahi hai.
            Nakli test card ki jagah sach + asal agla kadam. */
-        <section id="published-tests" aria-label="Published tests" className="mt-16 scroll-mt-24">
+        <section id="published-tests" aria-label="Published tests" className="mt-12 scroll-mt-24">
           <div className="mx-auto max-w-xl rounded-2xl border border-[#26224a] bg-[#12121a] p-10 text-center shadow-[0_10px_30px_rgba(0,0,0,0.45)]" role="status">
             <div className="mb-3 text-5xl opacity-40" aria-hidden="true">
               🧪

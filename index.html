@@ -390,13 +390,148 @@ header{box-shadow:0 6px 24px rgba(42,22,80,.08)}
 .hero-search input{font-size:14px;padding:10px 12px}
 .teaser-grid{grid-template-columns:1fr}
 }
+
+/* ===== WAVE-5 — PW PUBLIC SYSTEM (header/footer/typography sab pages par ek) ===== */
+html{scroll-padding-top:88px}
+.nav{min-height:68px}
+.logo-mark{width:40px;height:40px;border-radius:11px;display:block;flex-shrink:0}
+.btn-login{background:transparent!important;color:var(--brand-dark)!important;box-shadow:none!important;padding:11px 14px!important}
+.btn-login:hover{background:#f5f3ff!important;transform:none!important}
+/* FAQ — compact rows */
+.faq-item{margin-bottom:9px!important}
+.faq-q{padding:13px 18px!important;min-height:0!important;font-size:15px!important}
+.faq-a div{padding:0 18px 13px!important}
+/* Honest box — bada dashed dabba nahi, compact designed card */
+.honest-box{max-width:780px;margin-left:auto;margin-right:auto;background:#fff!important;border:1.5px solid var(--line)!important;padding:28px 24px!important;box-shadow:0 8px 28px rgba(42,22,80,.06);font-size:14.5px}
+.honest-box .big-ic{font-size:0;margin-bottom:8px;color:var(--brand)}
+.honest-box .big-ic svg{width:38px;height:38px}
+/* Feature card icons — ek system */
+.feat-card .ico{color:var(--brand-dark)}
+.feat-card .ico svg{width:26px;height:26px}
+.cs-ic{display:inline-flex;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.16);align-items:center;justify-content:center;margin-bottom:10px;color:#fff}
+.cs-ic svg{width:26px;height:26px}
+/* FAB — chhota, content/footer ko na dhake */
+.fab{width:50px!important;height:50px!important;border-radius:50%!important;font-size:20px;bottom:22px!important;right:22px!important;display:flex;align-items:center;justify-content:center;padding:0}
+.fab svg{width:24px;height:24px}
+@media(max-width:900px){.fab{bottom:94px!important;right:14px!important;width:48px!important;height:48px!important}}
+/* B5 — PW batch card anatomy (index + batches) */
+.b5{background:#fff;border:1.5px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 6px 24px rgba(42,22,80,.06);transition:.25s}
+.b5:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(109,40,217,.14)}
+.b5-banner{position:relative;aspect-ratio:16/9;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;overflow:hidden}
+.b5-banner::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.14);pointer-events:none}
+.b5-banner::before{content:"";position:absolute;left:-24px;bottom:-40px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.09);pointer-events:none}
+.b5-tag{position:absolute;top:14px;left:14px;font-size:11px;font-weight:800;padding:4px 11px;border-radius:99px;background:#fff;color:#059669;z-index:2;letter-spacing:.3px}
+.b5-tag.soon{background:rgba(255,255,255,.25);color:#fff}
+.b5-btitle{font-size:25px;font-weight:900;line-height:1.14;letter-spacing:-.3px;position:relative;z-index:2}
+.b5-bsub{font-size:13.5px;opacity:.93;position:relative;z-index:2;margin-top:3px}
+.b5-eye{position:absolute;right:14px;bottom:14px;width:38px;height:38px;border-radius:11px;border:1.5px solid rgba(255,255,255,.55);color:#fff;display:flex;align-items:center;justify-content:center;z-index:2;background:rgba(255,255,255,.08)}
+.b5-eye svg{width:18px;height:18px}
+.b5-body{padding:18px 20px 20px;display:flex;flex-direction:column;flex:1}
+.b5-body .pills{margin-bottom:2px}
+.b5-body h3{font-size:18px;font-weight:800;color:var(--deep);margin:6px 0 4px;line-height:1.3}
+.b5-aud{font-size:13.5px;color:var(--muted)}
+.b5-feats{list-style:none;margin:10px 0 2px}
+.b5-feats li{font-size:13.5px;color:#374151;padding:3px 0}
+.b5-feats li::before{content:"\2713 ";color:var(--green);font-weight:800}
+.b5-body .price{margin-top:auto;padding-top:12px}
+.b5-wide{grid-column:1/-1}
+@media(min-width:901px){.b5-wide .b5-banner{aspect-ratio:21/9}}
+/* FOOTER — PW style SAFED footer, dark text */
+footer.ft5{background:#fff;color:#4b5563;border-top:1px solid #eceaf6;padding:50px 0 26px;margin-top:0}
+.ft5-top{display:flex;justify-content:space-between;gap:28px;flex-wrap:wrap;padding-bottom:24px;margin-bottom:24px;border-bottom:1px solid #f0eefc}
+.ft5-logoimg{width:88px;height:88px;object-fit:cover;border-radius:16px;border:1px solid #f0eefc;display:block}
+.ft5-desc{font-size:13.5px;color:#6b7280;max-width:400px;margin-top:12px;line-height:1.65}
+.ft5-social{display:flex;gap:10px;margin-top:16px}
+.ft5-social button{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--line);background:#faf9ff;color:var(--brand);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;padding:0}
+.ft5-social button:hover{border-color:var(--brand);background:#f5f3ff;transform:translateY(-2px)}
+.ft5-social svg{width:18px;height:18px}
+.ft5-note{font-size:12px;color:#9ca3af;margin-top:10px}
+.ft5-help{font-size:14px;color:#374151}
+.ft5-help b{display:block;color:var(--deep);font-size:15px;margin-bottom:6px}
+.ft5-help a{color:var(--brand);font-weight:700}
+.ft5-cb{display:inline-block;margin-top:10px;background:#ede9fe;color:var(--brand-dark);border:none;font:inherit;font-weight:700;font-size:13.5px;padding:9px 16px;border-radius:999px;cursor:pointer}
+.ft5-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:26px;margin-bottom:24px}
+.ft5-grid h4{color:var(--deep);font-size:14.5px;margin-bottom:12px}
+.ft5-grid a{display:block;padding:4px 0;font-size:13.5px;color:#4b5563}
+.ft5-grid a:hover{color:var(--brand)}
+.ft5-bot{border-top:1px solid #f0eefc;padding-top:16px;font-size:12.5px;color:#9ca3af;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media(max-width:900px){.ft5-grid{grid-template-columns:1fr 1fr}}
+
+
+/* ===== WAVE-5 INDEX — PW homepage grammar ===== */
+.hero5{background:linear-gradient(180deg,#f4f1ff 0%,#faf9ff 62%,#ffffff 100%);position:relative;overflow:hidden}
+.hero5-in{max-width:1140px;margin:0 auto;padding:54px 20px 4px;display:grid;grid-template-columns:1.12fr .88fr;gap:36px;align-items:center;position:relative;z-index:2}
+.hero5-kick{display:inline-block;background:#ede9fe;color:var(--brand-dark);font-weight:800;font-size:12px;letter-spacing:1.1px;padding:7px 15px;border-radius:999px;margin-bottom:16px}
+.hero5 h1{font-size:54px;font-weight:900;line-height:1.08;letter-spacing:-.8px;color:var(--deep)}
+.hero5 h1 .v{color:var(--brand)}
+.hero5-sub{font-size:16.5px;color:#4b5563;max-width:540px;margin-top:14px}
+.hero5 .hero-search{border:2px solid var(--line);box-shadow:0 12px 30px rgba(42,22,80,.10);margin:22px 0 12px;max-width:560px}
+.hero5 .hero-search button{background:var(--brand);color:#fff}
+.hero5 .hero-search button:hover{background:var(--brand-dark);color:#fff}
+.hero5 .pop-search{margin-bottom:4px}
+.hero5 .pop-search .lbl{color:#6b7280;opacity:1}
+.hero5 .pop-search a{background:#fff;border:1.5px solid var(--line);color:var(--brand-dark)}
+.hero5 .pop-search a:hover{border-color:var(--brand);background:#f5f3ff}
+.hero5-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.hero5-price{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;font-size:13.5px;color:#6b7280}
+.hero5-price b{font-size:23px;font-weight:900;color:var(--green);background:var(--green-bg);padding:2px 14px;border-radius:999px}
+.hero5-price s{color:#9ca3af;font-weight:600;font-size:16px}
+.hero5-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;border-top:1px solid #e9e5fb;margin-top:36px;padding:20px 0 30px;text-align:center}
+.hero5-stats b{display:block;font-size:19px;font-weight:900;color:var(--deep)}
+.hero5-stats span{font-size:12.5px;color:var(--muted)}
+.hv-card{background:#fff;border:1.5px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 24px 50px rgba(42,22,80,.16)}
+.hv-banner{background:linear-gradient(120deg,#059669,#10b981);color:#fff;padding:22px;position:relative;overflow:hidden}
+.hv-banner::after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.14)}
+.hv-tag{display:inline-block;font-size:11px;font-weight:800;padding:4px 11px;border-radius:99px;background:#fff;color:#059669;letter-spacing:.3px}
+.hv-title{font-size:29px;font-weight:900;line-height:1.13;letter-spacing:-.3px;margin-top:12px}
+.hv-sub{font-size:13.5px;opacity:.93;margin-top:4px}
+.hv-body{padding:18px 20px 20px}
+.hv-topics{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.hv-topics span{font-size:12px;font-weight:700;background:#f5f3ff;border:1.5px solid var(--line);color:var(--brand-dark);padding:5px 11px;border-radius:999px}
+.cat-strip{flex-wrap:nowrap!important;overflow-x:auto;justify-content:flex-start!important;padding-bottom:12px;scrollbar-width:none}
+.cat-strip::-webkit-scrollbar{display:none}
+@media(min-width:1180px){.cat-strip{justify-content:center!important}}
+.cat5-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.cat5{display:flex;align-items:center;gap:14px;background:var(--t);border:1.5px solid transparent;border-radius:18px;padding:16px 18px;transition:.2s}
+.cat5:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(42,22,80,.10)}
+.cat5-ic{width:52px;height:52px;border-radius:16px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(42,22,80,.08)}
+.cat5-ic svg{width:27px;height:27px}
+.cat5-tx{flex:1;min-width:0}
+.cat5-tx b{display:block;font-size:17px;color:var(--deep);line-height:1.25}
+.cat5-tx span{font-size:12.5px;color:#6b7280;font-weight:600}
+.cat5-go{font-size:13.5px;font-weight:800;color:var(--brand);white-space:nowrap}
+.cat5-wide{grid-column:1/-1}
+.res5{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.res5-card{border-radius:20px;padding:22px;background:#fff;border:1.5px solid var(--line);box-shadow:0 6px 24px rgba(42,22,80,.06)}
+.res5-ic{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.res5-ic svg{width:25px;height:25px}
+.res5-card h3{font-size:16.5px;margin-bottom:6px;color:var(--deep)}
+.res5-card p{font-size:13.5px;color:var(--muted);margin-bottom:14px}
+.result5{max-width:680px;margin:0 auto;background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:28px 26px;text-align:center;box-shadow:0 8px 28px rgba(42,22,80,.06)}
+.teaser-card .tico{color:var(--brand-dark)}
+.teaser-card .tico svg{width:28px;height:28px}
+.scholar-strip .sic{font-size:0;color:#b45309}
+.scholar-strip .sic svg{width:46px;height:46px}
+.phone5{justify-self:center;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.28);border-radius:24px;padding:16px;line-height:0}
+.phone5 img{width:128px;height:auto;border-radius:14px;display:block;box-shadow:0 10px 26px rgba(0,0,0,.3)}
+.stores div{background:#111827!important;border:1.5px solid #111827!important;border-radius:12px!important}
+@media(max-width:900px){
+.hero5-in{grid-template-columns:1fr;padding-top:38px}
+.hero5 h1{font-size:37px}
+.hero5-stats{grid-template-columns:1fr 1fr}
+.cat5-grid{grid-template-columns:1fr 1fr}
+.res5{grid-template-columns:1fr}
+.phone5{margin:0 auto}
+}
+@media(max-width:520px){.cat5-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
 <header><div class="nav">
 <div style="display:flex;align-items:center;gap:12px">
 <button class="hamburger" aria-label="Menu kholo" onclick="document.getElementById('mmenu').classList.add('open')">☰</button>
-<a href="index.html" class="logo"><img src="logo.jpeg" alt="THE SHIVA logo">THE SHIVA</a>
+<a href="index.html" class="logo"><img src="favicon.svg" alt="THE SHIVA logo" class="logo-mark" width="40" height="40">THE SHIVA</a>
 </div>
 
 <div class="mega-wrap">
@@ -414,15 +549,15 @@ header{box-shadow:0 6px 24px rgba(42,22,80,.08)}
 <div>
 <p class="mega-head">Popular Exams</p>
 <div class="mega-tiles">
-<a class="mega-tile" href="https://the-shiva.onrender.com/courses"><span class="mega-tile-ico" aria-hidden="true">🎯</span>SSC CGL</a>
-<a class="mega-tile" href="https://the-shiva.onrender.com/courses"><span class="mega-tile-ico" aria-hidden="true">📝</span>SSC CHSL</a>
-<a class="mega-tile" href="https://the-shiva.onrender.com/courses"><span class="mega-tile-ico" aria-hidden="true">🚆</span>RRB NTPC</a>
-<a class="mega-tile" href="https://the-shiva.onrender.com/courses"><span class="mega-tile-ico" aria-hidden="true">🚂</span>Railway Group D</a>
-<a class="mega-tile" href="https://the-shiva.onrender.com/courses"><span class="mega-tile-ico" aria-hidden="true">🏦</span>IBPS PO</a>
-<a class="mega-tile" href="https://the-shiva.onrender.com/courses"><span class="mega-tile-ico" aria-hidden="true">💼</span>SBI Clerk</a>
-<a class="mega-tile" href="https://the-shiva.onrender.com/courses"><span class="mega-tile-ico" aria-hidden="true">🪖</span>Agniveer</a>
-<a class="mega-tile" href="https://the-shiva.onrender.com/courses"><span class="mega-tile-ico" aria-hidden="true">🎖️</span>NDA</a>
-<a class="mega-tile" href="https://the-shiva.onrender.com/courses"><span class="mega-tile-ico" aria-hidden="true">🍎</span>CTET</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">SSC CGL</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">SSC CHSL</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">RRB NTPC</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">Railway Group D</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">IBPS PO</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">SBI Clerk</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">Agniveer</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">NDA</a>
+<a class="mega-tile" href="https://the-shiva.onrender.com/courses">CTET</a>
 </div>
 <div class="mega-foot"><a href="https://the-shiva.onrender.com/batches">All Batches →</a><a href="https://the-shiva.onrender.com/teachers">Our Faculty →</a><a href="https://the-shiva.onrender.com/courses">View All Courses →</a></div>
 </div>
@@ -433,41 +568,64 @@ header{box-shadow:0 6px 24px rgba(42,22,80,.08)}
 </nav>
 <div class="nav-cta"><a href="https://the-shiva.onrender.com/login" class="btn-login">Login</a><a href="https://the-shiva.onrender.com/register" class="btn-register">Register</a></div>
 </div></header>
-<div class="promo-banner"><div class="promo-in">
-<div class="promo-txt">
-<span class="promo-kicker">HAR STUDENT KE LIYE &bull; BILKUL MUFT</span>
-<h2>Aptitude Foundation &mdash; Muft Course Ke Saath Shuruaat Karo</h2>
-<p>SSC, Banking, Railway aur sarkari exams ki taiyaari ke liye &mdash; pehla kadam bilkul free.</p>
-<div class="promo-ticks"><span>Recorded Lectures</span><span>Free Mock Tests</span><span>Doubt Support</span></div>
-</div>
-<a class="promo-cta" href="courses.html">Course Dekho &rarr;</a>
-</div></div>
-
 <div class="mmenu" id="mmenu">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-<span style="font-weight:900;font-size:20px;display:flex;align-items:center;gap:8px"><img src="logo.jpeg" style="width:32px;height:32px;border-radius:50%;object-fit:cover" alt=""> THE SHIVA</span>
+<span style="font-weight:900;font-size:20px;display:flex;align-items:center;gap:8px"><img src="favicon.svg" alt="" style="width:32px;height:32px;border-radius:9px"> THE SHIVA</span>
 <button aria-label="Menu band karo" onclick="document.getElementById('mmenu').classList.remove('open')" style="font-size:24px;background:none;border:none;cursor:pointer">✕</button>
 </div>
-<a class="mlink" href="index.html">🏠 Home</a>
-<a class="mlink" href="courses.html">📚 Courses</a>
-<a class="mlink" href="batches.html">🎯 Batches</a>
-<a class="mlink" href="faculty.html">👨‍🏫 Faculty</a>
-<a class="mlink" href="results.html">🏆 Results</a>
-<a class="mlink" href="scholarship.html">🎓 Scholarship</a>
+<a class="mlink" href="index.html">Home</a>
+<a class="mlink" href="courses.html">Courses</a>
+<a class="mlink" href="batches.html">Batches</a>
+<a class="mlink" href="faculty.html">Faculty</a>
+<a class="mlink" href="results.html">Results</a>
+<a class="mlink" href="scholarship.html">Scholarship</a>
 <p style="font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:18px 0 4px">Exam Categories</p>
-<a class="mlink" href="https://the-shiva.onrender.com/courses">🏛️ SSC Exams</a>
-<a class="mlink" href="https://the-shiva.onrender.com/courses">🚂 Railway Exams</a>
-<a class="mlink" href="https://the-shiva.onrender.com/courses">🏦 Banking Exams</a>
-<a class="mlink" href="https://the-shiva.onrender.com/courses">🛡️ Defence Exams</a>
-<a class="mlink" href="https://the-shiva.onrender.com/courses">🎓 Teaching Exams</a>
-<a class="mlink" href="https://the-shiva.onrender.com/courses">🗺️ State Exams</a>
-<a class="mlink" href="https://the-shiva.onrender.com/contact">✉️ Contact</a>
+<a class="mlink" href="https://the-shiva.onrender.com/courses">SSC Exams</a>
+<a class="mlink" href="https://the-shiva.onrender.com/courses">Railway Exams</a>
+<a class="mlink" href="https://the-shiva.onrender.com/courses">Banking Exams</a>
+<a class="mlink" href="https://the-shiva.onrender.com/courses">Defence Exams</a>
+<a class="mlink" href="https://the-shiva.onrender.com/courses">Teaching Exams</a>
+<a class="mlink" href="https://the-shiva.onrender.com/courses">State Exams</a>
+<a class="mlink" href="https://the-shiva.onrender.com/contact">Contact</a>
 <a href="https://the-shiva.onrender.com/login" style="display:block;background:var(--deep);color:#fff;text-align:center;padding:16px;border-radius:12px;margin-top:24px;font-weight:700">Login</a>
 <a href="https://the-shiva.onrender.com/register" style="display:block;background:var(--brand);color:#fff;text-align:center;padding:16px;border-radius:12px;margin-top:10px;font-weight:700">Register — Join Free</a>
 </div>
 
 
-<!-- CATEGORY ICONS STRIP — gol circular tiles, hero se pehle -->
+<!-- HERO — PW pattern: halka hero, bada extra-bold H1 (violet accent), search, trust stats -->
+<div class="hero5"><div class="hero5-in">
+<div class="hero5-main">
+<span class="hero5-kick">SSC • RAILWAY • BANKING • DEFENCE • TEACHING</span>
+<h1>Your Dream Exams,<br><span class="v">Our Mission.</span></h1>
+<p class="hero5-sub">Sarkari exams ki taiyaari — structured video lectures, practice tests aur doubt support ke saath. Shuruaat bilkul free Aptitude Foundation course se karo.</p>
+<form class="hero-search" action="https://the-shiva.onrender.com/batches" method="get" role="search">
+<input type="search" name="q" placeholder="Search batches, courses, exams…" aria-label="Batches aur courses search karo">
+<button type="submit">Search</button>
+</form>
+<div class="pop-search"><span class="lbl">Popular:</span><a href="https://the-shiva.onrender.com/courses">SSC CGL</a><a href="https://the-shiva.onrender.com/courses">Railway NTPC</a><a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free">Aptitude Foundation</a><a href="https://the-shiva.onrender.com/batches">Live Batches</a></div>
+<div class="hero5-cta"><a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" class="btn btn-black" style="font-size:16px;padding:14px 30px">Free Course Se Shuru Karo →</a><a href="batches.html" class="btn btn-ghost" style="font-size:16px;padding:13px 26px">Batches Dekho</a></div>
+<div class="hero5-price"><b>FREE</b><s>₹999</s><span class="off-chip">100% OFF</span><span>Aptitude Foundation Course ke liye</span></div>
+</div>
+<aside class="hv-card" aria-label="Aptitude Foundation — Free Course">
+<div class="hv-banner"><span class="hv-tag">LIVE • 100% FREE</span><div class="hv-title">APTITUDE FOUNDATION</div><div class="hv-sub">Complete Free Course • Har Exam Ki Neev</div></div>
+<div class="hv-body">
+<div class="hv-topics"><span>Number System</span><span>Percentage</span><span>Ratio &amp; Proportion</span><span>Average</span><span>Time &amp; Work</span><span>Interest</span><span>Data Interpretation</span></div>
+<div class="price"><b class="free">FREE</b><s>₹999</s><span class="off-chip">100% OFF</span></div>
+<a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" class="btn btn-black btn-block">Register Now →</a>
+</div>
+</aside>
+</div>
+<div class="wrap"><div class="hero5-stats">
+<div><b>6</b><span>Published Courses</span></div>
+<div><b>100% Free</b><span>Starter Course</span></div>
+<div><b>Hindi + English</b><span>Bilingual Content</span></div>
+<div><b>24×7</b><span>Kabhi Bhi Padho</span></div>
+</div></div>
+</div>
+
+<div class="exam-strip" aria-hidden="true"><div class="in"><span>SSC</span><i>✦</i><span>RAILWAY</span><i>✦</i><span>BANKING</span><i>✦</i><span>DEFENCE</span><i>✦</i><span>TEACHING</span><i>✦</i><span>FOUNDATION</span></div></div>
+
+<!-- CATEGORY SHORTCUTS — hero ke baad (PW pattern) -->
 <div class="cat-strip-wrap"><div class="cat-strip" role="navigation" aria-label="Exam categories">
 <a class="cat-tile" href="https://the-shiva.onrender.com/courses"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5L12 4l9 5.5M4.5 9.5V18M9.5 9.5V18M14.5 9.5V18M19.5 9.5V18M2.5 20.5h19"/></svg></span><b>SSC</b><span>CGL · CHSL · MTS</span></a>
 <a class="cat-tile" href="https://the-shiva.onrender.com/courses"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="13" rx="2.5"/><path d="M5 10.5h14M9 20.5l-1.5-4M15 20.5l1.5-4"/><circle cx="9" cy="13.8" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="13.8" r="1" fill="currentColor" stroke="none"/></svg></span><b>Railway</b><span>NTPC · Group D</span></a>
@@ -476,56 +634,18 @@ header{box-shadow:0 6px 24px rgba(42,22,80,.08)}
 <a class="cat-tile" href="https://the-shiva.onrender.com/courses"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></span><b>Teaching</b><span>CTET · UPTET · STET</span></a>
 <a class="cat-tile" href="https://the-shiva.onrender.com/courses"><span class="circ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.4-6.5-10.4A6.5 6.5 0 0 1 12 4a6.5 6.5 0 0 1 6.5 6.6C18.5 15.6 12 21 12 21z"/><circle cx="12" cy="10.4" r="2.3"/></svg></span><b>State Exams</b><span>UPSSSC · Lekhpal</span></a>
 </div></div>
-<!-- HERO -->
-<div class="hero"><div class="hero-in">
-<div>
-<span class="kicker">🎯 FOCUSED PREPARATION — SSC CGL 2026</span>
-<h1>Your Dream Exams.<br><span class="gold">Our Mission.</span></h1>
-<p class="sub">SSC, Railway, Banking, Defence aur Teaching exams ki taiyaari — structured video lectures, practice tests aur doubt support ke saath. Shuruaat bilkul free course se karo.</p>
-<ul>
-<li>Complete video lectures — topic by topic</li>
-<li><b>FREE</b> Aptitude Foundation Course included</li>
-<li>Practice tests &amp; previous year papers</li>
-<li>Doubt solving support</li>
-</ul>
-<form class="hero-search" action="https://the-shiva.onrender.com/batches" method="get" role="search">
-<input type="search" name="q" placeholder="Search batches, courses, exams…" aria-label="Batches aur courses search karo">
-<button type="submit">Search</button>
-</form>
-<div class="pop-search"><span class="lbl">Popular:</span><a href="https://the-shiva.onrender.com/courses">SSC CGL</a><a href="https://the-shiva.onrender.com/courses">Railway NTPC</a><a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free">Aptitude Foundation</a><a href="https://the-shiva.onrender.com/batches">Live Batches</a></div>
-<div class="price-row"><span class="price-new">FREE</span><span class="price-old">₹999</span><span class="off-chip">100% OFF</span><span style="font-size:13px;opacity:.85">Aptitude Foundation ke liye</span></div>
-<a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" class="btn btn-black" style="font-size:16px;padding:14px 32px">Free Course Se Shuru Karo →</a>
-</div>
-<div class="hero-card">
-<span class="chat">Sir, THE SHIVA kya hai? 🤔</span>
-<div class="duo">
-<div class="person"><img src="images/hero-student.png" alt="Student"><span>Har student ke liye<br>affordable padhai</span></div>
-<div class="person"><img src="images/teacher-1.png" alt="Teacher"><span>Padho dil se,<br>mehnat rang layegi 🎯</span></div>
-</div>
-</div>
-</div></div>
-
-<div class="wave-div" style="background:#fff" aria-hidden="true"><svg viewBox="0 0 1440 56" preserveAspectRatio="none" style="width:100%;height:42px;display:block"><defs><linearGradient id="gw" x1="0" x2="1"><stop offset="0" stop-color="#2a1650"/><stop offset=".6" stop-color="#4c1d95"/><stop offset="1" stop-color="#6d28d9"/></linearGradient></defs><path d="M0,0 L1440,0 L1440,14 C1150,50 900,56 620,38 C380,23 160,30 0,44 Z" fill="url(#gw)"/></svg></div>
-<div class="exam-strip" aria-hidden="true"><div class="in"><span>SSC</span><i>✦</i><span>RAILWAY</span><i>✦</i><span>BANKING</span><i>✦</i><span>DEFENCE</span><i>✦</i><span>TEACHING</span><i>✦</i><span>FOUNDATION</span></div></div>
-<!-- TRUST STRIP -->
-<div class="trust-strip"><div class="wrap"><div class="trust-grid">
-<div class="tstat"><div class="ic">📡</div><b>Live Classes</b><span>Interactive live sessions</span></div>
-<div class="tstat"><div class="ic">🎬</div><b>Recorded Lectures</b><span>Kabhi bhi dekho, revision karo</span></div>
-<div class="tstat"><div class="ic">📝</div><b>Mock Tests</b><span>Exam-pattern practice tests</span></div>
-<div class="tstat"><div class="ic">❓</div><b>Doubt Support</b><span>Sawalon ke liye support</span></div>
-</div></div></div>
 
 <!-- CATEGORIES -->
 <section style="padding-top:44px"><div class="wrap">
 <div class="sec-head"><span class="kick">Explore</span><h2>Exam Categories</h2><p>Apna exam chuno aur taiyaari shuru karo</p></div>
-<div class="cat-grid">
-<div class="cat-card" style="border-left-color:#f59e0b"><div><h3>SSC</h3><div class="pills"><span>CGL</span><span>CHSL</span><span>MTS</span><span>GD</span></div><a href="courses.html" class="explore">Explore Category</a></div><div class="cat-ill">🏛️</div></div>
-<div class="cat-card" style="border-left-color:#8b5cf6"><div><h3>Railway</h3><div class="pills"><span>NTPC</span><span>Group D</span><span>ALP</span></div><a href="courses.html" class="explore">Explore Category</a></div><div class="cat-ill">🚂</div></div>
-<div class="cat-card" style="border-left-color:#6d28d9"><div><h3>Banking</h3><div class="pills"><span>PO</span><span>Clerk</span><span>SO</span></div><a href="courses.html" class="explore">Explore Category</a></div><div class="cat-ill">🏦</div></div>
-<div class="cat-card" style="border-left-color:#8b5cf6"><div><h3>Defence</h3><div class="pills"><span>NDA</span><span>CDS</span><span>AFCAT</span></div><a href="courses.html" class="explore">Explore Category</a></div><div class="cat-ill">🛡️</div></div>
-<div class="cat-card" style="border-left-color:#a78bfa"><div><h3>Teaching</h3><div class="pills"><span>CTET</span><span>STET</span><span>UPTET</span></div><a href="courses.html" class="explore">Explore Category</a></div><div class="cat-ill">🎓</div></div>
-<div class="cat-card" style="border-left-color:#0ea5e9"><div><h3>State Exams</h3><div class="pills"><span>UPSSSC</span><span>Lekhpal</span><span>Police</span></div><a href="courses.html" class="explore">Explore Category</a></div><div class="cat-ill">🗺️</div></div>
-<div class="cat-card" style="border-left-color:var(--gold)"><div><h3>Foundation</h3><div class="pills"><span>Aptitude</span><span>Maths</span><span>Reasoning</span></div><a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" class="explore">Free Course Dekho</a></div><div class="cat-ill">📐</div></div>
+<div class="cat5-grid">
+<a class="cat5" style="--t:#fef3c7" href="courses.html"><span class="cat5-ic" style="color:#b45309"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5L12 4l9 5.5M4.5 9.5V18M9.5 9.5V18M14.5 9.5V18M19.5 9.5V18M2.5 20.5h19"/></svg></span><span class="cat5-tx"><b>SSC</b><span>CGL · CHSL · MTS · GD</span></span><span class="cat5-go">Explore →</span></a>
+<a class="cat5" style="--t:#ede9fe" href="courses.html"><span class="cat5-ic" style="color:#6d28d9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="13" rx="2.5"/><path d="M5 10.5h14M9 20.5l-1.5-4M15 20.5l1.5-4"/><circle cx="9" cy="13.8" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="13.8" r="1" fill="currentColor" stroke="none"/></svg></span><span class="cat5-tx"><b>Railway</b><span>NTPC · Group D · ALP</span></span><span class="cat5-go">Explore →</span></a>
+<a class="cat5" style="--t:#dbeafe" href="courses.html"><span class="cat5-ic" style="color:#1d4ed8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6.5" rx="7.5" ry="3"/><path d="M4.5 6.5v11c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-11M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></svg></span><span class="cat5-tx"><b>Banking</b><span>PO · Clerk · SO</span></span><span class="cat5-go">Explore →</span></a>
+<a class="cat5" style="--t:#dcfce7" href="courses.html"><span class="cat5-ic" style="color:#15803d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3v5.5c0 4.5-3.2 7.7-7.5 9.5-4.3-1.8-7.5-5-7.5-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span><span class="cat5-tx"><b>Defence</b><span>NDA · CDS · AFCAT</span></span><span class="cat5-go">Explore →</span></a>
+<a class="cat5" style="--t:#fce7f3" href="courses.html"><span class="cat5-ic" style="color:#be185d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></span><span class="cat5-tx"><b>Teaching</b><span>CTET · STET · UPTET</span></span><span class="cat5-go">Explore →</span></a>
+<a class="cat5" style="--t:#e0f2fe" href="courses.html"><span class="cat5-ic" style="color:#0369a1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.4-6.5-10.4A6.5 6.5 0 0 1 12 4a6.5 6.5 0 0 1 6.5 6.6C18.5 15.6 12 21 12 21z"/><circle cx="12" cy="10.4" r="2.3"/></svg></span><span class="cat5-tx"><b>State Exams</b><span>UPSSSC · Lekhpal · Police</span></span><span class="cat5-go">Explore →</span></a>
+<a class="cat5 cat5-wide" style="--t:#fef9c3" href="https://the-shiva.onrender.com/courses/aptitude-foundation-free"><span class="cat5-ic" style="color:#a16207"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span><span class="cat5-tx"><b>Foundation — Aptitude Ki Neev</b><span>Maths · Reasoning · Har exam ki shuruaat yahin se</span></span><span class="off-chip">100% FREE</span><span class="cat5-go">Free Course →</span></a>
 </div>
 </div></section>
 
@@ -533,29 +653,37 @@ header{box-shadow:0 6px 24px rgba(42,22,80,.08)}
 <section style="background:#fff;border-top:1px solid #f3f0ff;border-bottom:1px solid #f3f0ff"><div class="wrap">
 <div class="sec-head"><span class="kick">Batches</span><h2>Live &amp; Upcoming Batches</h2><p>Ek free batch live hai — baaki jald launch ho rahe hain</p></div>
 <div class="batch-grid">
-<div class="batch feat-batch">
-<div class="banner" style="background:linear-gradient(135deg,#059669,#10b981)"><span class="tag" style="background:#fff;color:#059669">⭐ FEATURED COURSE • 100% FREE • LIVE</span><h3>APTITUDE FOUNDATION — FREE COURSE</h3><p>Complete Free Course • 8 Weeks • Har Exam Ki Neev</p></div>
-<div class="feat-body">
-<div class="feat-main">
-<p class="feat-desc">Number System se Data Interpretation tak — har competitive exam (SSC, Railway, Banking) ki maths neev, topic-by-topic video lectures ke saath. Yehi THE SHIVA ka live flagship course hai.</p>
+<div class="b5 b5-wide">
+<div class="b5-banner" style="background:linear-gradient(120deg,#059669,#10b981)"><span class="b5-tag">FEATURED • LIVE • 100% FREE</span><div class="b5-btitle">APTITUDE FOUNDATION — FREE COURSE</div><div class="b5-bsub">8 Weeks • Har Exam Ki Neev • Recorded Lectures</div><a class="b5-eye" href="courses.html" aria-label="Course details dekho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div class="b5-body">
+<div class="pills"><span>Hindi + English</span><span>SSC • Railway • Banking</span><span>Beginner Friendly</span></div>
+<h3>Aptitude Foundation — Free Course</h3>
+<p class="b5-aud">Number System se Data Interpretation tak — har competitive exam (SSC, Railway, Banking) ki maths neev, topic-by-topic video lectures ke saath. Yehi THE SHIVA ka live flagship course hai.</p>
 <div class="topic-chips"><span>Number System</span><span>Percentage</span><span>Ratio &amp; Proportion</span><span>Average</span><span>Time, Speed &amp; Distance</span><span>Time &amp; Work</span><span>Interest</span><span>Data Interpretation</span></div>
-<div class="feats">🎯 SSC • Railway • Banking — teeno exams ke liye upyogi</div>
-</div>
-<div class="feat-side">
-<div class="inc">Complete video lectures — topic by topic</div>
-<div class="inc">Practice questions har topic par</div>
-<div class="inc">Doubt solving support</div>
-<div class="inc">Completion certificate</div>
+<ul class="b5-feats"><li>Complete video lectures — topic by topic</li><li>Practice questions har topic par</li><li>Doubt solving support</li><li>Completion certificate</li></ul>
 <div class="price"><b class="free">FREE</b><s>₹999</s><span class="off-chip">100% OFF</span></div>
 <a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" class="btn btn-black btn-block">Register Now →</a>
-</div>
-</div>
-</div>
-<div class="batch">
-<div class="banner" style="background:linear-gradient(135deg,var(--brand),#8b5cf6)"><span class="tag" style="background:rgba(255,255,255,.25);color:#fff">COMING SOON</span><h3>SSC RANKER BATCH</h3><p>Complete CGL Preparation</p></div>
-<div class="body"><div class="feats">✓ Live Classes &nbsp;✓ Mock Tests &nbsp;✓ Doubt Solving</div>
-<div class="row"><span class="price-note">Launching Soon</span><button class="btn btn-ghost" onclick="notifyBatch(this)">Notify Me</button></div></div>
-</div>
+</div></div>
+<div class="b5">
+<div class="b5-banner" style="background:linear-gradient(120deg,var(--brand),#8b5cf6)"><span class="b5-tag soon">COMING SOON</span><div class="b5-btitle">SSC RANKER BATCH</div><div class="b5-bsub">Complete CGL Preparation</div><a class="b5-eye" href="batches.html" aria-label="Batch details dekho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div class="b5-body">
+<div class="pills"><span>SSC CGL</span><span>Live Classes</span></div>
+<h3>SSC Ranker Batch</h3>
+<p class="b5-aud">Quant, Reasoning, English aur General Awareness — SSC CGL ki complete taiyaari.</p>
+<ul class="b5-feats"><li>Live classes (launch par)</li><li>Mock tests &amp; PYQs</li><li>Doubt solving sessions</li></ul>
+<div class="price"><b class="soon">Launching Soon</b></div>
+<button class="btn btn-ghost btn-block" onclick="notifyBatch(this)">Notify Me</button>
+</div></div>
+<div class="b5">
+<div class="b5-banner" style="background:linear-gradient(120deg,#b45309,var(--gold))"><span class="b5-tag soon">COMING SOON</span><div class="b5-btitle">RAILWAY NTPC BATCH</div><div class="b5-bsub">NTPC • Group D • ALP</div><a class="b5-eye" href="batches.html" aria-label="Batch details dekho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div class="b5-body">
+<div class="pills"><span>Railway</span><span>NTPC • Group D</span></div>
+<h3>Railway NTPC Batch</h3>
+<p class="b5-aud">Railway NTPC ki full taiyaari — video lectures, practice tests aur study material ke saath.</p>
+<ul class="b5-feats"><li>Video lectures (launch par)</li><li>Practice tests</li><li>Study material</li></ul>
+<div class="price"><b class="soon">Launching Soon</b></div>
+<button class="btn btn-ghost btn-block" onclick="notifyBatch(this)">Notify Me</button>
+</div></div>
 </div>
 <p style="text-align:center;margin-top:20px"><a href="batches.html" class="explore">Saare batches dekho</a></p>
 </div></section>
@@ -564,16 +692,10 @@ header{box-shadow:0 6px 24px rgba(42,22,80,.08)}
 <section><div class="wrap">
 <div class="sec-head"><span class="kick">Kyun THE SHIVA?</span><h2>A Platform You Can Trust</h2><p>Honest commitment, no false promises — jo hai, wahi dikhate hain</p></div>
 <div class="why-grid">
-<div class="feat-card"><div class="ico">🎥</div><b>Structured Lectures</b><p>Har topic step-by-step video lectures me — basics se exam level tak.</p></div>
-<div class="feat-card"><div class="ico">📝</div><b>Practice &amp; Tests</b><p>Topic-wise practice questions aur exam-pattern mock tests.</p></div>
-<div class="feat-card"><div class="ico">❓</div><b>Doubt Support</b><p>Atke hue sawalon ke liye doubt solving support sessions.</p></div>
-<div class="feat-card"><div class="ico">💛</div><b>Sabke Liye Affordable</b><p>Shuruaat 100% free course se — paisa kabhi padhai ki rukawat nahi.</p></div>
-</div>
-<div class="pgrid">
-<div class="pcard" style="background:#fef3c7"><b>100% Free</b><span>Starter Course</span></div>
-<div class="pcard" style="background:#f5f3ff"><b>6 Exam</b><span>Categories</span></div>
-<div class="pcard" style="background:#ede9fe"><b>Hindi + English</b><span>Bilingual Content</span></div>
-<div class="pcard" style="background:#ede9fe"><b>24×7</b><span>Learn Anytime</span></div>
+<div class="feat-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5z" fill="currentColor" stroke="none"/></svg></div><b>Structured Lectures</b><p>Har topic step-by-step video lectures me — basics se exam level tak.</p></div>
+<div class="feat-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M9 12l2 2 4-4.5"/></svg></div><b>Practice &amp; Tests</b><p>Topic-wise practice questions aur exam-pattern mock tests.</p></div>
+<div class="feat-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H4l2.3-2.9A8 8 0 1 1 21 12z"/><path d="M12 8v.2M12 11.5c0 1.5-2 1.6-2 3" stroke-width="1.9"/></svg></div><b>Doubt Support</b><p>Atke hue sawalon ke liye doubt solving support sessions.</p></div>
+<div class="feat-card"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5C7 16.5 3.5 13.2 3.5 9.3A4.6 4.6 0 0 1 12 6.7a4.6 4.6 0 0 1 8.5 2.6c0 3.9-3.5 7.2-8.5 11.2z"/></svg></div><b>Sabke Liye Affordable</b><p>Shuruaat 100% free course se — paisa kabhi padhai ki rukawat nahi.</p></div>
 </div>
 </div></section>
 
@@ -581,10 +703,10 @@ header{box-shadow:0 6px 24px rgba(42,22,80,.08)}
 <section style="background:#fff;border-top:1px solid #f3f0ff"><div class="wrap">
 <div class="sec-head"><span class="kick">Faculty</span><h2>Subject Experts Ke Saath Padho</h2><p>THE SHIVA ka faculty panel verified profiles ke saath ban raha hai — har teacher ki asli profile <a href="faculty.html" style="color:var(--brand);font-weight:700">Faculty page</a> par milegi. Abhi ye subjects padhaye jate hain:</p></div>
 <div class="teaser-grid">
-<div class="teaser-card"><div class="tico">📐</div><b>Quantitative Aptitude</b><p>Maths ki neev — basics se exam-level shortcuts tak</p></div>
-<div class="teaser-card"><div class="tico">🧩</div><b>Reasoning</b><p>Pattern-based solving — analogy, series, puzzles</p></div>
-<div class="teaser-card"><div class="tico">🔤</div><b>English</b><p>Grammar, vocabulary aur comprehension practice</p></div>
-<div class="teaser-card"><div class="tico">🌍</div><b>General Awareness</b><p>History, Polity, Geography, Science, Current Affairs</p></div>
+<div class="teaser-card"><div class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 5H7l6.5 7L7 19h10.5"/></svg></div><b>Quantitative Aptitude</b><p>Maths ki neev — basics se exam-level shortcuts tak</p></div>
+<div class="teaser-card"><div class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3.4"/><circle cx="16" cy="16" r="3.4"/><path d="M10.4 10.4l3.2 3.2"/></svg></div><b>Reasoning</b><p>Pattern-based solving — analogy, series, puzzles</p></div>
+<div class="teaser-card"><div class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></div><b>English</b><p>Grammar, vocabulary aur comprehension practice</p></div>
+<div class="teaser-card"><div class="tico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.3 3.8 5.2 3.8 8.5s-1.3 6.2-3.8 8.5c-2.5-2.3-3.8-5.2-3.8-8.5S9.5 5.8 12 3.5z"/></svg></div><b>General Awareness</b><p>History, Polity, Geography, Science, Current Affairs</p></div>
 </div>
 <p style="text-align:center;margin-top:22px"><a href="https://the-shiva.onrender.com/teachers" class="btn btn-brand">Platform Par Teachers Dekho →</a></p>
 </div></section>
@@ -592,7 +714,7 @@ header{box-shadow:0 6px 24px rgba(42,22,80,.08)}
 <!-- SCHOLARSHIP STRIP -->
 <section style="padding-top:44px;padding-bottom:0"><div class="wrap">
 <div class="scholar-strip">
-<div class="sic" aria-hidden="true">🎓</div>
+<div class="sic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4L2.5 8.5 12 13l9.5-4.5z"/><path d="M6 10.8V15c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.2M21.5 8.5V14"/></svg></div>
 <div><h3>Scholarship Program — Jald Aa Raha Hai</h3><p>Deserving students ke liye aarthik madad ka program design ho raha hai — koi jhoothi rakam ya date nahi, details pakki hote hi yahin milegi. Tab tak 100% free course sabke liye live hai.</p></div>
 <a href="scholarship.html" class="btn btn-black">Scholarship Jaano →</a>
 </div>
@@ -601,16 +723,21 @@ header{box-shadow:0 6px 24px rgba(42,22,80,.08)}
 <!-- RESULTS (honest) -->
 <section style="background:#fff;border-top:1px solid #f3f0ff"><div class="wrap">
 <div class="sec-head"><span class="kick">Results</span><h2>Results — Sach Ke Saath</h2><p>Hum nakli toppers ya bade-bade daave nahi dikhate</p></div>
-<div class="honest-box">🎯 Hamara pehla batch chal raha hai — students ki <b>asli</b> success stories yahin publish hongi, results aate hi.<br><b>Your name could be next — mehnat se.</b><br><a href="results.html" class="explore" style="display:inline-block;margin-top:10px">Results page dekho</a></div>
+<div class="result5">
+<span class="cs-ic" style="background:#f5f3ff;color:var(--brand)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 4h9v4.5a4.5 4.5 0 0 1-9 0z"/><path d="M7.5 5.5H4.8a2.7 2.7 0 0 0 2.9 3.7M16.5 5.5h2.7a2.7 2.7 0 0 1-2.9 3.7M12 13v3.5M8.5 20h7M12 16.5V20"/></svg></span>
+<h3 style="font-size:20px;color:var(--deep);margin-bottom:8px">Pehla Batch Chal Raha Hai</h3>
+<p style="font-size:14.5px;color:var(--muted)">Hamara pehla batch chal raha hai — students ki <b style="color:var(--deep)">asli</b> success stories yahin publish hongi, results aate hi.<br><b style="color:var(--deep)">Your name could be next — mehnat se.</b></p>
+<a href="results.html" class="explore" style="display:inline-block;margin-top:12px">Results page dekho</a>
+</div>
 </div></section>
 
 <!-- STUDY RESOURCES -->
 <section><div class="wrap">
 <div class="sec-head"><span class="kick">Resources</span><h2>Study Resources</h2><p>Free learning material — dheere-dheere aur jud raha hai</p></div>
-<div class="res-scroll">
-<div class="res-card" style="background:#ede9fe"><h3>Previous Year Papers</h3><p>SSC, Railway, Banking ke pichle saalon ke papers with solutions</p><div class="big">📄</div><button class="btn" style="background:var(--deep);color:#fff;padding:9px 20px;font-size:13.5px" onclick="resSoon(this)">Explore</button></div>
-<div class="res-card" style="background:#fef3c7"><h3>Formula Sheets</h3><p>Quick revision ke liye important formulas ek jagah</p><div class="big">📐</div><button class="btn" style="background:var(--deep);color:#fff;padding:9px 20px;font-size:13.5px" onclick="resSoon(this)">Explore</button></div>
-<div class="res-card" style="background:#f5f3ff"><h3>Mock Tests</h3><p>Exam pattern par based practice mock tests</p><div class="big">⏱️</div><button class="btn" style="background:var(--deep);color:#fff;padding:9px 20px;font-size:13.5px" onclick="resSoon(this)">Explore</button></div>
+<div class="res5">
+<div class="res5-card"><div class="res5-ic" style="background:#ede9fe;color:var(--brand-dark)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></div><h3>Previous Year Papers</h3><p>SSC, Railway, Banking ke pichle saalon ke papers with solutions</p><button class="btn btn-ghost" style="padding:9px 20px;font-size:13.5px" onclick="resSoon(this)">Explore</button></div>
+<div class="res5-card"><div class="res5-ic" style="background:#fef3c7;color:#b45309"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 5H7l6.5 7L7 19h10.5"/></svg></div><h3>Formula Sheets</h3><p>Quick revision ke liye important formulas ek jagah</p><button class="btn btn-ghost" style="padding:9px 20px;font-size:13.5px" onclick="resSoon(this)">Explore</button></div>
+<div class="res5-card"><div class="res5-ic" style="background:#f5f3ff;color:var(--brand)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></div><h3>Mock Tests</h3><p>Exam pattern par based practice mock tests</p><button class="btn btn-ghost" style="padding:9px 20px;font-size:13.5px" onclick="resSoon(this)">Explore</button></div>
 </div>
 </div></section>
 
@@ -632,52 +759,50 @@ header{box-shadow:0 6px 24px rgba(42,22,80,.08)}
 <div>
 <h2>THE SHIVA App — Jald Aa Raha Hai!</h2>
 <ul><li>Video lectures kabhi bhi, kahin bhi</li><li>Apni progress track karo</li><li>Practice questions on the go</li></ul>
-<div class="stores"><div onclick="appSoon(this)">▶ Google Play</div><div onclick="appSoon(this)">🍎 App Store</div></div>
+<div class="stores"><div onclick="appSoon(this)">Google Play · Jald Aa Raha Hai</div><div onclick="appSoon(this)">App Store · Jald Aa Raha Hai</div></div>
 <p style="font-size:13px;opacity:.85;margin-top:12px">Tab tak website par hi saari padhai available hai.</p>
 </div>
-<img src="images/app-phone.png" alt="THE SHIVA App preview">
+<div class="phone5"><img src="images/app-phone.png" alt="THE SHIVA App preview" loading="lazy"></div>
 </div>
 <div class="counsel-strip">
-<p style="font-size:26px;margin-bottom:4px">🤔</p>
+<span class="cs-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="2.8" y="13" width="4.2" height="6.5" rx="2"/><rect x="17" y="13" width="4.2" height="6.5" rx="2"/><path d="M19.5 19.5c0 1.7-1.6 2.5-4 2.5h-2"/></svg></span>
 <h2>Abhi bhi confused ho?</h2>
 <p>Hamare counsellor se FREE me baat karo — sahi exam, sahi batch, sahi plan — ya <a href="https://the-shiva.onrender.com/contact" style="color:#fff;text-decoration:underline;font-weight:700">Contact page</a> par message bhejo.</p>
 <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-<button onclick="openCpopup()" style="background:#fff;color:var(--brand);font-weight:700;padding:12px 22px;border-radius:12px;border:none;font-size:15px;cursor:pointer">🎧 Counsellor se baat karo</button>
-<a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" style="background:rgba(255,255,255,.16);color:#fff;font-weight:700;padding:11px 22px;border-radius:12px;font-size:15px;border:1.5px solid rgba(255,255,255,.6)">🚀 Free Course</a>
+<button onclick="openCpopup()" style="background:#fff;color:var(--brand);font-weight:700;padding:12px 22px;border-radius:12px;border:none;font-size:15px;cursor:pointer">Counsellor se baat karo</button>
+<a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" style="background:rgba(255,255,255,.16);color:#fff;font-weight:700;padding:11px 22px;border-radius:12px;font-size:15px;border:1.5px solid rgba(255,255,255,.6)">Free Course</a>
 </div>
 </div>
 </div></section>
 
-<footer><div class="wrap">
-<div class="fbrand">
+<footer class="ft5"><div class="wrap">
+<div class="ft5-top">
 <div>
-<div style="display:flex;align-items:center;gap:10px"><span style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--brand),var(--brand-dark));display:flex;align-items:center;justify-content:center;font-size:20px">🔱</span><b style="color:#fff;font-size:18px">THE SHIVA</b></div>
-<p class="fbrand-desc">Dream • Prepare • Achieve<br>Bharat ka affordable learning platform — SSC, Railway, Banking, Defence, Teaching aur State exams ke liye.</p>
-<div id="socRow" style="display:flex;gap:10px;margin-top:14px">
-<span onclick="socSoon(this)" title="Facebook" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer">📘</span>
-<span onclick="socSoon(this)" title="Instagram" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer">📸</span>
-<span onclick="socSoon(this)" title="X" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer">🐦</span>
-<span onclick="socSoon(this)" title="YouTube" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer">📺</span>
+<img src="logo.jpeg" alt="THE SHIVA — Learning Platform" class="ft5-logoimg">
+<p class="ft5-desc">Dream • Prepare • Achieve<br>Bharat ka affordable learning platform — SSC, Railway, Banking, Defence, Teaching aur State exams ke liye.</p>
+<div class="ft5-social" id="socRow"><button type="button" onclick="socSoon5(this)" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8.2V6.8c0-.8.5-1 .9-1H17V2.5h-2.9C11.2 2.5 10 4.4 10 6.5v1.7H7.5V12H10v9.5h4V12h2.7l.4-3.8z"/></svg></button><button type="button" onclick="socSoon5(this)" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg></button><button type="button" onclick="socSoon5(this)" aria-label="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 3.5h3.4l4.3 5.9 5-5.9h3.8l-6.9 8.1 7.2 8.9h-3.4l-4.7-6.4-5.5 6.4H3.4l7.4-8.6z"/></svg></button><button type="button" onclick="socSoon5(this)" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 8.2c-.2-1.4-1-2.2-2.4-2.4C16.5 5.5 12 5.5 12 5.5s-4.5 0-6.6.3C4 6 3.2 6.8 3 8.2 2.7 10.3 2.7 13.8 3 15.8c.2 1.4 1 2.2 2.4 2.4 2.1.3 6.6.3 6.6.3s4.5 0 6.6-.3c1.4-.2 2.2-1 2.4-2.4.3-2 .3-5.5 0-7.6zM10 15.3V8.7l5.2 3.3z"/></svg></button></div>
+<p class="ft5-note">Social pages jald launch honge — koi nakli link nahi.</p>
 </div>
-<p style="font-size:12px;margin-top:8px">Social pages jald launch honge — koi nakli link nahi.</p>
+<div class="ft5-help"><b>Sawaal hai?</b><a href="https://the-shiva.onrender.com/contact">Contact page par message bhejo →</a><br><button type="button" class="ft5-cb" onclick="openCpopup()">Talk to a Counsellor</button></div>
 </div>
-<p class="fbrand-help">🤔 <b style="color:#fff">Sawaal hai?</b><br><a href="https://the-shiva.onrender.com/contact" style="color:var(--gold);font-weight:700">Contact page par message bhejo →</a><br><span onclick="openCpopup()" style="display:inline-block;color:var(--gold);font-size:13.5px;font-weight:600;cursor:pointer;margin-top:6px">🎧 Talk to a Counsellor</span></p>
-</div>
-<div class="fgrid fgrid5">
+<div class="ft5-grid">
 <div><h4>Company</h4><a href="https://the-shiva.onrender.com/about">About Us</a><a href="https://the-shiva.onrender.com/contact">Contact</a><a href="https://the-shiva.onrender.com/teachers">Our Faculty</a><a href="faculty.html">Faculty Page</a><a href="https://the-shiva.onrender.com/login">Student Login</a></div>
 <div><h4>Popular Exams</h4><a href="https://the-shiva.onrender.com/courses">SSC Exams</a><a href="https://the-shiva.onrender.com/courses">Railway Exams</a><a href="https://the-shiva.onrender.com/courses">Banking Exams</a><a href="https://the-shiva.onrender.com/courses">Defence Exams</a><a href="https://the-shiva.onrender.com/courses">Teaching Exams</a><a href="https://the-shiva.onrender.com/courses">State Exams</a></div>
 <div><h4>Products</h4><a href="https://the-shiva.onrender.com/courses">Courses</a><a href="https://the-shiva.onrender.com/batches">Batches</a><a href="https://the-shiva.onrender.com/app/tests">Test Series</a><a href="batches.html">Live Batches</a><a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free">Free Aptitude Course</a></div>
 <div><h4>Free Resources</h4><a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free">Free Course</a><a href="index.html">Study Resources</a><a href="results.html">Results</a><a href="scholarship.html">Scholarship</a><a href="courses.html">Saare Courses</a></div>
 <div><h4>Legal</h4><a href="https://the-shiva.onrender.com/privacy">Privacy Policy</a><a href="https://the-shiva.onrender.com/terms">Terms of Service</a><a href="https://the-shiva.onrender.com/contact">Contact</a><a href="https://the-shiva.onrender.com/register">Register</a></div>
 </div>
-<div class="fbot"><span>© 2026 THE SHIVA. All rights reserved.</span><span>Dream • Prepare • Achieve</span></div>
+<div class="ft5-bot"><span>© 2026 THE SHIVA. All rights reserved.</span><span>Dream • Prepare • Achieve</span></div>
 </div></footer>
+<script>
+function socSoon5(el){var box=el.parentElement;if(box.dataset.done)return;box.dataset.done="1";var d=document.createElement("div");d.style.cssText="font-size:12.5px;color:#6b7280;margin-top:10px;font-weight:600";d.textContent="Social pages jald launch honge — tab tak free Aptitude course se jud jao!";box.parentElement.appendChild(d)}
+</script>
 
 <div class="sticky-cta">
-<a class="sc-free" href="https://the-shiva.onrender.com/courses/aptitude-foundation-free">🚀 Free Course</a>
-<button class="sc-cb" onclick="openCpopup()">🎧 Counsellor</button>
+<a class="sc-free" href="https://the-shiva.onrender.com/courses/aptitude-foundation-free">Free Course</a>
+<button class="sc-cb" onclick="openCpopup()">Counsellor</button>
 </div>
-<button class="fab" aria-label="Counsellor se baat karo" onclick="openCpopup()">🎧</button>
+<button class="fab" aria-label="Counsellor se baat karo" onclick="openCpopup()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="2.8" y="13" width="4.2" height="6.5" rx="2"/><rect x="17" y="13" width="4.2" height="6.5" rx="2"/><path d="M19.5 19.5c0 1.7-1.6 2.5-4 2.5h-2"/></svg></button>
 <div class="cpopup" id="cpopup">
 <div class="hd"><b>Talk to Counsellor</b><p style="font-size:12px;opacity:.85">Free guidance ke liye number do</p>
 <button onclick="closeCpopup()" aria-label="Band karo" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,.2);color:#fff;border:none;width:26px;height:26px;border-radius:50%;cursor:pointer">✕</button></div>

@@ -103,7 +103,7 @@ export default function BookmarksPage() {
     <div className="max-w-4xl mx-auto space-y-6 pb-8">
       {/* Page header */}
       <div className="flex items-center gap-3">
-        <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+        <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#6d28d9] to-[#2a1650] flex items-center justify-center text-white shadow-lg shadow-[#6d28d9]/25">
           <IconBookmark size={22} />
         </div>
         <div>
@@ -128,7 +128,7 @@ export default function BookmarksPage() {
               onClick={() => setActiveTab(tab.key)}
               className={`flex items-center justify-center gap-1.5 px-2 py-2.5 rounded-xl text-[12px] md:text-sm font-bold transition-all ${
                 isActive
-                  ? 'bg-white text-indigo-700 shadow-md shadow-slate-200'
+                  ? 'bg-white text-[#6d28d9] shadow-md shadow-slate-200'
                   : 'text-slate-500 hover:text-slate-700'
               }`}
             >
@@ -148,7 +148,7 @@ export default function BookmarksPage() {
         </div>
       ) : bookmarks.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-10 md:p-14 text-center">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-500 mb-4">
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-[#6d28d9]/10 flex items-center justify-center text-[#6d28d9] mb-4">
             <ActiveTabIcon size={30} />
           </div>
           <h3 className="text-base font-bold text-slate-900">No bookmarks here yet</h3>
@@ -158,7 +158,7 @@ export default function BookmarksPage() {
           </p>
           <Link
             href="/app/my-courses"
-            className="inline-flex items-center gap-1.5 mt-5 px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-700 transition-colors"
+            className="inline-flex items-center gap-1.5 mt-5 px-5 py-2.5 rounded-xl bg-[#6d28d9] text-white text-sm font-bold hover:bg-[#5b21b6] transition-colors"
           >
             Go to My Courses
             <IconChevronRight size={15} />
@@ -175,9 +175,9 @@ export default function BookmarksPage() {
               return (
                 <div
                   key={bookmark.id}
-                  className="group rounded-2xl border border-slate-200 bg-white p-4 flex items-start gap-3.5 hover:shadow-lg hover:shadow-slate-100 hover:border-indigo-200 transition-all"
+                  className="group rounded-2xl border border-slate-200 bg-white p-4 flex items-start gap-3.5 hover:shadow-lg hover:shadow-slate-100 hover:border-[#6d28d9]/40 transition-all"
                 >
-                  <div className="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
+                  <div className="w-11 h-11 rounded-xl bg-[#6d28d9]/10 text-[#6d28d9] flex items-center justify-center flex-shrink-0">
                     <TypeIcon size={20} />
                   </div>
                   <div className="flex-1 min-w-0">

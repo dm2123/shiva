@@ -2,30 +2,19 @@ import { headers } from 'next/headers';
 import Link from 'next/link';
 import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { mysqlPool } from '@/lib/db';
-import { StudentPageHeader, StudentSection } from '@/components/student/StudentShared';
 import StudentEmptyState from '@/components/student/StudentEmptyState';
+import CourseBanner from '@/components/student/CourseBanner';
 import {
-  IconBook, IconBookOpen, IconPlay, IconArrowRight,
-  IconClock, IconCheckCircle, IconLayers, IconAward,
+  IconBook, IconPlay, IconArrowRight,
+  IconClock, IconCheckCircle, IconAward,
 } from '@/components/student/StudentIcons';
 
 export const revalidate = 0;
 
-// Stable gradient per course (original THE SHIVA palette — deep purple + gold family)
-const BANNER_GRADIENTS = [
-  'from-[#2a1650] via-[#4c1d95] to-[#6d28d9]',
-  'from-violet-700 via-purple-600 to-fuchsia-500',
-  'from-indigo-700 via-[#6d28d9] to-violet-500',
-  'from-[#3b1d73] via-indigo-600 to-sky-500',
-  'from-purple-800 via-[#6d28d9] to-amber-500',
-  'from-[#2a1650] via-rose-700 to-orange-500',
-];
-
-function gradientFor(id: string): string {
-  let h = 0;
-  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
-  return BANNER_GRADIENTS[h % BANNER_GRADIENTS.length];
-}
+/* v2 (PW grammar, light) tokens — dashboard wale hi */
+const SECTION_TITLE = 'text-[17px] font-bold leading-snug text-gray-900';
+const CARD =
+  'rounded-xl border border-gray-200 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]';
 
 function fmtDate(d: any): string {
   if (!d) return '';
@@ -36,7 +25,8 @@ function fmtDate(d: any): string {
   }
 }
 
-/** StudyRays-pattern progress ring — sirf asal % par (total > 0 ho tabhi caller lagata hai) */
+/** Progress ring — sirf asal % par (total > 0 ho tabhi caller lagata hai).
+ *  Banner ke upar rehta hai, isliye halka track + gold progress. */
 function ProgressRing({ pct, size = 46 }: { pct: number; size?: number }) {
   const stroke = 4;
   const r = (size - stroke) / 2;
@@ -45,7 +35,7 @@ function ProgressRing({ pct, size = 46 }: { pct: number; size?: number }) {
   return (
     <div className="relative flex-shrink-0" style={{ width: size, height: size }} role="img" aria-label={`${clamped}% complete`}>
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} stroke="rgba(255,255,255,0.28)" strokeWidth={stroke} fill="rgba(10,6,24,0.38)" />
+        <circle cx={size / 2} cy={size / 2} r={r} stroke="rgba(255,255,255,0.35)" strokeWidth={stroke} fill="rgba(10,6,24,0.38)" />
         <circle
           cx={size / 2} cy={size / 2} r={r}
           stroke="#f5b942" strokeWidth={stroke} fill="none" strokeLinecap="round"
@@ -154,40 +144,65 @@ export default async function MyCoursesPage() {
   }
 
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-6 pb-24 space-y-10">
-      <StudentPageHeader
-        title="My Courses"
-        description="Jahan chhoda tha, wahin se jaari rakho — tumhare saare enrolled courses aur unki asal progress yahan hai."
-        action={myCourses.length > 0 ? { text: 'Explore Courses', href: '/app/courses' } : undefined}
-      />
+    <main className="mx-auto w-full max-w-[72rem] space-y-5 px-4 py-5 pb-10">
+      {/* ── Page header ──────────────────────────────────── */}
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-[22px] font-extrabold leading-tight text-gray-900">My Courses</h1>
+          <p className="mt-1 max-w-xl text-[13px] leading-relaxed text-gray-500">
+            Jahan chhoda tha, wahin se jaari rakho — tumhare saare enrolled courses aur unki asal
+            progress yahan hai.
+          </p>
+        </div>
+        {myCourses.length > 0 && (
+          <Link
+            href="/app/courses"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-gray-300 bg-white px-4 py-2 text-[12.5px] font-bold text-gray-700 transition hover:border-violet-300 hover:text-[#6d28d9]"
+          >
+            Explore Courses
+            <IconArrowRight size={13} />
+          </Link>
+        )}
+      </div>
 
-      {/* ── Asal progress summary (sirf enrolled ho tab) ──── */}
+      {/* ── Asal progress summary — safed stat card (labels poore,
+          koi truncation nahi; sirf lectures data ho tab) ──── */}
       {myCourses.length > 0 && totalLecturesAll > 0 && (
-        <div className="rounded-2xl bg-gradient-to-br from-[#2a1650] via-[#4c1d95] to-[#6d28d9] text-white p-5 flex flex-wrap items-center gap-x-8 gap-y-3">
+        <div className={`flex flex-wrap items-center gap-x-10 gap-y-4 px-5 py-4 ${CARD}`}>
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-white/60">Enrolled courses</p>
-            <p className="text-2xl font-black mt-0.5">{myCourses.length}</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400">Enrolled Courses</p>
+            <p className="mt-0.5 text-[22px] font-extrabold leading-none text-gray-900">{myCourses.length}</p>
           </div>
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-white/60">Lectures completed</p>
-            <p className="text-2xl font-black mt-0.5">{totalCompleted}<span className="text-sm font-bold text-white/60"> / {totalLecturesAll}</span></p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400">Lectures Completed</p>
+            <p className="mt-0.5 text-[22px] font-extrabold leading-none text-gray-900">
+              {totalCompleted}
+              <span className="text-sm font-bold text-gray-400"> / {totalLecturesAll}</span>
+            </p>
           </div>
-          <div className="flex-1 min-w-[180px]">
-            <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-white/60 mb-1.5">
-              <span>Kul progress</span><span className="text-[#f5b942]">{overallPct}%</span>
+          <div className="min-w-[180px] flex-1">
+            <div className="mb-1.5 flex items-center justify-between gap-3">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-gray-400">Kul Progress</span>
+              <span className="text-[13px] font-extrabold text-[#6d28d9]">{overallPct}%</span>
             </div>
-            <div className="h-2.5 rounded-full bg-white/15 overflow-hidden">
-              <div className="h-full rounded-full bg-gradient-to-r from-[#f5b942] to-amber-300 transition-all duration-700" style={{ width: `${overallPct}%` }} />
+            <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-[#6d28d9] to-[#f5b942] transition-all duration-700"
+                style={{ width: `${overallPct}%` }}
+              />
             </div>
           </div>
         </div>
       )}
 
       {/* ── Enrolled courses ───────────────────────────────── */}
-      <StudentSection
-        title="Continue Learning"
-        subtitle={`${myCourses.length} enrolled`}
-      >
+      <section aria-label="Continue Learning">
+        <div className="mb-3 flex flex-wrap items-center gap-2.5">
+          <h2 className={SECTION_TITLE}>Continue Learning</h2>
+          <span className="rounded-full bg-violet-50 px-2.5 py-0.5 text-[11.5px] font-bold text-[#6d28d9]">
+            {myCourses.length} enrolled
+          </span>
+        </div>
         {myCourses.length === 0 ? (
           <StudentEmptyState
             icon={<IconBook size={22} />}
@@ -197,7 +212,7 @@ export default async function MyCoursesPage() {
             actionHref="/app/courses"
           />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {myCourses.map((course) => {
               const total = Number(course.totalLectures) || 0;
               const completed = Number(course.completedLectures) || 0;
@@ -212,55 +227,37 @@ export default async function MyCoursesPage() {
                 ? { label: 'Completed', cls: 'bg-emerald-500 text-white' }
                 : completed > 0
                   ? { label: 'In Progress', cls: 'bg-[#f5b942] text-[#2a1650]' }
-                  : { label: 'Enrolled', cls: 'bg-white/25 text-white backdrop-blur-sm' };
+                  : { label: 'Enrolled', cls: 'bg-[#2a1650]/70 text-white backdrop-blur-sm' };
               return (
-                <article key={course.id} className="student-card overflow-hidden flex flex-col group">
-                  {/* Banner — asal thumbnail ho to wahi, warna brand gradient */}
-                  <div className={`relative bg-gradient-to-br ${gradientFor(String(course.id))} h-40 flex-shrink-0 overflow-hidden`}>
-                    {course.thumbnailUrl ? (
-                      <>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={course.thumbnailUrl}
-                          alt={course.title}
-                          className="absolute inset-0 w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#2a1650]/85 via-[#2a1650]/20 to-transparent" />
-                      </>
-                    ) : (
-                      <>
-                        <div className="absolute -left-8 -bottom-10 w-36 h-36 rounded-full bg-white/10" />
-                        <div className="absolute right-6 top-6 w-16 h-16 rounded-full bg-white/10" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white">
-                            <IconLayers size={26} />
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    <span className={`absolute top-3 left-3 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1 ${stateChip.cls}`}>
+                <article key={course.id} className={`group flex flex-col overflow-hidden ${CARD} transition hover:shadow-md`}>
+                  {/* Banner — asal thumbnail ya designed gradient tile (CourseBanner) */}
+                  <CourseBanner
+                    src={course.thumbnailUrl}
+                    title={course.title}
+                    seed={String(course.slug || course.id)}
+                  >
+                    <span className={`absolute left-3 top-3 flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wider shadow ${stateChip.cls}`}>
                       <IconCheckCircle size={11} /> {stateChip.label}
                     </span>
                     {total > 0 && (
-                      <div className="absolute bottom-3 right-3">
+                      <span className="absolute bottom-3 right-3">
                         <ProgressRing pct={pct} />
-                      </div>
+                      </span>
                     )}
-                  </div>
+                  </CourseBanner>
 
                   {/* Body */}
-                  <div className="p-5 flex-1 flex flex-col min-w-0">
-                    <h3 className="text-[15px] font-bold text-[var(--student-text)] leading-snug group-hover:text-[#6d28d9] transition-colors line-clamp-2">
+                  <div className="flex flex-1 flex-col p-4">
+                    <h3 className="line-clamp-2 text-[15px] font-bold leading-snug text-gray-900 transition-colors group-hover:text-[#6d28d9]">
                       {course.title}
                     </h3>
                     {course.description && (
-                      <p className="text-[12px] text-[var(--student-text-muted)] mt-1.5 line-clamp-2 leading-relaxed">
+                      <p className="mt-1.5 line-clamp-2 text-[12.5px] leading-relaxed text-gray-500">
                         {course.description}
                       </p>
                     )}
-                    <div className="flex items-center gap-3 mt-3 text-[11px] text-[var(--student-text-faint)]">
-                      <span className="font-bold text-emerald-600">
+                    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-gray-400">
+                      <span className={`font-bold ${Number(course.price) > 0 ? 'text-gray-900' : 'text-emerald-600'}`}>
                         {Number(course.price) > 0 ? `₹${Number(course.price).toLocaleString('en-IN')}` : 'Free'}
                       </span>
                       {course.enrolledAt && (
@@ -273,30 +270,30 @@ export default async function MyCoursesPage() {
                     {/* Asal progress */}
                     {total > 0 ? (
                       <div className="mt-4">
-                        <div className="flex items-center justify-between text-[11px] mb-1.5">
-                          <span className="text-[var(--student-text-muted)]">{completed} / {total} lectures</span>
+                        <div className="mb-1.5 flex items-center justify-between text-[11.5px]">
+                          <span className="text-gray-500">{completed} / {total} lectures</span>
                           <span className="font-bold text-[#6d28d9]">{pct}% Complete</span>
                         </div>
-                        <div className="h-2 rounded-full bg-[var(--student-surface-hover)] overflow-hidden">
+                        <div className="h-2 overflow-hidden rounded-full bg-gray-100">
                           <div
                             className="h-full rounded-full bg-gradient-to-r from-[#6d28d9] to-[#f5b942] transition-all duration-700"
                             style={{ width: `${pct}%` }}
                           />
                         </div>
                         {done ? (
-                          <p className="text-[11px] font-semibold text-emerald-600 mt-2">🎉 Course poora ho gaya — badhai ho!</p>
+                          <p className="mt-2 text-[11.5px] font-semibold text-emerald-600">🎉 Course poora ho gaya — badhai ho!</p>
                         ) : course.resumeLecture ? (
-                          <p className="text-[11px] text-[var(--student-text-muted)] mt-2 truncate">
-                            <span className="font-semibold text-[var(--student-text)]">Wahin se jaari rakho:</span> {course.resumeLecture.title}
+                          <p className="mt-2 line-clamp-1 text-[11.5px] text-gray-500">
+                            <span className="font-semibold text-gray-800">Wahin se jaari rakho:</span> {course.resumeLecture.title}
                           </p>
                         ) : course.nextLecture ? (
-                          <p className="text-[11px] text-[var(--student-text-muted)] mt-2 truncate">
-                            <span className="font-semibold text-[var(--student-text)]">Up next:</span> {course.nextLecture.title}
+                          <p className="mt-2 line-clamp-1 text-[11.5px] text-gray-500">
+                            <span className="font-semibold text-gray-800">Up next:</span> {course.nextLecture.title}
                           </p>
                         ) : null}
                       </div>
                     ) : (
-                      <p className="text-[11px] text-[var(--student-text-faint)] mt-4">
+                      <p className="mt-4 text-[11.5px] text-gray-400">
                         Is course ki lectures jald aa rahi hain.
                       </p>
                     )}
@@ -304,7 +301,7 @@ export default async function MyCoursesPage() {
                     <div className="mt-auto pt-4">
                       <Link
                         href={continueHref}
-                        className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#6d28d9] text-white text-[13px] font-bold hover:bg-[#5b21b6] transition-colors"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#6d28d9] px-5 py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-[#5b21b6]"
                       >
                         {done ? <IconCheckCircle size={14} /> : <IconPlay size={14} />}
                         {done ? 'Dobara dekho' : 'Continue'}
@@ -316,74 +313,64 @@ export default async function MyCoursesPage() {
             })}
           </div>
         )}
-      </StudentSection>
+      </section>
 
       {/* ── Explore more (real published courses only) ──────── */}
       {exploreCourses.length > 0 && (
-        <StudentSection
-          title="Explore More"
-          subtitle="Available courses"
-          action={{ text: 'View all', href: '/app/courses' }}
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <section aria-label="Explore More">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2.5">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h2 className={SECTION_TITLE}>Explore More</h2>
+              <span className="text-[12.5px] text-gray-400">Available courses</span>
+            </div>
+            <Link href="/app/courses" className="text-[13px] font-bold text-[#6d28d9] hover:text-[#5b21b6]">
+              View all →
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {exploreCourses.slice(0, 3).map((course) => (
               <Link
                 key={course.id}
                 href={`/app/courses/${course.id}`}
-                className="student-card overflow-hidden group"
+                className={`group flex flex-col overflow-hidden ${CARD} transition hover:shadow-md`}
               >
-                <div className={`relative bg-gradient-to-br ${gradientFor(String(course.id))} h-28 flex items-center justify-center overflow-hidden`}>
-                  {course.thumbnailUrl ? (
-                    <>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={course.thumbnailUrl}
-                        alt={course.title}
-                        className="absolute inset-0 w-full h-full object-cover"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#2a1650]/70 via-transparent to-transparent" />
-                    </>
-                  ) : (
-                    <>
-                      <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-white/10" />
-                      <div className="relative w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white group-hover:scale-110 transition-transform">
-                        <IconBookOpen size={24} />
-                      </div>
-                    </>
-                  )}
-                  <span className="absolute top-3 right-3 text-[10px] font-black uppercase tracking-wider bg-white text-[#6d28d9] px-2.5 py-1 rounded-full">
+                <CourseBanner
+                  src={course.thumbnailUrl}
+                  title={course.title}
+                  seed={String(course.slug || course.id)}
+                >
+                  <span className="absolute right-3 top-3 rounded-full bg-white px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-[#6d28d9] shadow">
                     {Number(course.price) > 0 ? `₹${Number(course.price).toLocaleString('en-IN')}` : 'Free'}
                   </span>
-                </div>
-                <div className="p-4">
-                  <h3 className="text-[14px] font-bold text-[var(--student-text)] leading-snug line-clamp-2 group-hover:text-[#6d28d9] transition-colors">
+                </CourseBanner>
+                <div className="flex flex-1 flex-col p-4">
+                  <h3 className="mb-4 line-clamp-2 text-[14px] font-bold leading-snug text-gray-900 transition-colors group-hover:text-[#6d28d9]">
                     {course.title}
                   </h3>
-                  <span className="inline-flex items-center gap-1.5 mt-3 text-[12px] font-bold text-[#6d28d9]">
+                  <span className="mt-auto inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#6d28d9] px-4 py-2.5 text-center text-[13px] font-bold text-[#6d28d9] transition-colors group-hover:bg-violet-50">
                     View details <IconArrowRight size={13} />
                   </span>
                 </div>
               </Link>
             ))}
           </div>
-        </StudentSection>
+        </section>
       )}
 
-      {/* ── Achievements strip (honest, no fake stats) ─────── */}
+      {/* ── Motivation strip (honest, no fake stats) ─────── */}
       {myCourses.length > 0 && (
-        <div className="student-card p-5 flex items-center gap-4 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-100">
-          <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 flex-shrink-0">
+        <div className="flex items-center gap-4 rounded-xl border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-5">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-100 text-amber-600">
             <IconAward size={24} />
           </div>
-          <div>
-            <p className="text-sm font-bold text-[var(--student-text)]">Keep the streak going</p>
-            <p className="text-[12px] text-[var(--student-text-muted)] mt-0.5">
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-gray-900">Keep the streak going</p>
+            <p className="mt-0.5 text-[12.5px] leading-relaxed text-gray-500">
               Upar wale course se aaj ki agli lecture poori karo — chhoti jeet roz badi taiyaari banati hai.
             </p>
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }

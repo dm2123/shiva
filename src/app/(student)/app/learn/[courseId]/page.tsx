@@ -176,7 +176,7 @@ export default async function ClassroomPage({
   const lectureHref = (id: string) => `/app/learn/${course.id}?lecture=${id}`;
 
   return (
-    <div className="min-h-screen bg-[#07070c]">
+    <div className="min-h-screen bg-slate-50">
       <style>{`
         .learn-acc summary::-webkit-details-marker { display: none; }
         .learn-acc summary { list-style: none; cursor: pointer; }
@@ -184,38 +184,40 @@ export default async function ClassroomPage({
         .learn-acc[open] .learn-chev { transform: rotate(180deg); }
       `}</style>
 
-      {/* ── Sticky classroom top bar (dark) ──────────────────── */}
-      <div className="sticky top-0 z-30 border-b border-white/10 bg-[#0d0d14]/95 backdrop-blur">
+      {/* ── Sticky classroom top bar (light — portal ke baaki pages jaisa;
+          pehle ye dark tha aur LecturePlayer ke light theme variables se
+          takra kar title/tab text dark-on-dark ho jata tha) ── */}
+      <div className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto max-w-[1280px] px-4 py-3">
           <div className="flex items-center gap-3">
             <Link
               href={`/app/courses/${course.id}`}
               aria-label="Back to course"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900"
             >
               <IconArrowLeft size={16} />
             </Link>
             <div className="min-w-0 flex-1">
-              <h1 className="truncate text-[15px] font-black text-white">{course.title}</h1>
-              <p className="text-[11px] font-medium text-slate-400">
+              <h1 className="truncate text-[15px] font-black text-slate-900">{course.title}</h1>
+              <p className="text-[11px] font-medium text-slate-500">
                 {completedLectures}/{totalLectures} lectures · {progressPct}% complete
               </p>
             </div>
             {Number(effectiveLecture.progress?.positionSeconds || 0) > 30 &&
               !effectiveLecture.progress?.isCompleted && (
-                <span className="hidden md:inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#f5b942]/15 px-3 py-1.5 text-[11px] font-bold text-[#f5b942]">
+                <span className="hidden md:inline-flex shrink-0 items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1.5 text-[11px] font-bold text-amber-700 ring-1 ring-amber-200">
                   <IconClock size={12} />
                   Resume · {formatDuration(Number(effectiveLecture.progress.positionSeconds))}
                   {' '}par ruke the
                 </span>
               )}
-            <div className="hidden sm:flex items-center gap-2 rounded-full bg-[#6d28d9]/20 px-3 py-1.5 ring-1 ring-[#6d28d9]/30">
-              <IconAward size={14} className="text-[#a78bfa]" />
-              <span className="text-[11px] font-bold text-violet-100">{progressPct}%</span>
+            <div className="hidden sm:flex items-center gap-2 rounded-full bg-violet-100 px-3 py-1.5 ring-1 ring-violet-200">
+              <IconAward size={14} className="text-[#6d28d9]" />
+              <span className="text-[11px] font-bold text-violet-800">{progressPct}%</span>
             </div>
           </div>
           <div
-            className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-white/10"
+            className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-slate-200"
             role="progressbar"
             aria-valuenow={progressPct}
             aria-valuemin={0}
@@ -234,7 +236,7 @@ export default async function ClassroomPage({
         <div className="flex flex-col gap-5 lg:grid lg:grid-cols-[minmax(0,1fr)_370px] lg:items-start">
           {/* ── Player column ─────────────────────────── */}
           <main className="min-w-0">
-            <div className="overflow-hidden rounded-[24px] border border-white/10 bg-[#12121a] p-4 shadow-2xl sm:p-5">
+            <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
               <LecturePlayer
                 courseId={course.id}
                 lecture={{
@@ -254,34 +256,34 @@ export default async function ClassroomPage({
 
             {/* Lecture context strip — description Overview tab me hai,
                 yahan sirf position/status meta rakha hai (duplication nahi) */}
-            <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-[#12121a] px-4 py-3 shadow-sm">
-              <span className="rounded-full bg-[#6d28d9]/20 px-3 py-1 text-[11px] font-bold text-violet-200">
+            <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+              <span className="rounded-full bg-violet-100 px-3 py-1 text-[11px] font-bold text-violet-800">
                 Lecture {effectiveLecture.number} of {totalLectures}
               </span>
               {effectiveLecture.subjectName && (
-                <span className="rounded-full bg-white/5 px-3 py-1 text-[11px] font-semibold text-slate-300">
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-600">
                   {effectiveLecture.subjectName}
                 </span>
               )}
               {effectiveLecture.chapterTitle && (
-                <span className="rounded-full bg-white/5 px-3 py-1 text-[11px] font-semibold text-slate-300">
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-600">
                   {effectiveLecture.chapterTitle}
                 </span>
               )}
-              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-400">
+              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500">
                 <IconClock size={12} />
                 {formatDuration(effectiveLecture.durationSeconds)}
               </span>
               {effectiveLecture.progress?.isCompleted ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-3 py-1 text-[11px] font-bold text-emerald-300">
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold text-emerald-700">
                   <IconCheckCircle size={12} /> Completed
                 </span>
               ) : Number(effectiveLecture.progress?.positionSeconds || 0) > 0 ? (
-                <span className="rounded-full bg-[#f5b942]/15 px-3 py-1 text-[11px] font-bold text-[#f5b942]">
+                <span className="rounded-full bg-amber-100 px-3 py-1 text-[11px] font-bold text-amber-700">
                   In progress
                 </span>
               ) : (
-                <span className="rounded-full bg-white/5 px-3 py-1 text-[11px] font-bold text-slate-400">
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold text-slate-500">
                   Not started
                 </span>
               )}
@@ -300,28 +302,29 @@ export default async function ClassroomPage({
             {nextLecture && (
               <Link
                 href={lectureHref(nextLecture.id)}
-                className="group mt-4 flex items-center gap-4 rounded-[24px] border border-[#6d28d9]/30 bg-gradient-to-r from-[#6d28d9]/15 to-[#f5b942]/[0.08] p-4 transition hover:border-[#6d28d9]/50 hover:shadow-[0_0_36px_rgba(109,40,217,0.15)]"
+                className="group mt-4 flex items-center gap-4 rounded-[24px] border border-violet-200 bg-violet-50 p-4 transition hover:border-violet-300 hover:shadow-md"
               >
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#2a1650] to-[#6d28d9] text-white shadow">
                   <IconPlay size={18} className="ml-0.5" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#a78bfa]">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-violet-500">
                     Up next · Lecture {nextLecture.number}
                   </p>
-                  <p className="truncate text-sm font-bold text-white group-hover:text-[#a78bfa]">
+                  <p className="truncate text-sm font-bold text-slate-900 group-hover:text-[#6d28d9]">
                     {nextLecture.title}
                   </p>
-                  <p className="text-[11px] text-slate-400">{formatDuration(nextLecture.durationSeconds)}</p>
+                  <p className="text-[11px] text-slate-500">{formatDuration(nextLecture.durationSeconds)}</p>
                 </div>
-                <IconArrowLeft size={16} className="rotate-180 text-[#a78bfa] transition-transform group-hover:translate-x-1" />
+                <IconArrowLeft size={16} className="rotate-180 text-violet-500 transition-transform group-hover:translate-x-1" />
               </Link>
             )}
           </main>
 
-          {/* ── Curriculum sidebar (dark) ──────────────────────── */}
+          {/* ── Curriculum sidebar (light; sirf header band violet gradient
+              hai — band par safed text ka contrast pakka hai) ── */}
           <aside className="min-w-0 lg:sticky lg:top-32">
-            <div className="overflow-hidden rounded-[24px] border border-white/10 bg-[#12121a] shadow-xl">
+            <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm">
               <div className="border-b border-white/10 bg-gradient-to-r from-[#2a1650] to-[#6d28d9] px-5 py-4 text-white">
                 <div className="flex items-center gap-2">
                   <IconList size={16} />
@@ -350,19 +353,19 @@ export default async function ClassroomPage({
                           const chapterPct = chapter.lectures.length === 0 ? 0 : Math.round((done / chapter.lectures.length) * 100);
                           const isOpen = chapter.lectures.some((l: any) => l.id === effectiveLecture.id);
                           return (
-                            <details key={chapter.id} open={isOpen} className="learn-acc group rounded-xl border border-white/5 bg-white/[0.03]">
+                            <details key={chapter.id} open={isOpen} className="learn-acc group rounded-xl border border-slate-200 bg-slate-50">
                               <summary className="flex items-center gap-2 px-3 py-2.5">
-                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#6d28d9]/25 text-[11px] font-black text-violet-100">
+                                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-[11px] font-black text-violet-700">
                                   {chapterStart.get(chapter.id) ?? ''}
                                 </span>
                                 <span className="min-w-0 flex-1">
-                                  <span className="block truncate text-[12.5px] font-bold text-slate-100">
+                                  <span className="block truncate text-[12.5px] font-bold text-slate-800">
                                     {chapter.title}
                                   </span>
                                   <span className="block text-[10.5px] font-medium text-slate-500">
                                     {done}/{chapter.lectures.length} completed
                                   </span>
-                                  <span className="mt-1 block h-1 overflow-hidden rounded-full bg-white/10">
+                                  <span className="mt-1 block h-1 overflow-hidden rounded-full bg-slate-200">
                                     <span
                                       className="block h-full rounded-full bg-[#6d28d9] transition-all"
                                       style={{ width: `${chapterPct}%` }}
@@ -391,7 +394,7 @@ export default async function ClassroomPage({
                                       className={`flex items-center gap-2.5 rounded-lg px-2 py-2 transition-colors ${
                                         isActive
                                           ? 'bg-[#6d28d9] text-white shadow'
-                                          : 'text-slate-300 hover:bg-white/5'
+                                          : 'text-slate-600 hover:bg-slate-100'
                                       }`}
                                     >
                                       <span
@@ -399,8 +402,8 @@ export default async function ClassroomPage({
                                           isActive
                                             ? 'bg-white/20 text-white'
                                             : isDone
-                                              ? 'bg-emerald-500/15 text-emerald-300'
-                                              : 'bg-[#6d28d9]/15 text-violet-300'
+                                              ? 'bg-emerald-100 text-emerald-600'
+                                              : 'bg-violet-100 text-[#6d28d9]'
                                         }`}
                                       >
                                         {isDone ? (
@@ -411,7 +414,7 @@ export default async function ClassroomPage({
                                       </span>
                                       <span className="min-w-0 flex-1">
                                         <span className={`block truncate text-[12px] font-semibold ${isActive ? 'text-white' : ''}`}>
-                                          <span className={`mr-1.5 font-black ${isActive ? 'text-violet-200' : 'text-slate-600'}`}>
+                                          <span className={`mr-1.5 font-black ${isActive ? 'text-violet-200' : 'text-slate-400'}`}>
                                             {lec.number}.
                                           </span>
                                           {lec.title}
@@ -421,7 +424,7 @@ export default async function ClassroomPage({
                                           {isDone ? ' · Watched ✓' : inProgress ? ` · Resume ${formatDuration(posSec)} · ${watchedPct}% watched` : ''}
                                         </span>
                                         {inProgress && (
-                                          <span className={`mt-1 block h-1 overflow-hidden rounded-full ${isActive ? 'bg-white/25' : 'bg-white/10'}`}>
+                                          <span className={`mt-1 block h-1 overflow-hidden rounded-full ${isActive ? 'bg-white/25' : 'bg-slate-200'}`}>
                                             <span
                                               className="block h-full rounded-full bg-[#f5b942]"
                                               style={{ width: `${watchedPct}%` }}

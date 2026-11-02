@@ -75,6 +75,10 @@ export interface CourseTestDTO {
 }
 
 interface Props {
+  /** Violet band ke andar ka hero hissa (server-rendered): H1, meta, teacher line. */
+  header: React.ReactNode;
+  /** Right rail (server-rendered): sticky purchase card + baaki sidebar cards. */
+  rail: React.ReactNode;
   description?: string;
   subjects: SubjectDTO[];
   batches: BatchDTO[];
@@ -88,7 +92,7 @@ interface Props {
   tests?: CourseTestDTO[];
 }
 
-type TabId = 'features' | 'about' | 'schedule' | 'tests' | 'teachers' | 'free' | 'more';
+type TabId = 'about' | 'schedule' | 'tests' | 'teachers' | 'free' | 'more';
 
 const PURPLE = '#6d28d9';
 const PURPLE_DARK = '#2a1650';
@@ -97,13 +101,15 @@ const GREEN_DARK = '#166534';
 const GREEN_BG = '#dcfce7';
 
 /**
- * 6 tabs — design-map wala kram (structure only, SHIVA ka apna content):
- * Features | About | Schedule | Teachers | Free Content | More Details
+ * Tabs — PW batch-overview wala kram (structure only, SHIVA ka apna
+ * content): Description | All Classes | Tests (sirf asal published
+ * tests hon tab) | Teachers | Free Content | More Details.
+ * Includes wala purana alag tab hata diya — wo ab Description ke
+ * andar accordion ke roop me hai (duplication nahi).
  */
 const TABS: { id: TabId; label: string; icon: string }[] = [
-  { id: 'features', label: 'Features', icon: '✨' },
-  { id: 'about', label: 'About', icon: '📖' },
-  { id: 'schedule', label: 'Schedule', icon: '🗂️' },
+  { id: 'about', label: 'Description', icon: '📖' },
+  { id: 'schedule', label: 'All Classes', icon: '🗂️' },
   { id: 'teachers', label: 'Teachers', icon: '👨‍🏫' },
   { id: 'free', label: 'Free Content', icon: '🎬' },
   { id: 'more', label: 'More Details', icon: '📋' },
@@ -117,6 +123,16 @@ const SUBJECT_PASTELS: { bg: string; accent: string; chipBg: string }[] = [
   { bg: '#f0f9ff', accent: '#0284c7', chipBg: '#e0f2fe' },
   { bg: '#fff1f2', accent: '#e11d48', chipBg: '#ffe4e6' },
   { bg: '#fdf4ff', accent: '#a21caf', chipBg: '#fae8ff' },
+];
+
+/** "Know Your Teachers" carousel ke initials avatars ke pastel rang. */
+const TEACHER_PASTELS: { bg: string; fg: string }[] = [
+  { bg: '#ede9fe', fg: '#4c1d95' },
+  { bg: '#fef3c7', fg: '#92400e' },
+  { bg: '#d1fae5', fg: '#065f46' },
+  { bg: '#e0f2fe', fg: '#075985' },
+  { bg: '#ffe4e6', fg: '#9f1239' },
+  { bg: '#fae8ff', fg: '#86198f' },
 ];
 
 function formatDate(value?: string): string {
@@ -158,6 +174,8 @@ const sectionTitle: React.CSSProperties = {
 };
 
 export default function CourseDetailClient({
+  header,
+  rail,
   description,
   subjects,
   batches,
@@ -168,8 +186,9 @@ export default function CourseDetailClient({
   meta,
   tests = [],
 }: Props) {
-  const [activeTab, setActiveTab] = useState<TabId>('features');
+  const [activeTab, setActiveTab] = useState<TabId>('about');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [includesOpen, setIncludesOpen] = useState(true);
   const [openSubject, setOpenSubject] = useState<string | null>(subjects[0]?.id ?? null);
   const [openChapter, setOpenChapter] = useState<string | null>(
     subjects[0]?.chapters[0]?.id ?? null
@@ -201,6 +220,82 @@ export default function CourseDetailClient({
     };
     return [...TABS.slice(0, idx + 1), testsTab, ...TABS.slice(idx + 1)];
   }, [tests.length]);
+
+  /* -------- Description: "Is Batch Me Kya-Kya Shamil Hai" accordion --------
+     PW ke "This Batch Includes" pattern par — icon rows sirf unhi
+     attributes ke liye banti hain jo course record/content me sach
+     me maujood hain (subjects, lectures, schedule, validity, medium,
+     audience, demo, verified teachers). Access wali row platform ki
+     asal capability hai (dashboard se padhai), isliye hamesha hai. */
+  const includeRows: { icon: string; bg: string; label: string; value: React.ReactNode }[] = [];
+  if (subjects.length > 0) {
+    includeRows.push({
+      icon: '📚',
+      bg: '#ede9fe',
+      label: 'Subjects',
+      value: subjects.map((s) => s.name).join(', '),
+    });
+  }
+  if (totals.lectures > 0) {
+    includeRows.push({
+      icon: '🎬',
+      bg: '#fef3c7',
+      label: 'Recorded Lectures',
+      value: `${totals.lectures} lectures${totals.seconds > 0 ? ` · kul ${formatDuration(totals.seconds)}` : ''} — apni gati se kabhi bhi dekho`,
+    });
+  }
+  if (batches.length > 0) {
+    includeRows.push({
+      icon: '🗓️',
+      bg: '#e0f2fe',
+      label: 'Batch Schedule',
+      value: batches
+        .map((b) => {
+          const st = formatDate(b.startDate);
+          return `${b.name}${st ? ` — ${st} se shuru` : ''}`;
+        })
+        .join(' · '),
+    });
+  }
+  if (meta?.validityLabel) {
+    includeRows.push({ icon: '📅', bg: '#d1fae5', label: 'Course Validity', value: meta.validityLabel });
+  }
+  if (meta?.language) {
+    includeRows.push({ icon: '🗣️', bg: '#ffe4e6', label: 'Padhai ka Medium', value: meta.language });
+  }
+  if (meta?.targetAudience?.trim()) {
+    includeRows.push({
+      icon: '🎯',
+      bg: '#fae8ff',
+      label: 'Kiske Liye Hai',
+      value: <span style={{ whiteSpace: 'pre-line' }}>{meta.targetAudience.trim()}</span>,
+    });
+  }
+  if (freeLectures.length > 0) {
+    includeRows.push({
+      icon: '🎁',
+      bg: '#fef3c7',
+      label: 'Free Demo Lectures',
+      value: `${freeLectures.length} lectures bina enroll kiye preview ke liye khule hain`,
+    });
+  }
+  if (teachers.some((t) => t.verified)) {
+    includeRows.push({
+      icon: '👨‍🏫',
+      bg: '#ede9fe',
+      label: 'Verified Educators',
+      value: teachers
+        .filter((t) => t.verified)
+        .map((t) => t.displayName)
+        .join(', '),
+    });
+  }
+  includeRows.push({
+    icon: '📱',
+    bg: '#e0f2fe',
+    label: 'Mobile + Desktop Access',
+    value: 'Enroll ke baad apne THE SHIVA student dashboard se kabhi bhi, kahin bhi padho',
+  });
 
   /* -------- More Details: numbered sections, asal data se hi bane -------- */
   const moreSections = useMemo(() => {
@@ -375,7 +470,7 @@ export default function CourseDetailClient({
           <>
             Ye course un students ke liye hai jo{' '}
             {subjects.map((s) => s.name).join(', ')} ko structured tareeke se, basics se
-            shuru karke seekhna chahte hain. Poora syllabus Schedule tab me pehle se dekh
+            shuru karke seekhna chahte hain. Poora syllabus All Classes tab me pehle se dekh
             sakte ho.
           </>
         ),
@@ -433,7 +528,7 @@ export default function CourseDetailClient({
             Is course ke {batches.length} batch option{batches.length === 1 ? '' : 's'}{' '}
             uplabdh hain. {next.name}
             {start ? ` — ${start} se shuru` : ''} ({next.status}). Saare batches ki
-            dates Schedule tab me di gayi hain.
+            dates All Classes tab me di gayi hain.
           </>
         ),
       });
@@ -452,7 +547,7 @@ export default function CourseDetailClient({
           <>
             Is course ke liye abhi koi free preview lecture publish nahi hua hai. Lekin
             poora syllabus — har subject, chapter aur lecture ki list —{' '}
-            <strong>Schedule</strong> tab me bina enroll kiye dekh sakte ho.
+            <strong>All Classes</strong> tab me bina enroll kiye dekh sakte ho.
           </>
         ),
     });
@@ -492,160 +587,117 @@ export default function CourseDetailClient({
 
   return (
     <div>
-      {/* ------------------------- TAB BAR ------------------------- */}
-      {/* Dark pill tab bar — Subjects/Tests/Announcements wale pattern par:
-          gehra container, active tab solid violet. */}
+      {/* ================= VIOLET BAND + TAB BAR ================= */}
+      {/* PW batch-overview grammar: violet header band, uske andar
+          H1/meta wala header (server se aaya) aur band ke neeche
+          tab bar — active tab SAFED pill. Tabs sirf wahi bante hain
+          jinke peeche asal data hai (Tests tab published tests par). */}
       <div
-        role="tablist"
-        aria-label="Course sections"
         style={{
-          display: 'flex',
-          gap: 6,
-          overflowX: 'auto',
-          background: '#0d0d13',
-          border: '1px solid rgba(255,255,255,0.09)',
-          borderRadius: 16,
-          padding: 6,
-          marginBottom: 22,
-          scrollbarWidth: 'none',
+          background: `linear-gradient(120deg, ${PURPLE_DARK} 0%, #4c1d95 55%, #6d28d9 100%)`,
+          color: '#fff',
+          borderRadius: 22,
+          boxShadow: '0 18px 44px rgba(42,22,80,.35)',
+          overflow: 'hidden',
+          marginBottom: 26,
         }}
-        className="cd-tabs"
       >
-        {visibleTabs.map((tab) => {
-          const active = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              role="tab"
-              aria-selected={active}
-              onClick={() => setActiveTab(tab.id)}
-              style={{
-                appearance: 'none',
-                border: 'none',
-                background: active ? PURPLE : 'transparent',
-                borderRadius: 11,
-                cursor: 'pointer',
-                fontFamily: 'inherit',
-                whiteSpace: 'nowrap',
-                padding: '10px 16px',
-                fontSize: 14,
-                fontWeight: active ? 800 : 600,
-                color: active ? '#fff' : '#a1a1aa',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 7,
-              }}
-            >
-              <span aria-hidden>{tab.icon}</span>
-              {tab.label}
-              {tab.id === 'free' && freeLectures.length > 0 && (
-                <span
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 800,
-                    background: 'rgba(245,185,66,.18)',
-                    color: GOLD,
-                    padding: '2px 8px',
-                    borderRadius: 999,
-                  }}
-                >
-                  {freeLectures.length} FREE
-                </span>
-              )}
-              {tab.id === 'schedule' && totals.lectures > 0 && (
-                <span
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 800,
-                    background: active ? 'rgba(255,255,255,.22)' : 'rgba(109,40,217,.28)',
-                    color: active ? '#fff' : '#c4b5fd',
-                    padding: '2px 8px',
-                    borderRadius: 999,
-                  }}
-                >
-                  {totals.lectures}
-                </span>
-              )}
-              {tab.id === 'tests' && tests.length > 0 && (
-                <span
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 800,
-                    background: active ? 'rgba(255,255,255,.22)' : 'rgba(109,40,217,.28)',
-                    color: active ? '#fff' : '#c4b5fd',
-                    padding: '2px 8px',
-                    borderRadius: 999,
-                  }}
-                >
-                  {tests.length}
-                </span>
-              )}
-            </button>
-          );
-        })}
+        {header}
+        <div
+          role="tablist"
+          aria-label="Course sections"
+          style={{
+            display: 'flex',
+            gap: 6,
+            overflowX: 'auto',
+            borderTop: '1px solid rgba(255,255,255,0.18)',
+            padding: '12px 16px',
+            scrollbarWidth: 'none',
+          }}
+          className="cd-tabs"
+        >
+          {visibleTabs.map((tab) => {
+            const active = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                role="tab"
+                aria-selected={active}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  appearance: 'none',
+                  border: 'none',
+                  background: active ? '#ffffff' : 'rgba(255,255,255,0.08)',
+                  borderRadius: 999,
+                  cursor: 'pointer',
+                  fontFamily: 'inherit',
+                  whiteSpace: 'nowrap',
+                  padding: '9px 16px',
+                  fontSize: 13.5,
+                  fontWeight: active ? 800 : 600,
+                  color: active ? PURPLE_DARK : 'rgba(255,255,255,0.78)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 7,
+                }}
+              >
+                <span aria-hidden>{tab.icon}</span>
+                {tab.label}
+                {tab.id === 'free' && freeLectures.length > 0 && (
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 800,
+                      background: 'rgba(245,185,66,.22)',
+                      color: active ? '#92400e' : GOLD,
+                      padding: '2px 8px',
+                      borderRadius: 999,
+                    }}
+                  >
+                    {freeLectures.length} FREE
+                  </span>
+                )}
+                {tab.id === 'schedule' && totals.lectures > 0 && (
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 800,
+                      background: active ? '#ede9fe' : 'rgba(255,255,255,.18)',
+                      color: active ? PURPLE : '#fff',
+                      padding: '2px 8px',
+                      borderRadius: 999,
+                    }}
+                  >
+                    {totals.lectures}
+                  </span>
+                )}
+                {tab.id === 'tests' && tests.length > 0 && (
+                  <span
+                    style={{
+                      fontSize: 10,
+                      fontWeight: 800,
+                      background: active ? '#ede9fe' : 'rgba(255,255,255,.18)',
+                      color: active ? PURPLE : '#fff',
+                      padding: '2px 8px',
+                      borderRadius: 999,
+                    }}
+                  >
+                    {tests.length}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* ------------------------- FEATURES ------------------------- */}
-      {/* Checklist style — sirf asal shamil cheezein, green check ke saath.
-          Koi plan card / tulna table nahi: platform ke paas plan data nahi hai. */}
-      {activeTab === 'features' && (
-        <div role="tabpanel" className="batch" style={{ padding: 26 }}>
-          <h2 style={sectionTitle}>Is course me kya-kya shamil hai</h2>
-          <p style={{ fontSize: 13.5, color: 'var(--muted)', marginBottom: 18, lineHeight: 1.65 }}>
-            Neeche sirf wahi cheezein hain jo is course ke asal content aur record
-            me sach me maujood hain — har item ke saamne green check isi liye hai.
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <FeatureRow
-              title="Structured curriculum — subject-wise syllabus"
-              desc={`${subjects.length} subjects, ${totals.chapters} chapters aur ${totals.lectures} lectures ke saath poora organised content.`}
-              show={totals.lectures > 0}
-            />
-            <FeatureRow
-              title={`${formatDuration(totals.seconds)} ka recorded video content`}
-              desc="Saare lectures mila kar kul content duration — apni gati se kabhi bhi dekho."
-              show={totals.seconds > 0}
-            />
-            <FeatureRow
-              title={`${freeLectures.length} free demo lectures`}
-              desc="Enroll karne se pehle free preview dekh kar teaching style aur quality check karo."
-              show={freeLectures.length > 0}
-            />
-            <FeatureRow
-              title={`${batches.length} batch option${batches.length === 1 ? '' : 's'}`}
-              desc="Apni timing ke hisaab se batch chuno — start dates Schedule tab me di gayi hain."
-              show={batches.length > 0}
-            />
-            <FeatureRow
-              title="Verified educator ke saath padhai"
-              desc="Course ek verified THE SHIVA educator dwara padhaya jata hai — Teachers tab me poori profile dekho."
-              show={teachers.some((t) => t.verified)}
-            />
-            <FeatureRow
-              title={meta?.language ? `${meta.language} medium me padhai` : 'Apni bhasha me padhai'}
-              desc="Course ka medium of instruction asal record ke hisaab se upar diya gaya hai."
-              show={!!meta?.language}
-            />
-            <FeatureRow
-              title={meta?.validityLabel || 'Course validity'}
-              desc="Enroll ke baad itne samay tak course ka poora access tumhare dashboard me rahega."
-              show={!!meta?.validityLabel}
-            />
-            <FeatureRow
-              title="Mobile + desktop dono par access"
-              desc="Enroll ke baad apne THE SHIVA student dashboard se kabhi bhi, kahin bhi padho."
-              show
-            />
-          </div>
-          {totals.lectures === 0 && freeLectures.length === 0 && batches.length === 0 && (
-            <p style={{ fontSize: 14, color: 'var(--muted)', fontStyle: 'italic', padding: '12px 0' }}>
-              Is course ke features content publish hote hi yahan dikhenge.
-            </p>
-          )}
-        </div>
-      )}
-
-      {/* ------------------------- ABOUT ------------------------- */}
+      {/* ================= MAIN GRID: panels + sticky rail ================= */}
+      <div
+        style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 28, alignItems: 'start' }}
+        className="course-detail-grid"
+      >
+        <div style={{ minWidth: 0 }}>
+      {/* ------------------------- DESCRIPTION ------------------------- */}
       {activeTab === 'about' && (
         <div role="tabpanel" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div className="batch" style={{ padding: 26 }}>
@@ -725,6 +777,265 @@ export default function CourseDetailClient({
             )}
           </div>
 
+          {/* -------- Includes accordion (PW "This Batch Includes") -------- */}
+          <div className="batch" style={{ padding: 0, overflow: 'hidden' }}>
+            <button
+              type="button"
+              aria-expanded={includesOpen}
+              onClick={() => setIncludesOpen(!includesOpen)}
+              style={{
+                width: '100%',
+                appearance: 'none',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                textAlign: 'left',
+                padding: '20px 26px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: 12,
+              }}
+            >
+              <span style={{ fontSize: 17, fontWeight: 700, color: PURPLE_DARK, lineHeight: 1.4 }}>
+                Is Batch Me Kya-Kya Shamil Hai
+              </span>
+              <span
+                aria-hidden
+                style={{
+                  display: 'inline-block',
+                  transform: includesOpen ? 'rotate(180deg)' : 'none',
+                  transition: 'transform .25s',
+                  color: PURPLE,
+                  fontWeight: 900,
+                  fontSize: 15,
+                }}
+              >
+                ▾
+              </span>
+            </button>
+            {includesOpen && (
+              <div style={{ padding: '2px 26px 20px', display: 'flex', flexDirection: 'column' }}>
+                {includeRows.map((row, i) => (
+                  <div
+                    key={row.label}
+                    style={{
+                      display: 'flex',
+                      gap: 13,
+                      alignItems: 'flex-start',
+                      padding: '11px 0',
+                      borderTop: i === 0 ? '1px solid var(--line)' : '1px dashed #f0edff',
+                    }}
+                  >
+                    <span
+                      aria-hidden
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: 10,
+                        background: row.bg,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 17,
+                        flexShrink: 0,
+                      }}
+                    >
+                      {row.icon}
+                    </span>
+                    <span style={{ minWidth: 0 }}>
+                      <span style={{ display: 'block', fontWeight: 700, fontSize: 14 }}>{row.label}</span>
+                      <span style={{ display: 'block', fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>
+                        {row.value}
+                      </span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* -------- Demo lectures strip (asal free previews hi) -------- */}
+          {freeLectures.length > 0 && (
+            <div className="batch" style={{ padding: 26 }}>
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: PURPLE_DARK, marginBottom: 4 }}>
+                🎬 Demo Lectures — Pehle Try Karo
+              </h3>
+              <p style={{ fontSize: 13.5, color: 'var(--muted)', marginBottom: 14, lineHeight: 1.65 }}>
+                Bina enroll kiye ye free preview lectures dekho — teaching style pehle
+                check karo, phir faisla lo.
+              </p>
+              <div
+                style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 6, scrollbarWidth: 'none' }}
+                className="cd-tabs"
+              >
+                {freeLectures.map((lec) => (
+                  <Link
+                    key={lec.id}
+                    href={previewHref}
+                    style={{
+                      minWidth: 228,
+                      maxWidth: 228,
+                      flexShrink: 0,
+                      borderRadius: 14,
+                      background: 'linear-gradient(135deg,#2a1650,#6d28d9)',
+                      color: '#fff',
+                      padding: 16,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 10,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <span
+                      aria-hidden
+                      style={{
+                        width: 38,
+                        height: 38,
+                        borderRadius: '50%',
+                        background: GOLD,
+                        color: PURPLE_DARK,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 14,
+                      }}
+                    >
+                      ▶
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 13.5,
+                        fontWeight: 700,
+                        lineHeight: 1.45,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {lec.title}
+                    </span>
+                    <span style={{ fontSize: 11.5, opacity: 0.85, lineHeight: 1.55 }}>
+                      {lec.subjectName} · {lec.chapterTitle}
+                      {lec.durationSeconds ? ` · ${formatDuration(lec.durationSeconds)}` : ''}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* -------- Know Your Teachers carousel -------- */}
+          {teachers.length > 0 && (
+            <div className="batch" style={{ padding: 26 }}>
+              <h3 style={{ fontSize: 15, fontWeight: 700, color: PURPLE_DARK, marginBottom: 4 }}>
+                👨‍🏫 Know Your Teachers
+              </h3>
+              <p style={{ fontSize: 13.5, color: 'var(--muted)', marginBottom: 14, lineHeight: 1.65 }}>
+                Is course ko padhane wale asal educators — poori profile ke liye
+                card par click karo.
+              </p>
+              <div
+                style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 6, scrollbarWidth: 'none' }}
+                className="cd-tabs"
+              >
+                {teachers.map((t, i) => {
+                  const subs = [...(t.subjects || []), ...(t.specialties || [])];
+                  const initials =
+                    t.displayName
+                      .split(/\s+/)
+                      .filter(Boolean)
+                      .slice(0, 2)
+                      .map((w) => w.charAt(0).toUpperCase())
+                      .join('') || 'T';
+                  const pastel = TEACHER_PASTELS[i % TEACHER_PASTELS.length];
+                  return (
+                    <Link
+                      key={t.id}
+                      href={`/teachers/${t.slug}`}
+                      style={{
+                        minWidth: 218,
+                        maxWidth: 218,
+                        flexShrink: 0,
+                        border: '1.5px solid var(--line)',
+                        borderRadius: 16,
+                        padding: 18,
+                        background: '#fff',
+                        display: 'block',
+                        textDecoration: 'none',
+                        color: 'inherit',
+                      }}
+                    >
+                      {t.logoUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={t.logoUrl}
+                          alt={t.displayName}
+                          style={{
+                            width: 52,
+                            height: 52,
+                            borderRadius: '50%',
+                            objectFit: 'cover',
+                            marginBottom: 12,
+                            background: '#fff',
+                          }}
+                        />
+                      ) : (
+                        <span
+                          aria-hidden
+                          style={{
+                            width: 52,
+                            height: 52,
+                            borderRadius: '50%',
+                            background: pastel.bg,
+                            color: pastel.fg,
+                            fontSize: 19,
+                            fontWeight: 800,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginBottom: 12,
+                          }}
+                        >
+                          {initials}
+                        </span>
+                      )}
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 800, fontSize: 15, flexWrap: 'wrap', lineHeight: 1.35 }}>
+                        {t.displayName}
+                        {t.verified && (
+                          <span
+                            style={{
+                              fontSize: 9.5,
+                              fontWeight: 800,
+                              background: GREEN_BG,
+                              color: GREEN_DARK,
+                              padding: '2px 7px',
+                              borderRadius: 999,
+                            }}
+                          >
+                            ✓ VERIFIED
+                          </span>
+                        )}
+                      </span>
+                      {subs.length > 0 && (
+                        <span style={{ display: 'block', fontSize: 12.5, color: 'var(--muted)', lineHeight: 1.55, marginTop: 4 }}>
+                          {subs.join(' · ')}
+                        </span>
+                      )}
+                      {t.tagline && (
+                        <span style={{ display: 'block', fontSize: 12.5, color: PURPLE, fontWeight: 600, marginTop: 4, lineHeight: 1.55 }}>
+                          {t.tagline}
+                        </span>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {batches.length > 0 && (
             <div className="batch" style={{ padding: 26 }}>
               <h3 style={{ fontSize: 15, fontWeight: 700, color: PURPLE_DARK, marginBottom: 6 }}>
@@ -745,7 +1056,7 @@ export default function CourseDetailClient({
                     fontSize: 13.5,
                   }}
                 >
-                  Schedule tab
+                  All Classes tab
                 </button>{' '}
                 dekho.
               </p>
@@ -1477,7 +1788,7 @@ export default function CourseDetailClient({
                     fontSize: 14,
                   }}
                 >
-                  Schedule
+                  All Classes
                 </button>{' '}
                 tab me dekho.
               </p>
@@ -1641,6 +1952,9 @@ export default function CourseDetailClient({
           })}
         </div>
       </section>
+        </div>
+        {rail}
+      </div>
 
       <style>{`
         @media (max-width: 700px) {
@@ -1668,53 +1982,6 @@ function AboutMeta({ label, value }: { label: string; value: string }) {
         {label}
       </span>
       <span style={{ fontSize: 15, fontWeight: 800, color: PURPLE_DARK }}>{value}</span>
-    </div>
-  );
-}
-
-function FeatureRow({
-  title,
-  desc,
-  show,
-}: {
-  title: string;
-  desc: string;
-  show?: boolean;
-}) {
-  if (!show) return null;
-  return (
-    <div
-      style={{
-        display: 'flex',
-        gap: 13,
-        alignItems: 'flex-start',
-        padding: '13px 2px',
-        borderBottom: '1px dashed #f0edff',
-      }}
-    >
-      <span
-        aria-hidden
-        style={{
-          width: 26,
-          height: 26,
-          borderRadius: '50%',
-          background: GREEN_BG,
-          color: GREEN_DARK,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 14,
-          fontWeight: 900,
-          flexShrink: 0,
-          marginTop: 1,
-        }}
-      >
-        ✓
-      </span>
-      <span>
-        <span style={{ display: 'block', fontWeight: 700, fontSize: 14.5 }}>{title}</span>
-        <span style={{ display: 'block', fontSize: 13, color: 'var(--muted)', lineHeight: 1.6 }}>{desc}</span>
-      </span>
     </div>
   );
 }
