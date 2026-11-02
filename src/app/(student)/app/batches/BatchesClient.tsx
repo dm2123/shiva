@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
-  IconCalendar, IconUser, IconPlay, IconSearch, IconX, IconClock, IconArrowRight,
+  IconCalendar, IconUser, IconPlay, IconSearch, IconX, IconClock,
 } from '@/components/student/StudentIcons';
 import CourseBanner from '@/components/student/CourseBanner';
 
@@ -227,18 +227,13 @@ export default function BatchesClient({ batches }: { batches: BatchCardData[] })
             </button>
           </div>
         ) : (
-          /* PW-style saaf empty state — bada dabba nahi, sirf text + link */
+          /* PW-style saaf empty state — bada dabba nahi, sirf text.
+             PW ke live screenshot me neeche koi link/button NAHI hai,
+             isliye 'Explore Courses' link hata diya (F1, 3 Nov fix list). */
           <div className="pt-5">
             <p className="text-[15px] text-gray-700">
               {tab === 'EXPIRED' ? 'No expired batches available.' : 'No batches available.'}
             </p>
-            <Link
-              href="/app/courses"
-              className="mt-2.5 inline-flex items-center gap-1.5 text-[14px] font-bold text-[#6d28d9] transition-colors hover:text-[#5b21b6]"
-            >
-              Explore Courses
-              <IconArrowRight size={14} />
-            </Link>
           </div>
         )
       ) : (
@@ -267,7 +262,12 @@ export default function BatchesClient({ batches }: { batches: BatchCardData[] })
                   <h3 className="line-clamp-2 text-[15px] font-bold leading-snug text-gray-900 transition-colors group-hover:text-[#6d28d9]">
                     {b.name}
                   </h3>
-                  <p className="mt-0.5 line-clamp-1 text-[12.5px] text-gray-500">{b.courseTitle}</p>
+                  {/* Course-title dusri line sirf tab jab batch name se
+                      asal me alag ho — dono same hon to ek hi baat do baar
+                      dikhti thi (F3, 3 Nov fix list). */}
+                  {b.courseTitle.trim().toLowerCase() !== b.name.trim().toLowerCase() && (
+                    <p className="mt-0.5 line-clamp-1 text-[12.5px] text-gray-500">{b.courseTitle}</p>
+                  )}
 
                   <div className="mt-3 space-y-2 text-[12.5px] text-gray-500">
                     {(start || end) && (

@@ -12,17 +12,23 @@ export default async function BatchesPage() {
   // Real enrolled batches for this student.
   // c.price sirf Paid | Free segmented control ki classification ke liye
   // hai (price > 0 = Paid, 0/NULL = Free) — asal column, koi invent nahi.
+  // F7 (3 Nov fix list): Batches par LEFT JOIN — jis enrollment ka
+  // batchId NULL hai (sirf course enroll, koi batch nahi) woh bhi asal
+  // enrolled course hai, isliye My Batches me dikhna chahiye. Pehle
+  // inner join use chhupakar hata deta tha (khaas karke Free segment
+  // khaali dikhne ki ek wajah). Aise rows me mapping neeche batch
+  // fields ki jagah course/enrollment ke asal fields leti hai.
   const [rows]: any = await mysqlPool.query(
     `SELECT b.id, b.name, b.status, b.startDate, b.endDate,
             c.id AS courseId, c.title AS courseTitle, c.thumbnailUrl AS courseThumbnail,
-            c.price AS coursePrice, e.enrolledAt AS enrolledAt,
+            c.price AS coursePrice, e.id AS enrollmentId, e.enrolledAt AS enrolledAt,
             tp.name AS teacherName
        FROM StudentEnrollments e
-       JOIN Batches b ON e.batchId = b.id
+       LEFT JOIN Batches b ON e.batchId = b.id
        JOIN Courses c ON e.courseId = c.id
        LEFT JOIN TeacherProfiles tp ON b.teacherId = tp.userId
       WHERE e.studentId = ? AND e.status = 'ACTIVE'
-      ORDER BY b.createdAt DESC`,
+      ORDER BY COALESCE(b.createdAt, e.enrolledAt) DESC`,
     [session.userId]
   );
   const batches: any[] = rows || [];
@@ -45,11 +51,16 @@ export default async function BatchesPage() {
     }
   } catch { /* validity column nahi — batch endDate hi expiry ka aadhaar */ }
 
-  // Client component ke liye serializable roop (dates → ISO string)
+  // Client component ke liye serializable roop (dates → ISO string).
+  // Course-only enrollment (b.id NULL) me: card id = enrollment id,
+  // title = course title hi (batch name maujood nahi), status = 'ACTIVE'
+  // (enrollment ki asal status — query e.status='ACTIVE' par hi filter
+  // hai). Dates/teacher NULL rahenge — client unhe imaandaari se
+  // khaali/'To be assigned' dikhata hai, kuch invent nahi hota.
   const batchData: BatchCardData[] = batches.map((b) => ({
-    id: String(b.id),
-    name: b.name,
-    status: b.status,
+    id: String(b.id ?? b.enrollmentId),
+    name: b.name ?? b.courseTitle,
+    status: b.status ?? 'ACTIVE',
     startDate: b.startDate ? new Date(b.startDate).toISOString() : null,
     endDate: b.endDate ? new Date(b.endDate).toISOString() : null,
     courseId: String(b.courseId),
