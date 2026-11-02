@@ -3,61 +3,17 @@
 import { usePathname } from 'next/navigation';
 import PWStudentHeader from './PWStudentHeader';
 
-const TITLES: Record<string, string> = {
-  '/app': 'Study',
-  '/app/batches': 'My Batches',
-  '/app/courses': 'Courses',
-  '/app/my-courses': 'My Courses',
-  '/app/learn': 'Classroom',
-  '/app/tests': 'Tests',
-  '/app/doubts': 'Doubts',
-  '/app/ebooks': 'Library',
-  '/app/live': 'Live Classes',
-  '/app/profile': 'Profile',
-  '/app/payments': 'My Purchases',
-  '/app/goals': 'My Goal',
-  '/app/search': 'Search',
-  '/app/notifications': 'Notifications',
-  '/app/settings': 'Settings',
-  '/app/analytics': 'Analytics',
-  '/app/leaderboard': 'Leaderboard',
-  '/app/assignments': 'Assignments',
-  '/app/practice': 'Practice',
-  '/app/pyq': 'PYQs',
-  '/app/dpp': 'DPP',
-  '/app/study-plan': 'Study Plan',
-  '/app/bookmarks': 'Bookmarks',
-  '/app/certificates': 'Certificates',
-  '/app/recordings': 'Recordings',
-  '/app/announcements': 'Announcements',
-  '/app/streak': 'Daily Streak',
-  '/app/question-bank': 'Question Bank',
-  '/app/subscriptions': 'My Subscription',
-  '/app/community': 'Community',
-  '/app/mentors': 'Mentors',
-  '/app/counsellor': 'Counsellor',
-  '/app/scholarships': 'Scholarships',
-  '/app/formula-sheets': 'Formula Sheets',
-  '/app/ncert': 'NCERT',
-  '/app/faculty': 'Teachers',
-  '/app/video-solutions': 'Video Solutions',
-  '/app/offline-downloads': 'Downloads',
-  '/app/results': 'My Results',
-};
-
-function titleFor(pathname: string): string {
-  if (TITLES[pathname]) return TITLES[pathname];
-  // Dynamic routes: /app/courses/[id], /app/learn/[id], /app/tests/[id]
-  if (pathname.startsWith('/app/courses/')) return 'Course Details';
-  if (pathname.startsWith('/app/learn/')) return 'Classroom';
-  if (pathname.startsWith('/app/tests/')) return 'Test';
-  if (pathname.startsWith('/app/batches/')) return 'Batch Details';
-  if (pathname.startsWith('/app/live/')) return 'Live Class';
-  if (pathname.startsWith('/app/ncert/')) return 'NCERT';
-  if (pathname.startsWith('/app/scholarships/')) return 'Scholarship Details';
-  return '';
-}
-
+/**
+ * Shell header ka wrapper — PW pattern ke hisaab se:
+ * - Dashboard (/app) par sub-header patti nahi (hideTitleBar) — page ka
+ *   apna 'Study' header row hi ekmatra header hai.
+ * - Inner pages par sub-header me sirf `← Back` + asal streak/XP pills
+ *   aate hain; page ka title is patti me NAHI hota (har page ke content
+ *   ke andar apna bada h1 pehle se hai), isliye yahan koi title map
+ *   nahi rakha gaya hai.
+ * - streak/totalXP layout se aate hain aur header hote hue sub-header
+ *   ki pills ko milte hain (top bar me chips nahi hote — PW shell).
+ */
 export default function StudentHeaderWrapper({
   userName,
   userEmail,
@@ -74,15 +30,12 @@ export default function StudentHeaderWrapper({
   unreadCount?: number;
 }) {
   const pathname = usePathname();
-  const pageTitle = titleFor(pathname || '/app');
   return (
     <PWStudentHeader
       userName={userName}
       userEmail={userEmail}
       goal={goal}
-      pageTitle={pageTitle}
       hideTitleBar={(pathname || '/app') === '/app'}
-      hideChips={(pathname || '/app') === '/app'}
       streak={streak}
       totalXP={totalXP}
       unreadCount={unreadCount}

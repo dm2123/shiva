@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { listAllTests } from '@/services/test.service';
 import { listPublicCourses } from '@/services/academic.service';
-import { deriveExamCategory } from '@/components/public/CourseCard';
+import { deriveExamCategory } from '@/lib/exam-category';
 import TestSeriesPublic, {
   type PublicExamCategory,
   type PublicTestItem,
@@ -90,7 +90,10 @@ export default async function PublicTestSeriesPage() {
     return {
       id: t.id,
       title: t.title,
-      description: t.description?.trim() ? t.description : null,
+      // description asal me string hi hota hai, par DB se kabhi
+      // non-string aaye to .trim() par crash na ho — type pehle parkho.
+      description:
+        typeof t.description === 'string' && t.description.trim() ? t.description : null,
       durationMinutes: Number(t.durationMinutes) || 0,
       totalMarks: Number(t.totalMarks) || 0,
       passingMarks:

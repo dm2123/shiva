@@ -20,36 +20,17 @@ import Link from 'next/link';
 import type { Course } from '@/types/models';
 
 /* ------------------------------------------------------------------ */
-/* Exam category — derived ONLY from the course's own title + slug     */
+/* Exam category — derived ONLY from the course's own title + slug.    */
+/* Asli implementation ab @/lib/exam-category (pure, server-safe       */
+/* module) me hai — 'use client' module se plain function server par   */
+/* call karna production build me crash karta tha (/test-series 500    */
+/* ki jad). Yahan se re-export sirf isliye hai taaki purane importers   */
+/* (StudyHomeClient) bina badle chalte rahein.                         */
 /* ------------------------------------------------------------------ */
 
-export interface ExamCategory {
-  id: string;
-  label: string;
-  icon: string;
-}
-
-const CATEGORY_RULES: { id: string; label: string; icon: string; pattern: RegExp }[] = [
-  { id: 'ssc', label: 'SSC', icon: '🎯', pattern: /\bssc\b|cgl|chsl|\bmts\b|steno/i },
-  { id: 'railway', label: 'Railway', icon: '🚂', pattern: /railway|ntpc|\brrb\b|group[\s-]?d/i },
-  { id: 'banking', label: 'Banking', icon: '🏦', pattern: /bank|ibps|\bsbi\b|banking/i },
-  { id: 'defence', label: 'Defence', icon: '🛡️', pattern: /defence|defense|\bnda\b|\bcds\b|afcat|agniveer|army|navy|air[\s-]?force/i },
-  { id: 'teaching', label: 'Teaching', icon: '👩‍🏫', pattern: /ctet|uptet|\btet\b|teacher|teaching|\bkvs\b|dsssb|b\.?ed/i },
-  { id: 'upsc', label: 'UPSC', icon: '🏛️', pattern: /upsc|\bias\b|civil[\s-]?service/i },
-  { id: 'state', label: 'State Exams', icon: '🗺️', pattern: /upsssc|uppsc|bpsc|\bpsc\b|\bpet\b|state[\s-]?exam/i },
-  { id: 'foundation', label: 'Foundation', icon: '📚', pattern: /foundation|aptitude|crash/i },
-];
-
-/** Returns the exam category honestly derivable from title/slug, else null. */
-export function deriveExamCategory(course: Pick<Course, 'title' | 'slug'>): ExamCategory | null {
-  const haystack = `${course.title} ${course.slug.replace(/-/g, ' ')}`;
-  for (const rule of CATEGORY_RULES) {
-    if (rule.pattern.test(haystack)) {
-      return { id: rule.id, label: rule.label, icon: rule.icon };
-    }
-  }
-  return null;
-}
+import { deriveExamCategory, type ExamCategory } from '@/lib/exam-category';
+export { deriveExamCategory };
+export type { ExamCategory } from '@/lib/exam-category';
 
 /* Brand gradients (deep purple family + gold-tinted) — stable per course */
 const BANNER_GRADIENTS = [

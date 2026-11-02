@@ -1,44 +1,80 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type ComponentType } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import PWStudentMenu from './PWStudentMenu';
 import StudentNotificationList, {
   type StudentNotificationItem,
 } from './StudentNotificationList';
 import { IconSearch, IconBell, IconFlame, IconStar } from './ShivaIcons';
+import { IconArrowLeft } from './StudentIcons';
 
 interface PWStudentHeaderProps {
   userName: string;
   userEmail: string;
   goal?: string;
-  pageTitle?: string;
-  /** Dashboard par true — page ka apna 'Study' header hi ekmatra title hai,
-   *  shell ki duplicate title-patti nahi dikhti. */
+  /** Dashboard par true — dashboard par sub-header patti hi nahi aati
+   *  (PW par Study page seedha content se shuru hota hai). Inner pages
+   *  par sub-header = `← Back` + streak/XP pills (PW pattern). */
   hideTitleBar?: boolean;
-  /** Dashboard par true — streak/XP chips page ke 'Study' header row me
-   *  dikhte hain (PW pattern); top bar me dohraane se bacho. */
-  hideChips?: boolean;
-  /** DailyStreaks se asal current streak; load na ho to null (chip nahi dikhega) */
+  /** DailyStreaks se asal current streak; load na ho to null (pill nahi dikhega) */
   streak?: number | null;
-  /** StudentXP se asal total XP; load na ho to null (chip nahi dikhega) */
+  /** StudentXP se asal total XP; load na ho to null (pill nahi dikhega) */
   totalXP?: number | null;
   /** Notifications table se asal unread ginti; badge sirf > 0 par */
   unreadCount?: number;
+}
+
+type IconComponent = ComponentType<{ size?: number; className?: string }>;
+
+/** Sub-header ki stat pill — PW pattern: outline pill, icon gray circle
+ *  me, bold number. Sirf asal streak/XP par render hoti hai. */
+function StatPill({
+  Icon,
+  iconColor,
+  value,
+  label,
+}: {
+  Icon: IconComponent;
+  iconColor: string;
+  value: string;
+  label: string;
+}) {
+  return (
+    <span
+      className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white py-1 pl-1 pr-3 shadow-[0_1px_2px_rgba(16,24,40,0.05)]"
+      aria-label={label}
+    >
+      <span className={`flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 ${iconColor}`}>
+        <Icon size={14} />
+      </span>
+      <span className="text-[14px] font-extrabold tabular-nums text-gray-900">{value}</span>
+    </span>
+  );
 }
 
 export default function PWStudentHeader({
   userName,
   userEmail,
   goal,
-  pageTitle = 'Home',
   hideTitleBar = false,
-  hideChips = false,
   streak = null,
   totalXP = null,
   unreadCount = 0,
 }: PWStudentHeaderProps) {
+  const router = useRouter();
+
+  // Sub-header ka Back — asal browser history par back; history na ho
+  // (seedha link se aaya ho) to dashboard fallback.
+  const goBack = useCallback(() => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/app');
+    }
+  }, [router]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
@@ -100,8 +136,8 @@ export default function PWStudentHeader({
   return (
     <>
       <header className="sticky top-0 z-50 shadow-[0_1px_8px_rgba(16,24,40,0.14)]">
-        {/* ── Upar patti (dark purple strip) ─────────────────── */}
-        <div className="bg-[#2a1650] text-white">
+        {/* ── Upar patti (KAALA strip, PW shell #121216) ─────── */}
+        <div className="bg-[#121216] text-white">
           <div className="flex items-center gap-2 sm:gap-3 px-4 lg:px-6 py-2.5">
             {/* Hamburger — sirf mobile/tablet; desktop par sidebar dikhta hai */}
             <button
@@ -163,34 +199,10 @@ export default function PWStudentHeader({
 
             <div className="flex-1" />
 
-            {/* Streak chip — asal data ho tabhi; dashboard par page
-                header row me dikhta hai, yahan nahi (duplication) */}
-            {!hideChips && streak !== null && (
-              <Link
-                href="/app/streak"
-                className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/15 rounded-full px-2.5 min-[420px]:px-3 py-1.5 text-[12.5px] font-bold transition shrink-0"
-                aria-label={`${streak} day streak`}
-              >
-                <span className="text-orange-400">
-                  <IconFlame size={15} />
-                </span>
-                <span>{`${streak} din streak`}</span>
-              </Link>
-            )}
-
-            {/* XP chip — asal data ho tabhi; dashboard par page
-                header row me dikhta hai, yahan nahi (duplication) */}
-            {!hideChips && totalXP !== null && (
-              <span
-                className="hidden min-[420px]:inline-flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5 text-[12.5px] font-bold shrink-0"
-                aria-label={`${totalXP} XP`}
-              >
-                <span className="text-[#f5b942]">
-                  <IconStar size={15} />
-                </span>
-                <span>{`${Number(totalXP).toLocaleString('en-IN')} XP`}</span>
-              </span>
-            )}
+            {/* PW pattern: top bar me streak/XP chips NAHI hote —
+                ve dashboard ke header row aur inner pages ke
+                sub-header me dikhte hain. Yahan sirf search, bell,
+                avatar (PW shell). */}
 
             {/* Search — har page par top bar se hi uplabdh */}
             <Link
@@ -209,7 +221,7 @@ export default function PWStudentHeader({
             >
               <IconBell size={20} />
               {unread > 0 && (
-                <span className="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center border-2 border-[#2a1650]">
+                <span className="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center border-2 border-[#121216]">
                   {unread > 99 ? '99+' : unread}
                 </span>
               )}
@@ -272,12 +284,39 @@ export default function PWStudentHeader({
           </div>
         </div>
 
-        {/* ── Sub-header: page title (dashboard par hide — uska apna
-            'Study' header card hi single title source hai) ──── */}
+        {/* ── Sub-header (inner pages) — PW pattern: safed patti,
+            baayen sirf `← Back` (title is patti me NAHI — har page
+            ka title uske content ke andar bada h1 hai), daayen asal
+            streak + XP pills. Dashboard par ye patti nahi aati. ── */}
         {!hideTitleBar && (
-          <div className="border-b border-gray-100 bg-white text-gray-900">
-            <div className="flex items-center gap-3 px-4 py-2 lg:px-6">
-              <h1 className="text-[15px] font-semibold">{pageTitle}</h1>
+          <div className="border-b border-gray-200 bg-white text-gray-900">
+            <div className="flex items-center gap-3 px-4 py-2.5 lg:px-6">
+              <button
+                onClick={goBack}
+                className="inline-flex min-h-[40px] items-center gap-2 rounded-lg px-2 -ml-2 text-[15px] font-bold text-gray-900 transition hover:bg-gray-50"
+                aria-label="Pichhle page par wapas jao"
+              >
+                <IconArrowLeft size={20} />
+                Back
+              </button>
+              <div className="ml-auto flex items-center gap-2.5">
+                {streak !== null && (
+                  <StatPill
+                    Icon={IconFlame}
+                    iconColor="text-orange-500"
+                    value={String(streak)}
+                    label={`${streak} din ki streak`}
+                  />
+                )}
+                {totalXP !== null && (
+                  <StatPill
+                    Icon={IconStar}
+                    iconColor="text-[#d97706]"
+                    value={Number(totalXP).toLocaleString('en-IN')}
+                    label={`${totalXP} XP`}
+                  />
+                )}
+              </div>
             </div>
           </div>
         )}

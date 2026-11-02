@@ -45,8 +45,8 @@ export default function PWStudentMenu({ open, onClose, userName }: PWStudentMenu
         aria-modal="true"
         aria-label="Menu"
       >
-        {/* User header */}
-        <div className="bg-[#2a1650] text-white px-5 py-6">
+        {/* User header — shell ke kaale band (#121216) se align */}
+        <div className="bg-[#121216] text-white px-5 py-6">
           <div className="flex items-center gap-3">
             <span className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-500 to-[#6d28d9] flex items-center justify-center font-bold text-lg shrink-0">
               {(userName || 'S').charAt(0).toUpperCase()}

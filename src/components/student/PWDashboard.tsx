@@ -1,9 +1,13 @@
 'use client';
 
 // ============================================================
-// THE SHIVA — Student Dashboard (/app) — v3
+// THE SHIVA — Student Dashboard (/app) — v4 (Wave A pixel polish)
 // PW ke logged-in 'Study' page ki EXACT sanrachna, unke asal
-// screenshot se milakar (2 Nov ki PW study):
+// screenshot se milakar (2 Nov ki PW study). v4 me pixel pass:
+// chips h-11 + 36px gray icon circle + 16px extrabold number,
+// cards p-7/radius-16, tiles 52px icon dabba + PW-palette
+// pastel hex, promo crossfade carousel, Quick Access 48px
+// icon dabba:
 //   Header row: 'Study' bada title (baayen) + streak/XP chips
 //   (daayen, halki pill me) → (asal ho to) validity alert →
 //   My Learning card (3 pastel tiles) → Boost Your Learning
@@ -79,8 +83,8 @@ export interface PWDashboardProps {
 }
 
 const CARD =
-  'rounded-2xl border border-gray-200/80 bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-6';
-const SECTION_TITLE = 'text-[18px] font-bold leading-snug text-gray-900';
+  'rounded-2xl border border-gray-200/80 bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-7';
+const SECTION_TITLE = 'text-[19px] font-bold leading-snug text-gray-900';
 
 type IconComponent = ComponentType<{ size?: number; className?: string }>;
 
@@ -103,13 +107,13 @@ function PastelTile({
   return (
     <Link
       href={href}
-      className={`flex min-w-0 flex-col rounded-xl p-3.5 transition hover:shadow-sm sm:p-5 ${bg}`}
+      className={`flex min-h-[136px] min-w-0 flex-col rounded-xl p-3.5 transition hover:shadow-sm sm:min-h-[154px] sm:p-5 ${bg}`}
     >
-      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white shadow-sm sm:h-12 sm:w-12">
-        <Icon size={22} className={iconColor} />
+      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white shadow-sm sm:h-[52px] sm:w-[52px] sm:rounded-[14px]">
+        <Icon size={24} className={iconColor} />
       </span>
-      <span className="mt-3 text-[14.5px] font-bold leading-tight text-gray-900 sm:text-[15px]">{label}</span>
-      <span className="mt-1 line-clamp-2 text-[12px] leading-snug text-gray-500">{sub}</span>
+      <span className="mt-3 text-[13.5px] font-bold leading-tight text-gray-900 sm:text-[15px]">{label}</span>
+      <span className="mt-1 line-clamp-2 text-[12.5px] leading-snug text-gray-500">{sub}</span>
     </Link>
   );
 }
@@ -130,14 +134,14 @@ function HeaderChip({
 }) {
   const inner = (
     <>
-      <span className={`flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 ${iconColor}`}>
-        <Icon size={16} />
+      <span className={`flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 ${iconColor}`}>
+        <Icon size={18} />
       </span>
-      <span className="pr-1 text-[15px] font-extrabold tabular-nums text-gray-900">{value}</span>
+      <span className="pr-1.5 text-[16px] font-extrabold tabular-nums leading-none text-gray-900">{value}</span>
     </>
   );
   const cls =
-    'inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white py-1 pl-1 pr-2.5 shadow-[0_1px_2px_rgba(16,24,40,0.05)]';
+    'inline-flex h-11 items-center gap-2.5 rounded-full border border-gray-200 bg-white py-1 pl-1 pr-3.5 shadow-[0_1px_2px_rgba(16,24,40,0.05)]';
   return href ? (
     <Link href={href} className={`${cls} transition hover:border-violet-300`} aria-label={label}>
       {inner}
@@ -216,20 +220,20 @@ export default function PWDashboard({
         : 'Doubts aur unke jawab';
 
   const BOOST_TILES = [
-    { label: 'Library', sub: 'Notes, eBooks aur sheets', Icon: IconLibrary, href: '/app/library', bg: 'bg-sky-50', iconColor: 'text-sky-600' },
-    { label: 'Doubt Poocho', sub: 'Sawal poochho, jawab pao', Icon: IconDoubts, href: '/app/doubts', bg: 'bg-orange-50', iconColor: 'text-orange-600' },
-    { label: 'Mentors', sub: 'Mentor se sahi guidance', Icon: IconUsers, href: '/app/mentors', bg: 'bg-amber-50', iconColor: 'text-amber-600' },
-    { label: 'Study Plan', sub: 'Apni taiyaari plan karo', Icon: IconCalendar, href: '/app/study-plan', bg: 'bg-blue-50', iconColor: 'text-blue-600' },
-    { label: 'Question Bank', sub: 'Topic-wise sawal', Icon: IconTarget, href: '/app/question-bank', bg: 'bg-violet-50', iconColor: 'text-violet-600' },
-    { label: 'DPP', sub: 'Roz ke practice problems', Icon: IconAssignment, href: '/app/dpp', bg: 'bg-lime-50', iconColor: 'text-lime-600' },
+    { label: 'Library', sub: 'Notes, eBooks aur sheets', Icon: IconLibrary, href: '/app/library', bg: 'bg-[#e7f0ff]', iconColor: 'text-blue-600' },
+    { label: 'Doubt Poocho', sub: 'Sawal poochho, jawab pao', Icon: IconDoubts, href: '/app/doubts', bg: 'bg-[#ffe8d1]', iconColor: 'text-orange-600' },
+    { label: 'Mentors', sub: 'Mentor se sahi guidance', Icon: IconUsers, href: '/app/mentors', bg: 'bg-[#fdf0c2]', iconColor: 'text-amber-600' },
+    { label: 'Study Plan', sub: 'Apni taiyaari plan karo', Icon: IconCalendar, href: '/app/study-plan', bg: 'bg-[#ece7ff]', iconColor: 'text-violet-600' },
+    { label: 'Question Bank', sub: 'Topic-wise sawal', Icon: IconTarget, href: '/app/question-bank', bg: 'bg-[#ffe3ee]', iconColor: 'text-pink-600' },
+    { label: 'DPP', sub: 'Roz ke practice problems', Icon: IconAssignment, href: '/app/dpp', bg: 'bg-[#dcf5e3]', iconColor: 'text-emerald-600' },
   ];
 
   return (
     <main className="mx-auto w-full max-w-[54rem] space-y-6 px-4 py-6 pb-10">
       {/* ── 1. Header row: 'Study' + asal streak/XP chips ──── */}
-      <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-[26px] font-extrabold leading-tight text-gray-900 sm:text-[28px]">Study</h1>
-        <div className="ml-auto flex items-center gap-2.5">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2.5">
+        <h1 className="text-[28px] font-extrabold leading-none text-gray-900">Study</h1>
+        <div className="ml-auto flex flex-wrap items-center gap-2 sm:gap-2.5">
           {streak !== null && (
             <HeaderChip
               Icon={IconFlame}
@@ -286,21 +290,21 @@ export default function PWDashboard({
       {/* ── 3. My Learning — ek safed card, 3 pastel tiles ─── */}
       <section className={CARD} aria-label="My Learning">
         <h2 className={SECTION_TITLE}>My Learning</h2>
-        <div className="mt-4 grid grid-cols-3 gap-3 sm:gap-4">
+        <div className="mt-5 grid grid-cols-3 gap-2.5 sm:gap-4">
           <PastelTile
             href="/app/batches"
             Icon={IconBatches}
             label="My Batches"
             sub={batchSub}
-            bg="bg-sky-50"
-            iconColor="text-sky-600"
+            bg="bg-[#e7f0ff]"
+            iconColor="text-blue-600"
           />
           <PastelTile
             href="/app/my-courses"
             Icon={IconPlay}
             label="Recent Learning"
             sub={recentSub}
-            bg="bg-orange-50"
+            bg="bg-[#ffe8d1]"
             iconColor="text-orange-600"
           />
           <PastelTile
@@ -308,7 +312,7 @@ export default function PWDashboard({
             Icon={IconDoubts}
             label="My Doubts"
             sub={doubtSub}
-            bg="bg-emerald-50"
+            bg="bg-[#dcf5e3]"
             iconColor="text-emerald-600"
           />
         </div>
@@ -317,7 +321,7 @@ export default function PWDashboard({
       {/* ── 4. Boost Your Learning — 6 pastel tiles (3×2) ──── */}
       <section className={CARD} aria-label="Boost Your Learning">
         <h2 className={SECTION_TITLE}>Boost Your Learning</h2>
-        <div className="mt-4 grid grid-cols-3 gap-3 sm:gap-4">
+        <div className="mt-5 grid grid-cols-3 gap-2.5 sm:gap-4">
           {BOOST_TILES.map((t) => (
             <PastelTile key={t.label} {...t} />
           ))}
@@ -328,25 +332,39 @@ export default function PWDashboard({
              published free courses ─────────────────────────── */}
       {promo && (
         <section className={CARD} aria-label="Free courses">
-          <div className="overflow-hidden rounded-xl bg-gradient-to-r from-[#2a1650] to-[#6d28d9] p-5 text-white sm:p-7">
-            <span className="inline-flex rounded-full bg-[#f5b942] px-2.5 py-1 text-[10.5px] font-black uppercase tracking-wider text-[#2a1650]">
-              Free Course
-            </span>
-            <span className="mt-3 block text-[19px] font-extrabold leading-snug sm:text-[22px]">
-              {promo.title}
-            </span>
-            <span className="mt-1 block max-w-md text-[13px] leading-relaxed text-white/75">
-              Bilkul free course — enroll karke aaj hi padhai shuru karo.
-            </span>
-            <Link
-              href={`/app/courses/${promo.id}`}
-              className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-[12.5px] font-bold text-[#2a1650] transition hover:shadow-md"
-            >
-              Shuru karo
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </Link>
+          {/* Saari slides ek hi grid cell me stacked — slide badalne
+              par opacity crossfade (smooth transition), height sabse
+              bade slide ke barabar */}
+          <div className="grid overflow-hidden rounded-xl">
+            {promoCourses.map((c, i) => (
+              <div
+                key={c.id}
+                aria-hidden={i !== promoIdx}
+                className={`col-start-1 row-start-1 flex min-h-[150px] flex-col justify-center bg-gradient-to-r from-[#2a1650] to-[#6d28d9] p-6 text-white transition-opacity duration-500 sm:min-h-[168px] sm:p-8 ${
+                  i === promoIdx ? 'opacity-100' : 'pointer-events-none opacity-0'
+                }`}
+              >
+                <span className="inline-flex self-start rounded-full bg-[#f5b942] px-2.5 py-1 text-[10.5px] font-black uppercase tracking-wider text-[#2a1650]">
+                  Free Course
+                </span>
+                <span className="mt-3 block text-[19px] font-extrabold leading-snug sm:text-[22px]">
+                  {c.title}
+                </span>
+                <span className="mt-1 block max-w-md text-[13px] leading-relaxed text-white/75">
+                  Bilkul free course — enroll karke aaj hi padhai shuru karo.
+                </span>
+                <Link
+                  href={`/app/courses/${c.id}`}
+                  tabIndex={i === promoIdx ? 0 : -1}
+                  className="mt-5 inline-flex items-center gap-1.5 self-start rounded-full bg-white px-4 py-2 text-[12.5px] font-bold text-[#2a1650] transition hover:shadow-md"
+                >
+                  Shuru karo
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </Link>
+              </div>
+            ))}
           </div>
           {promoCourses.length > 1 && (
             <div className="mt-4 flex items-center justify-center gap-1.5">
@@ -355,7 +373,7 @@ export default function PWDashboard({
                   key={c.id}
                   onClick={() => setPromoIdx(i)}
                   aria-label={`Banner ${i + 1}: ${c.title}`}
-                  className={`h-2 rounded-full transition-all ${
+                  className={`h-2 rounded-full transition-all duration-300 ${
                     i === promoIdx ? 'w-6 bg-[#6d28d9]' : 'w-2 bg-gray-300 hover:bg-gray-400'
                   }`}
                 />
@@ -368,13 +386,13 @@ export default function PWDashboard({
       {/* ── 6. Quick Access — safed card, title andar ──────── */}
       <section className={CARD} aria-label="Quick Access">
         <h2 className={SECTION_TITLE}>Quick Access</h2>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 sm:gap-4">
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 sm:gap-4">
           <Link
             href="/app/library"
-            className="flex items-center gap-3.5 rounded-xl border border-gray-200 bg-white p-4 transition hover:border-violet-300 hover:shadow-sm sm:p-5"
+            className="flex items-center gap-3.5 rounded-xl border border-gray-200 bg-white p-5 transition hover:border-violet-300 hover:shadow-sm"
           >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-violet-50 text-[#6d28d9]">
-              <IconBook size={21} />
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-[#6d28d9]">
+              <IconBook size={22} />
             </span>
             <span className="min-w-0 flex-1">
               <span className="block text-[15px] font-bold leading-snug text-gray-900">PDF Bank</span>
@@ -388,10 +406,10 @@ export default function PWDashboard({
           </Link>
           <Link
             href="/app/bookmarks"
-            className="flex items-center gap-3.5 rounded-xl border border-gray-200 bg-white p-4 transition hover:border-violet-300 hover:shadow-sm sm:p-5"
+            className="flex items-center gap-3.5 rounded-xl border border-gray-200 bg-white p-5 transition hover:border-violet-300 hover:shadow-sm"
           >
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-violet-50 text-[#6d28d9]">
-              <IconBookmark size={21} />
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-[#6d28d9]">
+              <IconBookmark size={22} />
             </span>
             <span className="min-w-0 flex-1">
               <span className="block text-[15px] font-bold leading-snug text-gray-900">Bookmarks</span>
