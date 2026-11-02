@@ -8,16 +8,20 @@
  * "Subjects"/"Tests" naam ki koi pill-tab bhi nahi thi. Ab grammar
  * PW jaisi hai (structure only — data SHIVA ka asal):
  *
- *   [ Subjects | Tests ]  pill tabs — Tests tab sirf tabhi jab course
- *                         ke asal PUBLISHED tests linked hon; warna
- *                         tab bar hi nahi banta.
+ *   [ Subjects | Tests ]  pill tabs — PW chapter view wali pill-
+ *                         container style (halka violet-gray dabba,
+ *                         active tab safed bg + violet bold). Tests
+ *                         tab sirf tabhi jab course ke asal PUBLISHED
+ *                         tests linked hon; warna tab bar hi nahi.
  *   Subjects panel: safed "Subjects" card → subject cards ka grid
  *   (pastel medallion, bold naam, asal chapter count) → kisi subject
  *   ko chuno to uske chapter cards (violet left accent bar, meta sirf
  *   asal counts se); chapter me lectures hon to poora card Learn
  *   page ka link hai (pehli lecture ke saath).
- *   Tests panel: public page jaisi test rows — title/description +
- *   asal duration/marks/type chips, neeche /app/tests CTA.
+ *   Tests panel: PW DPP-row anatomy — safed row, bold title, meta
+ *   "N Questions | N Marks | N Mins" (sirf asal fields se), daayen
+ *   gol violet arrow button + neeche 'Start'; poori row test detail
+ *   (/app/tests/[id]) ka link, neeche center 'View All Tests' link.
  *
  * Chapter meta me sirf "N Videos" banta hai: chapter model me
  * exercises/notes counts exist hi nahi karte — nakli 0 chhapne ke
@@ -38,6 +42,9 @@ export type CourseTestSummary = {
   description?: string;
   durationMinutes?: number;
   totalMarks?: number;
+  /** Course ke chapters ke asal Questions ki ginati (test detail page
+   *  bhi yahi dikhata hai); na mile to meta me nahi aayega. */
+  questionCount?: number;
   type?: string;
   category?: string;
 };
@@ -86,12 +93,14 @@ export default function CourseCurriculum({ subjects, courseId, tests = [] }: Pro
 
   return (
     <div className="space-y-4">
-      {/* ---------- PW pill tabs (sirf jab Tests asal me hain) ---------- */}
+      {/* ---------- PW pill tabs (sirf jab Tests asal me hain) ----------
+          PW chapter view jaisa halka violet-gray container; active tab
+          safed bg + violet bold (bhara violet NAHI). */}
       {hasTests && (
         <div
           role="tablist"
           aria-label="Course sections"
-          className="inline-flex max-w-full gap-1 overflow-x-auto rounded-full border border-[var(--student-border)] bg-[var(--student-surface)] p-1 shadow-sm"
+          className="inline-flex max-w-full gap-1 overflow-x-auto rounded-full bg-[#eef0fe] p-1"
         >
           {(
             [
@@ -106,10 +115,10 @@ export default function CourseCurriculum({ subjects, courseId, tests = [] }: Pro
                 role="tab"
                 aria-selected={active}
                 onClick={() => setActiveTab(tab.id)}
-                className={`whitespace-nowrap rounded-full px-5 py-2 text-[13px] font-bold transition ${
+                className={`whitespace-nowrap rounded-full px-5 py-2 text-[13px] transition ${
                   active
-                    ? 'bg-[#6d28d9] text-white shadow'
-                    : 'text-[var(--student-text-muted)] hover:text-[var(--student-text)]'
+                    ? 'bg-white font-bold text-[#6d28d9] shadow-sm'
+                    : 'font-semibold text-slate-500 hover:text-slate-800'
                 }`}
               >
                 {tab.label}
@@ -121,11 +130,11 @@ export default function CourseCurriculum({ subjects, courseId, tests = [] }: Pro
 
       {/* ================= SUBJECTS ================= */}
       {activeTab === 'subjects' && (
-        <section className="rounded-2xl border border-[var(--student-border)] bg-[var(--student-surface)] p-5 shadow-sm sm:p-6">
+        <section className="rounded-2xl border border-[var(--student-border)] bg-[var(--student-surface)] p-6 shadow-sm sm:p-7">
           {!selectedSubject ? (
             <>
               <div className="mb-1 flex flex-wrap items-end justify-between gap-2">
-                <h2 className="text-[17px] font-bold text-[var(--student-text)]">Subjects</h2>
+                <h2 className="text-[18px] font-bold text-[var(--student-text)]">Subjects</h2>
                 {subjects.length > 0 && (
                   <p className="text-xs font-semibold text-[var(--student-text-muted)]">
                     {subjects.length} Subjects · {totalChapters} Chapters
@@ -148,7 +157,7 @@ export default function CourseCurriculum({ subjects, courseId, tests = [] }: Pro
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                   {subjects.map((subject: any, i: number) => {
                     const chapterCount = subject.chapters?.length || 0;
                     const lectureCount = (subject.chapters || []).reduce(
@@ -159,7 +168,7 @@ export default function CourseCurriculum({ subjects, courseId, tests = [] }: Pro
                       <button
                         key={subject.id}
                         onClick={() => setSelectedSubjectId(subject.id)}
-                        className="group flex items-center gap-3.5 rounded-xl border border-[var(--student-border)] bg-[var(--student-surface)] p-4 text-left transition hover:border-[#6d28d9] hover:shadow-md"
+                        className="group flex items-center gap-3.5 rounded-2xl border border-[var(--student-border)] bg-[var(--student-surface)] p-5 text-left transition hover:border-[#6d28d9] hover:shadow-md"
                       >
                         <span
                           aria-hidden
@@ -195,7 +204,7 @@ export default function CourseCurriculum({ subjects, courseId, tests = [] }: Pro
                 <IconArrowLeft size={15} /> Saare Subjects
               </button>
               <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
-                <h2 className="text-[17px] font-bold text-[var(--student-text)]">{selectedSubject.name}</h2>
+                <h2 className="text-[18px] font-bold text-[var(--student-text)]">{selectedSubject.name}</h2>
                 <p className="text-xs font-semibold text-[var(--student-text-muted)]">
                   {(selectedSubject.chapters?.length || 0)} Chapters
                 </p>
@@ -214,7 +223,7 @@ export default function CourseCurriculum({ subjects, courseId, tests = [] }: Pro
                     const chapterLectures = chapter.lectures || [];
                     const firstLecture = chapterLectures[0];
                     const cardClass =
-                      'block rounded-xl border border-[var(--student-border)] border-l-4 border-l-[#6d28d9] bg-[var(--student-surface)] p-4 transition sm:p-5';
+                      'block rounded-2xl border border-[var(--student-border)] border-l-4 border-l-[#6d28d9] bg-[var(--student-surface)] p-5 transition';
                     const inner = (
                       <>
                         <div className="flex items-start gap-3.5">
@@ -265,11 +274,11 @@ export default function CourseCurriculum({ subjects, courseId, tests = [] }: Pro
         </section>
       )}
 
-      {/* ================= TESTS ================= */}
+      {/* ================= TESTS — PW DPP-row anatomy ================= */}
       {activeTab === 'tests' && hasTests && (
-        <section className="rounded-2xl border border-[var(--student-border)] bg-[var(--student-surface)] p-5 shadow-sm sm:p-6">
+        <section className="rounded-2xl border border-[var(--student-border)] bg-[var(--student-surface)] p-6 shadow-sm sm:p-7">
           <div className="mb-1 flex flex-wrap items-end justify-between gap-2">
-            <h2 className="text-[17px] font-bold text-[var(--student-text)]">Course Tests</h2>
+            <h2 className="text-[18px] font-bold text-[var(--student-text)]">Course Tests</h2>
             <p className="text-xs font-semibold text-[var(--student-text-muted)]">{tests.length} Tests</p>
           </div>
           <p className="mb-5 text-[13px] leading-relaxed text-[var(--student-text-muted)]">
@@ -277,49 +286,53 @@ export default function CourseCurriculum({ subjects, courseId, tests = [] }: Pro
           </p>
 
           <div className="space-y-3">
-            {tests.map((test) => (
-              <article
-                key={test.id}
-                className="rounded-xl border border-[var(--student-border)] border-l-4 border-l-[#6d28d9] bg-[var(--student-surface)] p-4 sm:p-5"
-              >
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <h3 className="min-w-0 flex-1 text-[15px] font-bold leading-snug text-[var(--student-text)]">
-                    {test.title}
-                  </h3>
-                  <div className="flex shrink-0 flex-wrap gap-1.5">
-                    {test.type && (
-                      <span className="rounded-full bg-violet-100 px-2.5 py-1 text-[10.5px] font-bold text-violet-700">
-                        {test.type}
+            {tests.map((test) => {
+              // Meta sirf asal fields se: "N Questions | N Marks | N Mins"
+              const meta = [
+                test.questionCount ? `${test.questionCount} Questions` : null,
+                test.totalMarks ? `${test.totalMarks} Marks` : null,
+                test.durationMinutes ? `${test.durationMinutes} Mins` : null,
+              ].filter(Boolean) as string[];
+              return (
+                <Link
+                  key={test.id}
+                  href={`/app/tests/${test.id}`}
+                  className="flex items-center gap-3 rounded-2xl border border-[var(--student-border)] bg-[var(--student-surface)] p-5 transition hover:border-[#6d28d9] hover:shadow-md"
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[15px] font-bold leading-snug text-[var(--student-text)]">
+                      {test.title}
+                    </span>
+                    {meta.length > 0 && (
+                      <span className="mt-1 block text-[12.5px] font-medium text-[var(--student-text-muted)]">
+                        {meta.join(' | ')}
                       </span>
                     )}
-                    {test.category && (
-                      <span className="rounded-full bg-[var(--student-surface-hover)] px-2.5 py-1 text-[10.5px] font-bold text-[var(--student-text-muted)]">
-                        {test.category}
+                    {(test.type || test.category) && (
+                      <span className="mt-1 block text-[11.5px] font-semibold text-[#6d28d9]">
+                        {[test.type, test.category].filter(Boolean).join(' · ')}
                       </span>
                     )}
-                  </div>
-                </div>
-                {test.description && (
-                  <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-[var(--student-text-muted)]">
-                    {test.description}
-                  </p>
-                )}
-                {(test.durationMinutes || test.totalMarks) && (
-                  <div className="mt-3 flex flex-wrap gap-4 text-xs font-semibold text-[var(--student-text-muted)]">
-                    {test.durationMinutes ? <span>⏱ {test.durationMinutes} min</span> : null}
-                    {test.totalMarks ? <span>🎯 {test.totalMarks} marks</span> : null}
-                  </div>
-                )}
-              </article>
-            ))}
+                  </span>
+                  <span className="flex shrink-0 flex-col items-center gap-1">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#6d28d9] text-white shadow-sm">
+                      <IconArrowRight size={18} />
+                    </span>
+                    <span className="text-[11px] font-bold text-[#6d28d9]">Start</span>
+                  </span>
+                </Link>
+              );
+            })}
           </div>
 
-          <Link
-            href="/app/tests"
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#6d28d9] px-5 py-2.5 text-[13px] font-bold text-white shadow-sm transition hover:bg-[#5b21b6]"
-          >
-            Tests Attempt Karo <IconArrowRight size={14} />
-          </Link>
+          <div className="mt-5 text-center">
+            <Link
+              href="/app/tests"
+              className="inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[var(--student-text)] transition hover:text-[#6d28d9]"
+            >
+              View All Tests <IconArrowRight size={15} />
+            </Link>
+          </div>
         </section>
       )}
     </div>

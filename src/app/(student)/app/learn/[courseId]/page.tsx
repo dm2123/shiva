@@ -233,7 +233,7 @@ export default async function ClassroomPage({
       </div>
 
       <div className="mx-auto max-w-[1280px] px-4 py-5 pb-24">
-        <div className="flex flex-col gap-5 lg:grid lg:grid-cols-[minmax(0,1fr)_370px] lg:items-start">
+        <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_370px] lg:items-start">
           {/* ── Player column ─────────────────────────── */}
           <main className="min-w-0">
             <div className="overflow-hidden rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">

@@ -6,7 +6,7 @@ import { hasTestTypeColumns } from '@/lib/ensure-test-schema';
 import StudentEmptyState from '@/components/student/StudentEmptyState';
 import {
   IconClipboard, IconArrowRight, IconClock, IconTarget,
-  IconCheckCircle, IconPlay, IconTrendingUp,
+  IconCheckCircle, IconPlay, IconTrendingUp, IconPieChart,
   IconBook, IconRefresh, IconShield, IconPlus,
 } from '@/components/student/StudentIcons';
 
@@ -14,16 +14,18 @@ export const revalidate = 0;
 
 /* ------------------------------------------------------------------ */
 /* THE SHIVA — Tests list (student)                                    */
-/* PW test-row anatomy: bold title → meta line (questions • marks •    */
-/* duration • attempts, jo asal ho wahi) → 'View Syllabus' link        */
-/* (detail page par asal syllabus breakup hai) → violet gol start      */
-/* button. Compact rows — bade khaali cards nahi. Style dashboard v2   */
-/* wale tokens: safed cards, radius 12px, patli border, violet         */
-/* #6d28d9 accent. Data/queries neeche bilkul pehle jaise hain.        */
+/* PW Test Series card anatomy (bade cards): pastel thumbnail tile     */
+/* (upar-left chhota type badge) → bold title → meta line              */
+/* `N Mins • N Marks • N Questions` (asal fields hi) → buttons row:    */
+/* kaala Start/Resume/Details pill + outline 'View Syllabus' pill      */
+/* (detail page par asal syllabus breakup hai). Neeche PW 'Common      */
+/* Benefits' pattern ke center icon cards. Style wave-A/B tokens:      */
+/* safed cards, radius 16px, patli border, violet #6d28d9 accent.      */
+/* Data/queries neeche bilkul pehle jaise hain.                        */
 /* ------------------------------------------------------------------ */
 
 const CARD =
-  'rounded-xl border border-gray-200 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]';
+  'rounded-2xl border border-gray-200 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]';
 const SECTION_TITLE = 'text-[17px] font-bold leading-snug text-gray-900';
 
 const DIFFICULTY_STYLES: Record<string, { label: string; classes: string }> = {
@@ -75,6 +77,33 @@ function bucketOf(test: any): SectionDef {
 }
 
 const SECTION_ORDER = ['mock', 'pyq', 'practice'];
+
+/* PW card ke pastel thumbnail tile ke liye test ka prakar — asal
+   Tests.type/category se hi (bucketOf wali hi soch, tile ke liye). */
+type TestKindKey = 'mock' | 'pyq' | 'practice' | 'general';
+
+function kindOf(test: any): TestKindKey {
+  const raw = String(test.type || test.category || '').trim().toLowerCase();
+  if (raw.includes('pyq') || raw.includes('previous')) return 'pyq';
+  if (raw.includes('practice') || raw.includes('dpp')) return 'practice';
+  if (raw.includes('mock')) return 'mock';
+  return 'general';
+}
+
+const KIND_BADGE: Record<TestKindKey, string> = {
+  mock: 'Mock',
+  pyq: 'PYQ',
+  practice: 'Practice',
+  general: 'Test',
+};
+
+/* Pastel tile ke rang — PW Test Series palette ke paas (pink/sky/mint/lavender) */
+const TILE_STYLES: Record<TestKindKey, { tile: string; icon: string }> = {
+  mock: { tile: 'bg-[#ffe3ee]', icon: 'text-rose-500' },
+  pyq: { tile: 'bg-[#e0f2fe]', icon: 'text-sky-600' },
+  practice: { tile: 'bg-[#dcf5e3]', icon: 'text-emerald-600' },
+  general: { tile: 'bg-[#ece7ff]', icon: 'text-[#6d28d9]' },
+};
 
 type AttemptState =
   | { kind: 'not-attempted' }
@@ -254,10 +283,12 @@ export default async function TestsListPage() {
                 {list.map((test: any) => {
                   const diff = test.difficulty ? DIFFICULTY_STYLES[String(test.difficulty).toUpperCase()] : undefined;
                   const state: AttemptState = stateByTest.get(test.id) || { kind: 'not-attempted' };
+                  /* PW meta line — asal fields hi, PW ke kram me:
+                     samay (Mins) • kul marks • sawal */
                   const meta: string[] = [
-                    `${test.questionCount} Questions`,
+                    `${test.durationMinutes} Mins`,
                     `${test.totalMarks} Marks`,
-                    `${test.durationMinutes} min`,
+                    `${test.questionCount} Questions`,
                   ];
                   if (state.kind === 'completed') {
                     meta.push(`${state.attemptCount} attempt${state.attemptCount !== 1 ? 's' : ''}`);
@@ -265,6 +296,8 @@ export default async function TestsListPage() {
                   } else if (state.kind === 'in-progress') {
                     meta.push('Attempt chal raha hai');
                   }
+                  const kind = kindOf(test);
+                  const tile = TILE_STYLES[kind];
                   const actionHref =
                     state.kind === 'in-progress'
                       ? `/app/tests/${test.id}/attempt/${state.attemptId}`
@@ -272,87 +305,97 @@ export default async function TestsListPage() {
                   const actionLabel =
                     state.kind === 'in-progress' ? 'Resume' : state.kind === 'completed' ? 'Details' : 'Start';
                   return (
-                    <div key={test.id} className={`${CARD} flex items-start gap-3 p-4 transition hover:border-[#6d28d9]/40 hover:shadow-md sm:gap-4`}>
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-[#6d28d9]/10 text-[#6d28d9]">
-                        <IconTarget size={18} />
-                      </span>
-
-                      <div className="min-w-0 flex-1">
-                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
-                          <Link
-                            href={`/app/tests/${test.id}`}
-                            className="text-[15px] font-bold leading-snug text-gray-900 transition-colors hover:text-[#6d28d9]"
-                          >
-                            {test.title}
-                          </Link>
-                          {state.kind === 'completed' && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
-                              <IconCheckCircle size={10} />
-                              Completed
-                            </span>
-                          )}
-                          {state.kind === 'in-progress' && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700">
-                              <IconClock size={10} />
-                              In Progress
-                            </span>
-                          )}
-                          {state.kind === 'not-attempted' && (
-                            <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-500">
-                              Not Attempted
-                            </span>
-                          )}
-                          {diff && (
-                            <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${diff.classes}`}>
-                              {diff.label}
-                            </span>
-                          )}
-                        </div>
-
-                        <p className="mt-1 text-xs font-medium text-gray-500">
-                          {meta.join(' • ')}
-                        </p>
-                        <p className="mt-0.5 text-[11px] font-medium uppercase tracking-wider text-gray-400">
-                          {test.courseTitle}
-                        </p>
-                        {test.description && (
-                          <p className="mt-1 line-clamp-1 text-xs leading-relaxed text-gray-500">
-                            {test.description}
-                          </p>
-                        )}
-
-                        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
-                          <Link
-                            href={`/app/tests/${test.id}`}
-                            className="text-xs font-bold text-[#6d28d9] hover:underline"
-                          >
-                            View Syllabus
-                          </Link>
-                          {test.passingMarks ? (
-                            <span className="text-[11px] text-gray-400">Passing: {test.passingMarks} marks</span>
-                          ) : null}
-                          {state.kind === 'completed' && (
-                            <Link
-                              href={`/app/results/${state.lastAttemptId}`}
-                              className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 hover:underline"
-                            >
-                              <IconTrendingUp size={12} />
-                              Result Dekho
-                            </Link>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* PW-style gol action button */}
-                      <div className="flex shrink-0 flex-col items-center gap-1">
-                        <Link
-                          href={actionHref}
-                          aria-label={`${test.title} — ${actionLabel}`}
-                          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#6d28d9] text-white shadow-sm transition hover:bg-[#5b21b6]"
+                    <div key={test.id} className={`${CARD} p-5 transition hover:border-[#6d28d9]/40 hover:shadow-md`}>
+                      <div className="flex items-start gap-4">
+                        {/* Pastel thumbnail tile — upar-left type badge (PW anatomy) */}
+                        <div
+                          className={`relative flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl sm:h-28 sm:w-28 ${tile.tile}`}
+                          aria-hidden="true"
                         >
-                          {state.kind === 'not-attempted' ? <IconPlay size={15} /> : <IconArrowRight size={15} />}
-                        </Link>
-                        <span className="text-[10px] font-bold text-gray-500">{actionLabel}</span>
+                          <span className="absolute left-2 top-2 rounded-md bg-[#e11d48] px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-white">
+                            {KIND_BADGE[kind]}
+                          </span>
+                          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/85 shadow-sm">
+                            <span className={tile.icon}>
+                              <IconClipboard size={24} />
+                            </span>
+                          </span>
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+                            <Link
+                              href={`/app/tests/${test.id}`}
+                              className="text-[16px] font-bold leading-snug text-gray-900 transition-colors hover:text-[#6d28d9]"
+                            >
+                              {test.title}
+                            </Link>
+                            {state.kind === 'completed' && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-700">
+                                <IconCheckCircle size={10} />
+                                Completed
+                              </span>
+                            )}
+                            {state.kind === 'in-progress' && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-700">
+                                <IconClock size={10} />
+                                In Progress
+                              </span>
+                            )}
+                            {state.kind === 'not-attempted' && (
+                              <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-500">
+                                Not Attempted
+                              </span>
+                            )}
+                            {diff && (
+                              <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${diff.classes}`}>
+                                {diff.label}
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="mt-0.5 text-[11px] font-medium uppercase tracking-wider text-gray-400">
+                            {test.courseTitle}
+                          </p>
+                          <p className="mt-1.5 text-[13px] font-semibold text-gray-600">
+                            {meta.join(' • ')}
+                          </p>
+                          {test.description && (
+                            <p className="mt-1 line-clamp-1 text-xs leading-relaxed text-gray-500">
+                              {test.description}
+                            </p>
+                          )}
+
+                          {/* Buttons — kaala primary pill + outline Syllabus pill (PW) */}
+                          <div className="mt-3.5 flex flex-wrap items-center gap-2.5">
+                            <Link
+                              href={actionHref}
+                              aria-label={`${test.title} — ${actionLabel}`}
+                              className="inline-flex items-center gap-1.5 rounded-full bg-gray-900 px-5 py-2.5 text-[13px] font-bold text-white shadow-sm transition hover:bg-black"
+                            >
+                              {state.kind === 'not-attempted' ? <IconPlay size={13} /> : <IconArrowRight size={13} />}
+                              {actionLabel}
+                            </Link>
+                            <Link
+                              href={`/app/tests/${test.id}`}
+                              className="inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2.5 text-[13px] font-bold text-gray-700 transition hover:border-[#6d28d9] hover:text-[#6d28d9]"
+                            >
+                              View Syllabus
+                            </Link>
+                            {state.kind === 'completed' && (
+                              <Link
+                                href={`/app/results/${state.lastAttemptId}`}
+                                className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 hover:underline"
+                              >
+                                <IconTrendingUp size={12} />
+                                Result Dekho
+                              </Link>
+                            )}
+                            {test.passingMarks ? (
+                              <span className="text-[11px] text-gray-400">Passing: {test.passingMarks} marks</span>
+                            ) : null}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   );
@@ -363,43 +406,49 @@ export default async function TestsListPage() {
         </div>
       )}
 
-      {/* ── Common Benefits (asal platform features — test detail/attempt flow se verified) ── */}
-      <section className="space-y-3">
-        <div>
-          <h2 className={SECTION_TITLE}>Har Test Ke Saath</h2>
-          <p className="mt-0.5 text-xs font-medium text-gray-500">
+      {/* ── Common Benefits — PW pattern: center heading + bade center
+             icon cards. Saare features asal hain (attempt flow, results
+             analysis aur Questions.explanation se verified). ── */}
+      <section className="space-y-4">
+        <div className="text-center">
+          <h2 className="text-[19px] font-extrabold leading-snug text-gray-900">Common Benefits</h2>
+          <p className="mt-1 text-xs font-medium text-gray-500">
             Ye features THE SHIVA ke har published test par lagu hote hain.
           </p>
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {[
             {
-              icon: <IconClock size={18} />,
-              title: 'Real Exam Timer',
-              text: 'Timer test khulte hi shuru hota hai aur samay khatam hone par test apne aap submit ho jata hai — bilkul asli exam jaisa.',
+              icon: <IconTarget size={22} />,
+              tile: 'bg-[#ffe3ee] text-rose-500',
+              title: 'Real Exam Pattern',
+              text: 'Timer test khulte hi shuru hota hai aur samay khatam hone par test apne aap submit ho jata hai — bilkul asli exam jaisa mahaul.',
             },
             {
-              icon: <IconTrendingUp size={18} />,
+              icon: <IconPieChart size={22} />,
+              tile: 'bg-[#e0f2fe] text-sky-600',
               title: 'Detailed Analysis',
               text: 'Submit ke baad score, accuracy aur topic-wise strong/weak areas ke saath poora analysis milta hai.',
             },
             {
-              icon: <IconBook size={18} />,
-              title: 'Syllabus Coverage',
-              text: 'Har test ke detail page par subject aur chapter-wise question breakup pehle se dikhta hai.',
+              icon: <IconBook size={22} />,
+              tile: 'bg-[#dcf5e3] text-emerald-600',
+              title: 'Har Sawal ka Hal',
+              text: 'Har sawal ke saath uski vyakhya (explanation) milti hai — galti sirf ginai nahi jaati, samjhai bhi jaati hai.',
             },
             {
-              icon: <IconRefresh size={18} />,
+              icon: <IconRefresh size={22} />,
+              tile: 'bg-[#ece7ff] text-[#6d28d9]',
               title: 'Re-attempt Anytime',
-              text: 'Ek hi test dobara attempt karo — tumhara best score track hota hai, progress kabhi nahi kho ti.',
+              text: 'Ek hi test dobara attempt karo — saare attempts save rehte hain aur tumhara best score track hota hai.',
             },
           ].map((b) => (
-            <div key={b.title} className={`${CARD} p-4`}>
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#6d28d9]/10 text-[#6d28d9]">
+            <div key={b.title} className={`${CARD} p-5 text-center`}>
+              <span className={`mx-auto flex h-12 w-12 items-center justify-center rounded-2xl ${b.tile}`}>
                 {b.icon}
               </span>
-              <h3 className="mt-2.5 text-[13.5px] font-bold text-gray-900">{b.title}</h3>
-              <p className="mt-1 text-xs leading-relaxed text-gray-500">{b.text}</p>
+              <h3 className="mt-3 text-[14px] font-bold text-gray-900">{b.title}</h3>
+              <p className="mt-1.5 text-xs leading-relaxed text-gray-500">{b.text}</p>
             </div>
           ))}
         </div>

@@ -1,6 +1,6 @@
 import { getCourseSyllabusTree } from '@/services/academic.service';
 import { listTestByCourse } from '@/services/test.service';
-import { isStudentEnrolledInCourseDb } from '@/lib/db';
+import { isStudentEnrolledInCourseDb, listQuestionsByChapterDb } from '@/lib/db';
 import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { headers } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
@@ -53,9 +53,27 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
     description?: string;
     durationMinutes?: number;
     totalMarks?: number;
+    questionCount?: number;
     type?: string;
     category?: string;
   }[] = [];
+  /* Asal question count — test detail page (/app/tests/[testId]) khud
+     test ke sawal course ke saare chapters ke Questions se ginata hai;
+     Tests tab ke meta ("N Questions") ke liye yahi asal ginati yahan
+     bhi lao. Best-effort: fail/0 ho to count hi nahi jayega (meta me
+     "Questions" hissa nahi banega) — kuch invent nahi hoga. */
+  let courseQuestionCount: number | undefined;
+  try {
+    let total = 0;
+    for (const ch of chapters) {
+      const qs = await listQuestionsByChapterDb((ch as any).id);
+      total += (qs as any[]).length;
+    }
+    if (total > 0) courseQuestionCount = total;
+  } catch {
+    courseQuestionCount = undefined;
+  }
+
   try {
     const testRows = await listTestByCourse(courseTree.id);
     courseTests = (testRows || [])
@@ -64,6 +82,7 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
         id: t.id,
         title: t.title,
         description: t.description ?? undefined,
+        questionCount: courseQuestionCount,
         durationMinutes:
           t.durationMinutes != null && !Number.isNaN(Number(t.durationMinutes))
             ? Number(t.durationMinutes)
@@ -186,8 +205,8 @@ export default async function StudentCourseDetailsPage({ params }: { params: { c
         </div>
       )}
 
-      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
-        <div className="min-w-0 space-y-8">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+        <div className="min-w-0 space-y-6">
           {/* ── What you'll learn ──────────────────────────── */}
           <section>
             <h2 className="mb-4 text-lg font-black tracking-tight text-[var(--student-text)]">

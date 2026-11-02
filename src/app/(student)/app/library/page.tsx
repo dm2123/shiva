@@ -1,28 +1,54 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  IconArrowLeft, IconArrowRight, IconBook, IconBookOpen, IconClipboard, IconClock,
-  IconFileText, IconLayers, IconPlay, IconSearch, IconTarget, IconX, IconZap,
+  IconAward, IconBook, IconClipboard, IconClock, IconDownload, IconFileText,
+  IconPlay, IconSearch, IconTarget, IconX,
 } from '@/components/student/StudentIcons';
-import { IconLibrary } from '@/components/student/ShivaIcons';
+import { IconChevronLeft, IconChevronRight } from '@/components/student/ShivaIcons';
 
 /**
- * THE SHIVA — Student Library hub.
+ * THE SHIVA — Student Library (PW Library page ki 1:1 anatomy).
  *
- * Ek hi page par saara free study material: Short Notes / Formula Sheets,
- * PYQs, Practice Papers (Question Bank), Free Lectures, e-Books aur NCERT.
- * Har section apne asal student API se data laata hai — wahi endpoints jo
- * andar ke pages use karte hain. Jis section ka data khaali/fail ho, wahan
- * nakli items ki jagah saaf link-card dikhta hai. Koi count ya title
- * invent nahi hota.
+ * Structure (PW jaisa): bada 'Library' title → text-tabs (active par
+ * violet bold + violet underline) → har category ka ek bada safed card
+ * (radius 16): header me icon + naam bold + daayen 'View All' violet
+ * link; andar horizontal scroll row ke item cards.
+ *   - Document cards (Notes / eBooks / PYQ papers): baayen designed
+ *     thumbnail tile, title, meta, date, asal chips (PDF/format +
+ *     language), 'View Now' outline button (asal fileUrl par) +
+ *     download icon button (sirf asal file ho tabhi).
+ *   - Test cards (PYQ attempts): difficulty pill (asal ho to), title,
+ *     meta `N Questions • N Marks`, halka-violet full-width
+ *     'Attempt Now' button asal route par.
+ * Har section apne asal student API se data laata hai. Jo data nahi
+ * hai woh invent nahi hota — khaali category ke card ke andar
+ * imaandaar chhota note aata hai.
+ *
+ * Notes aur Formula Sheets ka asal data ek hi source (FormulaSheets)
+ * se aata hai, isliye PW ke 'Short Notes and Mindmaps' wale combined
+ * tab ki tarah yahan bhi ek hi tab hai — same items do tabs me
+ * dohrana duplication hota. Practice / DPP / NCERT sidebar me apne
+ * pages par hain, isliye Library me dohre section nahi hain.
  */
 
-interface Sheet { id: string; title: string; subjectName?: string; chapterName?: string; content?: { formulas?: unknown[] }[] }
-interface PyqExam { id: string; title: string; examName: string | null; year: number | null; subject: string | null; totalQuestions: number; totalMarks: number; timeLimitMinutes: number }
+interface Sheet {
+  id: string; title: string; subjectName?: string; chapterName?: string; courseTitle?: string;
+  pdfUrl?: string | null; difficulty?: string; language?: string; downloadCount?: number;
+  createdAt?: string; content?: { formulas?: unknown[] }[];
+}
+interface PyqExam {
+  id: string; examName: string | null; year: number | null; subject: string | null;
+  shift?: string | null; totalQuestions: number; totalMarks: number;
+  durationMinutes?: number; pdfUrl?: string | null;
+}
 interface Lecture { id: string; title: string; courseId: string; courseTitle: string; subject?: string; chapter?: string; duration?: string }
-interface Book { id: string; title: string; author?: string; category?: string; pageCount?: number; isFree?: boolean }
+interface Book {
+  id: string; title: string; author?: string; category?: string; pageCount?: number;
+  isFree?: boolean; fileUrl?: string | null; coverUrl?: string | null; language?: string;
+  subjectName?: string; createdAt?: string; downloadCount?: number;
+}
 
 const COVERS = [
   'from-[#6d28d9] via-[#7c3aed] to-[#2a1650]',
@@ -38,34 +64,55 @@ function coverFor(id: string) {
   return COVERS[h % COVERS.length];
 }
 
+function fmtDate(v?: string | null): string {
+  if (!v) return '';
+  const d = new Date(v);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+/** 'en' → 'En', 'hi' → 'Hi' (PW ke language chip jaisa) */
+function langLabel(l?: string | null): string {
+  if (!l) return '';
+  const s = l.trim();
+  return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : '';
+}
+
+/** File URL se asal format chip — sirf pehchane hue extensions par */
+function fmtFromUrl(u?: string | null): string {
+  if (!u) return '';
+  const m = u.split('?')[0].match(/\.([a-z0-9]+)$/i);
+  const ext = (m?.[1] || '').toLowerCase();
+  if (ext === 'pdf') return 'PDF';
+  if (ext === 'epub') return 'EPUB';
+  return '';
+}
+
 const TABS = [
   { id: 'notes', label: 'Short Notes & Formulas' },
   { id: 'pyq', label: 'PYQs' },
-  { id: 'practice', label: 'Practice Papers' },
   { id: 'lectures', label: 'Free Lectures' },
+  { id: 'ebooks', label: 'eBooks' },
   { id: 'question-bank', label: 'Question Bank' },
-  { id: 'ebooks', label: 'e-Books' },
-  { id: 'ncert', label: 'NCERT' },
-];
+] as const;
+type TabId = (typeof TABS)[number]['id'];
 
-function SectionShell({
-  id, title, blurb, viewAllHref, children,
+/* ── Bada safed category card (PW anatomy) ─────────────────── */
+function CategoryCard({
+  icon, title, viewAllHref, children,
 }: {
-  id: string; title: string; blurb: string; viewAllHref: string; children: React.ReactNode;
+  icon: React.ReactNode; title: string; viewAllHref: string; children: React.ReactNode;
 }) {
   return (
-    <section id={`library-${id}`} className="space-y-4 scroll-mt-28 min-w-0">
-      <div className="flex items-end justify-between gap-4">
-        <div>
-          <h2 className="text-lg md:text-xl font-bold text-[var(--student-text)] tracking-tight">{title}</h2>
-          <p className="text-xs text-[var(--student-text-faint)] mt-1 font-medium">{blurb}</p>
-        </div>
+    <section className="min-w-0 rounded-2xl border border-gray-200 bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-6">
+      <div className="mb-5 flex items-center gap-2.5">
+        <span className="flex shrink-0 items-center justify-center text-[#6d28d9]">{icon}</span>
+        <h2 className="min-w-0 flex-1 truncate text-[18px] font-bold leading-snug text-gray-900">{title}</h2>
         <Link
           href={viewAllHref}
-          className="inline-flex items-center gap-1.5 text-sm font-bold text-[#6d28d9] flex-shrink-0 hover:gap-2.5 transition-all"
+          className="shrink-0 text-[14px] font-semibold text-[#6d28d9] transition-colors hover:text-[#2a1650]"
         >
           View All
-          <IconArrowRight size={14} />
         </Link>
       </div>
       {children}
@@ -73,60 +120,215 @@ function SectionShell({
   );
 }
 
-function RowScroller({ children }: { children: React.ReactNode }) {
+/* ── Horizontal scroll row + kinare wale gol arrow buttons (PW carousel) ── */
+function CardRow({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const scroll = (dir: number) =>
+    ref.current?.scrollBy({ left: dir * 380, behavior: 'smooth' });
   return (
-    <div className="flex w-full max-w-full gap-4 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      {children}
+    <div className="relative">
+      <div
+        ref={ref}
+        className="flex items-stretch gap-4 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {children}
+      </div>
+      <button
+        onClick={() => scroll(-1)}
+        aria-label="Pichhle items"
+        className="absolute -left-2 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-md transition hover:text-[#6d28d9] md:flex"
+      >
+        <IconChevronLeft size={17} />
+      </button>
+      <button
+        onClick={() => scroll(1)}
+        aria-label="Agle items"
+        className="absolute -right-2 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-md transition hover:text-[#6d28d9] md:flex"
+      >
+        <IconChevronRight size={17} />
+      </button>
     </div>
   );
 }
 
-function LinkCard({ href, icon, title, text }: { href: string; icon: React.ReactNode; title: string; text: string }) {
+function Chips({ format, language }: { format?: string; language?: string }) {
+  if (!format && !language) return null;
   return (
-    <Link
-      href={href}
-      className="student-card p-4 md:p-5 flex items-center gap-4 hover:border-[#6d28d9] hover:shadow-lg transition-all group w-full"
-    >
-      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#6d28d9] to-[#2a1650] flex items-center justify-center flex-shrink-0 text-white shadow-md shadow-[#6d28d9]/20">
-        {icon}
+    <div className="flex flex-wrap items-center gap-1.5">
+      {format && (
+        <span className="inline-flex items-center gap-1 rounded bg-red-50 px-1.5 py-0.5 text-[10.5px] font-black tracking-wide text-red-600">
+          <IconFileText size={11} />
+          {format}
+        </span>
+      )}
+      {language && (
+        <span className="inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-[10.5px] font-bold text-gray-600">
+          {language}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/* ── Document card (PW PDF variant): thumbnail baayen, content daayen ── */
+function DocCard({
+  thumb, title, meta, date, format, language, viewHref, viewExternal, downloadUrl,
+}: {
+  thumb: React.ReactNode; title: string; meta?: string; date?: string;
+  format?: string; language?: string; viewHref: string; viewExternal?: boolean;
+  downloadUrl?: string | null;
+}) {
+  const viewCls =
+    'inline-flex flex-1 items-center justify-center rounded-lg border border-gray-300 px-4 py-2 text-[13px] font-bold text-gray-800 transition hover:border-[#6d28d9] hover:text-[#6d28d9]';
+  return (
+    <article className="flex w-[320px] shrink-0 snap-start overflow-hidden rounded-xl border border-gray-200 bg-white sm:w-[364px]">
+      {thumb}
+      <div className="flex min-w-0 flex-1 flex-col gap-1 p-3.5">
+        <h3 className="line-clamp-2 text-[14.5px] font-bold leading-snug text-gray-900">{title}</h3>
+        {meta ? (
+          <p className="truncate text-[12px] font-medium text-gray-500">{meta}</p>
+        ) : null}
+        {date ? <p className="text-[12px] text-gray-400">{date}</p> : null}
+        <Chips format={format} language={language} />
+        <div className="mt-auto flex items-center gap-2 pt-2.5">
+          {viewExternal ? (
+            <a href={viewHref} target="_blank" rel="noopener noreferrer" className={viewCls}>
+              View Now
+            </a>
+          ) : (
+            <Link href={viewHref} className={viewCls}>
+              View Now
+            </Link>
+          )}
+          {downloadUrl ? (
+            <a
+              href={downloadUrl}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${title} download karo`}
+              className="inline-flex h-[38px] w-[42px] shrink-0 items-center justify-center rounded-lg bg-violet-50 text-[#6d28d9] transition hover:bg-violet-100"
+            >
+              <IconDownload size={17} />
+            </a>
+          ) : null}
+        </div>
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold text-[var(--student-text)]">{title}</p>
-        <p className="text-xs text-[var(--student-text-muted)] mt-0.5 leading-relaxed">{text}</p>
+    </article>
+  );
+}
+
+/* ── Test card (PW PYQ-test variant) ───────────────────────── */
+function TestCard({
+  title, meta, questions, marks, minutes, difficulty, attemptHref,
+}: {
+  title: string; meta?: string; questions: number; marks: number;
+  minutes?: number; difficulty?: string | null; attemptHref: string;
+}) {
+  return (
+    <article className="flex w-[300px] shrink-0 snap-start flex-col rounded-xl border border-gray-200 bg-white p-4 sm:w-[330px]">
+      {difficulty ? (
+        <span className="mb-2.5 inline-flex w-fit items-center rounded-md bg-violet-50 px-2 py-1 text-[11px] font-bold capitalize text-[#6d28d9]">
+          {difficulty.replace('_', ' ')}
+        </span>
+      ) : null}
+      <h3 className="line-clamp-2 text-[16px] font-bold leading-snug text-gray-900">{title}</h3>
+      {meta ? <p className="mt-1 truncate text-[12.5px] font-medium text-gray-500">{meta}</p> : null}
+      <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-gray-600">
+        <span className="inline-flex items-center gap-1.5">
+          <IconClipboard size={14} className="text-gray-400" />
+          {questions} Questions
+        </span>
+        <span aria-hidden="true" className="text-gray-300">•</span>
+        <span className="inline-flex items-center gap-1.5">
+          <IconAward size={14} className="text-gray-400" />
+          {marks} Marks
+        </span>
+        {minutes ? (
+          <>
+            <span aria-hidden="true" className="text-gray-300">•</span>
+            <span className="inline-flex items-center gap-1.5">
+              <IconClock size={14} className="text-gray-400" />
+              {minutes} min
+            </span>
+          </>
+        ) : null}
+      </p>
+      <div className="mt-auto pt-4">
+        <Link
+          href={attemptHref}
+          className="block rounded-lg bg-[#ede9fe] py-2.5 text-center text-[14px] font-bold text-[#6d28d9] transition hover:bg-[#ddd6fe]"
+        >
+          Attempt Now
+        </Link>
       </div>
-      <IconArrowRight size={16} className="text-[#6d28d9] group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
-    </Link>
+    </article>
+  );
+}
+
+/* ── Lecture card (video variant) ──────────────────────────── */
+function LectureCard({ lec }: { lec: Lecture }) {
+  return (
+    <article className="flex w-[260px] shrink-0 snap-start flex-col overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className={`relative flex h-[104px] items-center justify-center bg-gradient-to-br ${coverFor(lec.id)} text-white`}>
+        <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
+        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/20 backdrop-blur">
+          <IconPlay size={19} />
+        </span>
+        <span className="absolute left-2.5 top-2.5 rounded-full bg-emerald-400 px-2 py-0.5 text-[9.5px] font-black uppercase tracking-wide text-emerald-950">
+          Free
+        </span>
+        {lec.duration && (
+          <span className="absolute bottom-2.5 right-2.5 inline-flex items-center gap-1 rounded-full bg-black/30 px-2 py-0.5 text-[10px] font-bold text-white">
+            <IconClock size={10} />
+            {lec.duration}
+          </span>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col gap-1 p-3.5">
+        <h3 className="line-clamp-2 text-[14.5px] font-bold leading-snug text-gray-900">{lec.title}</h3>
+        <p className="truncate text-[12px] font-medium text-gray-500">
+          {[lec.subject, lec.chapter].filter(Boolean).join(' • ') || lec.courseTitle}
+        </p>
+        <p className="truncate text-[12px] text-gray-400">{lec.courseTitle}</p>
+        <div className="mt-auto pt-2.5">
+          <Link
+            href={`/app/learn/${lec.courseId}?lecture=${lec.id}`}
+            className="flex items-center justify-center gap-1.5 rounded-lg border border-gray-300 px-4 py-2 text-[13px] font-bold text-gray-800 transition hover:border-[#6d28d9] hover:text-[#6d28d9]"
+          >
+            <IconPlay size={12} />
+            Watch Now
+          </Link>
+        </div>
+      </div>
+    </article>
   );
 }
 
 function SkeletonRow() {
   return (
-    <RowScroller>
-      {[1, 2, 3, 4].map((i) => (
-        <div key={i} className="student-card overflow-hidden min-w-[240px] max-w-[240px] snap-start flex-shrink-0">
-          <div className="skeleton h-24 rounded-none" />
-          <div className="p-4 space-y-2">
-            <div className="skeleton h-3.5 w-4/5" />
-            <div className="skeleton h-3 w-3/5" />
-          </div>
-        </div>
+    <div className="flex gap-4 overflow-hidden">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="h-[132px] w-[320px] shrink-0 animate-pulse rounded-xl bg-gray-100" />
       ))}
-    </RowScroller>
+    </div>
   );
 }
 
-function NoMatchNote() {
+function EmptyNote({ text, href, cta }: { text: string; href: string; cta: string }) {
   return (
-    <p className="student-card p-4 text-xs text-[var(--student-text-muted)] leading-relaxed">
-      Is search me is section me kuch nahi mila — dusra keyword try karo.
-    </p>
+    <div className="rounded-xl bg-gray-50 px-4 py-5 text-center">
+      <p className="text-[13px] leading-relaxed text-gray-500">{text}</p>
+      <Link href={href} className="mt-1.5 inline-block text-[13px] font-bold text-[#6d28d9] hover:text-[#2a1650]">
+        {cta}
+      </Link>
+    </div>
   );
 }
 
 export default function LibraryPage() {
-  const [xp, setXp] = useState<number | null>(null);
   const [query, setQuery] = useState('');
-  const [activeTab, setActiveTab] = useState('notes');
+  const [activeTab, setActiveTab] = useState<TabId>('notes');
   const [sheets, setSheets] = useState<Sheet[] | null>(null);
   const [pyqs, setPyqs] = useState<PyqExam[] | null>(null);
   const [lectures, setLectures] = useState<Lecture[] | null>(null);
@@ -134,11 +336,6 @@ export default function LibraryPage() {
   const [qb, setQb] = useState<{ total: number; distribution: { difficulty: string; count: number }[] } | null>(null);
 
   useEffect(() => {
-    fetch('/api/student/xp')
-      .then((r) => r.json())
-      .then((d) => { if (d.success) setXp(Number(d.data?.totalXP) || 0); })
-      .catch(() => {});
-
     fetch('/api/student/formula-sheets')
       .then((r) => r.json())
       .then((d) => setSheets(d.success && Array.isArray(d.data) ? d.data : []))
@@ -172,472 +369,318 @@ export default function LibraryPage() {
       .catch(() => setQb({ total: 0, distribution: [] }));
   }, []);
 
-  /* ── Hub search: asal fetched data par hi filter (koi nakli index nahi) ── */
+  /* ── Search: asal fetched data par hi filter (koi nakli index nahi) ── */
   const searching = query.trim().length > 0;
   const q = query.trim().toLowerCase();
   const inQ = (s?: string | null) => (s || '').toLowerCase().includes(q);
   const fSheets = sheets ? sheets.filter((s) => inQ(s.title) || inQ(s.subjectName) || inQ(s.chapterName)) : null;
-  const fPyqs = pyqs ? pyqs.filter((p) => inQ(p.title) || inQ(p.examName) || inQ(p.subject)) : null;
+  const fPyqs = pyqs
+    ? pyqs.filter((p) => inQ(p.examName) || inQ(p.subject) || inQ(p.year ? String(p.year) : null))
+    : null;
   const fLectures = lectures ? lectures.filter((l) => inQ(l.title) || inQ(l.courseTitle) || inQ(l.subject) || inQ(l.chapter)) : null;
   const fBooks = books ? books.filter((b) => inQ(b.title) || inQ(b.author) || inQ(b.category)) : null;
+  const matchCount =
+    (fSheets?.length || 0) + (fPyqs?.length || 0) + (fLectures?.length || 0) + (fBooks?.length || 0);
 
-  /* ── Category tiles — counts sirf tab jab asal data load ho aur > 0 ho ── */
-  const TILES: { href: string; label: string; text: string; Icon: typeof IconBook; grad: string; count?: number | null }[] = [
-    { href: '/app/formula-sheets', label: 'Formula Sheets', text: 'Chapter-wise quick revision notes', Icon: IconFileText, grad: 'from-amber-500 to-rose-500', count: sheets?.length },
-    { href: '/app/pyq', label: 'PYQ Papers', text: 'Pichhle saalon ke asli exam papers', Icon: IconClipboard, grad: 'from-blue-500 to-violet-600', count: pyqs?.length },
-    { href: '/app/practice', label: 'Practice', text: 'Chapter-wise practice aur daily DPP', Icon: IconTarget, grad: 'from-emerald-500 to-teal-600' },
-    { href: '/app/courses', label: 'Free Lectures', text: 'Free courses aur preview lectures', Icon: IconPlay, grad: 'from-[#6d28d9] to-[#2a1650]', count: lectures?.length },
-    { href: '/app/question-bank', label: 'Question Bank', text: 'Difficulty-wise curated questions', Icon: IconLayers, grad: 'from-teal-500 to-emerald-600', count: qb?.total },
-    { href: '/app/ebooks', label: 'e-Books', text: 'Textbooks, notes aur reference books', Icon: IconBook, grad: 'from-fuchsia-500 to-purple-600', count: books?.length },
-    { href: '/app/ncert', label: 'NCERT Solutions', text: 'Class-wise chapter solutions', Icon: IconBookOpen, grad: 'from-sky-500 to-blue-600' },
-  ];
-
-  /* QB difficulty chips — asal difficulty wale hi groups dikhte hain.
-     Jankari: API ka difficultyDistribution un questions ko bhi group
-     karta hai jinki difficulty NULL hai; String(null) + CSS uppercase
-     milkar screen par raw 'NULL · 10' chhapta tha. Null/empty groups
-     yahan filter ho jate hain — sirf asal values dikhte hain. */
+  /* QB difficulty chips — asal difficulty wale hi groups. API ka
+     difficultyDistribution NULL difficulty ko bhi group karta hai;
+     String(null) + uppercase se screen par raw 'NULL' chhapta tha,
+     isliye null/empty groups yahan filter hote hain. */
   const qbDist = (qb?.distribution || []).filter(
     (d) => d.difficulty != null && String(d.difficulty).trim() !== ''
   );
 
-  return (
-    <div className="space-y-10 min-w-0">
-      {/* ── Hero: title + XP chip + hub search ── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#2a1650] via-[#4c1d95] to-[#6d28d9] p-6 md:p-8 text-white">
-        <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-white/10 blur-2xl" aria-hidden="true" />
-        <div className="absolute -bottom-20 -left-10 w-56 h-56 rounded-full bg-[#f5b942]/20 blur-2xl" aria-hidden="true" />
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 flex-wrap">
-            <Link
-              href="/app"
-              aria-label="Back to dashboard"
-              className="w-10 h-10 rounded-full border border-white/25 bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors flex-shrink-0"
-            >
-              <IconArrowLeft size={17} />
-            </Link>
-            <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f5b942]">Study Library</p>
-              <h1 className="text-2xl md:text-3xl font-black tracking-tight mt-0.5">Library</h1>
-              <p className="text-sm text-violet-100/90 mt-1">
-                Saara free study material ek jagah — notes, PYQ, practice, lectures aur books.
-              </p>
-            </div>
-            {xp !== null && (
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-[#f5b942] text-[#2a1650] text-sm font-black flex-shrink-0 shadow-md shadow-black/20">
-                <IconZap size={15} />
-                {xp} XP
-              </span>
-            )}
-          </div>
-          <div className="mt-6 max-w-xl">
-            <div className="flex items-center gap-2 bg-white/15 backdrop-blur rounded-2xl px-4 py-3 border border-white/20 focus-within:border-white/50 transition-colors">
-              <IconSearch size={18} className="text-violet-100 shrink-0" />
-              <input
-                type="text"
-                placeholder="Search notes, papers, lectures, books..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="flex-1 bg-transparent text-white placeholder:text-violet-200/70 text-sm focus:outline-none"
-                aria-label="Search library"
-              />
-              {searching && (
-                <button
-                  onClick={() => setQuery('')}
-                  aria-label="Search saaf karo"
-                  className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-white hover:bg-white/35 transition-colors shrink-0"
-                >
-                  <IconX size={12} />
-                </button>
-              )}
-            </div>
-            {searching && (
-              <p className="text-xs text-violet-100/80 mt-2.5 font-medium">
-                &ldquo;{query.trim()}&rdquo; ke liye library results —
-                {(fSheets?.length || 0) + (fPyqs?.length || 0) + (fLectures?.length || 0) + (fBooks?.length || 0)} items mile
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
+  const showTab = (id: TabId) => searching || activeTab === id;
 
-      {/* ── Category tiles (search ke time navigation chhupa do) ── */}
-      {!searching && (
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-          {TILES.map((tile) => (
-            <Link
-              key={tile.href + tile.label}
-              href={tile.href}
-              className="student-card group p-4 md:p-5 flex flex-col gap-3 hover:border-[#6d28d9] hover:shadow-lg hover:-translate-y-0.5 transition-all"
-            >
-              <div className="flex items-start justify-between gap-2">
-                <span className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${tile.grad} text-white flex items-center justify-center shadow-md shrink-0`}>
-                  <tile.Icon size={20} />
-                </span>
-                {typeof tile.count === 'number' && tile.count > 0 && (
-                  <span className="text-[10px] font-black px-2 py-1 rounded-full bg-[#6d28d9]/10 text-[#6d28d9]">
-                    {tile.count} items
-                  </span>
-                )}
-              </div>
-              <span>
-                <span className="block text-sm font-bold text-[var(--student-text)] leading-snug">{tile.label}</span>
-                <span className="block text-[11px] text-[var(--student-text-muted)] leading-relaxed mt-0.5">{tile.text}</span>
-              </span>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {/* ── Category tabs (PW-style strip: bold active + violet underline) ── */}
-      {!searching && (
-      <nav className="flex gap-5 md:gap-7 overflow-x-auto border-b border-[var(--student-border)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Library categories">
-        {TABS.map((tab) => {
-          const active = activeTab === tab.id;
-          return (
-            <a
-              key={tab.id}
-              href={`#library-${tab.id}`}
-              onClick={() => setActiveTab(tab.id)}
-              aria-current={active ? 'true' : undefined}
-              className={`relative whitespace-nowrap pb-2.5 text-sm transition-colors ${
-                active
-                  ? 'font-bold text-[#6d28d9]'
-                  : 'font-semibold text-[var(--student-text-muted)] hover:text-[var(--student-text)]'
-              }`}
-            >
-              {tab.label}
-              <span
-                className={`absolute inset-x-0 -bottom-px h-[2.5px] rounded-full ${active ? 'bg-[#6d28d9]' : 'bg-transparent'}`}
-                aria-hidden="true"
-              />
-            </a>
-          );
-        })}
-      </nav>
-      )}
-
-      {/* ── Short Notes & Formula Sheets ── */}
-      <SectionShell
-        id="notes"
-        title="Short Notes & Formula Sheets"
-        blurb="Exam se pehle 5 minute me poora chapter revise karo."
-        viewAllHref="/app/formula-sheets"
-      >
-        {sheets === null ? (
-          <SkeletonRow />
-        ) : sheets.length === 0 ? (
-          <LinkCard
-            href="/app/formula-sheets"
-            icon={<IconFileText size={20} />}
-            title="Formula Sheets kholo"
-            text="Chapter-wise formula sheets aur short notes yahan milenge — naye sheets jald aa rahe hain."
-          />
-        ) : fSheets !== null && fSheets.length === 0 ? (
-          <NoMatchNote />
-        ) : (
-          <RowScroller>
-            {(fSheets ?? sheets).slice(0, 8).map((sheet) => {
-              const formulaCount = (sheet.content || []).reduce((n, s) => n + (s.formulas?.length || 0), 0);
-              return (
-                <article key={sheet.id} className="student-card overflow-hidden min-w-[240px] max-w-[240px] snap-start flex-shrink-0 flex flex-col hover:border-[#6d28d9] hover:shadow-lg transition-all group">
-                  <div className="h-24 bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 flex items-center justify-center text-white relative overflow-hidden">
-                    <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
-                    <IconFileText size={34} />
+  /* ── Category cards (tab/search dono me wahi anatomy) ── */
+  const notesCard = (
+    <CategoryCard icon={<IconFileText size={21} />} title="Formula Sheets" viewAllHref="/app/formula-sheets">
+      {sheets === null ? (
+        <SkeletonRow />
+      ) : sheets.length === 0 ? (
+        <EmptyNote
+          text="Abhi koi formula sheet uplabdh nahi hai — naye sheets jald judenge."
+          href="/app/formula-sheets"
+          cta="Formula Sheets page dekho"
+        />
+      ) : fSheets !== null && fSheets.length === 0 ? (
+        <EmptyNote text="Is search me koi sheet nahi mili — dusra keyword try karo." href="/app/formula-sheets" cta="Saari sheets dekho" />
+      ) : (
+        <CardRow>
+          {(fSheets ?? sheets).slice(0, 10).map((sheet) => {
+            const formulaCount = (sheet.content || []).reduce((n, s) => n + (s.formulas?.length || 0), 0);
+            return (
+              <DocCard
+                key={sheet.id}
+                thumb={
+                  <div className="relative flex w-[104px] shrink-0 items-center justify-center self-stretch bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 text-white">
+                    <IconFileText size={32} />
                   </div>
-                  <div className="p-4 flex flex-col gap-2 flex-1">
-                    <h3 className="text-sm font-bold text-[var(--student-text)] leading-snug line-clamp-2">{sheet.title}</h3>
-                    <p className="text-[11px] text-[var(--student-text-faint)] font-medium truncate">
-                      {[sheet.subjectName, sheet.chapterName].filter(Boolean).join(' • ') || 'Formula Sheet'}
-                    </p>
-                    {formulaCount > 0 && (
-                      <p className="text-[11px] text-[var(--student-text-muted)]">{formulaCount} formulas</p>
-                    )}
-                    <Link
-                      href="/app/formula-sheets"
-                      className="mt-auto pt-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl border border-[#6d28d9] text-[#6d28d9] text-xs font-bold hover:bg-[#6d28d9] hover:text-white transition-colors"
-                    >
-                      View Now
-                    </Link>
-                  </div>
-                </article>
-              );
-            })}
-          </RowScroller>
-        )}
-      </SectionShell>
-
-      {/* ── PYQs ── */}
-      <SectionShell
-        id="pyq"
-        title="Previous Year Questions"
-        blurb="Asli exam papers, timer ke saath — pattern samjho, taiyaari pakki karo."
-        viewAllHref="/app/pyq"
-      >
-        {pyqs === null ? (
-          <SkeletonRow />
-        ) : pyqs.length === 0 ? (
-          <LinkCard
-            href="/app/pyq"
-            icon={<IconFileText size={20} />}
-            title="PYQ Papers kholo"
-            text="Previous year ke papers year-wise aur subject-wise yahan milenge — naye papers jald aa rahe hain."
-          />
-        ) : fPyqs !== null && fPyqs.length === 0 ? (
-          <NoMatchNote />
-        ) : (
-          <RowScroller>
-            {(fPyqs ?? pyqs).slice(0, 8).map((exam) => (
-              <article key={exam.id} className="student-card overflow-hidden min-w-[240px] max-w-[240px] snap-start flex-shrink-0 flex flex-col hover:border-[#6d28d9] hover:shadow-lg transition-all group">
-                <div className="h-24 bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 flex items-center justify-center text-white relative overflow-hidden">
-                  <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
-                  <IconFileText size={34} />
-                  {exam.year && (
-                    <span className="absolute top-3 right-3 text-[10px] font-black px-2.5 py-1 rounded-full bg-white/90 text-indigo-700">
-                      {exam.year}
-                    </span>
-                  )}
-                </div>
-                <div className="p-4 flex flex-col gap-2 flex-1">
-                  <h3 className="text-sm font-bold text-[var(--student-text)] leading-snug line-clamp-2">{exam.title}</h3>
-                  <p className="text-[11px] text-[var(--student-text-faint)] font-medium truncate">
-                    {[exam.examName, exam.subject].filter(Boolean).join(' • ') || 'Previous Year Paper'}
-                  </p>
-                  <p className="text-[11px] text-[var(--student-text-muted)]">
-                    {exam.totalQuestions} questions • {exam.totalMarks} marks • {exam.timeLimitMinutes} min
-                  </p>
-                  <Link
-                    href="/app/pyq"
-                    className="mt-auto pt-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl border border-[#6d28d9] text-[#6d28d9] text-xs font-bold hover:bg-[#6d28d9] hover:text-white transition-colors"
-                  >
-                    View Now
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </RowScroller>
-        )}
-      </SectionShell>
-
-      {/* ── Practice Papers ── */}
-      {!searching && (
-      <SectionShell
-        id="practice"
-        title="Chapterwise Practice Papers"
-        blurb="Topic-wise practice se kamzor hisse strong banao."
-        viewAllHref="/app/practice"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <LinkCard
-            href="/app/practice"
-            icon={<IconTarget size={20} />}
-            title="Practice Zone"
-            text="Chapter-wise practice sessions — roz ki practice, turant feedback ke saath."
-          />
-          <LinkCard
-            href="/app/dpp"
-            icon={<IconZap size={20} />}
-            title="Daily Practice Problems"
-            text="Roz ke DPP se consistency banao — chhote sets, roz ka target."
-          />
-        </div>
-      </SectionShell>
+                }
+                title={sheet.title}
+                meta={
+                  [sheet.subjectName, sheet.chapterName].filter(Boolean).join(' • ') ||
+                  (formulaCount > 0 ? `${formulaCount} formulas` : 'Formula Sheet')
+                }
+                date={fmtDate(sheet.createdAt)}
+                format={sheet.pdfUrl ? 'PDF' : ''}
+                language={langLabel(sheet.language)}
+                viewHref={sheet.pdfUrl || '/app/formula-sheets'}
+                viewExternal={!!sheet.pdfUrl}
+                downloadUrl={sheet.pdfUrl}
+              />
+            );
+          })}
+        </CardRow>
       )}
+    </CategoryCard>
+  );
 
-      {/* ── Free Lectures ── */}
-      <SectionShell
-        id="lectures"
-        title="Free Lectures"
-        blurb="Bina kisi charge ke — free courses aur preview lectures, seedha classroom se."
-        viewAllHref="/app/courses"
-      >
-        {lectures === null ? (
-          <SkeletonRow />
-        ) : lectures.length === 0 ? (
-          <LinkCard
-            href="/app/courses"
-            icon={<IconPlay size={20} />}
-            title="Courses kholo"
-            text="Free lectures courses ke andar milenge — free course choose karke padhai shuru karo."
-          />
-        ) : fLectures !== null && fLectures.length === 0 ? (
-          <NoMatchNote />
-        ) : (
-          <RowScroller>
-            {(fLectures ?? lectures).slice(0, 10).map((lec) => (
-              <article key={lec.id} className="student-card overflow-hidden min-w-[280px] max-w-[280px] snap-start flex-shrink-0 flex flex-col hover:border-[#6d28d9] hover:shadow-lg transition-all group">
-                <div className={`h-24 bg-gradient-to-br ${coverFor(lec.id)} flex items-center justify-center text-white relative overflow-hidden`}>
-                  <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
-                  <span className="w-12 h-12 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
-                    <IconPlay size={20} />
-                  </span>
-                  <span className="absolute top-3 left-3 text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-400 text-emerald-950 uppercase tracking-wide">
-                    Free
-                  </span>
-                  {lec.duration && (
-                    <span className="absolute bottom-3 right-3 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-full bg-black/30 text-white">
-                      <IconClock size={10} />
-                      {lec.duration}
-                    </span>
-                  )}
-                </div>
-                <div className="p-4 flex flex-col gap-2 flex-1">
-                  <h3 className="text-sm font-bold text-[var(--student-text)] leading-snug line-clamp-2">{lec.title}</h3>
-                  <p className="text-[11px] text-[var(--student-text-faint)] font-medium truncate">
-                    {[lec.subject, lec.chapter].filter(Boolean).join(' • ') || lec.courseTitle}
-                  </p>
-                  <p className="text-[11px] text-[var(--student-text-muted)] truncate">{lec.courseTitle}</p>
-                  <Link
-                    href={`/app/learn/${lec.courseId}?lecture=${lec.id}`}
-                    className="mt-auto pt-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl border border-[#6d28d9] text-[#6d28d9] text-xs font-bold hover:bg-[#6d28d9] hover:text-white transition-colors"
-                  >
-                    <IconPlay size={12} />
-                    Watch Now
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </RowScroller>
-        )}
-      </SectionShell>
-
-      {/* ── Question Bank ── */}
-      {!searching && (
-      <SectionShell
-        id="question-bank"
-        title="Free Question Bank"
-        blurb="Difficulty aur type ke hisaab se filtered handpicked questions."
-        viewAllHref="/app/question-bank"
-      >
-        {qb === null ? (
-          <SkeletonRow />
-        ) : qb.total === 0 ? (
-          <LinkCard
-            href="/app/question-bank"
-            icon={<IconTarget size={20} />}
-            title="Question Bank kholo"
-            text="Har chapter ke curated questions yahan milenge — bank taiyaar ho raha hai."
-          />
-        ) : (
-          <div className="student-card p-5 md:p-6">
-            <div className="flex flex-col md:flex-row md:items-center gap-5">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center flex-shrink-0 text-white shadow-md shadow-teal-500/20">
-                <IconTarget size={22} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-[var(--student-text)]">
-                  {qb.total} questions available
-                </p>
-                {qbDist.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {qbDist.map((d) => (
-                      <span
-                        key={d.difficulty}
-                        className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[var(--student-surface-hover)] text-[var(--student-text-secondary)] uppercase tracking-wider"
-                      >
-                        {String(d.difficulty).replace('_', ' ')} · {d.count}
+  const pyqCard = (
+    <CategoryCard icon={<IconClipboard size={21} />} title="Previous Year Papers" viewAllHref="/app/pyq">
+      {pyqs === null ? (
+        <SkeletonRow />
+      ) : pyqs.length === 0 ? (
+        <EmptyNote
+          text="Abhi koi PYQ paper uplabdh nahi hai — naye papers jald judenge."
+          href="/app/pyq"
+          cta="PYQ page dekho"
+        />
+      ) : fPyqs !== null && fPyqs.length === 0 ? (
+        <EmptyNote text="Is search me koi paper nahi mila — dusra keyword try karo." href="/app/pyq" cta="Saare papers dekho" />
+      ) : (
+        <CardRow>
+          {(fPyqs ?? pyqs).slice(0, 10).map((exam) => {
+            const title = [exam.examName, exam.year].filter(Boolean).join(' ') || 'Previous Year Paper';
+            const meta = [exam.subject, exam.shift].filter(Boolean).join(' • ');
+            return exam.pdfUrl ? (
+              <DocCard
+                key={exam.id}
+                thumb={
+                  <div className="relative flex w-[104px] shrink-0 items-center justify-center self-stretch bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 text-white">
+                    <IconFileText size={32} />
+                    {exam.year ? (
+                      <span className="absolute right-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[9.5px] font-black text-indigo-700">
+                        {exam.year}
                       </span>
-                    ))}
+                    ) : null}
                   </div>
-                )}
-                <p className="text-xs text-[var(--student-text-muted)] mt-2 leading-relaxed">
-                  Subject, chapter, difficulty aur type — jaise chaho waisa filter karke practice karo.
-                </p>
-              </div>
-              <Link
-                href="/app/question-bank"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#2a1650] text-white text-sm font-bold hover:bg-[#6d28d9] transition-colors flex-shrink-0"
-              >
-                View Now
-                <IconArrowRight size={14} />
-              </Link>
-            </div>
-          </div>
-        )}
-      </SectionShell>
+                }
+                title={title}
+                meta={meta || 'Previous Year Paper'}
+                format="PDF"
+                viewHref={exam.pdfUrl}
+                viewExternal
+                downloadUrl={exam.pdfUrl}
+              />
+            ) : (
+              <TestCard
+                key={exam.id}
+                title={title}
+                meta={meta}
+                questions={exam.totalQuestions}
+                marks={exam.totalMarks}
+                minutes={exam.durationMinutes}
+                attemptHref="/app/pyq"
+              />
+            );
+          })}
+        </CardRow>
       )}
+    </CategoryCard>
+  );
 
-      {/* ── e-Books ── */}
-      <SectionShell
-        id="ebooks"
-        title="e-Books & Notes"
-        blurb="Textbooks, short notes aur reference material — kabhi bhi padho."
-        viewAllHref="/app/ebooks"
-      >
-        {books === null ? (
-          <SkeletonRow />
-        ) : books.length === 0 ? (
-          <LinkCard
-            href="/app/ebooks"
-            icon={<IconBook size={20} />}
-            title="e-Books kholo"
-            text="Digital books aur notes yahan milenge — library me naya material jald aa raha hai."
-          />
-        ) : fBooks !== null && fBooks.length === 0 ? (
-          <NoMatchNote />
-        ) : (
-          <RowScroller>
-            {(fBooks ?? books).slice(0, 8).map((book) => (
-              <article key={book.id} className="student-card overflow-hidden min-w-[240px] max-w-[240px] snap-start flex-shrink-0 flex flex-col hover:border-[#6d28d9] hover:shadow-lg transition-all group">
-                <div className={`h-24 bg-gradient-to-br ${coverFor(book.id)} flex items-center justify-center text-white relative overflow-hidden`}>
-                  <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-white/10 blur-xl" aria-hidden="true" />
-                  <IconBook size={34} />
-                  {book.isFree && (
-                    <span className="absolute top-3 left-3 text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-400 text-emerald-950 uppercase tracking-wide">
-                      Free
-                    </span>
+  const lecturesCard = (
+    <CategoryCard icon={<IconPlay size={21} />} title="Free Lectures" viewAllHref="/app/courses">
+      {lectures === null ? (
+        <SkeletonRow />
+      ) : lectures.length === 0 ? (
+        <EmptyNote
+          text="Abhi koi free lecture uplabdh nahi hai — free courses se padhai shuru karo."
+          href="/app/courses"
+          cta="Courses dekho"
+        />
+      ) : fLectures !== null && fLectures.length === 0 ? (
+        <EmptyNote text="Is search me koi lecture nahi mila — dusra keyword try karo." href="/app/courses" cta="Saare courses dekho" />
+      ) : (
+        <CardRow>
+          {(fLectures ?? lectures).slice(0, 10).map((lec) => (
+            <LectureCard key={lec.id} lec={lec} />
+          ))}
+        </CardRow>
+      )}
+    </CategoryCard>
+  );
+
+  const ebooksCard = (
+    <CategoryCard icon={<IconBook size={21} />} title="eBooks" viewAllHref="/app/ebooks">
+      {books === null ? (
+        <SkeletonRow />
+      ) : books.length === 0 ? (
+        <EmptyNote
+          text="Abhi koi eBook uplabdh nahi hai — library me naya material jald judega."
+          href="/app/ebooks"
+          cta="eBooks page dekho"
+        />
+      ) : fBooks !== null && fBooks.length === 0 ? (
+        <EmptyNote text="Is search me koi book nahi mili — dusra keyword try karo." href="/app/ebooks" cta="Saari books dekho" />
+      ) : (
+        <CardRow>
+          {(fBooks ?? books).slice(0, 10).map((book) => (
+            <DocCard
+              key={book.id}
+              thumb={
+                <div className={`relative flex w-[104px] shrink-0 items-center justify-center self-stretch overflow-hidden bg-gradient-to-br ${coverFor(book.id)} text-white`}>
+                  {book.coverUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={book.coverUrl} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                  ) : (
+                    <IconBook size={32} />
                   )}
-                  {book.pageCount ? (
-                    <span className="absolute bottom-3 right-3 text-[10px] font-bold px-2 py-1 rounded-full bg-black/30 text-white">
-                      {book.pageCount} pages
+                  {book.isFree ? (
+                    <span className="absolute left-2 top-2 rounded-full bg-emerald-400 px-2 py-0.5 text-[9.5px] font-black uppercase tracking-wide text-emerald-950">
+                      Free
                     </span>
                   ) : null}
                 </div>
-                <div className="p-4 flex flex-col gap-2 flex-1">
-                  <h3 className="text-sm font-bold text-[var(--student-text)] leading-snug line-clamp-2">{book.title}</h3>
-                  <p className="text-[11px] text-[var(--student-text-faint)] font-medium truncate">
-                    {[book.author ? `by ${book.author}` : null, book.category ? String(book.category).replace('_', ' ') : null].filter(Boolean).join(' • ') || 'e-Book'}
-                  </p>
-                  <Link
-                    href="/app/ebooks"
-                    className="mt-auto pt-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl border border-[#6d28d9] text-[#6d28d9] text-xs font-bold hover:bg-[#6d28d9] hover:text-white transition-colors"
-                  >
-                    View Now
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </RowScroller>
-        )}
-      </SectionShell>
+              }
+              title={book.title}
+              meta={
+                [book.author ? `by ${book.author}` : null, book.category ? String(book.category).replace('_', ' ') : null]
+                  .filter(Boolean)
+                  .join(' • ') || 'eBook'
+              }
+              date={fmtDate(book.createdAt)}
+              format={fmtFromUrl(book.fileUrl)}
+              language={langLabel(book.language)}
+              viewHref={book.fileUrl || '/app/ebooks'}
+              viewExternal={!!book.fileUrl}
+              downloadUrl={book.fileUrl}
+            />
+          ))}
+        </CardRow>
+      )}
+    </CategoryCard>
+  );
 
-      {/* ── NCERT ── */}
-      {!searching && (
-      <SectionShell
-        id="ncert"
-        title="NCERT Solutions"
-        blurb="Class-wise NCERT solutions — board ki taiyaari ki neev."
-        viewAllHref="/app/ncert"
-      >
-        <LinkCard
-          href="/app/ncert"
-          icon={<IconBookOpen size={20} />}
-          title="NCERT Solutions kholo"
-          text="Apni class aur subject choose karo — chapter-wise solutions ek jagah milenge."
+  const qbCard = (
+    <CategoryCard icon={<IconTarget size={21} />} title="Question Bank" viewAllHref="/app/question-bank">
+      {qb === null ? (
+        <SkeletonRow />
+      ) : qb.total === 0 ? (
+        <EmptyNote
+          text="Question Bank abhi taiyaar ho raha hai — curated questions jald judenge."
+          href="/app/question-bank"
+          cta="Question Bank dekho"
         />
-      </SectionShell>
+      ) : (
+        <div>
+          <p className="text-[15px] font-bold text-gray-900">{qb.total} questions available</p>
+          <p className="mt-1 text-[13px] leading-relaxed text-gray-500">
+            Subject, chapter, difficulty aur type — jaise chaho waisa filter karke practice karo.
+          </p>
+          {qbDist.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {qbDist.map((d) => (
+                <span
+                  key={d.difficulty}
+                  className="rounded-full bg-gray-100 px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-gray-600"
+                >
+                  {String(d.difficulty).replace('_', ' ')} · {d.count}
+                </span>
+              ))}
+            </div>
+          )}
+          <Link
+            href="/app/question-bank"
+            className="mt-4 inline-flex items-center justify-center rounded-lg border border-gray-300 px-5 py-2 text-[13px] font-bold text-gray-800 transition hover:border-[#6d28d9] hover:text-[#6d28d9]"
+          >
+            View Now
+          </Link>
+        </div>
+      )}
+    </CategoryCard>
+  );
+
+  return (
+    <main className="mx-auto w-full max-w-[64rem] min-w-0 space-y-6 px-4 py-6 pb-10">
+      {/* ── Title + search ── */}
+      <div className="flex flex-wrap items-center gap-3">
+        <h1 className="text-[28px] font-extrabold leading-tight text-gray-900">Library</h1>
+        <div className="ml-auto w-full sm:w-[320px]">
+          <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2.5 transition-colors focus-within:border-[#6d28d9]">
+            <IconSearch size={17} className="shrink-0 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search notes, papers, lectures, books..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="min-w-0 flex-1 bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
+              aria-label="Search library"
+            />
+            {searching && (
+              <button
+                onClick={() => setQuery('')}
+                aria-label="Search saaf karo"
+                className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition hover:bg-gray-200"
+              >
+                <IconX size={12} />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+      {searching && (
+        <p className="-mt-3 text-[13px] font-medium text-gray-500">
+          &ldquo;{query.trim()}&rdquo; ke liye {matchCount} items mile
+        </p>
       )}
 
-      {/* ── Bottom note ── */}
-      <div className="student-card p-5 flex items-center gap-4">
-        <div className="w-11 h-11 rounded-2xl bg-[#6d28d9]/10 text-[#6d28d9] flex items-center justify-center flex-shrink-0">
-          <IconLibrary size={22} />
-        </div>
-        <p className="text-xs md:text-sm text-[var(--student-text-muted)] leading-relaxed">
-          Library ka material lagatar badh raha hai — naye notes, papers, lectures aur books
-          yahan judte rahenge. Roz 10 minute ka revision bhi exam me bada fark laata hai.
-        </p>
-      </div>
-    </div>
+      {/* ── Text tabs (PW pattern: bold active + violet underline) ── */}
+      {!searching && (
+        <nav
+          className="flex gap-6 overflow-x-auto border-b border-gray-200 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:gap-8"
+          aria-label="Library categories"
+        >
+          {TABS.map((tab) => {
+            const active = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                aria-current={active ? 'true' : undefined}
+                className={`relative whitespace-nowrap pb-2.5 text-[15px] transition-colors ${
+                  active
+                    ? 'font-bold text-[#6d28d9]'
+                    : 'font-semibold text-gray-500 hover:text-gray-900'
+                }`}
+              >
+                {tab.label}
+                <span
+                  className={`absolute inset-x-0 -bottom-px h-[2.5px] rounded-full ${active ? 'bg-[#6d28d9]' : 'bg-transparent'}`}
+                  aria-hidden="true"
+                />
+              </button>
+            );
+          })}
+        </nav>
+      )}
+
+      {/* ── Category cards ── */}
+      {showTab('notes') && (searching ? fSheets === null || fSheets.length > 0 : true) && notesCard}
+      {showTab('pyq') && (searching ? fPyqs === null || fPyqs.length > 0 : true) && pyqCard}
+      {showTab('lectures') && (searching ? fLectures === null || fLectures.length > 0 : true) && lecturesCard}
+      {showTab('ebooks') && (searching ? fBooks === null || fBooks.length > 0 : true) && ebooksCard}
+      {showTab('question-bank') && !searching && qbCard}
+
+      {searching && matchCount === 0 && sheets !== null && pyqs !== null && lectures !== null && books !== null && (
+        <section className="rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-[0_1px_3px_rgba(16,24,40,0.06)]">
+          <p className="text-[14px] font-semibold text-gray-700">
+            &ldquo;{query.trim()}&rdquo; ke liye library me kuch nahi mila
+          </p>
+          <p className="mt-1 text-[13px] text-gray-500">Dusra keyword try karo, ya tabs se category kholo.</p>
+        </section>
+      )}
+    </main>
   );
 }

@@ -62,7 +62,7 @@ export default function ProfileEditForm({
 
   if (!open) {
     return (
-      <div className="mt-3">
+      <div className="mt-4">
         <button
           type="button"
           onClick={() => {
@@ -72,13 +72,13 @@ export default function ProfileEditForm({
             setError(null);
             setOpen(true);
           }}
-          className="inline-flex items-center gap-2 rounded-xl bg-[var(--student-primary)] px-4 py-2.5 text-xs font-bold text-white transition hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-full bg-[#6d28d9] px-5 py-2.5 text-[13px] font-bold text-white transition hover:bg-[#5b21b6]"
         >
           <IconPencil size={13} />
           Naam, Target Exam ya Photo badlo
         </button>
         {saved && (
-          <p className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 ml-3">
+          <p className="ml-3 mt-2 inline-flex items-center gap-1.5 text-[12px] font-bold text-emerald-600">
             <IconCheckCircle size={12} /> Profile update ho gaya
           </p>
         )}
@@ -87,12 +87,12 @@ export default function ProfileEditForm({
   }
 
   const inputCls =
-    'w-full rounded-xl border border-[var(--student-border)] bg-[var(--student-surface)] px-3.5 py-2.5 text-sm font-medium text-[var(--student-text)] placeholder:text-[var(--student-text-faint)] focus:outline-none focus:border-[var(--student-primary)]';
+    'w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#6d28d9]';
   const labelCls =
-    'block text-[11px] font-bold uppercase tracking-wider text-[var(--student-text-faint)] mb-1.5';
+    'block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1.5';
 
   return (
-    <form onSubmit={handleSave} className="student-card p-4 mt-3 space-y-4">
+    <form onSubmit={handleSave} className="mt-4 space-y-4 rounded-2xl border border-gray-200/80 bg-gray-50/60 p-5">
       <div>
         <label htmlFor="pe-name" className={labelCls}>Full Name</label>
         <input
@@ -134,7 +134,7 @@ export default function ProfileEditForm({
         />
       </div>
       {error && (
-        <p className="flex items-start gap-1.5 text-xs font-semibold text-red-600 dark:text-red-400">
+        <p className="flex items-start gap-1.5 text-xs font-semibold text-red-600">
           <IconX size={13} className="mt-0.5 flex-shrink-0" />
           {error}
         </p>
@@ -143,7 +143,7 @@ export default function ProfileEditForm({
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-xl bg-[var(--student-primary)] px-5 py-2.5 text-xs font-bold text-white transition hover:opacity-90 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-full bg-[#6d28d9] px-5 py-2.5 text-[13px] font-bold text-white transition hover:bg-[#5b21b6] disabled:opacity-50"
         >
           {saving ? 'Save ho raha hai…' : 'Save Karo'}
         </button>
@@ -151,7 +151,7 @@ export default function ProfileEditForm({
           type="button"
           onClick={() => setOpen(false)}
           disabled={saving}
-          className="rounded-xl border border-[var(--student-border)] px-4 py-2.5 text-xs font-bold text-[var(--student-text-muted)] transition hover:bg-[var(--student-surface-hover)] disabled:opacity-50"
+          className="rounded-full border border-gray-300 bg-white px-5 py-2.5 text-[13px] font-bold text-gray-500 transition hover:bg-gray-50 disabled:opacity-50"
         >
           Cancel
         </button>

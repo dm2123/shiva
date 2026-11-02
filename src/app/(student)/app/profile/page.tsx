@@ -20,20 +20,28 @@ import {
 
 export const revalidate = 0;
 
+/* Wave-B tokens — dashboard/my-batches wale hi (PW pattern):
+   safed card radius 16, page title 28px extrabold, spacing ekroop. */
+const CARD =
+  'rounded-2xl border border-gray-200/80 bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,0.06)] sm:p-7';
+const SECTION_TITLE = 'text-[19px] font-bold leading-snug text-gray-900';
+
 /**
  * THE SHIVA — Student Profile.
  *
- * PW-grade banawat: gehra purple hero (gold-ring avatar, bada naam, asal
- * badges), 4 stat cards, 'Personal Details' aur 'Academic Details' cards.
- * Har number asal table se aata hai — StudentXP (Total XP),
- * LectureProgress, AssessmentAttempts, Doubts (status = RESOLVED matlab
- * solved). Jo data platform par maujood hi nahi (level system,
- * satisfaction rating, class/board), uska card ya badge nahi banta.
+ * PW pattern: bada 'Profile' title, upar safed identity card (avatar
+ * initial circle, naam, friendly SHV-ID, asal goal/XP chips), neeche
+ * Personal/Academic details safed cards me saaf rows ke saath, phir
+ * Quick Actions card. Har number asal table se aata hai — StudentXP
+ * (Total XP), LectureProgress, AssessmentAttempts, Doubts (status =
+ * RESOLVED matlab solved). Jo data platform par maujood hi nahi
+ * (level system, satisfaction rating, class/board), uska card ya
+ * badge nahi banta.
  *
- * EDIT NOTE: profile-update API (PUT /api/student/profile) ab maujood
+ * EDIT NOTE: profile-update API (PUT /api/student/profile) maujood
  * hai — student apna naam, target exam aur avatar URL khud badal
- * sakta hai (neeche ProfileEditForm). Email/phone ab bhi view-only
- * hain kyunki unke liye koi safe self-service flow nahi hai.
+ * sakta hai (ProfileEditForm). Email/phone view-only hain kyunki
+ * unke liye koi safe self-service flow nahi hai.
  */
 export default async function ProfilePage() {
   const session = await getSessionFromHeaders(headers());
@@ -87,35 +95,35 @@ export default async function ProfilePage() {
           value: String(totalXp),
           icon: <IconZap size={20} />,
           href: '/app/leaderboard',
-          bg: 'from-[#f5b942] to-amber-600',
+          chip: 'bg-amber-50 text-amber-600',
         }]
       : [{
           label: 'Enrolled Courses',
           value: String(s.enrolledCourses || 0),
           icon: <IconBook size={20} />,
           href: '/app/my-courses',
-          bg: 'from-[#6d28d9] to-[#2a1650]',
+          chip: 'bg-violet-50 text-[#6d28d9]',
         }]),
     {
       label: 'Lectures Done',
       value: String(s.lecturesCompleted || 0),
       icon: <IconPlay size={20} />,
       href: '/app/my-courses',
-      bg: 'from-emerald-500 to-teal-600',
+      chip: 'bg-emerald-50 text-emerald-600',
     },
     {
       label: 'Tests Taken',
       value: String(s.testsTaken || 0),
       icon: <IconClipboard size={20} />,
       href: '/app/tests',
-      bg: 'from-[#6d28d9] to-[#2a1650]',
+      chip: 'bg-violet-50 text-[#6d28d9]',
     },
     {
       label: 'Doubts Solved',
       value: String(s.doubtsSolved || 0),
       icon: <IconCheckCircle size={20} />,
       href: '/app/doubts',
-      bg: 'from-sky-500 to-blue-600',
+      chip: 'bg-sky-50 text-sky-600',
     },
   ];
 
@@ -137,207 +145,189 @@ export default async function ProfilePage() {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* ── Hero: gehra purple banner + gold-ring avatar + asal badges ── */}
-      <div className="student-card overflow-hidden">
-        <div className="h-28 bg-gradient-to-r from-[#2a1650] via-[#6d28d9] to-[#7c3aed] relative">
-          <div
-            className="absolute inset-0 opacity-20"
-            style={{
-              backgroundImage:
-                'radial-gradient(circle at 20% 30%, white 1.5px, transparent 1.5px), radial-gradient(circle at 70% 60%, white 1.5px, transparent 1.5px)',
-              backgroundSize: '42px 42px',
-            }}
-            aria-hidden="true"
-          />
-          <div className="absolute -top-10 right-10 w-36 h-36 rounded-full bg-[#f5b942]/20 blur-2xl" aria-hidden="true" />
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#f5b942] via-[#f5b942]/40 to-transparent" aria-hidden="true" />
-        </div>
-        <div className="px-5 pb-6 -mt-12 relative flex flex-col items-center text-center">
-          <div className="w-24 h-24 rounded-full bg-[var(--student-surface)] p-1 shadow-lg flex-shrink-0">
+    <main className="mx-auto w-full max-w-[72rem] space-y-6 px-4 py-5 pb-10">
+      {/* ── Page title — wave-A pattern (28px extrabold) ── */}
+      <h1 className="text-[28px] font-extrabold leading-tight text-gray-900">Profile</h1>
+
+      {/* ── Identity card: avatar + naam + SHV-ID + asal chips ── */}
+      <section className={CARD} aria-label="Identity">
+        <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
+          <div className="shrink-0">
             {profile?.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={profile.avatarUrl}
                 alt={displayName}
-                className="w-full h-full rounded-full object-cover ring-4 ring-[#f5b942]/60"
+                className="h-20 w-20 rounded-full object-cover ring-2 ring-[#f5b942]/70"
               />
             ) : (
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-[#6d28d9] to-[#2a1650] ring-4 ring-[#f5b942]/60 flex items-center justify-center text-white text-4xl font-black">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#6d28d9] to-[#2a1650] text-3xl font-black text-white ring-2 ring-[#f5b942]/70">
                 {initial}
               </div>
             )}
           </div>
-          <h1 className="text-[26px] leading-tight font-extrabold text-[var(--student-text)] tracking-tight mt-3 truncate max-w-full">
-            {displayName}
-          </h1>
-          <p className="text-sm text-[var(--student-text-muted)] truncate max-w-full">{session.email}</p>
-
-          <div className="flex items-center justify-center gap-2 flex-wrap mt-3">
-            {totalXp !== null && (
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#92600a] dark:text-[#f5b942] bg-[#f5b942]/15 border border-[#f5b942]/40 rounded-full px-3 py-1">
-                <IconZap size={12} />
-                {totalXp} XP
+          <div className="min-w-0 flex-1">
+            <h2 className="max-w-full truncate text-[22px] font-extrabold leading-tight text-gray-900">
+              {displayName}
+            </h2>
+            <p className="mt-0.5 max-w-full truncate text-sm text-gray-500">{session.email}</p>
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+              <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1 font-mono text-[11px] font-bold tracking-wide text-gray-600">
+                {shortStudentId}
               </span>
-            )}
-            {profile?.targetExam && (
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#6d28d9] bg-[#6d28d9]/10 border border-[#6d28d9]/25 rounded-full px-3 py-1">
-                <IconTarget size={12} />
-                Target: {profile.targetExam}
+              {profile?.targetExam && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#6d28d9]/25 bg-[#6d28d9]/10 px-3 py-1 text-[11px] font-bold text-[#6d28d9]">
+                  <IconTarget size={12} />
+                  Target: {profile.targetExam}
+                </span>
+              )}
+              {totalXp !== null && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#f5b942]/40 bg-[#f5b942]/15 px-3 py-1 text-[11px] font-bold text-[#92600a]">
+                  <IconZap size={12} />
+                  {totalXp} XP
+                </span>
+              )}
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold text-emerald-700">
+                <IconCheckCircle size={12} /> Active Student
               </span>
-            )}
-            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400 rounded-full px-3 py-1">
-              <IconCheckCircle size={12} /> Active Student
-            </span>
+            </div>
+            <p className="mt-3 text-[12px] text-gray-400">Member since {memberSince}</p>
           </div>
-          <p className="text-[11px] text-[var(--student-text-faint)] mt-3">Member since {memberSince}</p>
         </div>
-      </div>
+      </section>
 
       {/* ── Stat cards (sirf asal data) ── */}
-      <section>
-        <div className="flex items-center gap-2.5 mb-3">
-          <span className="w-1.5 h-5 rounded-full bg-gradient-to-b from-[#f5b942] to-[#6d28d9]" aria-hidden="true" />
-          <h2 className="text-lg font-bold text-[var(--student-text)] tracking-tight">Your Progress</h2>
-        </div>
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
+      <section aria-label="Your Progress">
+        <h2 className={SECTION_TITLE}>Your Progress</h2>
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
           {statCards.map((c) => (
             <Link
               key={c.label}
               href={c.href}
-              className="student-card p-4 hover:shadow-md hover:border-[#6d28d9] transition group"
+              className="group rounded-2xl border border-gray-200/80 bg-white p-5 shadow-[0_1px_3px_rgba(16,24,40,0.06)] transition hover:border-violet-300 hover:shadow-sm"
             >
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${c.bg} text-white flex items-center justify-center mb-3 group-hover:scale-105 transition`}>
+              <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${c.chip} mb-3 transition group-hover:scale-105`}>
                 {c.icon}
               </div>
-              <p className="text-2xl font-black text-[var(--student-text)]">{c.value}</p>
-              <p className="text-[12px] font-medium text-[var(--student-text-muted)]">{c.label}</p>
+              <p className="text-2xl font-black text-gray-900">{c.value}</p>
+              <p className="mt-0.5 text-[12.5px] font-medium text-gray-500">{c.label}</p>
             </Link>
           ))}
         </div>
-        <p className="text-[11px] text-[var(--student-text-faint)] mt-2.5 flex items-center gap-1.5">
+        <p className="mt-3 flex items-center gap-1.5 text-[12px] text-gray-400">
           <IconHelpCircle size={12} />
           Ab tak {String(s.doubtsRaised || 0)} doubts poochhe gaye hain — jinme se {String(s.doubtsSolved || 0)} solved hain.
           Courses enrolled: {String(s.enrolledCourses || 0)}.
         </p>
       </section>
 
-      {/* ── Personal + Academic Details — PW grammar: bade screen par
-          side-by-side cards, mobile par stack ── */}
-      <div className="grid gap-6 lg:grid-cols-2 items-start">
-      {/* ── Personal Details ── */}
-      <section>
-        <div className="flex items-center gap-2.5 mb-3">
-          <span className="w-1.5 h-5 rounded-full bg-gradient-to-b from-[#f5b942] to-[#6d28d9]" aria-hidden="true" />
-          <h2 className="text-lg font-bold text-[var(--student-text)] tracking-tight">Personal Details</h2>
-        </div>
-        <div className="student-card divide-y divide-[var(--student-border-light)]">
-          {personalRows.map((row) => (
-            <div key={row.label} className="p-4 flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--student-text-faint)]">{row.label}</p>
-                <p className={`text-sm font-semibold text-[var(--student-text)] mt-0.5 ${row.mono ? 'font-mono tracking-wide' : 'truncate'}`}>
-                  {row.value}
-                </p>
+      {/* ── Personal + Academic Details — bade screen par
+          side-by-side safed cards, mobile par stack ── */}
+      <div className="grid items-start gap-6 lg:grid-cols-2">
+        {/* ── Personal Details ── */}
+        <section className={CARD} aria-label="Personal Details">
+          <h2 className={SECTION_TITLE}>Personal Details</h2>
+          <div className="mt-2 divide-y divide-gray-100">
+            {personalRows.map((row) => (
+              <div key={row.label} className="flex items-center justify-between gap-3 py-3.5">
+                <div className="min-w-0">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400">{row.label}</p>
+                  <p className={`mt-0.5 text-sm font-semibold text-gray-900 ${row.mono ? 'font-mono tracking-wide' : 'truncate'}`}>
+                    {row.value}
+                  </p>
+                </div>
+                {row.chip === 'verified' && (
+                  <span className="shrink-0 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">
+                    Verified
+                  </span>
+                )}
               </div>
-              {row.chip === 'verified' && (
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400 rounded-full px-2.5 py-1 flex-shrink-0">
-                  Verified
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
-        {/* Edit form — sirf wahi fields jo PUT /api/student/profile
-            asal me save karta hai (naam, target exam, avatar URL) */}
-        <ProfileEditForm
-          initialName={profile?.name || ''}
-          initialTargetExam={profile?.targetExam || ''}
-          initialAvatarUrl={profile?.avatarUrl || ''}
-        />
-        <p className="text-[11px] text-[var(--student-text-faint)] mt-2.5">
-          Email ya mobile number badalna hai to{' '}
-          <Link href="/app/counsellor" className="font-bold text-[#6d28d9] hover:underline">
-            Counsellor se sampark karo
-          </Link>{' '}
-          — woh tumhari madad kar denge.
-        </p>
-      </section>
+            ))}
+          </div>
+          {/* Edit form — sirf wahi fields jo PUT /api/student/profile
+              asal me save karta hai (naam, target exam, avatar URL) */}
+          <ProfileEditForm
+            initialName={profile?.name || ''}
+            initialTargetExam={profile?.targetExam || ''}
+            initialAvatarUrl={profile?.avatarUrl || ''}
+          />
+          <p className="mt-3 text-[12px] leading-relaxed text-gray-400">
+            Email ya mobile number badalna hai to{' '}
+            <Link href="/app/counsellor" className="font-bold text-[#6d28d9] hover:underline">
+              Counsellor se sampark karo
+            </Link>{' '}
+            — woh tumhari madad kar denge.
+          </p>
+        </section>
 
-      {/* ── Academic Details (sirf asal fields) ── */}
-      <section>
-        <div className="flex items-center gap-2.5 mb-3">
-          <span className="w-1.5 h-5 rounded-full bg-gradient-to-b from-[#f5b942] to-[#6d28d9]" aria-hidden="true" />
-          <h2 className="text-lg font-bold text-[var(--student-text)] tracking-tight">Academic Details</h2>
-        </div>
-        <div className="student-card divide-y divide-[var(--student-border-light)]">
-          {profile?.targetExam && (
-            <div className="p-4 flex items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold text-[var(--student-text)]">Target Exam</p>
-                <p className="text-xs text-[var(--student-text-muted)]">Jis exam ki taiyaari chal rahi hai</p>
+        {/* ── Academic Details (sirf asal fields) ── */}
+        <section className={CARD} aria-label="Academic Details">
+          <h2 className={SECTION_TITLE}>Academic Details</h2>
+          <div className="mt-2 divide-y divide-gray-100">
+            {profile?.targetExam && (
+              <div className="flex items-center justify-between gap-3 py-3.5">
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">Target Exam</p>
+                  <p className="mt-0.5 text-xs text-gray-500">Jis exam ki taiyaari chal rahi hai</p>
+                </div>
+                <span className="shrink-0 rounded-full border border-[#6d28d9]/25 bg-[#6d28d9]/10 px-3 py-1 text-[11px] font-bold text-[#6d28d9]">
+                  {profile.targetExam}
+                </span>
               </div>
-              <span className="text-[11px] font-bold text-[#6d28d9] bg-[#6d28d9]/10 border border-[#6d28d9]/25 rounded-full px-3 py-1 flex-shrink-0">
-                {profile.targetExam}
+            )}
+            <Link href="/app/my-courses" className="-mx-2 flex items-center justify-between gap-3 rounded-lg px-2 py-3.5 transition-colors hover:bg-gray-50">
+              <div>
+                <p className="text-sm font-semibold text-gray-900">Enrolled Courses</p>
+                <p className="mt-0.5 text-xs text-gray-500">Abhi active enrollments</p>
+              </div>
+              <span className="inline-flex items-center gap-1.5 text-sm font-black text-gray-900">
+                {String(s.enrolledCourses || 0)}
+                <IconChevronRight size={14} className="text-gray-300" />
               </span>
-            </div>
-          )}
-          <Link href="/app/my-courses" className="p-4 flex items-center justify-between gap-3 hover:bg-[var(--student-surface-hover)] transition-colors">
-            <div>
-              <p className="text-sm font-semibold text-[var(--student-text)]">Enrolled Courses</p>
-              <p className="text-xs text-[var(--student-text-muted)]">Abhi active enrollments</p>
-            </div>
-            <span className="inline-flex items-center gap-1.5 text-sm font-black text-[var(--student-text)]">
-              {String(s.enrolledCourses || 0)}
-              <IconChevronRight size={14} className="text-[var(--student-text-faint)]" />
-            </span>
-          </Link>
-          <Link href="/app/tests" className="p-4 flex items-center justify-between gap-3 hover:bg-[var(--student-surface-hover)] transition-colors">
-            <div>
-              <p className="text-sm font-semibold text-[var(--student-text)]">Tests Taken</p>
-              <p className="text-xs text-[var(--student-text-muted)]">Evaluate ho chuke attempts</p>
-            </div>
-            <span className="inline-flex items-center gap-1.5 text-sm font-black text-[var(--student-text)]">
-              {String(s.testsTaken || 0)}
-              <IconChevronRight size={14} className="text-[var(--student-text-faint)]" />
-            </span>
-          </Link>
-        </div>
-      </section>
+            </Link>
+            <Link href="/app/tests" className="-mx-2 flex items-center justify-between gap-3 rounded-lg px-2 py-3.5 transition-colors hover:bg-gray-50">
+              <div>
+                <p className="text-sm font-semibold text-gray-900">Tests Taken</p>
+                <p className="mt-0.5 text-xs text-gray-500">Evaluate ho chuke attempts</p>
+              </div>
+              <span className="inline-flex items-center gap-1.5 text-sm font-black text-gray-900">
+                {String(s.testsTaken || 0)}
+                <IconChevronRight size={14} className="text-gray-300" />
+              </span>
+            </Link>
+          </div>
+        </section>
       </div>
 
-      {/* ── Quick links ── */}
-      <section>
-        <div className="flex items-center gap-2.5 mb-3">
-          <span className="w-1.5 h-5 rounded-full bg-gradient-to-b from-[#f5b942] to-[#6d28d9]" aria-hidden="true" />
-          <h2 className="text-lg font-bold text-[var(--student-text)] tracking-tight">Quick Actions</h2>
-        </div>
-        <div className="student-card divide-y divide-[var(--student-border-light)]">
+      {/* ── Quick Actions ── */}
+      <section className={CARD} aria-label="Quick Actions">
+        <h2 className={SECTION_TITLE}>Quick Actions</h2>
+        <div className="mt-2 divide-y divide-gray-100">
           {quickLinks.map((q) => (
-            <Link key={q.label} href={q.href} className="p-4 flex items-center gap-3 hover:bg-[var(--student-surface-hover)] transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-[#6d28d9]/10 text-[#6d28d9] flex items-center justify-center flex-shrink-0">
+            <Link key={q.label} href={q.href} className="-mx-2 flex items-center gap-3 rounded-lg px-2 py-3.5 transition-colors hover:bg-gray-50">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#6d28d9]/10 text-[#6d28d9]">
                 {q.icon}
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-[var(--student-text)]">{q.label}</p>
-                <p className="text-xs text-[var(--student-text-muted)]">{q.desc}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-gray-900">{q.label}</p>
+                <p className="mt-0.5 text-xs text-gray-500">{q.desc}</p>
               </div>
-              <IconChevronRight size={16} className="text-[var(--student-text-faint)] flex-shrink-0" />
+              <IconChevronRight size={16} className="shrink-0 text-gray-300" />
             </Link>
           ))}
-          <form action="/api/public/auth/logout" method="POST" className="p-4 hover:bg-red-50/50 dark:hover:bg-red-900/10 transition-colors">
-            <button type="submit" className="flex items-center gap-3 w-full text-left">
-              <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 dark:bg-red-900/20 flex items-center justify-center flex-shrink-0">
+          <form action="/api/public/auth/logout" method="POST" className="-mx-2 rounded-lg px-2 py-3.5 transition-colors hover:bg-red-50/60">
+            <button type="submit" className="flex w-full items-center gap-3 text-left">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-600">
                 <IconLogOut size={18} />
               </div>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-red-600">Logout</p>
-                <p className="text-xs text-[var(--student-text-muted)]">Apne account se sign out karo</p>
+                <p className="mt-0.5 text-xs text-gray-500">Apne account se sign out karo</p>
               </div>
             </button>
           </form>
         </div>
       </section>
-    </div>
+    </main>
   );
 }

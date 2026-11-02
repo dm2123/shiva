@@ -3,21 +3,26 @@
 /**
  * THE SHIVA — Public Course Card + Courses Explorer
  * ---------------------------------------------------------------
- * Workstream 2 (Public Courses Listing).
+ * Wave B1 (PW catalog parity): PW catalog ki anatomy — safed card
+ * (radius 16, halki border), upar 16:9 banner (CourseBanner: asal
+ * thumbnail ya designed tile), neeche exam line (narangi, chhoti,
+ * bold) → bold title → "For <audience>" line → meta line (language
+ * / validity) → price row (bold price; kata MRP + green OFF chip
+ * SIRF asal data ho to) + daayen KAALA CTA (Buy Now / Register Now).
  *
  * HONEST-DATA RULE: Sirf asal Course fields hi render hote hain —
  * title, slug, description, thumbnailUrl, price, status, createdAt,
- * aur jab record me maujood hon to language / validityMonths bhi
- * (ye optional fields hain — khaali hon to pill nahi dikhta).
- * mrp/originalPrice, rating, student-count ya teacher field listing
- * data me nahi aata, isliye woh kabhi render nahi hota — MRP sirf
- * tab jab asal record par ho. Exam chip course ke apne title/slug
- * keywords se derive hota hai.
+ * aur jab record me maujood hon to language / validityMonths /
+ * targetAudience bhi (khaali hon to woh line nahi dikhti).
+ * mrp/originalPrice listing data me aam taur par NAHI hota — MRP
+ * sirf tab jab asal record par ho. Exam chip course ke apne
+ * title/slug keywords se derive hota hai.
  */
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { Course } from '@/types/models';
+import CourseBanner from '@/components/student/CourseBanner';
 
 /* ------------------------------------------------------------------ */
 /* Exam category — derived ONLY from the course's own title + slug.    */
@@ -31,22 +36,6 @@ import type { Course } from '@/types/models';
 import { deriveExamCategory, type ExamCategory } from '@/lib/exam-category';
 export { deriveExamCategory };
 export type { ExamCategory } from '@/lib/exam-category';
-
-/* Brand gradients (deep purple family + gold-tinted) — stable per course */
-const BANNER_GRADIENTS = [
-  'linear-gradient(120deg,#2a1650,#6d28d9)',
-  'linear-gradient(120deg,#4c1d95,#7c3aed)',
-  'linear-gradient(120deg,#312e81,#6d28d9)',
-  'linear-gradient(120deg,#2a1650,#8b5cf6)',
-  'linear-gradient(120deg,#3b0764,#7c3aed)',
-  'linear-gradient(120deg,#2a1650,#b45309)',
-];
-
-function gradientFor(slug: string): string {
-  let hash = 0;
-  for (let i = 0; i < slug.length; i++) hash = (hash * 31 + slug.charCodeAt(i)) >>> 0;
-  return BANNER_GRADIENTS[hash % BANNER_GRADIENTS.length];
-}
 
 function formatINR(value: number): string {
   return `₹${value.toLocaleString('en-IN')}`;
@@ -65,38 +54,16 @@ function readMrp(course: Course): number {
   return Number.isFinite(value) ? value : 0;
 }
 
-/* Kharid/enroll CTA — solid violet (dark card pattern ka primary) */
-const buyBtnStyle: React.CSSProperties = {
-  flex: 1,
-  display: 'inline-block',
-  textAlign: 'center',
-  background: '#6d28d9',
-  color: '#fff',
-  padding: '12px 18px',
-  borderRadius: 12,
-  fontWeight: 800,
-  fontSize: 15,
-  lineHeight: 1.4,
-};
-
-/* Detail CTA — purple outline (secondary) */
-const detailBtnStyle: React.CSSProperties = {
-  width: 48,
-  flexShrink: 0,
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  background: 'transparent',
-  color: '#c4b5fd',
-  border: '2px solid #6d28d9',
-  borderRadius: 12,
-  fontWeight: 900,
-  fontSize: 18,
-  lineHeight: 1,
-};
+/** Audience line — targetAudience ki pehli asal line ("For ..." ke liye) */
+function firstAudienceLine(course: Course): string | null {
+  const raw = course.targetAudience?.trim();
+  if (!raw) return null;
+  const line = raw.split('\n').map((s) => s.trim()).find(Boolean);
+  return line || null;
+}
 
 /* ------------------------------------------------------------------ */
-/* CourseCard                                                          */
+/* CourseCard — PW anatomy, light card                                 */
 /* ------------------------------------------------------------------ */
 
 interface CourseCardProps {
@@ -110,223 +77,97 @@ export default function CourseCard({ course }: CourseCardProps) {
   const hasMrp = !isFree && mrp > price;
   const discountPct = hasMrp ? Math.round(((mrp - price) / mrp) * 100) : 0;
   const category = deriveExamCategory(course);
-  const hasThumb = typeof course.thumbnailUrl === 'string' && course.thumbnailUrl.trim().length > 0;
-  // Seed/legacy thumbnail paths may not exist on disk — fall back to the
-  // branded gradient banner instead of showing a broken image.
-  const [imgOk, setImgOk] = useState(hasThumb);
+  const audience = firstAudienceLine(course);
 
   return (
-    <article
-      className="batch"
-      style={{
-        height: '100%',
-        background: '#12121a',
-        border: '1px solid rgba(255,255,255,0.09)',
-        borderRadius: 16,
-        boxShadow: '0 10px 30px rgba(0,0,0,.45)',
-      }}
-    >
-      {/* Thumbnail / banner area */}
-      <div
-        style={{
-          position: 'relative',
-          minHeight: 132,
-          background: gradientFor(course.slug),
-          overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        {hasThumb && imgOk ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={course.thumbnailUrl}
-            alt={course.title}
-            loading="lazy"
-            onError={() => setImgOk(false)}
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-        ) : (
-          <span style={{ fontSize: 52, filter: 'drop-shadow(0 6px 16px rgba(0,0,0,.35))' }} aria-hidden="true">
-            {category?.icon ?? '📖'}
-          </span>
-        )}
-
-        {/* Category badge — narangi tag (map: orange sirf category labels ke liye);
-            only when honestly derivable from title/slug */}
-        {category && (
-          <span
-            style={{
-              position: 'absolute',
-              top: 12,
-              left: 12,
-              fontSize: 11,
-              fontWeight: 800,
-              letterSpacing: 0.6,
-              textTransform: 'uppercase',
-              background: 'rgba(109,40,217,.22)',
-              border: '1px solid rgba(167,139,250,.45)',
-              color: '#c4b5fd',
-              padding: '4px 10px',
-              borderRadius: 999,
-            }}
-          >
-            {category.icon} {category.label}
-          </span>
-        )}
-
-        {/* FREE badge — only when the real price is 0 */}
+    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_6px_24px_rgba(42,22,80,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(42,22,80,0.12)]">
+      {/* Banner — 16:9 (asal thumbnail ya designed tile), FREE badge asal price par */}
+      <CourseBanner src={course.thumbnailUrl} title={course.title} seed={course.slug || course.id}>
         {isFree && (
-          <span
-            style={{
-              position: 'absolute',
-              top: 12,
-              right: 12,
-              fontSize: 11,
-              fontWeight: 900,
-              letterSpacing: 0.6,
-              background: '#f5b942',
-              color: '#2a1650',
-              padding: '5px 11px',
-              borderRadius: 999,
-              boxShadow: '0 4px 14px rgba(0,0,0,.25)',
-            }}
-          >
-            100% FREE
+          <span className="absolute right-3 top-3 rounded-full bg-[#f5b942] px-2.5 py-1 text-[10.5px] font-black uppercase tracking-wider text-[#2a1650] shadow">
+            100% Free
           </span>
         )}
-      </div>
+      </CourseBanner>
 
       {/* Body */}
-      <div className="body">
-        <h3
-          style={{
-            fontSize: 17,
-            fontWeight: 800,
-            lineHeight: 1.35,
-            color: '#f4f4f5',
-            marginBottom: 8,
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-          }}
-        >
+      <div className="flex flex-1 flex-col p-5">
+        {/* Exam line — narangi, chhoti, bold (PW pattern); sirf asal derive par */}
+        {category && (
+          <p className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-orange-600">
+            {category.icon} {category.label}
+          </p>
+        )}
+
+        {/* Title — course ka asal naam, zyada se zyada 2 line */}
+        <h3 className="mt-1.5 line-clamp-2 text-[17px] font-bold leading-snug text-gray-900">
           {course.title}
         </h3>
 
-        {course.description ? (
-          <p
-            style={{
-              fontSize: 14,
-              color: '#a1a1aa',
-              lineHeight: 1.6,
-              marginBottom: 14,
-              display: '-webkit-box',
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}
-          >
-            {course.description}
-          </p>
-        ) : null}
-
-        {/* Meta pills — grey outline; sirf tab jab asal record me
-            language / validityMonths maujood ho (warna kuch nahi) */}
-        {(course.language?.trim() ||
-          (typeof course.validityMonths === 'number' && course.validityMonths > 0)) && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
-            {course.language?.trim() && (
-              <span
-                style={{
-                  fontSize: 11.5,
-                  fontWeight: 700,
-                  color: '#d4d4d8',
-                  border: '1.5px solid rgba(255,255,255,.16)',
-                  padding: '4px 11px',
-                  borderRadius: 999,
-                }}
-              >
-                🗣️ {course.language.trim()}
-              </span>
-            )}
-            {typeof course.validityMonths === 'number' && course.validityMonths > 0 && (
-              <span
-                style={{
-                  fontSize: 11.5,
-                  fontWeight: 700,
-                  color: '#d4d4d8',
-                  border: '1.5px solid rgba(255,255,255,.16)',
-                  padding: '4px 11px',
-                  borderRadius: 999,
-                }}
-              >
-                📅 {course.validityMonths} mahine validity
-              </span>
-            )}
-          </div>
+        {/* Audience line — "For <audience>", sirf asal targetAudience par */}
+        {audience && (
+          <p className="mt-1 line-clamp-1 text-[13px] font-medium text-gray-500">For {audience}</p>
         )}
 
-        <div style={{ flex: 1 }} />
+        {course.description && (
+          <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-gray-500">
+            {course.description}
+          </p>
+        )}
 
-        {/* Price row — map ka pakka pattern: bold current price →
-            grey kata-hua MRP → green % OFF chip. MRP/chip sirf asal
-            data me hone par; warna sirf bold price (invent nahi). */}
-        <div className="price" style={{ alignItems: 'center', flexWrap: 'wrap' }}>
-          {isFree ? (
-            <>
-              <b style={{ color: '#34d399' }}>Free</b>
-              <span style={{ fontSize: 12.5, color: '#a1a1aa', fontWeight: 600 }}>
-                Poora access, koi fee nahi
-              </span>
-            </>
-          ) : (
-            <>
-              <b style={{ fontSize: 21, color: '#f4f4f5' }}>{formatINR(price)}</b>
-              {hasMrp && (
-                <s style={{ fontSize: 14, color: '#71717a', fontWeight: 600 }}>
-                  {formatINR(mrp)}
-                </s>
+        {/* Meta line — sirf tab jab asal record me language / validityMonths ho */}
+        {(course.language?.trim() ||
+          (typeof course.validityMonths === 'number' && course.validityMonths > 0)) && (
+          <p className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12.5px] text-gray-400">
+            {course.language?.trim() && <span>🗣️ {course.language.trim()}</span>}
+            {course.language?.trim() &&
+              typeof course.validityMonths === 'number' &&
+              course.validityMonths > 0 && (
+                <span className="text-gray-300" aria-hidden="true">•</span>
               )}
-              {hasMrp && discountPct > 0 && (
-                <span
-                  style={{
-                    fontSize: 11.5,
-                    fontWeight: 800,
-                    color: '#34d399',
-                    background: 'rgba(52,211,153,.14)',
-                    padding: '3px 9px',
-                    borderRadius: 999,
-                  }}
-                >
-                  {discountPct}% OFF
+            {typeof course.validityMonths === 'number' && course.validityMonths > 0 && (
+              <span>📅 {course.validityMonths} mahine validity</span>
+            )}
+          </p>
+        )}
+
+        {/* Price row + KAALA CTA — PW pattern: price baayen, CTA daayen.
+            MRP/OFF chip sirf asal data me hone par (invent nahi hota). */}
+        <div className="mt-auto flex items-end justify-between gap-3 pt-5">
+          <div className="min-w-0">
+            {isFree ? (
+              <>
+                <p className="text-[19px] font-extrabold leading-tight text-emerald-600">Free</p>
+                <p className="mt-0.5 text-[11.5px] font-medium text-gray-400">
+                  Poora access, koi fee nahi
+                </p>
+              </>
+            ) : (
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span className="text-[20px] font-extrabold leading-tight text-gray-900">
+                  {formatINR(price)}
                 </span>
-              )}
-            </>
-          )}
-        </div>
-
-        {/* CTA row — kharid/enroll = solid KAALA; detail = purple outline */}
-        <div style={{ display: 'flex', gap: 10, alignItems: 'stretch' }}>
+                {hasMrp && (
+                  <s className="text-[14px] font-semibold text-gray-400">{formatINR(mrp)}</s>
+                )}
+                {hasMrp && discountPct > 0 && (
+                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-extrabold text-emerald-600">
+                    {discountPct}% OFF
+                  </span>
+                )}
+              </p>
+            )}
+          </div>
           <Link
             href={`/courses/${course.slug}`}
-            style={buyBtnStyle}
             aria-label={
               isFree
                 ? `${course.title} — free register karo`
                 : `${course.title} — abhi enroll karo`
             }
+            className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#111111] px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-black/20 transition-all hover:bg-black"
           >
             {isFree ? 'Register Now' : 'Buy Now'}
-          </Link>
-          <Link
-            href={`/courses/${course.slug}`}
-            style={detailBtnStyle}
-            aria-label={`${course.title} — course details dekho`}
-          >
-            ›
           </Link>
         </div>
       </div>
@@ -340,17 +181,19 @@ export default function CourseCard({ course }: CourseCardProps) {
 
 export function CourseCardSkeleton() {
   return (
-    <div className="batch animate-pulse" aria-hidden="true" style={{ height: '100%' }}>
-      <div style={{ minHeight: 132, background: 'linear-gradient(120deg,#ede9fe,#ddd6fe)' }} />
-      <div className="body" style={{ gap: 10 }}>
+    <div
+      className="h-full animate-pulse overflow-hidden rounded-2xl border border-gray-200 bg-white"
+      aria-hidden="true"
+    >
+      <div className="aspect-[16/9] w-full bg-[#ede9fe]" />
+      <div className="space-y-2.5 p-5">
+        <div style={{ height: 12, borderRadius: 6, background: '#f3f0ff', width: '35%' }} />
         <div style={{ height: 18, borderRadius: 6, background: '#ede9fe', width: '85%' }} />
         <div style={{ height: 18, borderRadius: 6, background: '#ede9fe', width: '60%' }} />
-        <div style={{ height: 13, borderRadius: 6, background: '#f3f0ff', width: '95%', marginTop: 6 }} />
-        <div style={{ height: 13, borderRadius: 6, background: '#f3f0ff', width: '80%' }} />
-        <div style={{ height: 22, borderRadius: 6, background: '#ede9fe', width: '40%', marginTop: 14 }} />
-        <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-          <div style={{ height: 44, borderRadius: 12, background: '#2a1650', flex: 1 }} />
-          <div style={{ height: 44, width: 48, borderRadius: 12, background: '#ede9fe' }} />
+        <div style={{ height: 13, borderRadius: 6, background: '#f3f0ff', width: '90%', marginTop: 8 }} />
+        <div className="flex items-end justify-between pt-3">
+          <div style={{ height: 22, borderRadius: 6, background: '#ede9fe', width: '30%' }} />
+          <div style={{ height: 44, borderRadius: 12, background: '#111111', width: 118, opacity: 0.85 }} />
         </div>
       </div>
     </div>
@@ -362,8 +205,7 @@ export function CoursesGridSkeleton({ count = 6 }: { count?: number }) {
     <div
       role="status"
       aria-label="Courses load ho rahe hain"
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-      style={{ gap: 22 }}
+      className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
     >
       {Array.from({ length: count }).map((_, i) => (
         <CourseCardSkeleton key={i} />
@@ -385,9 +227,9 @@ const chipBase: React.CSSProperties = {
   fontSize: 13.5,
   fontWeight: 700,
   cursor: 'pointer',
-  border: '1px solid rgba(255,255,255,.14)',
-  background: '#12121a',
-  color: '#e4e4e7',
+  border: '1px solid #e5e7eb',
+  background: '#ffffff',
+  color: '#374151',
   transition: 'all .18s ease',
   whiteSpace: 'nowrap',
   fontFamily: 'inherit',
@@ -399,16 +241,6 @@ const chipActive: React.CSSProperties = {
   borderColor: '#6d28d9',
   color: '#fff',
   boxShadow: '0 8px 20px rgba(109,40,217,.28)',
-};
-
-const controlStyle: React.CSSProperties = {
-  padding: '11px 14px',
-  border: '1px solid rgba(255,255,255,.14)',
-  borderRadius: 12,
-  fontSize: 14.5,
-  color: '#f4f4f5',
-  background: '#12121a',
-  fontFamily: 'inherit',
 };
 
 /** Grouped (default) view me har category ke itne courses pehle dikhte
@@ -517,7 +349,7 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
 
   return (
     <div>
-      {/* ── Toolbar: search + sort ─────────────────────────────── */}
+      {/* ── Toolbar: gol search bar (PW pattern) + sort ────── */}
       <div
         style={{
           display: 'flex',
@@ -530,7 +362,7 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
         <div style={{ position: 'relative', flex: '1 1 260px' }}>
           <span
             aria-hidden="true"
-            style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 16, opacity: 0.55 }}
+            style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 16, opacity: 0.5 }}
           >
             🔍
           </span>
@@ -538,9 +370,10 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Course khojo — jaise SSC, Railway, Banking…"
+            placeholder="Search for courses — SSC, Railway, Banking…"
             aria-label="Course search karo"
-            style={{ ...controlStyle, width: '100%', paddingLeft: 42, paddingRight: query ? 40 : 14 }}
+            className="w-full rounded-full border border-gray-300 bg-white py-3 pl-11 pr-10 text-[15px] text-gray-900 placeholder:text-gray-400 focus:border-[#6d28d9] focus:outline-none"
+            style={{ fontFamily: 'inherit' }}
           />
           {query && (
             <button
@@ -556,8 +389,8 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
                 height: 28,
                 borderRadius: '50%',
                 border: 'none',
-                background: 'rgba(109,40,217,.25)',
-                color: '#c4b5fd',
+                background: '#ede9fe',
+                color: '#6d28d9',
                 fontWeight: 800,
                 cursor: 'pointer',
                 fontFamily: 'inherit',
@@ -572,7 +405,8 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
           value={sort}
           onChange={(e) => setSort(e.target.value as SortKey)}
           aria-label="Courses sort karo"
-          style={{ ...controlStyle, flex: '0 1 210px', cursor: 'pointer', fontWeight: 600 }}
+          className="rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-semibold text-gray-700 focus:border-[#6d28d9] focus:outline-none"
+          style={{ flex: '0 1 210px', cursor: 'pointer', fontFamily: 'inherit' }}
         >
           <option value="newest">Sort: Sabse Naya Pehle</option>
           <option value="price-asc">Sort: Price — Kam se Zyada</option>
@@ -688,12 +522,11 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
       {/* ── Grid / honest empty state ── */}
       {filtered.length === 0 ? (
         <div
-          className="batch"
-          style={{ maxWidth: 560, margin: '8px auto 0', textAlign: 'center', padding: 44 }}
+          className="mx-auto max-w-[560px] rounded-2xl border border-gray-200 bg-white p-11 text-center shadow-[0_6px_24px_rgba(42,22,80,0.06)]"
           role="status"
         >
           <div style={{ fontSize: 52, marginBottom: 14, opacity: 0.45 }}>🔍</div>
-          <h3 style={{ fontSize: 19, fontWeight: 800, marginBottom: 8, color: '#2a1650' }}>
+          <h3 style={{ fontSize: 19, fontWeight: 800, marginBottom: 8, color: '#111827' }}>
             Is filter me abhi koi course nahi hai
           </h3>
           <p style={{ color: 'var(--muted)', fontSize: 14.5, marginBottom: 20, lineHeight: 1.65 }}>
@@ -703,7 +536,12 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
                 ? `Abhi ${activeCategoryLabel} category me koi published course uplabdh nahi hai. Dusri category ya All Courses par dekho — naye courses jald judeinge.`
                 : 'Chune gaye filters se koi course match nahi hua. Filters saaf karke dobara dekho.'}
           </p>
-          <button type="button" onClick={resetFilters} className="btn btn-primary" style={{ fontFamily: 'inherit' }}>
+          <button
+            type="button"
+            onClick={resetFilters}
+            className="inline-flex items-center justify-center rounded-full bg-[#111111] px-6 py-3 text-sm font-extrabold text-white transition hover:bg-black"
+            style={{ fontFamily: 'inherit', cursor: 'pointer', border: 'none' }}
+          >
             Filters Saaf Karo — Saare Courses Dekho
           </button>
         </div>
@@ -727,7 +565,7 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
                     borderBottom: '2px solid var(--line)',
                   }}
                 >
-                  <h2 style={{ fontSize: 21, fontWeight: 800, color: '#2a1650' }}>
+                  <h2 style={{ fontSize: 21, fontWeight: 800, color: '#111827' }}>
                     {label}
                     <span
                       style={{
@@ -763,10 +601,7 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
                     </button>
                   )}
                 </div>
-                <div
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                  style={{ gap: 22 }}
-                >
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {preview.map((course) => (
                     <CourseCard key={course.id} course={course} />
                   ))}
@@ -776,8 +611,8 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
                     <button
                       type="button"
                       onClick={() => setCategoryId(cat.id)}
-                      className="btn btn-primary"
-                      style={{ fontFamily: 'inherit' }}
+                      className="inline-flex items-center justify-center rounded-full bg-[#111111] px-6 py-3 text-sm font-extrabold text-white transition hover:bg-black"
+                      style={{ fontFamily: 'inherit', cursor: 'pointer', border: 'none' }}
                     >
                       View All {cat.label} Courses ({items.length}) →
                     </button>
@@ -788,10 +623,7 @@ export function CoursesExplorer({ courses }: { courses: Course[] }) {
           })}
         </div>
       ) : (
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-          style={{ gap: 22 }}
-        >
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}

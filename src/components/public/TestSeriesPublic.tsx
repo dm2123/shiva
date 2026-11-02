@@ -201,53 +201,76 @@ function ExamCategories({
 }
 
 /* ------------------------------------------------------------------ */
-/* 3) Published test card — sirf asal fields: naam, exam/kind tag,     */
-/*    duration, total marks, passing marks, linked course.             */
+/* 3) Published test card — PW Test Series anatomy: pastel thumbnail   */
+/*    tile (upar-left type badge + TEST seal) → tags → bold title →    */
+/*    meta line `N Mins • N Marks` → do pill buttons (Attempt +        */
+/*    Course). Sirf asal fields: naam, exam/kind, duration, marks,     */
+/*    passing marks, linked course.                                    */
 /*    Koi price/pass/coupon nahi — aisa koi asal field hai hi nahi.    */
 /* ------------------------------------------------------------------ */
 
-const KIND_STYLES: Record<PublicTestKind, string> = {
-  mock: 'bg-[rgba(109,40,217,.16)] text-[#c4b5fd] border border-[rgba(109,40,217,.45)]',
-  pyq: 'bg-[rgba(56,189,248,.12)] text-[#7dd3fc] border border-[rgba(56,189,248,.35)]',
-  practice: 'bg-[rgba(52,211,153,.12)] text-[#6ee7b7] border border-[rgba(52,211,153,.35)]',
-  general: 'bg-[rgba(148,163,184,.12)] text-[#cbd5e1] border border-[rgba(148,163,184,.3)]',
+/* Pastel tile ke rang — PW Test Series palette (pink/sky/mint/lavender) */
+const TILE_STYLES: Record<PublicTestKind, string> = {
+  mock: 'bg-[#ffe3ee]',
+  pyq: 'bg-[#e0f2fe]',
+  practice: 'bg-[#dcf5e3]',
+  general: 'bg-[#ece7ff]',
+};
+
+/* Tile ke badge par chhota type label (asal kind se) */
+const KIND_SHORT: Record<PublicTestKind, string> = {
+  mock: 'Mock',
+  pyq: 'PYQ',
+  practice: 'Practice',
+  general: 'Test',
 };
 
 function TestCard({ test }: { test: PublicTestItem }) {
-  return (
-    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-[#26224a] bg-[#12121a] shadow-[0_10px_30px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-[#6d28d9]/60 hover:shadow-[0_18px_44px_rgba(0,0,0,0.6)]">
-      {/* Top strip — deep purple → violet, gold edge (brand gradient) */}
-      <div className="h-1.5 w-full bg-gradient-to-r from-[#2a1650] via-[#6d28d9] to-[#f5b942]" aria-hidden="true" />
+  /* PW meta line — asal fields hi */
+  const metaParts = [`${test.durationMinutes} Mins`, `${test.totalMarks} Marks`];
+  if (typeof test.passingMarks === 'number' && test.passingMarks > 0) {
+    metaParts.push(`Passing: ${test.passingMarks}`);
+  }
 
-      <div className="flex flex-1 flex-col gap-3 p-5">
-        {/* Tags: narangi exam tag + kind chip + asal category text */}
-        <div className="flex flex-wrap items-center gap-2">
-          {test.examLabel && (
-            <span className="inline-flex items-center rounded-full border border-[rgba(251,146,60,.35)] bg-[rgba(251,146,60,.12)] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-[#fdba74]">
-              {test.examIcon} {test.examLabel}
-            </span>
-          )}
-          <span
-            className={`inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-widest ${KIND_STYLES[test.kind]}`}
-          >
-            {test.kindLabel}
+  return (
+    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-[#26224a] bg-[#12121a] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-[#6d28d9]/60 hover:shadow-[0_18px_44px_rgba(0,0,0,0.6)]">
+      <div className="flex items-start gap-4">
+        {/* Pastel thumbnail tile — upar-left type badge + TEST seal (PW anatomy) */}
+        <div
+          className={`relative flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl ${TILE_STYLES[test.kind]}`}
+          aria-hidden="true"
+        >
+          <span className="absolute left-2 top-2 rounded-md bg-[#e11d48] px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-white">
+            {KIND_SHORT[test.kind]}
           </span>
-          {test.categoryLabel && test.categoryLabel !== test.kindLabel && (
-            <span className="inline-flex items-center rounded-full bg-[rgba(148,163,184,.1)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[#a5a0d0] border border-[#37316b]">
-              {test.categoryLabel}
-            </span>
-          )}
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/85 text-[10px] font-black tracking-[0.18em] text-gray-800 shadow-sm">
+            TEST
+          </span>
         </div>
 
-        <div className="space-y-1.5">
-          <h3 className="text-[16px] font-bold leading-snug text-white">{test.title}</h3>
+        <div className="min-w-0 flex-1">
+          {/* Tags: narangi exam tag + asal category text (kind tile badge me hai) */}
+          <div className="flex flex-wrap items-center gap-2">
+            {test.examLabel && (
+              <span className="inline-flex items-center rounded-full border border-[rgba(251,146,60,.35)] bg-[rgba(251,146,60,.12)] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-[#fdba74]">
+                {test.examIcon} {test.examLabel}
+              </span>
+            )}
+            {test.categoryLabel && test.categoryLabel !== test.kindLabel && (
+              <span className="inline-flex items-center rounded-full bg-[rgba(148,163,184,.1)] px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-[#a5a0d0] border border-[#37316b]">
+                {test.categoryLabel}
+              </span>
+            )}
+          </div>
+
+          <h3 className="mt-2 text-[16px] font-bold leading-snug text-white">{test.title}</h3>
           {test.description && (
-            <p className="line-clamp-2 text-[13px] leading-relaxed text-[#a5a0d0]">
+            <p className="mt-1 line-clamp-2 text-[13px] leading-relaxed text-[#a5a0d0]">
               {test.description}
             </p>
           )}
           {test.courseTitle && (
-            <p className="text-[13px] font-medium text-[#c4c0e8]">
+            <p className="mt-1.5 text-[13px] font-medium text-[#c4c0e8]">
               Course:{' '}
               {test.courseSlug ? (
                 <Link href={`/courses/${test.courseSlug}`} className="font-semibold text-[#a78bfa] hover:underline">
@@ -259,36 +282,21 @@ function TestCard({ test }: { test: PublicTestItem }) {
             </p>
           )}
         </div>
+      </div>
 
-        {/* Meta — sirf asal test fields */}
-        <dl className="mt-auto flex flex-wrap gap-x-5 gap-y-2 border-t border-[#26224a] pt-4 text-[13px] text-[#a5a0d0]">
-          <div className="flex items-center gap-1.5">
-            <dt className="sr-only">Samay</dt>
-            <dd>
-              ⏱️ <span className="font-semibold text-[#e9e4ff]">{test.durationMinutes} min</span>
-            </dd>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <dt className="sr-only">Kul ank</dt>
-            <dd>
-              🏆 <span className="font-semibold text-[#e9e4ff]">{test.totalMarks} marks</span>
-            </dd>
-          </div>
-          {typeof test.passingMarks === 'number' && test.passingMarks > 0 && (
-            <div className="flex items-center gap-1.5">
-              <dt className="sr-only">Passing marks</dt>
-              <dd>
-                🎯 Passing: <span className="font-semibold text-[#e9e4ff]">{test.passingMarks}</span>
-              </dd>
-            </div>
-          )}
-        </dl>
+      {/* Meta + buttons — card ke neeche ekroop (PW) */}
+      <div className="mt-auto pt-4">
+        <p className="border-t border-[#26224a] pt-3.5 text-[13px] font-semibold text-[#a5a0d0]">
+          {metaParts.join(' • ')}
+        </p>
 
-        {/* CTA — tests student app me milte hain (login ke baad) */}
-        <div className="mt-1 flex items-stretch gap-2.5">
+        {/* Do pill buttons — Attempt (primary) + Course (outline).
+            Public page par test ka syllabus breakup asal me maujood nahi
+            hai, isliye doosra button linked course ka hai (asal page). */}
+        <div className="mt-3.5 flex items-stretch gap-2.5">
           <Link
             href="/app/tests"
-            className="inline-flex flex-1 items-center justify-center rounded-xl bg-[#f5b942] px-6 py-3 text-sm font-extrabold text-[#2a1650] transition-all hover:bg-[#e5a91f]"
+            className="inline-flex flex-1 items-center justify-center rounded-full bg-[#f5b942] px-6 py-3 text-sm font-extrabold text-[#2a1650] transition-all hover:bg-[#e5a91f]"
             aria-label={`${test.title} — attempt karo (login ke baad)`}
           >
             Attempt Karo
@@ -297,9 +305,9 @@ function TestCard({ test }: { test: PublicTestItem }) {
             <Link
               href={`/courses/${test.courseSlug}`}
               aria-label={`${test.courseTitle ?? 'Course'} — course details dekho`}
-              className="inline-flex w-12 shrink-0 items-center justify-center rounded-xl border-2 border-[#6d28d9] bg-transparent text-lg font-black leading-none text-[#a78bfa] transition-colors hover:bg-[rgba(109,40,217,.15)]"
+              className="inline-flex shrink-0 items-center justify-center rounded-full border-2 border-[#6d28d9] bg-transparent px-5 text-sm font-bold text-[#a78bfa] transition-colors hover:bg-[rgba(109,40,217,.15)]"
             >
-              ›
+              Course Dekho
             </Link>
           )}
         </div>
@@ -512,21 +520,22 @@ function WhyTestSeries() {
         </p>
       </div>
 
+      {/* PW 'Common Benefits' anatomy — center icon dabba, center title/text */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {WHY_CARDS.map((c) => (
           <div
             key={c.title}
-            className="rounded-2xl border border-[#26224a] bg-[#12121a] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-[#6d28d9]/60 hover:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
+            className="rounded-2xl border border-[#26224a] bg-[#12121a] p-6 text-center shadow-[0_10px_30px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-[#6d28d9]/60 hover:shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
           >
             <span
-              className="flex h-11 w-11 items-center justify-center rounded-full text-[20px]"
+              className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl text-[22px]"
               style={{ background: c.tint }}
               aria-hidden="true"
             >
               {c.icon}
             </span>
-            <h3 className="mt-3 text-[15px] font-extrabold text-white">{c.title}</h3>
-            <p className="mt-1 text-[13px] leading-relaxed text-[#a5a0d0]">{c.text}</p>
+            <h3 className="mt-3.5 text-[15px] font-extrabold text-white">{c.title}</h3>
+            <p className="mt-1.5 text-[13px] leading-relaxed text-[#a5a0d0]">{c.text}</p>
           </div>
         ))}
       </div>

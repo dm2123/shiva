@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import { mysqlPool } from '@/lib/db';
-import ShivaPromoCarousel from '@/components/public/ShivaPromoCarousel';
-import ListingInfo from '@/components/public/ListingInfo';
 import ShareButton from '@/components/public/ShareButton';
 import CourseBanner from '@/components/student/CourseBanner';
 
@@ -22,6 +20,11 @@ export const metadata = {
 /* language kabhi dikhaya nahi jaata aur kata MRP / % OFF kabhi        */
 /* invent nahi hota. Exam tag sirf batch/course ke asal naam se        */
 /* derive hota hai.                                                    */
+/*                                                                     */
+/* Wave B1 (PW catalog parity): page ab shudh catalog hai — halka     */
+/* gray bg, safed bade banner cards, upar gol search bar, status/     */
+/* exam chips. PW catalog par na hone wale sections (promo carousel,  */
+/* bottom CTA, FAQ) hata diye gaye hain.                              */
 /* ------------------------------------------------------------------ */
 type BatchRow = {
   id: string;
@@ -117,9 +120,11 @@ function statusMeta(status: string | null) {
 }
 
 /* ------------------------------- card ------------------------------- */
-/* PW anatomy: 16:9 banner (asal course thumbnail; na ho/load fail ho  */
-/* to designed gradient tile) → title (2 line) → course/teacher line → */
-/* date line → price row → full-width CTA + square detail button.      */
+/* PW catalog anatomy (light): 16:9 banner (asal course thumbnail; na  */
+/* ho/load fail ho to designed gradient tile) → safed body: exam line */
+/* → title (2 line) → course line → date line → price row + daayen    */
+/* KAALA CTA. Asal data me MRP nahi hai — kata MRP / % OFF kabhi      */
+/* invent nahi hota.                                                   */
 
 function BatchCard({ batch }: { batch: BatchRow }) {
   const meta = statusMeta(batch.status);
@@ -131,18 +136,13 @@ function BatchCard({ batch }: { batch: BatchRow }) {
   const href = batch.courseSlug ? `/courses/${batch.courseSlug}` : null;
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#12121a] shadow-[0_10px_30px_rgba(0,0,0,0.45)] transition-all duration-300 hover:-translate-y-1 hover:border-[#6d28d9]/50 hover:shadow-[0_18px_44px_rgba(42,22,80,0.55)]">
-      {/* Banner — 16:9, asal thumbnail ya gradient fallback tile */}
+    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_6px_24px_rgba(42,22,80,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(42,22,80,0.12)]">
+      {/* Banner — 16:9, asal thumbnail ya designed tile; chips overlay */}
       <CourseBanner
         src={batch.courseThumbnail}
         title={batch.courseTitle || batch.name}
         seed={batch.courseSlug || batch.id}
       >
-        {exam && (
-          <span className="absolute left-3 top-3 rounded-full border border-[#a78bfa]/50 bg-[#2a1650]/80 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-[#c4b5fd] backdrop-blur-sm">
-            {exam}
-          </span>
-        )}
         <ShareButton title={batch.name} url={href ?? '/courses'} className="absolute right-3 top-3 z-10" />
         <span
           className={`absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-widest shadow ${meta.chip}`}
@@ -157,23 +157,34 @@ function BatchCard({ batch }: { batch: BatchRow }) {
         )}
       </CourseBanner>
 
-      <div className="flex flex-1 flex-col p-4 sm:p-5">
+      <div className="flex flex-1 flex-col p-5">
+        {/* Exam line — narangi, chhoti, bold (PW pattern); sirf asal derive par */}
+        {exam && (
+          <p className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-orange-600">
+            {exam}
+          </p>
+        )}
+
         {/* Title — batch ka asal naam, zyada se zyada 2 line */}
-        <h3 className="line-clamp-2 text-[17px] font-bold leading-snug text-white">{batch.name}</h3>
+        <h3 className="mt-1.5 line-clamp-2 text-[17px] font-bold leading-snug text-gray-900">
+          {batch.name}
+        </h3>
 
         {/* Audience line — linked course (naam alag ho tab) */}
         {batch.courseTitle && batch.courseTitle !== batch.name && (
-          <p className="mt-1 line-clamp-1 text-[13px] font-medium text-slate-300">{batch.courseTitle}</p>
+          <p className="mt-1 line-clamp-1 text-[13px] font-medium text-gray-500">
+            For {batch.courseTitle}
+          </p>
         )}
         {batch.courseDescription && (
-          <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-slate-400">
+          <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-gray-500">
             {batch.courseDescription}
           </p>
         )}
 
         {/* Teacher — sirf asal naam par */}
         {batch.teacherName && (
-          <p className="mt-3 flex items-center gap-2 text-[13px] text-slate-300">
+          <p className="mt-3 flex items-center gap-2 text-[13px] text-gray-500">
             <span
               className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#6d28d9] to-[#2a1650] text-[11px] font-extrabold text-white"
               aria-hidden="true"
@@ -181,72 +192,64 @@ function BatchCard({ batch }: { batch: BatchRow }) {
               {batch.teacherName.trim().charAt(0).toUpperCase()}
             </span>
             <span>
-              Teacher: <span className="font-semibold text-[#c4b5fd]">{batch.teacherName}</span>
+              Teacher: <span className="font-semibold text-gray-800">{batch.teacherName}</span>
             </span>
           </p>
         )}
 
         {/* Date line — sirf asal dates, calendar icon ke saath */}
         {(start || end) && (
-          <p className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-slate-400">
+          <p className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-gray-400">
             <span aria-hidden="true">📅</span>
             {start && (
               <span>
-                Shuru: <span className="font-semibold text-slate-200">{start}</span>
+                Shuru: <span className="font-semibold text-gray-600">{start}</span>
               </span>
             )}
-            {start && end && <span className="text-slate-600" aria-hidden="true">·</span>}
+            {start && end && <span className="text-gray-300" aria-hidden="true">·</span>}
             {end && (
               <span>
-                Khatm: <span className="font-semibold text-slate-200">{end}</span>
+                Khatm: <span className="font-semibold text-gray-600">{end}</span>
               </span>
             )}
           </p>
         )}
 
-        {/* Price row — bold price; FREE par emerald 'Free'.
-            Asal data me MRP column hai hi nahi, isliye kata MRP / % OFF
-            yahan kabhi nahi dikhta (invent nahi hota). */}
-        {price && (
-          <div className="mt-auto pt-4">
-            {isFree ? (
-              <p className="text-lg font-extrabold text-emerald-400">
-                Free
-                <span className="ml-2 align-middle text-[11px] font-semibold normal-case tracking-normal text-slate-500">
-                  Poora access, koi fee nahi
-                </span>
-              </p>
+        {/* Price row + KAALA CTA — PW pattern. FREE par emerald 'Free';
+            MRP column hai hi nahi, isliye kata MRP / % OFF kabhi nahi. */}
+        <div className="mt-auto flex items-end justify-between gap-3 pt-5">
+          <div className="min-w-0">
+            {price ? (
+              isFree ? (
+                <>
+                  <p className="text-[19px] font-extrabold leading-tight text-emerald-600">Free</p>
+                  <p className="mt-0.5 text-[11.5px] font-medium text-gray-400">
+                    Poora access, koi fee nahi
+                  </p>
+                </>
+              ) : (
+                <p className="text-[20px] font-extrabold leading-tight text-gray-900">{price}</p>
+              )
             ) : (
-              <p className="text-xl font-extrabold text-white">{price}</p>
+              <span />
             )}
           </div>
-        )}
-
-        {/* CTA row — PW pattern: full-width solid + square outline detail */}
-        {href ? (
-          <div className="mt-3 flex items-stretch gap-2.5">
+          {href ? (
             <Link
               href={href}
-              className="inline-flex flex-1 items-center justify-center rounded-xl bg-[#6d28d9] px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-[#6d28d9]/30 transition-all hover:bg-[#7c3aed]"
+              className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#111111] px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-black/20 transition-all hover:bg-black"
             >
               {isFree ? 'Register Now' : 'Buy Now'}
             </Link>
+          ) : (
             <Link
-              href={href}
-              aria-label={`${batch.name} — details dekho`}
-              className="inline-flex w-12 shrink-0 items-center justify-center rounded-xl border-2 border-[#6d28d9] bg-transparent text-lg font-black leading-none text-[#c4b5fd] transition-colors hover:bg-[#6d28d9]/15"
+              href="/courses"
+              className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#111111] px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-black/20 transition-all hover:bg-black"
             >
-              ›
+              Course dekho
             </Link>
-          </div>
-        ) : (
-          <Link
-            href="/courses"
-            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#6d28d9] bg-transparent px-6 py-3 text-sm font-bold text-[#c4b5fd] transition-all hover:bg-[#6d28d9]/15"
-          >
-            Course dekho →
-          </Link>
-        )}
+          )}
+        </div>
       </div>
     </article>
   );
@@ -277,11 +280,8 @@ function chipHref(status: string, exam: string | null, q: string): string {
 export default async function PublicBatchesPage({ searchParams }: PageProps) {
   const batches = await getAllBatches();
 
-  const live = batches.filter((b) => (b.status || '').toUpperCase() === 'ACTIVE');
-  const upcoming = batches.filter((b) => (b.status || '').toUpperCase() === 'UPCOMING');
-  const completed = batches.filter(
-    (b) => !['ACTIVE', 'UPCOMING'].includes((b.status || '').toUpperCase()),
-  );
+  const liveCount = batches.filter((b) => (b.status || '').toUpperCase() === 'ACTIVE').length;
+  const upcomingCount = batches.filter((b) => (b.status || '').toUpperCase() === 'UPCOMING').length;
 
   // Exam chips — sirf wohi exams jo asal data me maujood hain
   const exams = Array.from(
@@ -318,88 +318,58 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
 
   const isFiltered = validStatus !== 'ALL' || activeExam !== null || query !== '';
 
-  /* Popular rail ke liye asal aadhar popularity data NAHI hai — isliye
-     rail sirf Live + Upcoming batches ki hai (query order: ACTIVE pehle),
-     imaandaar label ke saath. Filter active ho to rail nahi dikhta. */
-  const railBatches = [...live, ...upcoming].slice(0, 6);
-
-  const groups: Array<{ key: string; title: string; blurb: string; items: BatchRow[] }> = [
-    {
-      key: 'live',
-      title: '🟢 Live / Running Batches',
-      blurb: 'Ye batches abhi chal rahe hain — join karke turant padhai shuru karo.',
-      items: live,
-    },
-    {
-      key: 'upcoming',
-      title: '🟡 Upcoming Batches',
-      blurb: 'Ye batches jald shuru hone wale hain — pehle se apni seat pakki karo.',
-      items: upcoming,
-    },
-    {
-      key: 'completed',
-      title: 'Completed Batches',
-      blurb: 'Ye batches poore ho chuke hain.',
-      items: completed,
-    },
-  ];
-
   return (
-    <div className="shiva-liquid-hero shiva-grid relative min-h-screen overflow-hidden px-4 py-16 sm:px-6 sm:py-20">
-      <div className="shiva-blob left-[-150px] top-[10%] h-[600px] w-[600px] bg-violet-600" aria-hidden="true" />
-      <div className="shiva-blob shiva-blob-2 bottom-[10%] right-[-100px] h-[500px] w-[500px] bg-[#6d28d9]" aria-hidden="true" />
-
-      <div className="relative z-10 mx-auto max-w-7xl">
+    <div className="min-h-screen bg-[#f4f5f7] px-4 py-10 sm:px-6 sm:py-12">
+      <div className="mx-auto max-w-7xl">
         {/* Breadcrumb — chhota, halka (listing-page pattern) */}
-        <nav aria-label="Breadcrumb" className="mb-6 text-[13px] text-slate-400">
-          <Link href="/" className="font-semibold text-[#c4b5fd] hover:text-white">
+        <nav aria-label="Breadcrumb" className="mb-5 text-[13px] text-gray-400">
+          <Link href="/" className="font-semibold text-[#6d28d9] hover:text-[#2a1650]">
             Home
           </Link>
           {' / '}
-          <span aria-current="page" className="text-slate-300">
+          <span aria-current="page" className="text-gray-500">
             Batches
           </span>
         </nav>
 
-        {/* ── Header row: title + counts (left) · search (right) ── */}
-        <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        {/* ── Header: bada title + counts (left) · gol search bar (right) ── */}
+        <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0">
-            <span className="shiva-capsule shiva-capsule-violet">Organized Learning · THE SHIVA</span>
-            <h1 className="mt-4 text-4xl font-extrabold leading-tight text-white sm:text-5xl">
-              Join a <span className="text-shiva-gold">structured batch</span>
+            <h1 className="text-[34px] font-extrabold leading-tight text-gray-900 sm:text-[40px]">
+              Batches
             </h1>
-            <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-slate-400">
+            <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-gray-500">
               Apne exam ke hisaab se batch chuno — scheduled live classes, saathi students ke saath
               padhai, aur har batch ke saath linked course ka poora syllabus.
             </p>
             {/* Real counts — sirf asal data se */}
             {batches.length > 0 && (
-              <div className="mt-4 flex flex-wrap items-center gap-2.5 text-[13px] font-semibold">
-                <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-slate-200">
-                  Kul batches: <span className="text-[#f5b942]">{batches.length}</span>
-                </span>
-                {live.length > 0 && (
-                  <span className="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-4 py-2 text-emerald-300">
-                    Live: {live.length}
-                  </span>
+              <p className="mt-3 text-[13px] font-semibold text-gray-500">
+                Kul batches: <span className="text-gray-900">{batches.length}</span>
+                {liveCount > 0 && (
+                  <>
+                    {' · '}
+                    <span className="text-emerald-600">Live: {liveCount}</span>
+                  </>
                 )}
-                {upcoming.length > 0 && (
-                  <span className="rounded-full border border-[#f5b942]/20 bg-[#f5b942]/10 px-4 py-2 text-[#f5b942]">
-                    Upcoming: {upcoming.length}
-                  </span>
+                {upcomingCount > 0 && (
+                  <>
+                    {' · '}
+                    <span className="text-amber-600">Upcoming: {upcomingCount}</span>
+                  </>
                 )}
-              </div>
+              </p>
             )}
           </div>
 
-          {/* Search — GET form (server-side filter, asal fields par).
-              Status/exam selection hidden fields se barkarar rehti hai. */}
+          {/* Search — gol bar (PW pattern), GET form (server-side filter,
+              asal fields par). Status/exam hidden fields se barkarar. */}
           {batches.length > 0 && (
             <form
               method="get"
               action="/batches"
               role="search"
-              className="flex w-full max-w-md items-stretch gap-2 lg:shrink-0"
+              className="flex w-full max-w-md items-center gap-2 lg:shrink-0"
             >
               {validStatus !== 'ALL' && (
                 <input type="hidden" name="status" value={validStatus} />
@@ -408,7 +378,7 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
               <div className="relative flex-1">
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[15px] opacity-60"
+                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[15px] opacity-50"
                 >
                   🔍
                 </span>
@@ -416,21 +386,21 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
                   type="search"
                   name="q"
                   defaultValue={query}
-                  placeholder="Batch, course ya teacher khojo…"
+                  placeholder="Search for batches, courses…"
                   aria-label="Batch search karo"
-                  className="w-full rounded-full border border-white/15 bg-white/5 py-3 pl-11 pr-4 text-sm text-white placeholder:text-slate-500 focus:border-[#6d28d9] focus:outline-none"
+                  className="w-full rounded-full border border-gray-300 bg-white py-3 pl-11 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#6d28d9] focus:outline-none"
                 />
               </div>
               <button
                 type="submit"
-                className="shrink-0 rounded-full bg-[#6d28d9] px-6 py-3 text-sm font-bold text-white shadow-lg shadow-[#6d28d9]/30 transition-all hover:bg-[#7c3aed]"
+                className="shrink-0 rounded-full bg-[#111111] px-6 py-3 text-sm font-bold text-white shadow-lg shadow-black/20 transition-all hover:bg-black"
               >
-                Khojo
+                Search
               </button>
               {query && (
                 <Link
                   href={chipHref(validStatus === 'ALL' ? 'all' : validStatus, activeExam, '')}
-                  className="inline-flex shrink-0 items-center rounded-full border border-white/15 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-300 transition-colors hover:text-white"
+                  className="inline-flex shrink-0 items-center rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-semibold text-gray-500 transition-colors hover:text-gray-900"
                 >
                   ✕ Saaf
                 </Link>
@@ -441,14 +411,14 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
 
         {batches.length === 0 ? (
           /* Honest empty state — koi batch hi publish nahi hai */
-          <div className="shiva-glass mx-auto max-w-2xl space-y-5 rounded-3xl p-12 text-center">
+          <div className="mx-auto max-w-2xl rounded-2xl border border-gray-200 bg-white p-12 text-center shadow-[0_6px_24px_rgba(42,22,80,0.06)]">
             <div className="text-5xl opacity-40" aria-hidden="true">🗓️</div>
-            <h2 className="text-xl font-bold text-white">Abhi koi batch available nahi hai</h2>
-            <p className="text-sm leading-relaxed text-slate-400">
+            <h2 className="mt-5 text-xl font-bold text-gray-900">Abhi koi batch available nahi hai</h2>
+            <p className="mt-2 text-sm leading-relaxed text-gray-500">
               Jaise hi naye batches publish honge, woh yahan dikhenge. Tab tak hamare published
               courses dekho ya free register karke sabse pehle khabar pao.
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/courses"
                 className="inline-block rounded-full bg-[#6d28d9] px-8 py-3.5 text-sm font-bold text-white shadow-xl shadow-[#6d28d9]/30 transition-all hover:-translate-y-0.5 hover:bg-[#7c3aed]"
@@ -457,7 +427,7 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
               </Link>
               <Link
                 href="/register"
-                className="inline-block rounded-full bg-[#111111] px-8 py-3.5 text-sm font-bold text-white shadow-xl shadow-black/30 transition-all hover:-translate-y-0.5 hover:bg-black"
+                className="inline-block rounded-full bg-[#111111] px-8 py-3.5 text-sm font-bold text-white shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5 hover:bg-black"
               >
                 Register Free
               </Link>
@@ -465,33 +435,6 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
           </div>
         ) : (
           <>
-            {/* ── Popular rail pattern: Live + Upcoming ki horizontal scroll strip ── */}
-            {!isFiltered && railBatches.length > 0 && (
-              <section aria-label="Live aur upcoming batches" className="mb-12">
-                <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
-                  <div>
-                    <h2 className="text-2xl font-extrabold text-white">Live &amp; Upcoming Batches</h2>
-                    <p className="mt-1 text-sm text-slate-400">
-                      Abhi join karne ke liye uplabdh batches — side me scroll karke saare dekho.
-                    </p>
-                  </div>
-                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold text-slate-300">
-                    {railBatches.length} {railBatches.length === 1 ? 'batch' : 'batches'}
-                  </span>
-                </div>
-                <div className="-mx-4 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
-                  {railBatches.map((batch) => (
-                    <div
-                      key={batch.id}
-                      className="w-[300px] shrink-0 snap-start sm:w-[340px]"
-                    >
-                      <BatchCard batch={batch} />
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
             {/* Filter chips — status */}
             <div className="mb-4 flex flex-wrap items-center gap-2" role="navigation" aria-label="Batch status filter">
               {STATUS_FILTERS.map((f) => {
@@ -503,8 +446,8 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
                     aria-current={isActive ? 'page' : undefined}
                     className={`rounded-full px-4 py-2 text-[13px] font-bold transition-all ${
                       isActive
-                        ? 'bg-[#f5b942] text-[#2a1650] shadow-lg shadow-[#f5b942]/25'
-                        : 'border border-white/15 bg-white/5 text-slate-300 hover:border-[#6d28d9]/60 hover:text-white'
+                        ? 'bg-[#6d28d9] text-white shadow-lg shadow-[#6d28d9]/25'
+                        : 'border border-gray-300 bg-white text-gray-600 hover:border-[#6d28d9]/60 hover:text-gray-900'
                     }`}
                   >
                     {f.label}
@@ -515,14 +458,14 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
 
             {/* Filter chips — exam (sirf data me maujood exams) */}
             {exams.length > 1 && (
-              <div className="mb-10 flex flex-wrap items-center gap-2" role="navigation" aria-label="Exam filter">
+              <div className="mb-8 flex flex-wrap items-center gap-2" role="navigation" aria-label="Exam filter">
                 <Link
                   href={chipHref(validStatus === 'ALL' ? 'all' : validStatus, null, query)}
                   aria-current={!activeExam ? 'page' : undefined}
                   className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
                     !activeExam
-                      ? 'bg-[#6d28d9] text-white shadow-lg shadow-[#6d28d9]/30'
-                      : 'border border-white/15 bg-white/5 text-slate-300 hover:border-[#6d28d9]/60 hover:text-white'
+                      ? 'bg-[#111111] text-white shadow-lg shadow-black/20'
+                      : 'border border-gray-300 bg-white text-gray-600 hover:border-[#6d28d9]/60 hover:text-gray-900'
                   }`}
                 >
                   Saare Exams
@@ -534,8 +477,8 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
                     aria-current={activeExam === exam ? 'page' : undefined}
                     className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
                       activeExam === exam
-                        ? 'bg-[#6d28d9] text-white shadow-lg shadow-[#6d28d9]/30'
-                        : 'border border-white/15 bg-white/5 text-slate-300 hover:border-[#6d28d9]/60 hover:text-white'
+                        ? 'bg-[#111111] text-white shadow-lg shadow-black/20'
+                        : 'border border-gray-300 bg-white text-gray-600 hover:border-[#6d28d9]/60 hover:text-gray-900'
                     }`}
                   >
                     {exam}
@@ -546,94 +489,50 @@ export default async function PublicBatchesPage({ searchParams }: PageProps) {
 
             {filtered.length === 0 ? (
               /* Filter ke baad khaali — honest state */
-              <div className="shiva-glass mx-auto max-w-2xl space-y-4 rounded-3xl p-10 text-center">
-                <h2 className="text-lg font-bold text-white">
+              <div className="mx-auto max-w-2xl rounded-2xl border border-gray-200 bg-white p-10 text-center shadow-[0_6px_24px_rgba(42,22,80,0.06)]">
+                <h2 className="text-lg font-bold text-gray-900">
                   Is filter me abhi koi batch available nahi hai
                 </h2>
-                <p className="text-sm leading-relaxed text-slate-400">
+                <p className="mt-2 text-sm leading-relaxed text-gray-500">
                   {query
                     ? `“${query}” se match karta koi batch nahi mila. Spelling check karo, dusra status ya exam chuno — ya saare batches ek saath dekho.`
                     : 'Dusra status ya exam chunkar dekho — ya saare batches ek saath dekho.'}
                 </p>
                 <Link
                   href="/batches"
-                  className="inline-block rounded-full bg-[#f5b942] px-7 py-3 text-sm font-bold text-[#2a1650] transition-all hover:-translate-y-0.5"
+                  className="mt-5 inline-block rounded-full bg-[#111111] px-7 py-3 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-black"
                 >
                   Saare Batches Dekho
                 </Link>
               </div>
-            ) : isFiltered ? (
-              /* Filtered flat grid — dense (2/3/4 responsive) */
-              <section aria-label="Filtered batches">
-                <p className="mb-6 text-sm text-slate-400">
-                  <span className="font-bold text-white">{filtered.length}</span>{' '}
+            ) : (
+              /* Catalog grid — PW anatomy ke bade banner cards (query order:
+                 ACTIVE pehle, phir UPCOMING — server query waisi hi hai) */
+              <section aria-label="Batches catalog">
+                <p className="mb-5 text-sm text-gray-500">
+                  <span className="font-bold text-gray-900">{filtered.length}</span>{' '}
                   {filtered.length === 1 ? 'batch mila' : 'batches mile'}
                   {query ? ` · “${query}”` : ''}
                   {activeExam ? ` · ${activeExam}` : ''}
                   {validStatus !== 'ALL' ? ` · ${statusMeta(validStatus).label}` : ''}
-                  {' — '}
-                  <Link href="/batches" className="font-semibold text-[#f5b942] hover:underline">
-                    filter hatao
-                  </Link>
+                  {isFiltered && (
+                    <>
+                      {' — '}
+                      <Link href="/batches" className="font-semibold text-[#6d28d9] hover:underline">
+                        filter hatao
+                      </Link>
+                    </>
+                  )}
                 </p>
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {filtered.map((batch) => (
                     <BatchCard key={batch.id} batch={batch} />
                   ))}
                 </div>
               </section>
-            ) : (
-              /* Default: status ke hisaab se grouped sections — dense grid */
-              <div className="space-y-14">
-                {groups
-                  .filter((g) => g.items.length > 0)
-                  .map((group) => (
-                    <section key={group.key} aria-label={group.title}>
-                      <div className="mb-6 flex flex-wrap items-end justify-between gap-3 border-b border-white/10 pb-4">
-                        <div>
-                          <h2 className="text-2xl font-extrabold text-white">{group.title}</h2>
-                          <p className="mt-1 text-sm text-slate-400">{group.blurb}</p>
-                        </div>
-                        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold text-slate-300">
-                          {group.items.length} {group.items.length === 1 ? 'batch' : 'batches'}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                        {group.items.map((batch) => (
-                          <BatchCard key={batch.id} batch={batch} />
-                        ))}
-                      </div>
-                    </section>
-                  ))}
-              </div>
             )}
-
-            {/* Promo carousel — grid ke neeche (page ka promo hissa) */}
-            <div className="mt-16 overflow-hidden rounded-3xl shadow-[0_18px_44px_rgba(13,11,30,0.45)]">
-              <ShivaPromoCarousel />
-            </div>
-
-            {/* Bottom CTA */}
-            <div className="mt-12 rounded-3xl border border-[#6d28d9]/40 bg-gradient-to-br from-[#2a1650] to-[#6d28d9]/40 p-8 text-center md:p-10">
-              <h2 className="text-xl font-extrabold text-white md:text-2xl">
-                Samajh nahi aa raha kaunsa batch sahi hai?
-              </h2>
-              <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-slate-300">
-                Free register karo — apna target exam set karo aur apne goal ke hisaab se batches
-                aur courses apne dashboard me dekho.
-              </p>
-              <Link
-                href="/register"
-                className="mt-5 inline-block rounded-full bg-[#111111] px-8 py-3.5 text-sm font-bold text-white shadow-xl shadow-black/30 transition-all hover:-translate-y-0.5 hover:bg-black"
-              >
-                Register Free →
-              </Link>
-            </div>
           </>
         )}
-
-        {/* Why THE SHIVA + FAQ — page ke aakhir me (footer se pehle) */}
-        <ListingInfo />
       </div>
     </div>
   );
