@@ -11,6 +11,11 @@
 <meta property="og:description" content="Free course se shuru karo — SSC, Railway, Banking exam preparation.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://dm2123.github.io/shiva/courses.html">
+<meta property="og:image" content="https://dm2123.github.io/shiva/images/hero-student.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="THE SHIVA — Courses">
+<meta name="twitter:description" content="Free course se shuru karo — SSC, Railway, Banking exam preparation.">
+<meta name="twitter:image" content="https://dm2123.github.io/shiva/images/hero-student.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -37,6 +42,7 @@ header{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid
 .mmenu.open{display:block}
 .mmenu a.mlink{display:block;padding:14px 0;border-bottom:1px solid #f0f0f0;font-size:17px;font-weight:600}
 .btn{display:inline-block;padding:12px 24px;border-radius:12px;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:.2s;text-align:center}
+.btn-block{display:block;width:100%}
 .btn-brand{background:var(--brand);color:#fff}.btn-brand:hover{background:var(--brand-dark);transform:translateY(-1px)}
 .btn-gold{background:var(--gold);color:#2a1650}.btn-gold:hover{background:var(--gold-dark);color:#fff}
 .btn-ghost{background:#fff;color:var(--brand);border:2px solid var(--line)}.btn-ghost:hover{border-color:var(--brand)}
@@ -44,41 +50,51 @@ header{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid
 .page-hero::after{content:"";position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:rgba(245,185,66,.16)}
 .page-hero h1{font-size:34px;font-weight:900;line-height:1.2;position:relative;z-index:2}
 .page-hero h1 .gold{color:var(--gold)}
-.page-hero p{font-size:16px;opacity:.93;max-width:620px;margin-top:8px;position:relative;z-index:2}
+.page-hero p{font-size:16px;opacity:.93;max-width:640px;margin-top:8px;position:relative;z-index:2}
+.hero-badge{display:inline-block;background:var(--gold);color:#2a1650;font-size:12.5px;font-weight:800;padding:6px 14px;border-radius:999px;margin-bottom:12px;position:relative;z-index:2}
 section{padding:52px 0}
 .sec-head{text-align:center;margin-bottom:32px}
 .sec-head .kick{display:inline-block;background:#ede9fe;color:var(--brand-dark);font-weight:700;font-size:12.5px;padding:6px 16px;border-radius:999px;margin-bottom:10px;text-transform:uppercase;letter-spacing:1.2px}
 .sec-head h2{font-size:28px;font-weight:800;color:var(--deep)}
-.sec-head p{color:var(--muted);max-width:600px;margin:8px auto 0}
+.sec-head p{color:var(--muted);max-width:620px;margin:8px auto 0}
 .filter-row{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-bottom:28px}
 .chip{font-size:13.5px;font-weight:700;border:1.5px solid #e5e7eb;background:#fff;padding:8px 18px;border-radius:99px;cursor:pointer;font-family:inherit;color:#374151;transition:.2s}
 .chip:hover{border-color:var(--brand);color:var(--brand)}
 .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
-.course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.course{background:var(--card);border:2px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;transition:.25s}
-.course:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(109,40,217,.14);border-color:var(--brand)}
-.course .banner{padding:20px;color:#fff;font-weight:800;font-size:17.5px;line-height:1.35}
-.course .tag{display:inline-block;font-size:11px;font-weight:800;padding:4px 11px;border-radius:99px;margin-bottom:9px}
-.course .body{padding:20px;flex:1;display:flex;flex-direction:column}
-.course .body p{font-size:14px;color:var(--muted);flex:1}
-.course ul{list-style:none;margin:12px 0}
-.course ul li{font-size:13.5px;color:#374151;padding:4px 0}
-.course ul li::before{content:"✓ ";color:var(--green);font-weight:800}
-.price{display:flex;align-items:baseline;gap:10px;margin:8px 0 14px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;transition:.25s}
+.card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(109,40,217,.14);border-color:var(--brand)}
+.card .banner{padding:20px;color:#fff;font-weight:800;font-size:17.5px;line-height:1.35}
+.card .tag{display:inline-block;font-size:11px;font-weight:800;padding:4px 11px;border-radius:99px;margin-bottom:9px}
+.card .body{padding:20px;flex:1;display:flex;flex-direction:column}
+.card .body p{font-size:14px;color:var(--muted)}
+.card ul{list-style:none;margin:12px 0;flex:1}
+.card ul li{font-size:13.5px;color:#374151;padding:4px 0}
+.card ul li::before{content:"\2713  ";color:var(--green);font-weight:800}
+.price{display:flex;align-items:baseline;gap:10px;margin:8px 0 14px;flex-wrap:wrap}
 .price b{font-size:26px;color:var(--brand-dark)}
 .price b.free{color:var(--green)}
 .price s{color:#9ca3af}
 .price .soon{font-size:19px;color:var(--deep)}
-.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.feat-card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:24px 20px;transition:.25s}
+.feat-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(109,40,217,.11);border-color:var(--brand)}
+.feat-card .ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:12px;background:#f5f3ff}
+.feat-card b{display:block;font-size:16px;margin-bottom:5px;color:var(--deep)}
+.feat-card p{font-size:14px;color:var(--muted)}
 .step{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:24px 20px;text-align:center}
 .step .num{width:46px;height:46px;border-radius:50%;background:var(--brand);color:#fff;font-weight:900;font-size:19px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
 .step b{display:block;margin-bottom:5px;color:var(--deep)}
 .step p{font-size:13.5px;color:var(--muted)}
+.honest-box{background:#f5f3ff;border:2px dashed var(--brand);border-radius:18px;padding:34px 22px;text-align:center;color:var(--muted);font-size:15px}
+.honest-box b{color:var(--deep)}
+.honest-box .big-ic{font-size:46px;margin-bottom:10px}
 .faq{max-width:780px;margin:0 auto}
 .faq-item{background:var(--card);border:2px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
 .faq-q{width:100%;background:none;border:none;text-align:left;padding:17px 20px;font:inherit;font-weight:700;font-size:15.5px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--ink)}
 .faq-q::after{content:"+";font-size:24px;color:var(--brand);font-weight:800;flex-shrink:0}
-.faq-item.open .faq-q::after{content:"−"}
+.faq-item.open .faq-q::after{content:"\2212"}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:14.5px;color:var(--muted)}
 .faq-a div{padding:0 20px 17px}
 .counsel-strip{background:linear-gradient(135deg,var(--brand),var(--brand-dark));border-radius:20px;padding:30px 22px;text-align:center;color:#fff}
@@ -95,11 +111,12 @@ footer{background:var(--deep);color:#b9b3d9;padding:44px 0 26px;margin-top:56px}
 .cpopup .hd{background:linear-gradient(135deg,var(--brand-dark),var(--brand));color:#fff;padding:16px;position:relative}
 .cpopup input{width:100%;padding:11px;border:2px solid var(--line);border-radius:9px;margin-bottom:10px;font-size:14px;font:inherit}
 .sticky-cta{display:none}
+.note-inline{font-size:12.5px;font-weight:600;margin-top:10px;color:var(--brand)}
 @media(max-width:900px){
 .nav-links{display:none}.hamburger{display:block}
 .page-hero h1{font-size:27px}
-.course-grid{grid-template-columns:1fr}
-.how-grid{grid-template-columns:1fr 1fr}
+.grid2,.grid3{grid-template-columns:1fr}
+.grid4{grid-template-columns:1fr 1fr}
 .fgrid{grid-template-columns:1fr 1fr}
 section{padding:40px 0}
 .sticky-cta{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:150;background:#fff;border-top:1px solid #f0f0f0;box-shadow:0 -4px 20px rgba(0,0,0,.09);padding:10px 12px calc(10px + env(safe-area-inset-bottom));gap:10px}
@@ -458,7 +475,7 @@ footer.ft5{background:#fff;color:#4b5563;border-top:1px solid #eceaf6;padding:50
 
 <div class="page-hero"><div class="wrap">
 <nav class="crumb" aria-label="Breadcrumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Courses</nav>
-<span style="display:inline-block;background:var(--gold);color:#2a1650;font-size:12.5px;font-weight:800;padding:6px 14px;border-radius:999px;margin-bottom:12px;position:relative;z-index:2">COURSES</span>
+<span class="hero-badge">COURSES</span>
 <h1>Hamare <span class="gold">Courses</span></h1>
 <p>Free aur affordable courses — apne exam ki taiyaari aaj se shuru karo. Ek course live hai, baaki taiyaari me hain — jo live nahi, use hum "Coming Soon" saaf likhte hain.</p>
 </div></div>
@@ -474,30 +491,37 @@ footer.ft5{background:#fff;color:#4b5563;border-top:1px solid #eceaf6;padding:50
 <button class="chip" onclick="filterCourses(this,'railway')">Railway</button>
 <button class="chip" onclick="filterCourses(this,'soon')">Coming Soon</button>
 </div>
-<div class="course-grid" id="courseGrid">
-<div class="course" data-cat="live foundation">
-<div class="banner" style="background:linear-gradient(120deg,#059669,#10b981)"><span class="tag" style="background:#fff;color:#059669">LIVE • 100% FREE</span><br>Aptitude Foundation</div>
-<div class="body">
-<p>Number System, Percentage, Ratio-Proportion, Average, Time-Speed-Distance, Time-Work, Interest aur Data Interpretation — har competitive exam ki neev.</p>
-<ul><li>Complete video lectures</li><li>Practice questions har topic par</li><li>Completion certificate</li></ul>
+<div class="grid3" id="courseGrid">
+<div class="b5" data-cat="live foundation">
+<div class="b5-banner" style="background:linear-gradient(120deg,#059669,#10b981)"><span class="b5-tag">LIVE • 100% FREE</span><div class="b5-btitle">APTITUDE FOUNDATION</div><div class="b5-bsub">Complete Free Course • Har Exam Ki Neev</div><a class="b5-eye" href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" aria-label="Course details dekho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div class="b5-body">
+<div class="pills"><span>Hindi + English</span><span>SSC • Railway • Banking</span><span>8 Weeks</span></div>
+<h3>Aptitude Foundation — Free Course</h3>
+<p class="b5-aud">Number System, Percentage, Ratio-Proportion, Average, Time-Speed-Distance, Time-Work, Interest aur Data Interpretation — har competitive exam ki neev.</p>
+<div class="topic-chips"><span>Number System</span><span>Percentage</span><span>Ratio &amp; Proportion</span><span>Average</span><span>Time, Speed &amp; Distance</span><span>Time &amp; Work</span><span>Interest</span><span>Data Interpretation</span></div>
+<ul class="b5-feats"><li>Complete video lectures</li><li>Practice questions har topic par</li><li>Completion certificate</li></ul>
 <div class="price"><b class="free">FREE</b><s>₹999</s><span class="off-chip">100% OFF</span></div>
-<a class="btn btn-black" style="display:block" href="https://the-shiva.onrender.com/courses/aptitude-foundation-free">Register Now →</a>
+<a href="https://the-shiva.onrender.com/courses/aptitude-foundation-free" class="btn btn-black btn-block">Register Now →</a>
 </div></div>
-<div class="course" data-cat="ssc soon">
-<div class="banner" style="background:linear-gradient(120deg,var(--brand),#8b5cf6)"><span class="tag" style="background:rgba(255,255,255,.25);color:#fff">COMING SOON</span><br>SSC CGL Complete 2026</div>
-<div class="body">
-<p>Quant, Reasoning, English aur General Awareness — SSC CGL ki complete taiyaari live classes ke saath.</p>
-<ul><li>Live classes (launch par)</li><li>Mock tests &amp; PYQs</li><li>Doubt sessions</li></ul>
-<div class="price"><b class="soon">Jald aa raha hai</b></div>
-<a class="btn btn-ghost" style="display:block" href="https://the-shiva.onrender.com/courses">Platform Par Dekho</a>
+<div class="b5" data-cat="ssc soon">
+<div class="b5-banner" style="background:linear-gradient(120deg,var(--brand),#8b5cf6)"><span class="b5-tag soon">COMING SOON</span><div class="b5-btitle">SSC CGL COMPLETE 2026</div><div class="b5-bsub">Complete CGL Preparation</div><a class="b5-eye" href="batches.html" aria-label="Batch details dekho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div class="b5-body">
+<div class="pills"><span>SSC CGL</span><span>Live Classes</span></div>
+<h3>SSC CGL Complete 2026</h3>
+<p class="b5-aud">Quant, Reasoning, English aur General Awareness — SSC CGL ki complete taiyaari live classes ke saath.</p>
+<ul class="b5-feats"><li>Live classes (launch par)</li><li>Mock tests &amp; PYQs</li><li>Doubt sessions</li></ul>
+<div class="price"><b class="soon">Launching Soon</b></div>
+<a href="https://the-shiva.onrender.com/courses" class="btn btn-ghost btn-block">Platform Par Dekho</a>
 </div></div>
-<div class="course" data-cat="railway soon">
-<div class="banner" style="background:linear-gradient(120deg,#b45309,var(--gold))"><span class="tag" style="background:rgba(255,255,255,.3);color:#2a1650">COMING SOON</span><br>Railway NTPC Complete</div>
-<div class="body">
-<p>Railway NTPC ki full taiyaari — video lectures, practice tests aur study material ke saath.</p>
-<ul><li>Video lectures (launch par)</li><li>Practice tests</li><li>Study material</li></ul>
-<div class="price"><b class="soon">Jald aa raha hai</b></div>
-<a class="btn btn-ghost" style="display:block" href="https://the-shiva.onrender.com/courses">Platform Par Dekho</a>
+<div class="b5" data-cat="railway soon">
+<div class="b5-banner" style="background:linear-gradient(120deg,#b45309,var(--gold))"><span class="b5-tag soon">COMING SOON</span><div class="b5-btitle">RAILWAY NTPC COMPLETE</div><div class="b5-bsub">Complete NTPC Preparation</div><a class="b5-eye" href="https://the-shiva.onrender.com/courses" aria-label="Course details dekho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div class="b5-body">
+<div class="pills"><span>RRB NTPC</span><span>Video Lectures</span></div>
+<h3>Railway NTPC Complete</h3>
+<p class="b5-aud">Railway NTPC ki full taiyaari — video lectures, practice tests aur study material ke saath.</p>
+<ul class="b5-feats"><li>Video lectures (launch par)</li><li>Practice tests</li><li>Study material</li></ul>
+<div class="price"><b class="soon">Launching Soon</b></div>
+<a href="https://the-shiva.onrender.com/courses" class="btn btn-ghost btn-block">Platform Par Dekho</a>
 </div></div>
 </div>
 <p id="noResult" style="display:none;text-align:center;color:var(--muted);margin-top:8px">Is filter me abhi koi course nahi hai — <b>Live</b> filter me free course dekho.</p>
@@ -505,7 +529,7 @@ footer.ft5{background:#fff;color:#4b5563;border-top:1px solid #eceaf6;padding:50
 
 <section style="background:#fff;border-top:1px solid #f3f0ff"><div class="wrap">
 <div class="sec-head"><span class="kick">Kaise Shuru Karein</span><h2>4 Steps Me Padhai Shuru</h2></div>
-<div class="how-grid">
+<div class="grid4">
 <div class="step"><div class="num">1</div><b>Account Banao</b><p>Login / Register par click karke free account banao.</p></div>
 <div class="step"><div class="num">2</div><b>Course Chuno</b><p>Aptitude Foundation free course se shuruaat karo.</p></div>
 <div class="step"><div class="num">3</div><b>Roz Padho</b><p>Video lectures dekho aur topic-wise practice karo.</p></div>
@@ -573,7 +597,7 @@ function closeCpopup(){document.getElementById('cpopup').classList.remove('open'
 function submitCallback(){var n=document.getElementById('cpName').value.trim(),p=document.getElementById('cpPhone').value.trim();if(n&&/^[6-9]\d{9}$/.test(p)){document.getElementById('cpErr').style.display='none';document.getElementById('cpMsg').style.display='block'}else{document.getElementById('cpErr').style.display='block';document.getElementById('cpMsg').style.display='none'}}
 function toggleFaq(btn){var item=btn.parentElement,a=item.querySelector('.faq-a'),open=item.classList.contains('open');document.querySelectorAll('.faq-item.open').forEach(function(i){i.classList.remove('open');i.querySelector('.faq-a').style.maxHeight=null});if(!open){item.classList.add('open');a.style.maxHeight=a.scrollHeight+'px'}}
 var curCat='all';
-function applyCourseFilter(){var q=(document.getElementById('courseSearch').value||'').trim().toLowerCase();var shown=0;document.querySelectorAll('#courseGrid .course').forEach(function(card){var okCat=curCat==='all'||card.dataset.cat.split(' ').indexOf(curCat)>-1;var okQ=!q||card.textContent.toLowerCase().indexOf(q)>-1;var ok=okCat&&okQ;card.style.display=ok?'':'none';if(ok)shown++});document.getElementById('noResult').style.display=shown?'none':'block'}
+function applyCourseFilter(){var q=(document.getElementById('courseSearch').value||'').trim().toLowerCase();var shown=0;document.querySelectorAll('#courseGrid .b5').forEach(function(card){var okCat=curCat==='all'||card.dataset.cat.split(' ').indexOf(curCat)>-1;var okQ=!q||card.textContent.toLowerCase().indexOf(q)>-1;var ok=okCat&&okQ;card.style.display=ok?'':'none';if(ok)shown++});document.getElementById('noResult').style.display=shown?'none':'block'}
 function filterCourses(btn,cat){document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on')});btn.classList.add('on');curCat=cat;applyCourseFilter()}
 function searchCourses(){applyCourseFilter()}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){document.getElementById("mmenu").classList.remove("open");closeCpopup()}});
