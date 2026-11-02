@@ -17,6 +17,9 @@ interface PWStudentHeaderProps {
   /** Dashboard par true — page ka apna 'Study' header hi ekmatra title hai,
    *  shell ki duplicate title-patti nahi dikhti. */
   hideTitleBar?: boolean;
+  /** Dashboard par true — streak/XP chips page ke 'Study' header row me
+   *  dikhte hain (PW pattern); top bar me dohraane se bacho. */
+  hideChips?: boolean;
   /** DailyStreaks se asal current streak; load na ho to null (chip nahi dikhega) */
   streak?: number | null;
   /** StudentXP se asal total XP; load na ho to null (chip nahi dikhega) */
@@ -31,6 +34,7 @@ export default function PWStudentHeader({
   goal,
   pageTitle = 'Home',
   hideTitleBar = false,
+  hideChips = false,
   streak = null,
   totalXP = null,
   unreadCount = 0,
@@ -112,8 +116,9 @@ export default function PWStudentHeader({
               </svg>
             </button>
 
-            {/* Logo + naam */}
-            <Link href="/app" className="flex items-center gap-2.5 shrink-0" aria-label="THE SHIVA — Home">
+            {/* Logo + naam — desktop par sidebar ke brand block me
+                dikhta hai (ek hi dark band), yahan sirf mobile/tablet */}
+            <Link href="/app" className="flex items-center gap-2.5 shrink-0 lg:hidden" aria-label="THE SHIVA — Home">
               <Image
                 src="/assets/logo.jpeg"
                 alt="THE SHIVA"
@@ -158,8 +163,9 @@ export default function PWStudentHeader({
 
             <div className="flex-1" />
 
-            {/* Streak chip — asal data ho tabhi */}
-            {streak !== null && (
+            {/* Streak chip — asal data ho tabhi; dashboard par page
+                header row me dikhta hai, yahan nahi (duplication) */}
+            {!hideChips && streak !== null && (
               <Link
                 href="/app/streak"
                 className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/15 rounded-full px-2.5 min-[420px]:px-3 py-1.5 text-[12.5px] font-bold transition shrink-0"
@@ -172,8 +178,9 @@ export default function PWStudentHeader({
               </Link>
             )}
 
-            {/* XP chip — asal data ho tabhi */}
-            {totalXP !== null && (
+            {/* XP chip — asal data ho tabhi; dashboard par page
+                header row me dikhta hai, yahan nahi (duplication) */}
+            {!hideChips && totalXP !== null && (
               <span
                 className="hidden min-[420px]:inline-flex items-center gap-1.5 bg-white/10 rounded-full px-3 py-1.5 text-[12.5px] font-bold shrink-0"
                 aria-label={`${totalXP} XP`}

@@ -82,6 +82,7 @@ export default function StudentHeaderWrapper({
       goal={goal}
       pageTitle={pageTitle}
       hideTitleBar={(pathname || '/app') === '/app'}
+      hideChips={(pathname || '/app') === '/app'}
       streak={streak}
       totalXP={totalXP}
       unreadCount={unreadCount}

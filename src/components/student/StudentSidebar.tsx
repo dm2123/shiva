@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   IconHome, IconBook, IconBookOpen, IconPlay, IconRadio, IconVideo,
@@ -121,6 +122,25 @@ export default function StudentSidebar() {
       role="navigation"
       aria-label="Student sidebar"
     >
+      {/* Brand block — top bar (h-16, dark #2a1650) ki seedh me,
+          taaki upar ek hi continuous dark band lage (PW shell) */}
+      <Link
+        href="/app"
+        className="flex h-16 shrink-0 items-center gap-2.5 bg-[#2a1650] px-5 text-white"
+        aria-label="THE SHIVA — Home"
+      >
+        <Image
+          src="/assets/logo.jpeg"
+          alt="THE SHIVA"
+          width={36}
+          height={36}
+          className="rounded-lg shadow-sm"
+        />
+        <span className="leading-tight">
+          <span className="block text-[15px] font-extrabold tracking-wide">THE SHIVA</span>
+          <span className="block text-[10px] font-medium text-white/55">Student Portal</span>
+        </span>
+      </Link>
       <StudentSidebarNav />
     </aside>
   );

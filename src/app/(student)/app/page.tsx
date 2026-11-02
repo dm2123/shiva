@@ -120,24 +120,60 @@ export default async function DashboardPage() {
     }));
   } catch { /* asal activity na mile to tile imaandaar default sub-line dikhayega */ }
 
-  // Promo strip — asal PUBLISHED free course (Aptitude Foundation
-  // ho to wahi pehle); koi free course publish na ho to strip hi nahi.
-  let promoCourse: DashboardPromoCourse | null = null;
+  // Promo carousel — asal PUBLISHED free courses (Aptitude Foundation
+  // ho to wahi pehle), zyada se zyada 3; koi free course publish na
+  // ho to carousel hi nahi dikhega.
+  let promoCourses: DashboardPromoCourse[] = [];
   try {
     const [rows]: any = await mysqlPool.query(
       `SELECT id, title, slug FROM Courses
         WHERE status = 'PUBLISHED' AND COALESCE(price, 0) = 0
         ORDER BY (title LIKE '%Aptitude Foundation%') DESC, createdAt DESC
-        LIMIT 1`
+        LIMIT 3`
     );
-    if (rows?.[0]) {
-      promoCourse = {
-        id: String(rows[0].id),
-        title: rows[0].title,
-        slug: rows[0].slug || null,
-      };
+    promoCourses = (rows || []).map((r: any) => ({
+      id: String(r.id),
+      title: r.title,
+      slug: r.slug || null,
+    }));
+  } catch { /* course data na mile to promo carousel nahi dikhega */ }
+
+  // Header-row chips — asal streak (DailyStreaks) aur XP (StudentXP),
+  // layout wali hi ginati. Load na ho to null — chip nahi dikhega.
+  let streak: number | null = null;
+  try {
+    const [rows]: any = await mysqlPool.query(
+      `SELECT streakDate FROM DailyStreaks
+        WHERE studentId = ? AND streakDate >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+        ORDER BY streakDate DESC`,
+      [userId]
+    );
+    const dateSet = new Set<string>(
+      (rows || []).map((s: any) => new Date(s.streakDate).toISOString().split('T')[0])
+    );
+    let current = 0;
+    const today = new Date();
+    for (let i = 0; i < 365; i++) {
+      const check = new Date(today);
+      check.setDate(check.getDate() - i);
+      if (dateSet.has(check.toISOString().split('T')[0])) current++;
+      else if (i > 0) break;
     }
-  } catch { /* course data na mile to promo strip nahi dikhega */ }
+    streak = current;
+  } catch {
+    streak = null;
+  }
+
+  let totalXP: number | null = null;
+  try {
+    const [rows]: any = await mysqlPool.query(
+      'SELECT COALESCE(SUM(points), 0) AS total FROM StudentXP WHERE studentId = ?',
+      [userId]
+    );
+    totalXP = Number(rows?.[0]?.total) || 0;
+  } catch {
+    totalXP = null;
+  }
 
   return (
     <DashboardClient
@@ -145,7 +181,9 @@ export default async function DashboardPage() {
       enrollments={enrollments}
       doubtSummary={doubtSummary}
       recentLearning={recentLearning}
-      promoCourse={promoCourse}
+      promoCourses={promoCourses}
+      streak={streak}
+      totalXP={totalXP}
     />
   );
 }
