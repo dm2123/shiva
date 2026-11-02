@@ -2,9 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import {
-  IconCalendar, IconUser, IconPlay, IconSearch, IconX, IconClock,
-} from '@/components/student/StudentIcons';
+import { IconSearch, IconX } from '@/components/student/StudentIcons';
 import CourseBanner from '@/components/student/CourseBanner';
 
 export interface BatchCardData {
@@ -23,6 +21,11 @@ export interface BatchCardData {
   enrolledAt: string | null;
   /** Courses.validityMonths (best-effort; column na ho to null) */
   validityMonths: number | null;
+  /** Courses.language (best-effort; record par ho tabhi, warna null) */
+  language: string | null;
+  /** deriveExamCategory(course title/slug) ka label — banner pill +
+   *  'LANGUAGE | Target' line ka target hissa; derive na ho to null */
+  examCategory: string | null;
 }
 
 // Status chip — sirf asal b.status field se (banner par solid, padhne layak)
@@ -33,10 +36,13 @@ const STATUS_CHIP: Record<string, string> = {
 };
 const STATUS_CHIP_FALLBACK = 'bg-slate-400 text-white';
 
-function fmtDate(d: string | null): string | null {
+/** PW My Batches date line wala format: '01 Jul 2025' (din 2-digit). */
+function fmtDatePadded(d: Date | string | null): string | null {
   if (!d) return null;
   try {
-    return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    const date = typeof d === 'string' ? new Date(d) : d;
+    if (isNaN(date.getTime())) return null;
+    return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
   } catch {
     return null;
   }
@@ -74,9 +80,10 @@ function isExpired(b: BatchCardData): boolean {
 }
 
 /**
- * My Batches — PW anatomy: Paid | Free segmented control (halka violet-gray
- * dabba, active = safed card + shadow + violet bold), All | Expired tabs
- * (active = violet bold + violet underline), neeche PW card grid.
+ * My Batches — PW anatomy (3 Nov live capture se pakka): Paid | Free
+ * segmented control (halka violet-gray dabba, selected = purple
+ * background + safed bold text), All | Expired tabs (active = violet
+ * bold + violet underline), neeche PW card grid.
  * Saare filter sirf asal enrollment data par, client-side — koi server
  * call nahi, koi nakli data nahi.
  */
@@ -130,7 +137,7 @@ export default function BatchesClient({ batches }: { batches: BatchCardData[] })
             aria-pressed={segment === s.key}
             className={`flex-1 rounded-xl py-2.5 text-[15px] transition ${
               segment === s.key
-                ? 'bg-white font-bold text-[#6d28d9] shadow-[0_2px_8px_rgba(16,24,40,0.10)]'
+                ? 'bg-[#6d28d9] font-bold text-white shadow-[0_2px_8px_rgba(109,40,217,0.35)]'
                 : 'font-semibold text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -239,72 +246,86 @@ export default function BatchesClient({ batches }: { batches: BatchCardData[] })
       ) : (
         <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((b) => {
-            const start = fmtDate(b.startDate);
-            const end = fmtDate(b.endDate);
             const expired = isExpired(b);
-            const expiryLabel = expired ? fmtDate(expiryOf(b)?.toISOString() ?? null) : null;
+            // PW date line: 'Starts on01 Jul 2025| Ends on31 Mar 2027'
+            // ('on' ke baad space nahi, '|' ke baad ek space).
+            // Start = batch startDate; course-only rows par enrolledAt.
+            // End = batch endDate, warna asal expiry (expiryOf:
+            // enrolledAt + validityMonths). Jo date asal me maujood
+            // nahi, woh hissa line me aata hi nahi — invent kuch nahi.
+            const startLabel = fmtDatePadded(b.startDate ?? b.enrolledAt);
+            const endLabel = fmtDatePadded(expiryOf(b));
+            const dateLine = [
+              startLabel ? `Starts on${startLabel}` : null,
+              endLabel ? `Ends on${endLabel}` : null,
+            ]
+              .filter(Boolean)
+              .join('| ');
+            // Line 2 ka 'LANGUAGE | Target' pattern PW capture se:
+            // language sirf asal record par ho tabhi, target = derived
+            // exam category. Dono na hon to line hi nahi banti.
+            const hasMeta = Boolean(b.language || b.examCategory);
             return (
               <article
                 key={b.id}
                 className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] transition hover:shadow-md"
               >
-                {/* Banner — asal course thumbnail ya gradient fallback tile */}
+                {/* Banner — asal course thumbnail ya gradient fallback tile.
+                    Upar-left pill: PW par exam/class pill hota hai —
+                    SHIVA par derived exam category; derive na ho to
+                    purana status chip fallback. */}
                 <CourseBanner src={b.courseThumbnail} title={b.name} seed={b.id}>
-                  <span
-                    className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wider shadow ${STATUS_CHIP[b.status] || STATUS_CHIP_FALLBACK}`}
-                  >
-                    {b.status}
-                  </span>
+                  {b.examCategory ? (
+                    <span className="absolute left-3 top-3 rounded-full bg-[#6d28d9] px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-white shadow">
+                      {b.examCategory}
+                    </span>
+                  ) : (
+                    <span
+                      className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wider shadow ${STATUS_CHIP[b.status] || STATUS_CHIP_FALLBACK}`}
+                    >
+                      {b.status}
+                    </span>
+                  )}
                 </CourseBanner>
 
-                {/* Body */}
+                {/* Body — PW bhara card (3 Nov live capture): ek title
+                    line, 'LANGUAGE | Target' line, ek date line, neeche
+                    purple button. Teacher/Mentor line PW card par NAHI
+                    hai — hata di. Alag 'Valid Till'/laal expired line
+                    bhi NAHI — expiry date line ke 'Ends on' me hi hai,
+                    aur expired haal button se dikhta hai; card Expired
+                    tab me bhi dikhta rehta hai (isExpired filter). */}
                 <div className="flex flex-1 flex-col p-4">
                   <h3 className="line-clamp-2 text-[15px] font-bold leading-snug text-gray-900 transition-colors group-hover:text-[#6d28d9]">
                     {b.name}
                   </h3>
-                  {/* Course-title dusri line sirf tab jab batch name se
-                      asal me alag ho — dono same hon to ek hi baat do baar
-                      dikhti thi (F3, 3 Nov fix list). */}
-                  {b.courseTitle.trim().toLowerCase() !== b.name.trim().toLowerCase() && (
-                    <p className="mt-0.5 line-clamp-1 text-[12.5px] text-gray-500">{b.courseTitle}</p>
+                  {hasMeta && (
+                    <p className="mt-1 text-[12.5px] font-medium text-gray-500">
+                      {b.language && <span className="uppercase">{b.language}</span>}
+                      {b.language && b.examCategory ? ' | ' : ''}
+                      {b.examCategory}
+                    </p>
+                  )}
+                  {dateLine && (
+                    <p className="mt-2 text-[12.5px] text-gray-500">{dateLine}</p>
                   )}
 
-                  <div className="mt-3 space-y-2 text-[12.5px] text-gray-500">
-                    {(start || end) && (
-                      <p className="flex items-center gap-2">
-                        <IconCalendar size={14} className="shrink-0 text-[#6d28d9]" />
-                        <span>
-                          {start}
-                          {start && end ? ' → ' : ''}
-                          {end}
-                        </span>
-                      </p>
-                    )}
-                    <p className="flex items-center gap-2">
-                      <IconUser size={14} className="shrink-0 text-[#6d28d9]" />
-                      <span>
-                        Mentor:{' '}
-                        <span className="font-semibold text-gray-800">
-                          {b.teacherName || 'To be assigned'}
-                        </span>
-                      </span>
-                    </p>
-                    {expired && (
-                      <p className="flex items-center gap-2 font-medium text-red-500">
-                        <IconClock size={14} className="shrink-0" />
-                        <span>Expired{expiryLabel ? ` · ${expiryLabel}` : ''}</span>
-                      </p>
-                    )}
-                  </div>
-
                   <div className="mt-auto pt-4">
-                    <Link
-                      href={`/app/learn/${b.courseId}`}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#6d28d9] px-5 py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-[#5b21b6]"
-                    >
-                      <IconPlay size={14} />
-                      Continue Learning
-                    </Link>
+                    {expired ? (
+                      <Link
+                        href="/app/courses"
+                        className="inline-flex w-full items-center justify-center rounded-xl bg-[#6d28d9] px-5 py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-[#5b21b6]"
+                      >
+                        View Similar
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/app/learn/${b.courseId}`}
+                        className="inline-flex w-full items-center justify-center rounded-xl bg-[#6d28d9] px-5 py-2.5 text-[13px] font-bold text-white transition-colors hover:bg-[#5b21b6]"
+                      >
+                        Let&apos;s Study
+                      </Link>
+                    )}
                   </div>
                 </div>
               </article>

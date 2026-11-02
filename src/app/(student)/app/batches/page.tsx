@@ -1,6 +1,7 @@
 import { headers } from 'next/headers';
 import { getSessionFromHeaders } from '@/lib/rbac-server';
 import { mysqlPool } from '@/lib/db';
+import { deriveExamCategory } from '@/lib/exam-category';
 import BatchesClient, { type BatchCardData } from './BatchesClient';
 
 export const revalidate = 0;
@@ -20,7 +21,8 @@ export default async function BatchesPage() {
   // fields ki jagah course/enrollment ke asal fields leti hai.
   const [rows]: any = await mysqlPool.query(
     `SELECT b.id, b.name, b.status, b.startDate, b.endDate,
-            c.id AS courseId, c.title AS courseTitle, c.thumbnailUrl AS courseThumbnail,
+            c.id AS courseId, c.title AS courseTitle, c.slug AS courseSlug,
+            c.thumbnailUrl AS courseThumbnail,
             c.price AS coursePrice, e.id AS enrollmentId, e.enrolledAt AS enrolledAt,
             tp.name AS teacherName
        FROM StudentEnrollments e
@@ -37,16 +39,36 @@ export default async function BatchesPage() {
   // ho sakta hai, isliye dashboard wala best-effort alag-query pattern.
   // All | Expired tabs me Expired ka dusra aadhaar (pehla = batch endDate).
   const validityByCourse = new Map<string, number | null>();
+  // Course language bhi best-effort: admin course form language bhejta
+  // hai, par purane DB par column ho bhi sakta hai aur nahi bhi — isliye
+  // pehle language samet query, fail ho to bina language ke dobara.
+  // Language na mile to card par language hissa dikhega hi nahi
+  // (PW line 'HINGLISH | Class 9' ka language hissa optional hai).
+  const languageByCourse = new Map<string, string | null>();
   try {
     const ids = Array.from(new Set(batches.map((b) => String(b.courseId))));
     if (ids.length > 0) {
       const placeholders = ids.map(() => '?').join(',');
-      const [vrows]: any = await mysqlPool.query(
-        `SELECT id, validityMonths FROM Courses WHERE id IN (${placeholders})`,
-        ids
-      );
-      for (const v of vrows || []) {
-        validityByCourse.set(String(v.id), v.validityMonths != null ? Number(v.validityMonths) : null);
+      try {
+        const [vrows]: any = await mysqlPool.query(
+          `SELECT id, validityMonths, language FROM Courses WHERE id IN (${placeholders})`,
+          ids
+        );
+        for (const v of vrows || []) {
+          validityByCourse.set(String(v.id), v.validityMonths != null ? Number(v.validityMonths) : null);
+          languageByCourse.set(
+            String(v.id),
+            typeof v.language === 'string' && v.language.trim() ? v.language.trim() : null
+          );
+        }
+      } catch {
+        const [vrows]: any = await mysqlPool.query(
+          `SELECT id, validityMonths FROM Courses WHERE id IN (${placeholders})`,
+          ids
+        );
+        for (const v of vrows || []) {
+          validityByCourse.set(String(v.id), v.validityMonths != null ? Number(v.validityMonths) : null);
+        }
       }
     }
   } catch { /* validity column nahi — batch endDate hi expiry ka aadhaar */ }
@@ -70,6 +92,12 @@ export default async function BatchesPage() {
     coursePrice: b.coursePrice != null ? Number(b.coursePrice) : null,
     enrolledAt: b.enrolledAt ? new Date(b.enrolledAt).toISOString() : null,
     validityMonths: validityByCourse.get(String(b.courseId)) ?? null,
+    language: languageByCourse.get(String(b.courseId)) ?? null,
+    // Exam/target line ke liye site ka maujooda imaandaar derivation
+    // (course title/slug ke keywords se) — PW card ki 'Class 9' /
+    // exam pill wali jagah ka SHIVA-samkaksh; derive na ho to null.
+    examCategory:
+      deriveExamCategory({ title: b.courseTitle, slug: b.courseSlug })?.label ?? null,
   }));
 
   return (
