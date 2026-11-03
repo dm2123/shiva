@@ -524,6 +524,83 @@ footer.ft5{background:#fff;color:#4b5563;border-top:1px solid #eceaf6;padding:50
 }
 @media(max-width:520px){.cat5-grid{grid-template-columns:1fr}}
 
+/* ===== WAVE-6 — homepage upar ke 3 hisse: apna banner carousel, hero khubi-patti, bade category cards ===== */
+/* 1) BANNER CAROUSEL (header ke theek neeche) — poori tarah CSS design, koi photo nahi */
+.car-sec{padding:20px 0 6px}
+.car{position:relative;border-radius:24px;overflow:hidden;box-shadow:0 18px 40px rgba(42,22,80,.16);background:var(--deep)}
+.car-track{display:flex;transition:transform .55s ease}
+.car-slide{flex:0 0 100%;min-width:100%;color:#fff;position:relative;overflow:hidden;display:flex;align-items:stretch}
+.car-slide::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.16) 1.6px,transparent 1.8px);background-size:24px 24px;opacity:.35;pointer-events:none}
+.car-slide::after{content:"";position:absolute;right:-70px;top:-70px;width:230px;height:230px;border-radius:50%;background:rgba(255,255,255,.12);pointer-events:none}
+.car-s1{background:linear-gradient(120deg,#065f46,#059669 60%,#10b981)}
+.car-s2{background:linear-gradient(120deg,#1c0b3d,var(--brand-dark) 55%,var(--brand))}
+.car-s3{background:linear-gradient(120deg,#f59e0b,#f5b942 55%,#ffd97a);color:#2a1650}
+.car-s3::before{background-image:radial-gradient(rgba(42,22,80,.16) 1.6px,transparent 1.8px)}
+.car-s3::after{background:rgba(255,255,255,.35)}
+.car-in{position:relative;z-index:2;display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center;width:100%;padding:32px 78px 42px 40px}
+.car-kick{display:inline-block;font-size:11.5px;font-weight:900;letter-spacing:1.4px;padding:5px 13px;border-radius:999px;margin-bottom:10px;background:var(--gold);color:#2a1650}
+.car-s3 .car-kick{background:var(--deep);color:var(--gold)}
+.car-slide h2{font-size:31px;font-weight:900;line-height:1.15;letter-spacing:-.4px;margin-bottom:8px}
+.car-slide p{font-size:15px;opacity:.94;max-width:540px;margin-bottom:16px}
+.car-s3 p{opacity:.85}
+.car-btn{display:inline-block;background:#fff;color:var(--deep);font-weight:800;font-size:15px;padding:12px 26px;border-radius:999px;box-shadow:0 8px 20px rgba(0,0,0,.22);transition:.2s}
+.car-btn:hover{transform:translateY(-1px)}
+.car-s1 .car-btn{color:#065f46}
+.car-s2 .car-btn{color:var(--brand-dark)}
+.car-s3 .car-btn{background:var(--deep);color:#fff}
+.car-visual{width:116px;height:116px;border-radius:50%;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.car-visual svg{width:54px;height:54px}
+.car-s3 .car-visual{background:rgba(42,22,80,.10);border-color:rgba(42,22,80,.25);color:#2a1650}
+.car-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(20,8,45,.32);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;padding:0}
+.car-arrow:hover{background:rgba(20,8,45,.55)}
+.car-arrow svg{width:20px;height:20px}
+.car-prev{left:14px}
+.car-next{right:14px}
+.car-dots{position:absolute;left:0;right:0;bottom:12px;z-index:5;display:flex;gap:7px;justify-content:center}
+.car-dot{width:9px;height:9px;border-radius:99px;border:none;background:rgba(255,255,255,.5);cursor:pointer;padding:0;transition:.25s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.car-dot.on{width:26px;background:#fff}
+@media(max-width:900px){
+.car-slide h2{font-size:24px}
+.car-in{padding:26px 64px 40px 26px}
+.car-visual{width:86px;height:86px}
+.car-visual svg{width:40px;height:40px}
+}
+@media(max-width:640px){
+.car-in{grid-template-columns:1fr;padding:22px 20px 44px}
+.car-visual{display:none}
+.car-arrow{display:none}
+.car-slide h2{font-size:21px}
+}
+/* 2) HERO KHUBI PATTI — purani stats strip ki jagah (merge, do patti nahi) */
+.feat-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;border-top:1px solid #e9e5fb;margin-top:36px;padding:22px 0 30px}
+.feat-it{display:flex;align-items:center;gap:12px;justify-content:center;text-align:left}
+.feat-ic{width:46px;height:46px;border-radius:50%;background:#f5f3ff;border:1.5px solid var(--line);color:var(--brand);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.feat-ic svg{width:23px;height:23px}
+.feat-it b{display:block;font-size:15.5px;font-weight:900;color:var(--deep);line-height:1.25}
+.feat-it span{font-size:12.5px;color:var(--muted)}
+@media(max-width:900px){.feat-strip{grid-template-columns:1fr 1fr}.feat-it{justify-content:flex-start}}
+/* Hero featured card — aur saaf/premium */
+.hv-card{box-shadow:0 30px 60px rgba(42,22,80,.20);border-color:#e3defc}
+.hv-banner::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.20) 1.6px,transparent 1.8px);background-size:22px 22px;opacity:.4;pointer-events:none}
+.hv-body{padding:20px 22px 22px}
+/* 3) BADE DESIGNED CATEGORY CARDS — upar gehara gradient banner + bada SVG icon */
+.dcat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.dcat{background:#fff;border:1.5px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 6px 24px rgba(42,22,80,.06);transition:.25s}
+.dcat:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(109,40,217,.14)}
+.dcat-banner{height:104px;position:relative;display:flex;align-items:center;justify-content:center;color:#fff;overflow:hidden;flex-shrink:0}
+.dcat-banner::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.18) 1.6px,transparent 1.8px);background-size:22px 22px;opacity:.35;pointer-events:none}
+.dcat-banner::after{content:"";position:absolute;right:-26px;top:-30px;width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,.14);pointer-events:none}
+.dcat-banner svg{width:46px;height:46px;position:relative;z-index:2;filter:drop-shadow(0 4px 10px rgba(0,0,0,.25))}
+.dcat-body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:5px;flex:1}
+.dcat-body b{font-size:18.5px;color:var(--deep);line-height:1.25}
+.dcat-sub{font-size:13px;color:var(--muted);font-weight:600}
+.dcat-foot{margin-top:auto;padding-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dcat-go{font-size:14px;font-weight:800;color:var(--brand)}
+.dcat-go::after{content:" →"}
+.dcat-wide{grid-column:1/-1}
+@media(max-width:900px){.dcat-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.dcat-grid{grid-template-columns:1fr}.dcat-banner{height:92px}}
+
 </style>
 </head>
 <body>
@@ -567,6 +644,49 @@ footer.ft5{background:#fff;color:#4b5563;border-top:1px solid #eceaf6;padding:50
 </nav>
 <div class="nav-cta"><a href="https://the-shiva.onrender.com/login" class="btn-login">Login</a><a href="https://the-shiva.onrender.com/register" class="btn-register">Register</a></div>
 </div></header>
+
+<!-- BANNER CAROUSEL — SHIVA ke apne 3 asal banners (poori tarah CSS design, koi photo nahi) -->
+<div class="car-sec"><div class="wrap">
+<div class="car" id="shivaCar" role="region" aria-roledescription="carousel" aria-label="THE SHIVA — khaas suchnaayein">
+<div class="car-track" id="carTrack">
+<div class="car-slide car-s1" role="group" aria-roledescription="slide" aria-label="1 of 3">
+<div class="car-in"><div>
+<span class="car-kick">100% FREE COURSE</span>
+<h2>Aptitude Foundation — 100% FREE Course</h2>
+<p>Number System se Data Interpretation tak — har sarkari exam ki maths neev, topic-by-topic video lectures ke saath.</p>
+<a class="car-btn" href="https://the-shiva.onrender.com/courses/aptitude-foundation-free">Free Course Shuru Karo →</a>
+</div>
+<div class="car-visual" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 5H7l6.5 7L7 19h10.5"/></svg></div>
+</div></div>
+<div class="car-slide car-s2" role="group" aria-roledescription="slide" aria-label="2 of 3">
+<div class="car-in"><div>
+<span class="car-kick">SARKARI EXAM TAIYAARI</span>
+<h2>Sarkari Exam Taiyaari</h2>
+<p>SSC · Railway · Banking · Defence · Teaching — structured video lectures, practice tests aur doubt support ke saath har exam ki pakki taiyaari, ek hi jagah.</p>
+<a class="car-btn" href="batches.html">Batches Dekho →</a>
+</div>
+<div class="car-visual" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.8"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></svg></div>
+</div></div>
+<div class="car-slide car-s3" role="group" aria-roledescription="slide" aria-label="3 of 3">
+<div class="car-in"><div>
+<span class="car-kick">SCHOLARSHIP PROGRAM</span>
+<h2>Scholarship Program — Jald Aa Raha Hai</h2>
+<p>Deserving students ke liye madad ka program design ho raha hai — koi jhoothi rakam ya date nahi, details pakki hote hi yahin milegi.</p>
+<a class="car-btn" href="scholarship.html">Scholarship Jaano →</a>
+</div>
+<div class="car-visual" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L2.5 8.5 12 13l9.5-4.5z"/><path d="M6 10.8V15c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.2M21.5 8.5V14"/></svg></div>
+</div></div>
+</div>
+<button type="button" class="car-arrow car-prev" id="carPrev" aria-label="Pichla banner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button>
+<button type="button" class="car-arrow car-next" id="carNext" aria-label="Agla banner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg></button>
+<div class="car-dots">
+<button type="button" class="car-dot on" aria-label="Banner 1 — Free Course"></button>
+<button type="button" class="car-dot" aria-label="Banner 2 — Sarkari Exam Taiyaari"></button>
+<button type="button" class="car-dot" aria-label="Banner 3 — Scholarship"></button>
+</div>
+</div>
+</div></div>
+
 <div class="mmenu" id="mmenu">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
 <span style="font-weight:900;font-size:20px;display:flex;align-items:center;gap:8px"><img src="favicon.svg" alt="" style="width:32px;height:32px;border-radius:9px"> THE SHIVA</span>
@@ -613,11 +733,11 @@ footer.ft5{background:#fff;color:#4b5563;border-top:1px solid #eceaf6;padding:50
 </div>
 </aside>
 </div>
-<div class="wrap"><div class="hero5-stats">
-<div><b>6</b><span>Published Courses</span></div>
-<div><b>100% Free</b><span>Starter Course</span></div>
-<div><b>Hindi + English</b><span>Bilingual Content</span></div>
-<div><b>24×7</b><span>Kabhi Bhi Padho</span></div>
+<div class="wrap"><div class="feat-strip">
+<div class="feat-it"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="7.5" r="2.2"/><circle cx="16.5" cy="16.5" r="2.2"/><path d="M17 5L7 19"/></svg></span><div><b>100% Free</b><span>Starter Course</span></div></div>
+<div class="feat-it"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5h8.5M8.2 4.5v2c0 3.4-1.9 6.3-4.4 7.9M5.8 9.6c1 2.4 2.9 4.6 5.3 5.9"/><path d="M12.6 20l4.1-9.2L20.8 20M13.9 17.1h5.6"/></svg></span><div><b>Hindi + English</b><span>Bilingual Content</span></div></div>
+<div class="feat-it"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H4l2.3-2.9A8 8 0 1 1 21 12z"/><path d="M9.8 9.4A2.3 2.3 0 1 1 12 11.6c-.8 0-1.2.5-1.2 1.2v.5"/><circle cx="10.9" cy="16.3" r=".5" fill="currentColor" stroke="none"/></svg></span><div><b>Doubt Support</b><span>Har Topic Ke Saath</span></div></div>
+<div class="feat-it"><span class="feat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span><div><b>24×7</b><span>Kabhi Bhi Padho</span></div></div>
 </div></div>
 </div>
 
@@ -636,14 +756,14 @@ footer.ft5{background:#fff;color:#4b5563;border-top:1px solid #eceaf6;padding:50
 <!-- CATEGORIES -->
 <section><div class="wrap">
 <div class="sec-head"><span class="kick">Explore</span><h2>Exam Categories</h2><p>Apna exam chuno aur taiyaari shuru karo</p></div>
-<div class="cat5-grid">
-<a class="cat5" style="--t:#fef3c7" href="courses.html"><span class="cat5-ic" style="color:#b45309"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5L12 4l9 5.5M4.5 9.5V18M9.5 9.5V18M14.5 9.5V18M19.5 9.5V18M2.5 20.5h19"/></svg></span><span class="cat5-tx"><b>SSC</b><span>CGL · CHSL · MTS · GD</span></span><span class="cat5-go">Explore →</span></a>
-<a class="cat5" style="--t:#ede9fe" href="courses.html"><span class="cat5-ic" style="color:#6d28d9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="13" rx="2.5"/><path d="M5 10.5h14M9 20.5l-1.5-4M15 20.5l1.5-4"/><circle cx="9" cy="13.8" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="13.8" r="1" fill="currentColor" stroke="none"/></svg></span><span class="cat5-tx"><b>Railway</b><span>NTPC · Group D · ALP</span></span><span class="cat5-go">Explore →</span></a>
-<a class="cat5" style="--t:#dbeafe" href="courses.html"><span class="cat5-ic" style="color:#1d4ed8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6.5" rx="7.5" ry="3"/><path d="M4.5 6.5v11c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-11M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></svg></span><span class="cat5-tx"><b>Banking</b><span>PO · Clerk · SO</span></span><span class="cat5-go">Explore →</span></a>
-<a class="cat5" style="--t:#dcfce7" href="courses.html"><span class="cat5-ic" style="color:#15803d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3v5.5c0 4.5-3.2 7.7-7.5 9.5-4.3-1.8-7.5-5-7.5-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span><span class="cat5-tx"><b>Defence</b><span>NDA · CDS · AFCAT</span></span><span class="cat5-go">Explore →</span></a>
-<a class="cat5" style="--t:#fce7f3" href="courses.html"><span class="cat5-ic" style="color:#be185d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></span><span class="cat5-tx"><b>Teaching</b><span>CTET · STET · UPTET</span></span><span class="cat5-go">Explore →</span></a>
-<a class="cat5" style="--t:#e0f2fe" href="courses.html"><span class="cat5-ic" style="color:#0369a1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.4-6.5-10.4A6.5 6.5 0 0 1 12 4a6.5 6.5 0 0 1 6.5 6.6C18.5 15.6 12 21 12 21z"/><circle cx="12" cy="10.4" r="2.3"/></svg></span><span class="cat5-tx"><b>State Exams</b><span>UPSSSC · Lekhpal · Police</span></span><span class="cat5-go">Explore →</span></a>
-<a class="cat5 cat5-wide" style="--t:#fef9c3" href="https://the-shiva.onrender.com/courses/aptitude-foundation-free"><span class="cat5-ic" style="color:#a16207"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span><span class="cat5-tx"><b>Foundation — Aptitude Ki Neev</b><span>Maths · Reasoning · Har exam ki shuruaat yahin se</span></span><span class="off-chip">100% FREE</span><span class="cat5-go">Free Course →</span></a>
+<div class="dcat-grid">
+<a class="dcat" href="courses.html"><span class="dcat-banner" style="background:linear-gradient(135deg,#b45309,#f59e0b)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5L12 4l9 5.5M4.5 9.5V18M9.5 9.5V18M14.5 9.5V18M19.5 9.5V18M2.5 20.5h19"/></svg></span><span class="dcat-body"><b>SSC</b><span class="dcat-sub">CGL · CHSL · MTS · GD</span><span class="dcat-foot"><span class="dcat-go">Explore</span></span></span></a>
+<a class="dcat" href="courses.html"><span class="dcat-banner" style="background:linear-gradient(135deg,#4c1d95,#7c3aed)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="13" rx="2.5"/><path d="M5 10.5h14M9 20.5l-1.5-4M15 20.5l1.5-4"/><circle cx="9" cy="13.8" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="13.8" r="1" fill="currentColor" stroke="none"/></svg></span><span class="dcat-body"><b>Railway</b><span class="dcat-sub">NTPC · Group D · ALP</span><span class="dcat-foot"><span class="dcat-go">Explore</span></span></span></a>
+<a class="dcat" href="courses.html"><span class="dcat-banner" style="background:linear-gradient(135deg,#1e40af,#2563eb)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6.5" rx="7.5" ry="3"/><path d="M4.5 6.5v11c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-11M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></svg></span><span class="dcat-body"><b>Banking</b><span class="dcat-sub">PO · Clerk · SO</span><span class="dcat-foot"><span class="dcat-go">Explore</span></span></span></a>
+<a class="dcat" href="courses.html"><span class="dcat-banner" style="background:linear-gradient(135deg,#065f46,#059669)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3v5.5c0 4.5-3.2 7.7-7.5 9.5-4.3-1.8-7.5-5-7.5-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span><span class="dcat-body"><b>Defence</b><span class="dcat-sub">NDA · CDS · Agniveer</span><span class="dcat-foot"><span class="dcat-go">Explore</span></span></span></a>
+<a class="dcat" href="courses.html"><span class="dcat-banner" style="background:linear-gradient(135deg,#9d174d,#db2777)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg></span><span class="dcat-body"><b>Teaching</b><span class="dcat-sub">CTET · UPTET · STET</span><span class="dcat-foot"><span class="dcat-go">Explore</span></span></span></a>
+<a class="dcat" href="courses.html"><span class="dcat-banner" style="background:linear-gradient(135deg,#075985,#0284c7)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.4-6.5-10.4A6.5 6.5 0 0 1 12 4a6.5 6.5 0 0 1 6.5 6.6C18.5 15.6 12 21 12 21z"/><circle cx="12" cy="10.4" r="2.3"/></svg></span><span class="dcat-body"><b>State Exams</b><span class="dcat-sub">UPSSSC · Lekhpal · Police</span><span class="dcat-foot"><span class="dcat-go">Explore</span></span></span></a>
+<a class="dcat dcat-wide" href="https://the-shiva.onrender.com/courses/aptitude-foundation-free"><span class="dcat-banner" style="background:linear-gradient(135deg,#2a1650,#6d28d9)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span><span class="dcat-body"><b>Foundation — Aptitude Ki Neev</b><span class="dcat-sub">Maths · Reasoning · Har exam ki shuruaat yahin se</span><span class="dcat-foot"><span class="off-chip">100% FREE</span><span class="dcat-go">Free Course</span></span></span></a>
 </div>
 </div></section>
 
@@ -821,6 +941,20 @@ function resSoon(el){if(el.dataset.done)return;el.dataset.done="1";var d=documen
 function socSoon(el){var box=document.getElementById('socRow');if(box.dataset.done)return;box.dataset.done="1";var d=document.createElement("div");d.style.cssText="font-size:12.5px;color:#b9b3d9;margin-top:10px;font-weight:600";d.innerHTML="📲 Social pages jald launch honge — tab tak <a href=\"https://the-shiva.onrender.com/courses/aptitude-foundation-free\" style=\"color:var(--gold);font-weight:700\">free Aptitude course</a> se jud jao!";box.parentNode.appendChild(d)}
 function appSoon(el){var box=el.parentNode;if(box.dataset.done)return;box.dataset.done="1";var d=document.createElement("div");d.style.cssText="font-size:12.5px;color:var(--gold);margin-top:10px;font-weight:600";d.innerHTML="📱 App jald launch ho raha hai — tab tak website par <a href=\"https://the-shiva.onrender.com/courses/aptitude-foundation-free\" style=\"color:var(--gold);font-weight:700\">free Aptitude course</a> se padho!";box.parentNode.insertBefore(d,box.nextSibling)}
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){document.getElementById("mmenu").classList.remove("open");closeCpopup()}});
+</script>
+<script>
+/* Banner carousel — halka vanilla JS: auto-rotate 5s, arrows, dots, hover/focus par pause, reduced-motion par auto-rotate band */
+(function(){var car=document.getElementById('shivaCar');if(!car)return;var track=document.getElementById('carTrack');var total=track.children.length;var dots=car.querySelectorAll('.car-dot');var i=0,timer=null;var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function go(n){i=((n%total)+total)%total;track.style.transform='translateX(-'+(i*100)+'%)';for(var k=0;k<dots.length;k++){dots[k].classList.toggle('on',k===i);dots[k].setAttribute('aria-current',k===i?'true':'false')}}
+function play(){if(reduce||timer)return;timer=setInterval(function(){go(i+1)},5000)}
+function stop(){if(timer){clearInterval(timer);timer=null}}
+document.getElementById('carPrev').addEventListener('click',function(){go(i-1);stop();play()});
+document.getElementById('carNext').addEventListener('click',function(){go(i+1);stop();play()});
+for(var d=0;d<dots.length;d++){(function(k){dots[k].addEventListener('click',function(){go(k);stop();play()})})(d)}
+car.addEventListener('mouseenter',stop);car.addEventListener('mouseleave',play);
+car.addEventListener('focusin',stop);car.addEventListener('focusout',play);
+document.addEventListener('visibilitychange',function(){if(document.hidden){stop()}else{play()}});
+go(0);play()})();
 </script>
 </body>
 </html>
